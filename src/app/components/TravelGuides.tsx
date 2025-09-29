@@ -1,3 +1,8 @@
+'use client'
+
+import Image from 'next/image';
+import Link from 'next/link';
+
 export default function TravelGuides() {
     const guides = [
         {
@@ -6,7 +11,8 @@ export default function TravelGuides() {
             category: "Hoạt động nên trải nghiệm",
             author: "Pho Group",
             readTime: "15 phút đọc",
-            views: "25K"
+            views: "25K",
+            image: "https://images.unsplash.com/photo-1539650116574-75c0c6d90dc5?q=80&w=1000"
         },
         {
             id: 2,
@@ -14,7 +20,8 @@ export default function TravelGuides() {
             category: "Đồ ăn & thức uống",
             author: "PhoFood Team",
             readTime: "12 phút đọc",
-            views: "18K"
+            views: "18K",
+            image: "https://images.unsplash.com/photo-1588566565463-180a5b2090d2?q=80&w=1000"
         },
         {
             id: 3,
@@ -22,7 +29,8 @@ export default function TravelGuides() {
             category: "Hoạt động nên trải nghiệm",
             author: "Pho Travel",
             readTime: "10 phút đọc",
-            views: "20K"
+            views: "20K",
+            image: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?q=80&w=1000"
         },
         {
             id: 4,
@@ -30,7 +38,8 @@ export default function TravelGuides() {
             category: "Hoạt động nên trải nghiệm",
             author: "Pho Travel",
             readTime: "8 phút đọc",
-            views: "15K"
+            views: "15K",
+            image: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?q=80&w=1000"
         },
         {
             id: 5,
@@ -38,7 +47,8 @@ export default function TravelGuides() {
             category: "Hoạt động nên trải nghiệm",
             author: "Pho Group",
             readTime: "20 phút đọc",
-            views: "30K"
+            views: "30K",
+            image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000"
         },
         {
             id: 6,
@@ -46,7 +56,8 @@ export default function TravelGuides() {
             category: "Đồ ăn & thức uống",
             author: "PhoFood Team",
             readTime: "7 phút đọc",
-            views: "12K"
+            views: "12K",
+            image: "https://images.unsplash.com/photo-1559221645-ee6f8e7daa17?q=80&w=1000"
         }
     ]
 
@@ -93,35 +104,42 @@ export default function TravelGuides() {
                     </div>
                 </div>
 
-                {/* General travel guides */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* General travel guides */}                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {guides.map((guide) => (
-                        <article key={guide.id} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white">
-                            {/* Image placeholder */}
-                            <div className="aspect-[4/3] bg-gradient-to-br from-purple-400 to-pink-500 relative">
-                                <div className="absolute inset-0 skeleton"></div>
-                                {/* Category badge */}
-                                <div className="absolute top-3 left-3 bg-white/90 text-gray-800 px-2 py-1 rounded text-xs font-medium">
-                                    {guide.category}
+                        <Link key={guide.id} href={`/guides/${guide.id}`} className="group">
+                            <article className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white">
+                                <div className="relative aspect-[4/3]">
+                                    <Image
+                                        src={guide.image}
+                                        alt={guide.title}
+                                        fill
+                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                    <div className="absolute top-3 left-3 bg-white/90 text-gray-800 px-2 py-1 rounded text-xs font-medium">
+                                        {guide.category}
+                                    </div>
+                                    <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors">
+                                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                        </svg>
+                                    </button>
                                 </div>
-                            </div>
 
-                            <div className="p-4">
-                                {/* Title */}
-                                <h3 className="font-semibold text-lg mb-3 line-clamp-2">
-                                    {guide.title}
-                                </h3>
+                                <div className="p-4">
+                                    <h3 className="font-semibold text-lg mb-3 line-clamp-2 group-hover:text-brand-600 transition-colors">
+                                        {guide.title}
+                                    </h3>
 
-                                {/* Meta info */}
-                                <div className="flex items-center justify-between text-sm text-gray-500">
-                                    <span>{guide.author}</span>
-                                    <div className="flex items-center gap-3">
-                                        <span>{guide.readTime}</span>
-                                        <span>👀 {guide.views}</span>
+                                    <div className="flex items-center justify-between text-sm text-gray-500">
+                                        <span className="font-medium">{guide.author}</span>
+                                        <div className="flex items-center gap-3">
+                                            <span>📖 {guide.readTime}</span>
+                                            <span>👀 {guide.views}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </article>
+                            </article>
+                        </Link>
                     ))}
                 </div>
 
