@@ -1,16 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { translations, type Locale } from '../../i18n';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Header() {
-    const [currentLocale, setCurrentLocale] = useState<Locale>('vi')
-    const t = translations[currentLocale]
-
-    const toggleLanguage = () => {
-        setCurrentLocale(currentLocale === 'vi' ? 'en' : 'vi')
-    }
+    const { currentLocale, t, toggleLanguage } = useLanguage();
 
     return (
         <header className="sticky top-0 z-40 bg-white border-b">
@@ -55,12 +49,12 @@ export default function Header() {
 
                         {/* Secondary Navigation */}
                         <nav className="hidden lg:flex items-center gap-1">
-                            <a href="#" className="px-3 py-2 rounded-md hover:bg-gray-100 text-sm font-medium text-gray-600 hover:text-gray-900">
+                            {/* <a href="#" className="px-3 py-2 rounded-md hover:bg-gray-100 text-sm font-medium text-gray-600 hover:text-gray-900">
                                 {t.navigation.help}
-                            </a>
-                            <a href="#" className="px-3 py-2 rounded-md hover:bg-gray-100 text-sm font-medium text-gray-600 hover:text-gray-900">
+                            </a> */}
+                            {/* <a href="#" className="px-3 py-2 rounded-md hover:bg-gray-100 text-sm font-medium text-gray-600 hover:text-gray-900">
                                 {t.navigation.signup}
-                            </a>
+                            </a> */}
                             <a href="#" className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 text-sm font-medium transition-colors">
                                 {t.navigation.login}
                             </a>

@@ -21,7 +21,18 @@ export const translations = {
             search: "Tìm theo điểm đến, hoạt động",
             bookNow: "Đặt ngay",
             viewMore: "Xem thêm",
-            rating: "đánh giá"
+            rating: "đánh giá",
+            name: "Họ và tên",
+            email: "Email",
+            phone: "Số điện thoại",
+            checkIn: "Ngày nhận phòng",
+            checkOut: "Ngày trả phòng",
+            guests: "Số khách",
+            message: "Tin nhắn",
+            submit: "Gửi yêu cầu",
+            contactUs: "Liên hệ với chúng tôi",
+            quickBooking: "Đặt phòng nhanh",
+            required: "Bắt buộc"
         },
         sections: {
             topActivities: "Vui chơi & Trải nghiệm hàng đầu ở Phú Quốc",
@@ -31,7 +42,17 @@ export const translations = {
             travelGuides: "Hướng dẫn du lịch Phú Quốc",
             activityReviews: "Đánh giá về các hoạt động ở Phú Quốc",
             weatherInfo: "Thông tin ngắn về Phú Quốc",
-            faq: "Câu hỏi thường gặp về Phú Quốc"
+            faq: "Câu hỏi thường gặp về Phú Quốc",
+            contact: "Liên hệ & Đặt phòng",
+            externalLinks: "Đặt phòng qua các nền tảng"
+        },
+        platforms: {
+            shopee: "Mua sắm trên Shopee",
+            tiktokShop: "TikTok Shop",
+            bookingCom: "Đặt phòng Booking.com",
+            airbnb: "Thuê villa trên Airbnb",
+            whatsapp: "Chat WhatsApp",
+            zalo: "Chat Zalo"
         }
     },
     en: {
@@ -49,7 +70,18 @@ export const translations = {
             search: "Search by destination, activity",
             bookNow: "Book Now",
             viewMore: "View More",
-            rating: "reviews"
+            rating: "reviews",
+            name: "Full Name",
+            email: "Email",
+            phone: "Phone Number",
+            checkIn: "Check-in Date",
+            checkOut: "Check-out Date",
+            guests: "Number of Guests",
+            message: "Message",
+            submit: "Submit Request",
+            contactUs: "Contact Us",
+            quickBooking: "Quick Booking",
+            required: "Required"
         },
         sections: {
             topActivities: "Top Fun & Experiences in Phu Quoc",
@@ -59,7 +91,17 @@ export const translations = {
             travelGuides: "Phu Quoc Travel Guides",
             activityReviews: "Activity Reviews in Phu Quoc",
             weatherInfo: "Brief Information about Phu Quoc",
-            faq: "Frequently Asked Questions about Phu Quoc"
+            faq: "Frequently Asked Questions about Phu Quoc",
+            contact: "Contact & Booking",
+            externalLinks: "Book via Platforms"
+        },
+        platforms: {
+            shopee: "Shop on Shopee",
+            tiktokShop: "TikTok Shop",
+            bookingCom: "Book on Booking.com",
+            airbnb: "Rent Villa on Airbnb",
+            whatsapp: "Chat WhatsApp",
+            zalo: "Chat Zalo"
         }
     }
 };

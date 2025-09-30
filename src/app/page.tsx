@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import ActivityReviews from './components/ActivityReviews'
+import ContactBookingForm from './components/ContactBookingForm'
 import FAQ from './components/FAQ'
 import FloatingChat from './components/FloatingChat'
 import Footer from './components/Footer'
@@ -54,6 +55,8 @@ export default function Home() {
         <ActivityReviews />
 
         <WeatherInfo />
+
+        <ContactBookingForm />
 
         <section id="faq">
           <FAQ />

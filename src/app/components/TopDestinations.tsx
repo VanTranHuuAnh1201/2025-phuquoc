@@ -1,4 +1,10 @@
+'use client';
+
+import { useLanguage } from '../contexts/LanguageContext';
+
 export default function TopDestinations() {
+    const { t } = useLanguage();
+
     const destinations = [
         {
             id: 1,
@@ -53,49 +59,60 @@ export default function TopDestinations() {
     return (
         <section className="py-8 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-                    Điểm tham quan hàng đầu ở Phú Quốc
-                </h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl sm:text-3xl font-bold">
+                        {t.sections.topDestinations}
+                    </h2>
+                    <button className="hidden sm:block px-4 py-2 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 font-semibold text-sm">
+                        {t.common.viewMore}
+                    </button>
+                </div>
 
-                <div className="grid lg:grid-cols-2 gap-6">
-                    {destinations.map((destination) => (
-                        <div key={destination.id} className="bg-white rounded-lg overflow-hidden border hover:shadow-lg transition-shadow">
-                            <div className="grid md:grid-cols-2 gap-0">
-                                {/* Image */}
-                                <div className="aspect-[4/3] md:aspect-square bg-gradient-to-br from-green-400 to-blue-500 relative">
+                {/* Horizontal scroll container */}
+                <div className="overflow-x-auto pb-4">
+                    <div className="flex gap-4 w-max">
+                        {destinations.map((destination) => (
+                            <div key={destination.id} className="bg-white rounded-lg overflow-hidden border hover:shadow-lg transition-shadow w-80 flex-shrink-0">
+                                {/* Image with absolute positioned elements */}
+                                <div className="aspect-[4/3] bg-gradient-to-br from-green-400 to-blue-500 relative">
                                     <div className="absolute inset-0 skeleton"></div>
-                                </div>
 
-                                {/* Content */}
-                                <div className="p-4 flex flex-col justify-between">
-                                    <div>
-                                        <h3 className="font-semibold text-lg mb-2">
-                                            {destination.title}
-                                        </h3>
-
-                                        <p className="text-sm text-gray-600 mb-3 line-clamp-4">
-                                            {destination.description}
-                                        </p>
+                                    {/* Category tag - top left */}
+                                    <div className="absolute top-3 left-3">
+                                        <span className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700">
+                                            {destination.category}
+                                        </span>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <span className="text-gray-500">{destination.category}</span>
-                                            <span className="text-yellow-500">★</span>
-                                            <span className="font-semibold">{destination.rating}</span>
-                                            <span className="text-gray-500">({destination.reviews} đánh giá)</span>
+                                    {/* Rating - bottom left */}
+                                    <div className="absolute bottom-3 left-3">
+                                        <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
+                                            <span className="text-yellow-500 text-sm">★</span>
+                                            <span className="font-semibold text-sm text-gray-900">{destination.rating}</span>
+                                            <span className="text-gray-600 text-xs">({destination.reviews} {t.common.rating})</span>
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Compact content */}
+                                <div className="p-3">
+                                    <h3 className="font-semibold text-base mb-2 leading-tight">
+                                        {destination.title}
+                                    </h3>
+
+                                    <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                                        {destination.description}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
 
-                {/* View more */}
-                <div className="text-center mt-8">
+                {/* Mobile view more button */}
+                <div className="text-center mt-4 sm:hidden">
                     <button className="px-6 py-3 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 font-semibold">
-                        Xem thêm điểm tham quan
+                        {t.common.viewMore}
                     </button>
                 </div>
             </div>

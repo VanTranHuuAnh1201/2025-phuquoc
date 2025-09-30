@@ -1,4 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
+import { useLanguage } from '../contexts/LanguageContext';
+
 export default function TopActivities() {
+    const { t } = useLanguage();
     const activities = [
         {
             id: 1,
@@ -59,10 +64,10 @@ export default function TopActivities() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl sm:text-3xl font-bold">
-                        Vui chơi & Trải nghiệm hàng đầu ở Phú Quốc
+                        {t.sections.topActivities}
                     </h2>
                     <a href="#" className="text-brand-600 hover:text-brand-700 font-medium hidden md:block">
-                        Xem 73 hoạt động ở Phú Quốc
+                        {t.common.viewMore} 73 hoạt động ở Phú Quốc
                     </a>
                 </div>
 
@@ -140,7 +145,7 @@ export default function TopActivities() {
                 {/* Mobile view more button */}
                 <div className="text-center mt-8 md:hidden">
                     <button className="px-6 py-3 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 font-semibold">
-                        Xem thêm hoạt động
+                        {t.common.viewMore} hoạt động
                     </button>
                 </div>
             </div>
