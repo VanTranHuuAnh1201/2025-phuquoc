@@ -1,0 +1,50 @@
+{
+  "common": {
+    "search": "Tìm theo điểm đến, hoạt động",
+    "bookNow": "Đặt ngay",
+    "viewMore": "Xem thêm",
+    "rating": "đánh giá",
+    "reviews": "đánh giá"
+  },
+  "navigation": {
+    "phoFood": "PhoFood",
+    "phoRetreat": "Pho Retreat", 
+    "phoTravel": "Pho Travel",
+    "openApp": "Mở ứng dụng",
+    "help": "Trợ giúp",
+    "cart": "Xem giỏ đặy",
+    "signup": "Đăng ký",
+    "login": "Đăng nhập"
+  },
+  "sections": {
+    "topActivities": "Vui chơi & Trải nghiệm hàng đầu ở Phú Quốc",
+    "topDestinations": "Điểm tham quan hàng đầu ở Phú Quốc", 
+    "transportation": "Phương tiện đi lại ở Phú Quốc",
+    "accommodation": "Nơi ở ở Phú Quốc",
+    "travelGuides": "Hướng dẫn du lịch Phú Quốc",
+    "activityReviews": "Đánh giá về các hoạt động ở Phú Quốc",
+    "weatherInfo": "Thông tin ngắn về Phú Quốc",
+    "faq": "Câu hỏi thường gặp về Phú Quốc",
+    "otherDestinations": "Hấp dẫn không kém",
+    "topDestinationsPhuQuoc": "Điểm tham quan hàng đầu Phú Quốc",
+    "travelEssentials": "Mọi thứ bạn cần cho chuyến đi Phú Quốc"
+  },
+  "categories": {
+    "touristAttraction": "Cảnh quan du lịch",
+    "museum": "Bảo tàng"
+  },
+  "business": {
+    "phoFood": {
+      "name": "PhoFood",
+      "description": "Giới thiệu & bán sản phẩm cá khô, hải sản đặc sản. Khách quốc tế mua biếu, khách Việt đặt ăn."
+    },
+    "phoRetreat": {
+      "name": "Pho Retreat", 
+      "description": "Giới thiệu biệt thự lưu trú tại Phú Quốc với form booking đơn giản. Sau này mở rộng thêm địa điểm khác."
+    },
+    "phoTravel": {
+      "name": "Pho Travel",
+      "description": "Giới thiệu tour & trải nghiệm cho khách quốc tế: tour 3 đảo, vé cáp treo, Vin Safari..."
+    }
+  }
+}

@@ -40,7 +40,7 @@ export default function Transportation() {
             originalPrice: "1,550,000",
             saleTag: null,
             discount: null,
-            image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
             id: 4,
@@ -54,7 +54,7 @@ export default function Transportation() {
             originalPrice: null,
             saleTag: "Sale",
             discount: "Giảm 5%",
-            image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
     ]
 

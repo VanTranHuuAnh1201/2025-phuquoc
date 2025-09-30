@@ -7,8 +7,8 @@ export default function TopActivities() {
             rating: "4.7",
             reviews: "5,170",
             bookings: "200K+",
-            price: "590,000",
-            originalPrice: "1,300,000",
+            price: "940,000",
+            originalPrice: "950,000",
             badges: ["Xác nhận tức thời"],
             category: "Công viên giải trí",
             image: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
@@ -33,11 +33,11 @@ export default function TopActivities() {
             rating: "4.7",
             reviews: "3,242",
             bookings: "100K+",
-            price: "660,000",
-            originalPrice: null,
+            price: "940,000",
+            originalPrice: "950,000",
             badges: ["Đặt ngay hôm nay", "Xác nhận tức thời"],
             category: "Động vật hoang dã",
-            image: "https://images.unsplash.com/photo-1549366021-9f761d040fb2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            image: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         },
         {
             id: 4,
@@ -46,11 +46,11 @@ export default function TopActivities() {
             rating: "4.6",
             reviews: "610",
             bookings: "30K+",
-            price: "637,200",
-            originalPrice: "1,300,000",
+            price: "940,000",
+            originalPrice: "980,000",
             badges: ["Xác nhận tức thời"],
             category: "Show diễn",
-            image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         }
     ]
 

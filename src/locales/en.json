@@ -1,0 +1,50 @@
+{
+  "common": {
+    "search": "Search by destination, activity",
+    "bookNow": "Book Now",
+    "viewMore": "View More",
+    "rating": "rating",
+    "reviews": "reviews"
+  },
+  "navigation": {
+    "phoFood": "PhoFood",
+    "phoRetreat": "Pho Retreat",
+    "phoTravel": "Pho Travel", 
+    "openApp": "Open App",
+    "help": "Help",
+    "cart": "View Cart",
+    "signup": "Sign Up",
+    "login": "Log In"
+  },
+  "sections": {
+    "topActivities": "Top Fun & Experiences in Phu Quoc",
+    "topDestinations": "Top Attractions in Phu Quoc",
+    "transportation": "Transportation in Phu Quoc", 
+    "accommodation": "Accommodation in Phu Quoc",
+    "travelGuides": "Phu Quoc Travel Guides",
+    "activityReviews": "Activity Reviews in Phu Quoc", 
+    "weatherInfo": "Brief Information about Phu Quoc",
+    "faq": "Frequently Asked Questions about Phu Quoc",
+    "otherDestinations": "Equally Attractive",
+    "topDestinationsPhuQuoc": "Top Phu Quoc Attractions",
+    "travelEssentials": "Everything You Need for Your Phu Quoc Trip"
+  },
+  "categories": {
+    "touristAttraction": "Tourist Attraction",
+    "museum": "Museum"
+  },
+  "business": {
+    "phoFood": {
+      "name": "PhoFood",
+      "description": "Introducing & selling dried fish products, specialty seafood. International customers buy for gifts, Vietnamese customers order food."
+    },
+    "phoRetreat": {
+      "name": "Pho Retreat",
+      "description": "Introducing villa accommodations in Phu Quoc with simple booking form. Later expanding to other locations."
+    },
+    "phoTravel": {
+      "name": "Pho Travel", 
+      "description": "Introducing tours & experiences for international guests: 3-island tour, cable car tickets, Vin Safari..."
+    }
+  }
+}

@@ -1,56 +1,6 @@
+import { quickInfoData, weatherData } from '../lib/data';
+
 export default function WeatherInfo() {
-    const weatherData = [
-        {
-            period: "THG 12 - THG 2",
-            temp: { max: 31, min: 23 },
-            description: "Mùa khô - thời điểm tuyệt nhất để du lịch Phú Quốc",
-            isRecommended: true,
-            rainfall: "20mm",
-            humidity: "70%"
-        },
-        {
-            period: "THG 3 - THG 5",
-            temp: { max: 32, min: 26 },
-            description: "Mùa nắng - thời tiết ấm nóng, không quá đông du khách",
-            isRecommended: false,
-            rainfall: "50mm",
-            humidity: "75%"
-        },
-        {
-            period: "THG 6 - THG 8",
-            temp: { max: 30, min: 26 },
-            description: "Giao mùa - dễ có mưa vào tháng 07 và tháng 08",
-            isRecommended: false,
-            rainfall: "150mm",
-            humidity: "85%"
-        },
-        {
-            period: "THG 9 - THG 11",
-            temp: { max: 30, min: 24 },
-            description: "Mùa mưa - khả năng cao dễ có bão",
-            isRecommended: false,
-            rainfall: "300mm",
-            humidity: "90%"
-        }
-    ]
-
-    const quickInfo = [
-        { label: "Múi giờ", value: "GMT +07:00", note: "Không chênh lệch thời gian", icon: "⏰" },
-        { label: "Tiền tệ", value: "Việt Nam Đồng", note: "1USD ≈ 24,000VND", icon: "💰" },
-        { label: "Ngôn ngữ chính thức", value: "Tiếng Việt", note: "English được sử dụng rộng rãi", icon: "🗣️" },
-        { label: "Thời gian tuyệt nhất để đến", value: "THG 12 - THG 2", note: "Lễ hội âm nhạc Epizode Việt Nam", icon: "🎵" },
-        { label: "Thời lượng lý tưởng", value: "3-4 ngày", note: "Đủ thời gian trải nghiệm đầy đủ", icon: "📅" },
-        { label: "Thời gian bay", value: "1 giờ", note: "Khởi hành từ Thành phố Hồ Chí Minh", icon: "✈️" }
-    ]
-
-    const currentWeather = {
-        temp: 28,
-        condition: "Nắng đẹp",
-        humidity: 72,
-        wind: "15 km/h",
-        visibility: "10 km"
-    }
-
     return (
         <section className="py-8 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,87 +8,89 @@ export default function WeatherInfo() {
                     Thông tin ngắn về Phú Quốc
                 </h2>
 
-                <div className="grid lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-lg p-6 border">
+                <div className="bg-white rounded-lg p-6 border">
+                    <div className="grid lg:grid-cols-4 gap-8">
+                        {/* Weather Section */}
+                        <div className="lg:col-span-3">
+                            {/* Weather Header */}
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-semibold flex items-center gap-2">
-                                    🌤️ Thời tiết địa phương
+                                <h3 className="text-xl font-semibold text-gray-800">
+                                    Thời tiết địa phương
                                 </h3>
-                                <div className="text-right">
-                                    <div className="text-2xl font-bold">{currentWeather.temp}°C</div>
-                                    <div className="text-sm text-gray-600">{currentWeather.condition}</div>
+                                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                                    <button className="px-3 py-1 bg-white rounded-md text-sm font-medium shadow-sm">
+                                        °F
+                                    </button>
+                                    <button className="px-3 py-1 text-sm font-medium text-gray-600">
+                                        °C
+                                    </button>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                                    <span className="text-sm text-gray-600">Độ ẩm</span>
-                                    <span className="font-semibold">{currentWeather.humidity}%</span>
-                                </div>
-                                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                                    <span className="text-sm text-gray-600">Gió</span>
-                                    <span className="font-semibold">{currentWeather.wind}</span>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
+                            {/* Weather Periods */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                                 {weatherData.map((weather, index) => (
-                                    <div key={index} className={`p-4 rounded-lg border transition-all hover:shadow-md ${weather.isRecommended ? 'bg-green-50 border-green-200 ring-2 ring-green-100' : 'bg-gray-50 hover:bg-gray-100'}`}>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="font-semibold text-lg">{weather.period}</span>
-                                            <div className="flex items-center gap-3">
-                                                <div className="text-right">
-                                                    <span className="text-2xl font-bold text-orange-600">{weather.temp.max}°</span>
-                                                    <span className="text-gray-500 ml-1">{weather.temp.min}°</span>
-                                                </div>
-                                                {weather.isRecommended && (
-                                                    <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-medium">
-                                                        Tốt nhất
-                                                    </span>
-                                                )}
+                                    <div key={index} className="text-left">
+                                        <div className="text-sm text-gray-600 mb-2">{weather.period}</div>
+                                        <div className="mb-2">
+                                            <span className="text-3xl font-bold text-gray-900">{weather.temp.max}°</span>
+                                            <span className="text-lg text-gray-500 ml-1">{weather.temp.min}°</span>
+                                        </div>
+                                        <p className="text-xs text-gray-600 leading-relaxed">{weather.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* General Information */}
+                            <div className="border-t pt-6">
+                                <h4 className="text-lg font-semibold text-gray-800 mb-4">Thông tin chung</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                                    {quickInfoData.map((info, index) => (
+                                        <div key={index} className="text-left">
+                                            <div className="text-sm text-gray-600 mb-1">{info.label}</div>
+                                            <div className="font-semibold text-gray-900 mb-1">{info.value}</div>
+                                            <div className="text-xs text-gray-500">{info.note}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Flight Time */}
+                            <div className="border-t pt-6 mt-6">
+                                <h4 className="text-lg font-semibold text-gray-800 mb-4">Thời gian bay</h4>
+                                <div className="text-left">
+                                    <div className="text-sm text-gray-600 mb-1">Thời gian bay</div>
+                                    <div className="font-semibold text-gray-900 mb-1">1.5 giờ</div>
+                                    <div className="text-xs text-gray-500">Khởi hành từ Thành phố Hồ Chí Minh</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Map Section */}
+                        <div className="lg:col-span-1">
+                            <div className="bg-gradient-to-br from-blue-100 to-green-100 rounded-lg p-4 h-full min-h-[300px] relative">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-green-200 rounded-lg">
+                                    {/* Map placeholder with location markers */}
+                                    <div className="relative h-full">
+                                        <div className="absolute top-6 right-6 bg-white px-2 py-1 rounded text-xs font-medium shadow">
+                                            ĐỊ A73
+                                        </div>
+                                        <div className="absolute top-12 left-8 bg-white px-2 py-1 rounded text-xs font-medium shadow">
+                                            ĐT A5
+                                        </div>
+                                        <div className="absolute bottom-1/3 right-1/2 transform translate-x-1/2">
+                                            <div className="w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-lg"></div>
+                                            <div className="text-xs font-medium mt-1 bg-white px-2 py-1 rounded shadow text-center">
+                                                PHÚ QUỐC<br />
+                                                <span className="text-green-600">National Park</span>
                                             </div>
                                         </div>
-                                        <p className="text-sm text-gray-600 mb-2">{weather.description}</p>
-                                        <div className="flex gap-4 text-xs text-gray-500">
-                                            <span>🌧️ {weather.rainfall}</span>
-                                            <span>💧 {weather.humidity}</span>
-                                        </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-lg p-6 border">
-                            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                ℹ️ Thông tin chung
-                            </h3>
-
-                            <div className="space-y-4">
-                                {quickInfo.map((info, index) => (
-                                    <div key={index} className="border-b border-gray-100 pb-3 last:border-b-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span>{info.icon}</span>
-                                            <span className="font-medium text-gray-900">{info.label}</span>
-                                        </div>
-                                        <div className="font-semibold text-brand-600">{info.value}</div>
-                                        <div className="text-sm text-gray-500">{info.note}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-lg p-6 border">
-                            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                                🗺️ Bản đồ Phú Quốc
-                            </h3>
-                            <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                                <div className="text-center text-gray-500">
-                                    <div className="text-3xl mb-2">🗺️</div>
-                                    <div className="text-sm">Interactive Map</div>
-                                    <div className="text-xs">Coming Soon</div>
+                                </div>
+                                <div className="absolute bottom-4 right-4">
+                                    <button className="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                        Xem các hoạt động nổi bật
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -150,11 +102,19 @@ export default function WeatherInfo() {
                         🌟 Lời khuyên từ Pho Group
                     </h3>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
-                        <div className="bg-white p-4 rounded-lg">
-                            <strong>Thời điểm tốt nhất:</strong> Tháng 12-2 là lý tưởng với thời tiết khô ráo, ít mưa.
+                        <div className="bg-white p-4 rounded-lg border border-green-200">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-green-600">✅</span>
+                                <strong className="text-green-800">Thời điểm tốt nhất:</strong>
+                            </div>
+                            <p>Tháng 12-2 là lý tưởng với thời tiết khô ráo, ít mưa, biển êm.</p>
                         </div>
-                        <div className="bg-white p-4 rounded-lg">
-                            <strong>Tránh thời điểm:</strong> Tháng 9-11 có nhiều mưa và khả năng có bão.
+                        <div className="bg-white p-4 rounded-lg border border-red-200">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-red-600">⚠️</span>
+                                <strong className="text-red-800">Tránh thời điểm:</strong>
+                            </div>
+                            <p>Tháng 9-11 có nhiều mưa và khả năng có bão.</p>
                         </div>
                     </div>
                 </div>
