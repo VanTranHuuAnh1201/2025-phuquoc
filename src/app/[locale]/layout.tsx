@@ -24,13 +24,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     }
 
     const currentMeta = metadata[currentLocale as keyof typeof metadata] || metadata.vi
-
     return {
         title: currentMeta.title,
         description: currentMeta.description,
         keywords: currentMeta.keywords,
         robots: 'index, follow',
-        viewport: 'width=device-width, initial-scale=1', openGraph: {
+        openGraph: {
             title: currentMeta.title,
             description: currentMeta.description,
             type: 'website',
@@ -50,6 +49,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             }
         }
     }
+}
+
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
 }
 
 export default async function LocaleLayout({
@@ -89,14 +93,15 @@ export default async function LocaleLayout({
                         })
                     }}
                 />
-            </head>            <body className={inter.className}>                <LanguageProvider initialLocale={currentLocale}>
-                <Header />
-                <main className="min-h-screen">
-                    {children}
-                </main>
-
-                <FloatingChat />
-            </LanguageProvider>
+            </head>
+            <body className={inter.className}>
+                <LanguageProvider initialLocale={currentLocale}>
+                    <Header />
+                    <main className="min-h-screen">
+                        {children}
+                    </main>
+                    <FloatingChat />
+                </LanguageProvider>
             </body>
         </html>
     )

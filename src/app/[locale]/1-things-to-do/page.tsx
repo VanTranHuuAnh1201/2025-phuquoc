@@ -1,10 +1,10 @@
 ﻿"use client"
 
-import { useSearchParams } from 'next/navigation'
-
 import PhoGroupHero from '@/app/components/PhoGroupHero'
 import ThingsCard from '@/app/components/ThingsCard'
 import ThingsFilterBar from '@/app/components/ThingsFilterBar'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { ThingItem, thingsMock } from './mockData'
 
 function useFilters() {
@@ -89,7 +89,7 @@ function applySorting(items: ThingItem[], sort?: string) {
   }
 }
 
-export default function ThingsToDoPage() {
+function ThingsToDoContent() {
   const { cats, date, price, rating, sort } = useFilters()
   const filtered = applyFilters(thingsMock, cats, date, price, rating)
   const sorted = applySorting(filtered, sort)
@@ -215,5 +215,36 @@ export default function ThingsToDoPage() {
         </button>
       </div>
     </>
+  )
+}
+
+
+// Loading component for Suspense fallback
+function ThingsToDoLoading() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-pink-50/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-8"></div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl p-6 shadow-lg">
+                <div className="h-48 bg-gray-200 rounded-xl mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function ThingsToDoPage() {
+  return (
+    <Suspense fallback={<ThingsToDoLoading />}>
+      <ThingsToDoContent />
+    </Suspense>
   )
 }
