@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link';
+import { useLanguage } from '../contexts/LanguageContext';
 import { footerSectionsData, type FooterSection, type RegionDestination } from '../lib/data';
 
 interface FooterSectionProps {
@@ -6,21 +9,21 @@ interface FooterSectionProps {
 }
 
 function FooterSectionComponent({ section }: FooterSectionProps) {
+    const { currentLocale } = useLanguage();
     return (
         <div className="mb-8">
             <h4 className="font-medium mb-4 text-gray-900">{section.title}</h4>
             <div className="flex flex-wrap gap-2">
-                {section.links.map((link, index) => (
-                    <Link
-                        key={index}
-                        href={link.href}
-                        className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                    >
-                        <span className="flex items-center justify-center w-5 h-5 bg-orange-100 text-orange-600 text-xs rounded font-medium">
-                            {index + 1}
-                        </span>
-                        {link.name}
-                    </Link>
+                {section.links.map((link, index) => (<Link
+                    key={index}
+                    href={link.href.startsWith('/') ? `/${currentLocale}${link.href}` : link.href}
+                    className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                >
+                    <span className="flex items-center justify-center w-5 h-5 bg-orange-100 text-orange-600 text-xs rounded font-medium">
+                        {index + 1}
+                    </span>
+                    {link.name}
+                </Link>
                 ))}
             </div>
         </div>

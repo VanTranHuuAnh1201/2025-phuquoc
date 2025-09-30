@@ -26,9 +26,33 @@ module.exports = {
             },
             boxShadow: {
                 soft: '0 8px 24px rgba(0,0,0,.08)',
-            },
-            spacing: {
+            }, spacing: {
                 container: 'max(1rem, env(safe-area-inset-left))',
+            },
+            animation: {
+                'fadeInUp': 'fadeInUp 0.6s ease-out forwards',
+                'slideUp': 'slideUp 0.3s ease-out',
+                'bounce-slow': 'bounce 2s infinite',
+            },
+            keyframes: {
+                fadeInUp: {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'translateY(30px)'
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'translateY(0)'
+                    }
+                },
+                slideUp: {
+                    '0%': {
+                        transform: 'translateY(100%)'
+                    },
+                    '100%': {
+                        transform: 'translateY(0)'
+                    }
+                }
             },
         },
     },

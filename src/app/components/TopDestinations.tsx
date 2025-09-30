@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function TopDestinations() {
@@ -57,62 +58,75 @@ export default function TopDestinations() {
     ]
 
     return (
-        <section className="py-8 bg-gray-50">
+        <section className="py-8 bg-white/80 backdrop-blur-sm rounded-3xl mx-4 sm:mx-6 lg:mx-8 shadow-xl">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl sm:text-3xl font-bold">
-                        {t.sections.topDestinations}
-                    </h2>
-                    <button className="hidden sm:block px-4 py-2 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 font-semibold text-sm">
-                        {t.common.viewMore}
-                    </button>
-                </div>
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                            {t.sections.topDestinations}
+                        </h2>
+                        <p className="text-gray-600 mt-2">Khám phá những điểm đến tuyệt vời nhất</p>
+                    </div>
+                    <Link href="/1-things-to-do"
+                        className="flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-medium rounded-xl transition-colors shadow-lg ">
+                        <span>{t.common.viewMore}</span>
+                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </Link>
+                </div>                {/* Horizontal scroll container */}
+                <div className="overflow-x-auto pb-4 -mx-4 sm:mx-0">
+                    <div className="flex gap-4 sm:gap-6 w-max px-4 sm:px-0">                        {destinations.map((destination) => (<div
+                        key={destination.id}
+                        className="bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-200 transition-all duration-200 shadow-lg hover:shadow-xl w-72 sm:w-80 flex-shrink-0 group cursor-pointer"
+                    >                            {/* Image with absolute positioned elements */}
+                        <div className="aspect-[16/10] bg-gradient-to-br from-orange-200 via-pink-200 to-purple-200 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-orange-300/40 to-pink-300/40 group-hover:from-orange-300/30 group-hover:to-pink-300/30 transition-all duration-300"></div>
 
-                {/* Horizontal scroll container */}
-                <div className="overflow-x-auto pb-4">
-                    <div className="flex gap-4 w-max">
-                        {destinations.map((destination) => (
-                            <div key={destination.id} className="bg-white rounded-lg overflow-hidden border hover:shadow-lg transition-shadow w-80 flex-shrink-0">
-                                {/* Image with absolute positioned elements */}
-                                <div className="aspect-[4/3] bg-gradient-to-br from-green-400 to-blue-500 relative">
-                                    <div className="absolute inset-0 skeleton"></div>
+                            {/* Fake image placeholder with better visual */}
+                            <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                                🏝️
+                            </div>
 
-                                    {/* Category tag - top left */}
-                                    <div className="absolute top-3 left-3">
-                                        <span className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700">
-                                            {destination.category}
-                                        </span>
-                                    </div>
+                            {/* Category tag - top left */}
+                            <div className="absolute top-3 left-3">
+                                <span className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-lg">
+                                    📍 {destination.category}
+                                </span>
+                            </div>
 
-                                    {/* Rating - bottom left */}
-                                    <div className="absolute bottom-3 left-3">
-                                        <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
-                                            <span className="text-yellow-500 text-sm">★</span>
-                                            <span className="font-semibold text-sm text-gray-900">{destination.rating}</span>
-                                            <span className="text-gray-600 text-xs">({destination.reviews} {t.common.rating})</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Compact content */}
-                                <div className="p-3">
-                                    <h3 className="font-semibold text-base mb-2 leading-tight">
-                                        {destination.title}
-                                    </h3>
-
-                                    <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
-                                        {destination.description}
-                                    </p>
+                            {/* Rating - bottom left */}
+                            <div className="absolute bottom-3 left-3">
+                                <div className="flex items-center gap-1 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+                                    <span className="text-yellow-500 text-sm">⭐</span>
+                                    <span className="font-bold text-sm text-gray-900">{destination.rating}</span>
+                                    <span className="text-gray-600 text-xs">({destination.reviews})</span>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </div>                                {/* Compact content */}
+                        <div className="p-4">
+                            <h3 className="font-bold text-lg mb-2 leading-tight text-gray-900 group-hover:text-orange-600 transition-colors">
+                                {destination.title}
+                            </h3>
 
-                {/* Mobile view more button */}
-                <div className="text-center mt-4 sm:hidden">
-                    <button className="px-6 py-3 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 font-semibold">
-                        {t.common.viewMore}
+                            <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-3">
+                                {destination.description}
+                            </p>
+
+                            <button className="w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold rounded-xl transition-colors shadow-lg text-sm">
+                                Khám phá ngay
+                            </button>
+                        </div>
+                    </div>
+                    ))}
+                    </div>
+                </div>                {/* Mobile view more button */}
+                <div className="text-center mt-8 sm:hidden">
+                    <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold rounded-xl transition-colors shadow-lg">
+                        <span>{t.common.viewMore}</span>
+                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                     </button>
                 </div>
             </div>

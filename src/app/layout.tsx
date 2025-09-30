@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { LanguageProvider } from "./contexts/LanguageContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -75,9 +74,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="bg-white text-gray-900 antialiased font-sans">
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        {children}
       </body>
     </html>
   );
