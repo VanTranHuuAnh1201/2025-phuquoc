@@ -1,11 +1,8 @@
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+
 
 export default function ContactPage() {
     return (
         <>
-            <Header />
-
             {/* Breadcrumbs */}
             <section className="bg-white border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -266,8 +263,6 @@ export default function ContactPage() {
                     </div>
                 </section>
             </main>
-
-            <Footer />
         </>
     )
 }

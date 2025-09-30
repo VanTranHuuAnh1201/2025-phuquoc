@@ -4,7 +4,26 @@ import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function ContactBookingForm() {
-    const { t } = useLanguage();
+    const { t } = useLanguage()
+    
+    // Fallback if translations are not loaded yet
+    if (!t || !t.sections) {
+        return (
+            <section id="contact" className="py-12 bg-gradient-to-br from-blue-50 to-orange-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="animate-pulse">
+                        <div className="h-8 bg-gray-200 rounded w-64 mb-4 mx-auto"></div>
+                        <div className="h-4 bg-gray-200 rounded w-96 mb-8 mx-auto"></div>
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            <div className="h-96 bg-gray-200 rounded-2xl"></div>
+                            <div className="h-96 bg-gray-200 rounded-2xl"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+    
     const [formData, setFormData] = useState({
         name: '',
         email: '',

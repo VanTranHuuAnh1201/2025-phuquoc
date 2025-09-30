@@ -409,9 +409,6 @@ export default function PhoTravelPage() {
                     </div>
                 </section>
             </main>
-
-            <Footer />
-            <FloatingChat />
         </>
     )
 }

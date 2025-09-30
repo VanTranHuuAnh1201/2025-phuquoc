@@ -37,16 +37,16 @@ function getLocale(request: NextRequest): string {
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
-  // Skip middleware for API routes, static files, and internal paths
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/admin') ||
-    pathname.includes('.') ||
-    pathname.startsWith('/favicon')
-  ) {
-    return NextResponse.next()
-  }
+    // Skip middleware for API routes, static files, and internal paths
+    if (
+        pathname.startsWith('/_next') ||
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/admin') ||
+        pathname.includes('.') ||
+        pathname.startsWith('/favicon')
+    ) {
+        return NextResponse.next()
+    }
 
     // Check if there is any supported locale in the pathname
     const pathnameIsMissingLocale = locales.every(

@@ -4,7 +4,26 @@ import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function TopDestinations() {
-    const { t } = useLanguage();
+    const { t, currentLocale } = useLanguage();
+
+    // Fallback if translations are not loaded yet
+    if (!t || !t.sections) {
+        return (
+            <section className="py-8 bg-white/80 backdrop-blur-sm rounded-3xl mx-4 sm:mx-6 lg:mx-8 shadow-xl">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="animate-pulse">
+                        <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-96 mb-8"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="h-64 bg-gray-200 rounded-xl"></div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     const destinations = [
         {
@@ -66,8 +85,7 @@ export default function TopDestinations() {
                             {t.sections.topDestinations}
                         </h2>
                         <p className="text-gray-600 mt-2">Khám phá những điểm đến tuyệt vời nhất</p>
-                    </div>
-                    <Link href="/1-things-to-do"
+                    </div>                    <Link href={`/${currentLocale}/1-things-to-do`}
                         className="flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-medium rounded-xl transition-colors shadow-lg ">
                         <span>{t.common.viewMore}</span>
                         <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

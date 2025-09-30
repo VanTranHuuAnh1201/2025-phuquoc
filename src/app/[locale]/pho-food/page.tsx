@@ -1,7 +1,5 @@
 'use client'
 
-import FloatingChat from '@/app/components/FloatingChat'
-import Footer from '@/app/components/Footer'
 import PhoGroupHero from '@/app/components/PhoGroupHero'
 
 export default function PhoFoodPage() {
@@ -243,9 +241,6 @@ export default function PhoFoodPage() {
                     </div>
                 </section>
             </main>
-
-            <Footer />
-            <FloatingChat />
         </>
     )
 }

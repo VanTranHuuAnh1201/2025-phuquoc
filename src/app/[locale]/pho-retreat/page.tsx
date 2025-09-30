@@ -385,9 +385,6 @@ export default function PhoRetreatPage() {
                     </div>
                 </section>
             </main>
-
-            <Footer />
-            <FloatingChat />
         </>
     )
 }

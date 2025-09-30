@@ -2,8 +2,6 @@
 
 import { useSearchParams } from 'next/navigation'
 
-import FloatingChat from '@/app/components/FloatingChat'
-import Footer from '@/app/components/Footer'
 import PhoGroupHero from '@/app/components/PhoGroupHero'
 import ThingsCard from '@/app/components/ThingsCard'
 import ThingsFilterBar from '@/app/components/ThingsFilterBar'
@@ -216,9 +214,6 @@ export default function ThingsToDoPage() {
           </svg>
         </button>
       </div>
-
-      <Footer />
-      <FloatingChat />
     </>
   )
 }

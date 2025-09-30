@@ -1,7 +1,8 @@
 ﻿/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import { ThingItem } from '../1-things-to-do/mockData'
+import { ThingItem } from "../[locale]/1-things-to-do/mockData"
+
 
 export default function ThingsCard({ item }: { item: ThingItem }) {
   return (

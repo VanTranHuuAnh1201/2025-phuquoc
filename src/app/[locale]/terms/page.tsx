@@ -1,7 +1,5 @@
 'use client';
 
-import FloatingChat from '@/app/components/FloatingChat';
-import Footer from '@/app/components/Footer';
 import Link from 'next/link';
 
 
@@ -191,9 +189,6 @@ export default function TermsPage() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
-            <FloatingChat />
         </>
     );
 }

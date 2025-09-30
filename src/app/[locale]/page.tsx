@@ -2,8 +2,6 @@ import Link from 'next/link'
 import ActivityReviews from '../components/ActivityReviews'
 import ContactBookingForm from '../components/ContactBookingForm'
 import FAQ from '../components/FAQ'
-import FloatingChat from '../components/FloatingChat'
-import Footer from '../components/Footer'
 import Hotels from '../components/Hotels'
 import PhoGroupHero from '../components/PhoGroupHero'
 import TopActivities from '../components/TopActivities'
@@ -12,14 +10,18 @@ import Transportation from '../components/Transportation'
 import TravelGuides from '../components/TravelGuides'
 import WeatherInfo from '../components/WeatherInfo'
 
+interface HomeProps {
+  params: Promise<{ locale: string }>
+}
 
-export default function Home() {
+export default async function Home({ params }: HomeProps) {
+  const { locale } = await params
+  const currentLocale = locale || 'vi'
   return (
     <>
       <section className="bg-gradient-to-r from-orange-50/50 to-pink-50/50 border-b border-orange-100/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <nav className="text-sm text-gray-600 flex items-center gap-2">
-            <Link href="/" className="hover:text-orange-600 transition-colors flex items-center gap-1">
+          <nav className="text-sm text-gray-600 flex items-center gap-2">            <Link href={`/${currentLocale}`} className="hover:text-orange-600 transition-colors flex items-center gap-1">
               <span>🏠</span>
               <span className="hidden sm:inline">Trang chủ</span>
             </Link>
@@ -168,9 +170,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <Footer />
-      <FloatingChat />
     </>
   )
 }

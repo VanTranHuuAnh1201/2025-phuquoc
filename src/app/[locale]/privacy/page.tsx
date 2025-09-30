@@ -1,12 +1,9 @@
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import Footer from "@/app/components/Footer";
+
 
 export default function PrivacyPage() {
     return (
         <>
-            <Header />
-
-            {/* Breadcrumbs */}
             <section className="bg-white border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
                     <nav className="text-sm text-gray-500 flex items-center gap-1">
@@ -101,8 +98,6 @@ export default function PrivacyPage() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </>
     )
 }
