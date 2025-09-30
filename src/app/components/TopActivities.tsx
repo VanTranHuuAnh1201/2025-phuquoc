@@ -165,14 +165,15 @@ export default function TopActivities() {
                             </div>
                         </div>
                     ))}
-                </div>                {/* Mobile view more button */}
+                </div>
+                {/* Mobile view more button */}
                 <div className="text-center mt-8 md:hidden">
-                    <a href="/1-things-to-do" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold rounded-xl transition-colors shadow-lg">
+                    <Link href="/1-things-to-do" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-bold rounded-xl transition-colors shadow-lg">
                         <span>Xem tất cả hoạt động</span>
                         <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>

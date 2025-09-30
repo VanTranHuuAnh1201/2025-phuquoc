@@ -5,7 +5,16 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 export default function ContactBookingForm() {
     const { t } = useLanguage()
-    
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        checkIn: '',
+        checkOut: '',
+        guests: '2',
+        message: ''
+    });
+
     // Fallback if translations are not loaded yet
     if (!t || !t.sections) {
         return (
@@ -23,16 +32,8 @@ export default function ContactBookingForm() {
             </section>
         );
     }
-    
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        checkIn: '',
-        checkOut: '',
-        guests: '2',
-        message: ''
-    });
+
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 
 export default function ContactPage() {
@@ -32,41 +33,41 @@ export default function ContactPage() {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                             {/* Chat Methods */}
-                            <a
+                            <Link
                                 href="https://zalo.me/phogroup"
                                 className="bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-2xl text-center transition-all transform hover:scale-105 shadow-lg"
                             >
                                 <div className="text-3xl mb-3">💬</div>
                                 <h3 className="font-bold text-lg mb-2">Chat Zalo</h3>
                                 <p className="text-sm opacity-90">Phản hồi nhanh nhất</p>
-                            </a>
+                            </Link>
 
-                            <a
+                            <Link
                                 href="https://wa.me/+84123456789"
                                 className="bg-green-500 hover:bg-green-600 text-white p-6 rounded-2xl text-center transition-all transform hover:scale-105 shadow-lg"
                             >
                                 <div className="text-3xl mb-3">📱</div>
                                 <h3 className="font-bold text-lg mb-2">WhatsApp</h3>
                                 <p className="text-sm opacity-90">Hỗ trợ quốc tế</p>
-                            </a>
+                            </Link>
 
-                            <a
+                            <Link
                                 href="tel:+84123456789"
                                 className="bg-orange-500 hover:bg-orange-600 text-white p-6 rounded-2xl text-center transition-all transform hover:scale-105 shadow-lg"
                             >
                                 <div className="text-3xl mb-3">📞</div>
                                 <h3 className="font-bold text-lg mb-2">Hotline</h3>
                                 <p className="text-sm opacity-90">+84 123 456 789</p>
-                            </a>
+                            </Link>
 
-                            <a
+                            <Link
                                 href="mailto:info@phogroup.vn"
                                 className="bg-purple-500 hover:bg-purple-600 text-white p-6 rounded-2xl text-center transition-all transform hover:scale-105 shadow-lg"
                             >
                                 <div className="text-3xl mb-3">📧</div>
                                 <h3 className="font-bold text-lg mb-2">Email</h3>
                                 <p className="text-sm opacity-90">info@phogroup.vn</p>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </section>
@@ -209,7 +210,7 @@ export default function ContactPage() {
                                     <h3 className="text-xl font-bold mb-6 text-gray-900">Dịch vụ chính</h3>
 
                                     <div className="space-y-3">
-                                        <a
+                                        <Link
                                             href="/pho-food"
                                             className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 transition-colors"
                                         >
@@ -218,9 +219,9 @@ export default function ContactPage() {
                                                 <h4 className="font-semibold text-gray-900">PhoFood</h4>
                                                 <p className="text-sm text-gray-600">Hải sản đặc sản Phú Quốc</p>
                                             </div>
-                                        </a>
+                                        </Link>
 
-                                        <a
+                                        <Link
                                             href="/pho-retreat"
                                             className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 transition-colors"
                                         >
@@ -229,9 +230,9 @@ export default function ContactPage() {
                                                 <h4 className="font-semibold text-gray-900">Pho Retreat</h4>
                                                 <p className="text-sm text-gray-600">Villa cao cấp bên biển</p>
                                             </div>
-                                        </a>
+                                        </Link>
 
-                                        <a
+                                        <Link
                                             href="/pho-travel"
                                             className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 transition-colors"
                                         >
@@ -240,7 +241,7 @@ export default function ContactPage() {
                                                 <h4 className="font-semibold text-gray-900">Pho Travel</h4>
                                                 <p className="text-sm text-gray-600">Tour & Trải nghiệm</p>
                                             </div>
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
 
@@ -250,13 +251,13 @@ export default function ContactPage() {
                                     <p className="text-sm opacity-90 mb-4">
                                         Nếu bạn cần hỗ trợ khẩn cấp trong chuyến du lịch
                                     </p>
-                                    <a
+                                    <Link
                                         href="tel:+84123456789"
                                         className="inline-flex items-center gap-2 bg-white text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                                     >
                                         <span>📞</span>
                                         Gọi ngay: +84 123 456 789
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

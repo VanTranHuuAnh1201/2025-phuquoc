@@ -1,3 +1,6 @@
+import Link from "next/link"
+
+/* eslint-disable @next/next/no-img-element */
 export default function Transportation() {
     const transports = [
         {
@@ -67,13 +70,14 @@ export default function Transportation() {
                         </h2>
                         <p className="text-gray-600 mt-2">Dịch vụ vận chuyển tiện lợi và an toàn</p>
                     </div>
-                    <a href="#" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-medium rounded-xl transition-all transform hover:scale-105 shadow-lg hidden md:block">
+                    <Link href="#" className="flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-medium rounded-xl transition-all transform hover:scale-105 shadow-lg ">
                         <span>Xem tất cả</span>
                         <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                    </a>
-                </div>                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </Link>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {transports.map((transport, index) => (
                         <div
                             key={transport.id}

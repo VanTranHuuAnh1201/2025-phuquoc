@@ -1,6 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 
+
+'use client'
+
+import Link from 'next/link'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 export default function AboutPage() {
+    const { currentLocale } = useLanguage()
     return (
         <>
             {/* Breadcrumbs */}
@@ -80,16 +87,14 @@ export default function AboutPage() {
                                 <p className="text-gray-600 mb-6">
                                     Chuyên cung cấp hải sản khô đặc sản Phú Quốc.
                                     Sản phẩm chất lượng cao, chế biến theo công thức truyền thống.
-                                </p>
-                                <a
-                                    href="/pho-food"
+                                </p>                                <Link
+                                    href={`/${currentLocale}/pho-food`}
                                     className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-colors"
-                                >
-                                    Khám phá
+                                >                                    Khám phá
                                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Pho Retreat */}
@@ -100,15 +105,15 @@ export default function AboutPage() {
                                     Villa cao cấp bên bờ biển với không gian riêng tư,
                                     tiện nghi 5 sao và dịch vụ chu đáo.
                                 </p>
-                                <a
-                                    href="/pho-retreat"
+                                <Link
+                                    href={`/${currentLocale}/pho-retreat`}
                                     className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-colors"
                                 >
                                     Khám phá
                                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
-                                </a>
+                                </Link>
                             </div>
 
                             {/* Pho Travel */}
@@ -119,7 +124,7 @@ export default function AboutPage() {
                                     Tour và trải nghiệm độc đáo tại Phú Quốc.
                                     Từ tour 3 đảo, cáp treo đến safari và ẩm thực.
                                 </p>
-                                <a
+                                <Link
                                     href="/pho-travel"
                                     className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-pink-600 transition-colors"
                                 >
@@ -127,7 +132,7 @@ export default function AboutPage() {
                                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -196,20 +201,20 @@ export default function AboutPage() {
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
-                                <a
+                                <Link
                                     href="https://zalo.me/phogroup"
                                     className="flex items-center justify-center gap-3 bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">💬</span>
                                     Chat qua Zalo
-                                </a>
-                                <a
+                                </Link>
+                                <Link
                                     href="https://wa.me/+84123456789"
                                     className="flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">📱</span>
                                     Chat qua WhatsApp
-                                </a>
+                                </Link>
                             </div>
 
                             <div className="mt-6 text-sm text-gray-500">

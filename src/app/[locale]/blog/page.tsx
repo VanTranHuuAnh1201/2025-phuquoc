@@ -1,4 +1,4 @@
-import Footer from "@/app/components/Footer"
+/* eslint-disable @next/next/no-img-element */
 
 
 export default function BlogPage() {

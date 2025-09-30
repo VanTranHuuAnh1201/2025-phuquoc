@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import FloatingChat from "@/app/components/FloatingChat"
-import Footer from "@/app/components/Footer"
 import PhoGroupHero from "@/app/components/PhoGroupHero"
+import Link from "next/link"
 
 export default function PhoTravelPage() {
     const tours = [
@@ -386,20 +386,20 @@ export default function PhoTravelPage() {
                         <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl">
                             <h3 className="text-xl font-bold mb-4">Liên hệ tư vấn miễn phí</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <a
+                                <Link
                                     href="https://zalo.me/photravel"
                                     className="flex items-center justify-center gap-3 bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">💬</span>
                                     Chat qua Zalo
-                                </a>
-                                <a
+                                </Link>
+                                <Link
                                     href="https://wa.me/+84123456789"
                                     className="flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">📱</span>
                                     Chat qua WhatsApp
-                                </a>
+                                </Link>
                             </div>
                             <div className="mt-4 text-sm text-gray-500">
                                 <p>📞 Hotline: +84 123 456 789 | 📧 travel@phogroup.vn</p>

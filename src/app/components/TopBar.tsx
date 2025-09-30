@@ -4,7 +4,6 @@ import { useState } from 'react'
 
 export default function TopBar() {
     const [language, setLanguage] = useState('VI')
-    const [currency, setCurrency] = useState('VND')
 
     return (
         <div className="w-full bg-white border-b text-sm">
@@ -14,7 +13,7 @@ export default function TopBar() {
                     <div className="flex items-center gap-2">
                         <span className="text-xl">🇻🇳</span>
                         <button className="flex items-center gap-1 hover:text-orange-500">
-                            <span className="font-medium">{currency}</span>
+                            <span className="font-medium">{'VND'}</span>
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>

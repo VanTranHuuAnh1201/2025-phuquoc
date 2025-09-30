@@ -1,6 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import PhoGroupHero from '@/app/components/PhoGroupHero'
+import Link from 'next/link'
 
 export default function PhoFoodPage() {
     const products = [
@@ -110,7 +112,7 @@ export default function PhoFoodPage() {
                         {/* Quick Order Links */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
                             {shopLinks.map((link) => (
-                                <a
+                                <Link
                                     key={link.name}
                                     href={link.url}
                                     target="_blank"
@@ -119,7 +121,7 @@ export default function PhoFoodPage() {
                                 >
                                     <span className="text-2xl">{link.icon}</span>
                                     <span className="text-sm sm:text-base">Đặt qua {link.name}</span>
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -216,20 +218,20 @@ export default function PhoFoodPage() {
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <a
+                                <Link
                                     href="https://zalo.me/phofood"
                                     className="flex items-center justify-center gap-3 bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">💬</span>
                                     Chat qua Zalo
-                                </a>
-                                <a
+                                </Link>
+                                <Link
                                     href="https://wa.me/+84123456789"
                                     className="flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl font-semibold transition-colors"
                                 >
                                     <span className="text-xl">📱</span>
                                     Chat qua WhatsApp
-                                </a>
+                                </Link>
                             </div>
 
                             <div className="mt-6 text-sm text-gray-500">

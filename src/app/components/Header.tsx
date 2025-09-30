@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Header() {
-    const { currentLocale, t, toggleLanguage } = useLanguage();
+    const { currentLocale, toggleLanguage } = useLanguage();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); return (
         <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-orange-100/50 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

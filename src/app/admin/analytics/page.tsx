@@ -178,7 +178,7 @@ export default function Analytics() {
                 <div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">🌍 Phân bố địa lý</h3>
                     <div className="space-y-3">
-                        {data.locationData.map((location, index) => (
+                        {data.locationData.map((location) => (
                             <div key={location.country} className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <span className="text-lg">

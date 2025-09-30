@@ -22,9 +22,9 @@ export default async function Home({ params }: HomeProps) {
       <section className="bg-gradient-to-r from-orange-50/50 to-pink-50/50 border-b border-orange-100/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <nav className="text-sm text-gray-600 flex items-center gap-2">            <Link href={`/${currentLocale}`} className="hover:text-orange-600 transition-colors flex items-center gap-1">
-              <span>🏠</span>
-              <span className="hidden sm:inline">Trang chủ</span>
-            </Link>
+            <span>🏠</span>
+            <span className="hidden sm:inline">Trang chủ</span>
+          </Link>
             <span className="text-orange-300">›</span>
             <span className="hidden sm:inline">Việt Nam</span>
             <span className="text-orange-300 hidden sm:inline">›</span>

@@ -1,7 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
-import FloatingChat from "@/app/components/FloatingChat"
-import Footer from "@/app/components/Footer"
 import PhoGroupHero from "@/app/components/PhoGroupHero"
 
 
