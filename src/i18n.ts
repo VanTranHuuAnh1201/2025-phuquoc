@@ -53,6 +53,14 @@ export const translations = {
             airbnb: "Thuê villa trên Airbnb",
             whatsapp: "Chat WhatsApp",
             zalo: "Chat Zalo"
+        },
+        notFound: {
+            title: "Trang không tìm thấy",
+            subtitle: "Xin lỗi, trang bạn đang tìm kiếm không tồn tại.",
+            description: "Trang này có thể đã được di chuyển, xóa hoặc bạn đã nhập sai địa chỉ URL.",
+            backHome: "Về trang chủ",
+            exploreMore: "Khám phá thêm",
+            error404: "404"
         }
     },
     en: {
@@ -102,6 +110,14 @@ export const translations = {
             airbnb: "Rent Villa on Airbnb",
             whatsapp: "Chat WhatsApp",
             zalo: "Chat Zalo"
+        },
+        notFound: {
+            title: "Page Not Found",
+            subtitle: "Sorry, the page you are looking for does not exist.",
+            description: "This page may have been moved, deleted, or you entered the wrong URL address.",
+            backHome: "Back to Home",
+            exploreMore: "Explore More",
+            error404: "404"
         }
     }
 };

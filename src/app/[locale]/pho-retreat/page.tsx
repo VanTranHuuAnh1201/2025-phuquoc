@@ -154,7 +154,7 @@ export default function PhoRetreatPage() {
 
                         <div className="space-y-8">
                             {villas.map((villa, index) => (
-                                <div key={villa.id} className={`bg-white rounded-3xl shadow-xl overflow-hidden ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''} lg:flex`}>
+                                <div key={villa.id} className={`bg-white rounded-3xl shadow-xl overflow-hidden lg:flex`}>
                                     {/* Villa Images */}
                                     <div className="lg:w-1/2">
                                         <div className="relative h-64 sm:h-80 lg:h-full">

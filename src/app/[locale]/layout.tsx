@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import FloatingChat from '../components/FloatingChat'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { LanguageProvider } from '../contexts/LanguageContext'
 
@@ -100,6 +101,7 @@ export default async function LocaleLayout({
                     <main className="min-h-screen">
                         {children}
                     </main>
+                    <Footer />
                     <FloatingChat />
                 </LanguageProvider>
             </body>

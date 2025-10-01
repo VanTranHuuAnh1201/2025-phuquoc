@@ -6,6 +6,14 @@
     "rating": "đánh giá",
     "reviews": "đánh giá"
   },
+  "notFound": {
+    "title": "Trang không tìm thấy",
+    "subtitle": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại.",
+    "description": "Trang này có thể đã được di chuyển, xóa hoặc bạn đã nhập sai địa chỉ URL.",
+    "backHome": "Về trang chủ",
+    "exploreMore": "Khám phá thêm",
+    "error404": "404"
+  },
   "navigation": {
     "phoFood": "PhoFood",
     "phoRetreat": "Pho Retreat", 
