@@ -12,3 +12,12 @@ export * from './Transportation'
 export * from './TravelGuides'
 export * from './WeatherInfo'
 
+// Layout Components
+export { default as ActivityDetailLayout } from './layouts/ActivityDetailLayout'
+export { default as DestinationLayout } from './layouts/DestinationLayout'
+export { default as HotelDetailLayout } from './layouts/HotelDetailLayout'
+
+// Shared Components
+export { default as BookingForm } from './shared/BookingForm'
+export { default as ImageGallery } from './shared/ImageGallery'
+

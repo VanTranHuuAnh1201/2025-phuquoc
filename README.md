@@ -20,17 +20,51 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## 🏗️ Cấu trúc Thư mục Đề xuất:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+src/app/[locale]/
+├── pho-food/                    # Module 1: Hải sản & Đặc sản
+│   ├── page.tsx                 # Landing page PhoFood
+│   ├── products/
+│   │   └── [slug]/
+│   │       └── page.tsx         # Product detail page
+│   └── category/
+│       └── [category]/
+│           └── page.tsx         # Category listing
+│
+├── pho-retreat/                 # Module 2: Biệt thự & Lưu trú
+│   ├── page.tsx                 # Landing page Pho Retreat
+│   ├── hotels/
+│   │   └── [id]/
+│   │       └── page.tsx         # Hotel detail + booking
+│   └── locations/
+│       └── [location]/
+│           └── page.tsx         # Location-based listings
+│
+├── pho-travel/                  # Module 3: Tour & Trải nghiệm
+│   ├── page.tsx                 # Landing page Pho Travel
+│   ├── activities/
+│   │   └── [id]/
+│   │       └── page.tsx         # Activity detail + booking
+│   ├── tours/
+│   │   └── [slug]/
+│   │       └── page.tsx         # Tour packages
+│   └── destinations/
+│       └── [slug]/
+│           └── page.tsx         # Destination guides
+│
+└── components/
+    ├── layouts/                 # Layout components
+    │   ├── ActivityDetailLayout.tsx
+    │   ├── HotelDetailLayout.tsx
+    │   └── DestinationLayout.tsx
+    ├── shared/                  # Shared components
+    │   ├── ImageGallery.tsx
+    │   ├── BookingForm.tsx
+    │   ├── ReviewSection.tsx
+    │   ├── PriceDisplay.tsx
+    │   └── ShareButtons.tsx
+    └── module-specific/         # Module specific components
+        ├── pho-food/
+        ├── pho-retreat/
+        └── pho-travel/
