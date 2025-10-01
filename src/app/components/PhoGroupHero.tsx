@@ -14,20 +14,16 @@ export default function PhoGroupHero({ activeTab = 'explore' }: Props) {
     return (
         <section className="bg-white">
             <div className="relative">
-                {/* Hero Image Background - Mobile Responsive */}
                 <div className="h-64 sm:h-80 lg:h-96 relative overflow-hidden">
-                    {/* Background Image - Real Phu Quoc Image */}
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                         style={{
-                            backgroundImage: `url('https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80')`
+                            backgroundImage: `url('/images/hero-section.jpg')`,
                         }}
                     ></div>
 
-                    {/* Dark overlay */}
                     <div className="absolute inset-0 bg-black/30"></div>
 
-                    {/* Content overlay - Mobile First Design */}
                     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4">
                             Phú Quốc
@@ -46,10 +42,8 @@ export default function PhoGroupHero({ activeTab = 'explore' }: Props) {
                     </div>
                 </div>
 
-                {/* Tab Navigation - Mobile Responsive */}
                 <div className="bg-white border-b">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        {/* Desktop Navigation */}
                         <div className="hidden md:flex gap-6 lg:gap-8">
                             <Link
                                 href={`/${currentLocale}`}
@@ -88,7 +82,6 @@ export default function PhoGroupHero({ activeTab = 'explore' }: Props) {
                             </Link>
                         </div>
 
-                        {/* Mobile Navigation - Horizontal Scroll */}
                         <div className="md:hidden overflow-x-auto">
                             <div className="flex gap-4 min-w-max py-2">
                                 <Link

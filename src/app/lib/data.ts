@@ -91,7 +91,7 @@ export const hotelsData: Hotel[] = [
         price: "2,800,000",
         description: "3 phòng ngủ • Hồ bơi riêng • 300m ra biển",
         isPhoGroup: true,
-        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000",
+        image: "/images/khachsan-1.webp",
         amenities: ["WiFi miễn phí", "Máy lạnh", "Bếp đầy đủ", "Hồ bơi riêng"],
         location: "Gần bãi biển Ong Lang"
     },
@@ -106,7 +106,7 @@ export const hotelsData: Hotel[] = [
         price: "2,200,000",
         description: "2 phòng ngủ • View hoàng hôn • BBQ area",
         isPhoGroup: true,
-        image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000",
+        image: "/images/khachsan-2.webp",
         amenities: ["WiFi miễn phí", "Máy lạnh", "Bếp nướng BBQ", "Ban công view biển"],
         location: "Gần chợ đêm Dinh Cậu"
     },
@@ -120,8 +120,8 @@ export const hotelsData: Hotel[] = [
         bookings: "150+",
         price: "756,665",
         description: "Resort cao cấp gần biển • Spa & Gym",
-        isPhoGroup: false,
-        image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000",
+        isPhoGroup: true,
+        image: "/images/khachsan-3.webp",
         amenities: ["Spa", "Gym", "Nhà hàng", "Hồ bơi"],
         location: "Bãi Dài"
     },
@@ -134,8 +134,8 @@ export const hotelsData: Hotel[] = [
         reviews: "571",
         price: "1,793,605",
         description: "Resort & Spa sang trọng • All-inclusive",
-        isPhoGroup: false,
-        image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000",
+        isPhoGroup: true,
+        image: "/images/khachsan-4.webp",
         amenities: ["Spa cao cấp", "3 nhà hàng", "Bar", "Dịch vụ butler"],
         location: "Bãi Khem"
     },
@@ -149,8 +149,8 @@ export const hotelsData: Hotel[] = [
         bookings: "95+",
         price: "1,512,006",
         description: "Khách sạn boutique • Design độc đáo",
-        isPhoGroup: false,
-        image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000",
+        isPhoGroup: true,
+        image: "/images/khachsan-5.webp",
         amenities: ["Design độc đáo", "Rooftop bar", "Spa", "Gym"],
         location: "Trung tâm Dương Đông"
     },
@@ -164,11 +164,70 @@ export const hotelsData: Hotel[] = [
         bookings: "45+",
         price: "3,200,000",
         description: "4 phòng ngủ • Vườn nhiệt đới • Hồ bơi vô cực",
-        isPhoGroup: true,
-        image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1000",
+        isPhoGroup: false,
+        image: "/images/khachsan-6.webp",
         amenities: ["Vườn riêng", "Hồ bơi vô cực", "Bếp ngoài trời", "Phòng yoga"],
         location: "Bãi Ong Lang"
-    }
+    },
+    {
+        id: 7,
+        title: "Villa Ocean Breeze - Pho Retreat",
+        subtitle: "Villa riêng tư • Phú Quốc",
+        badges: ["Xác nhận tức thời", "Free airport pickup", "Hồ bơi riêng"],
+        rating: "4.9",
+        reviews: "156",
+        bookings: "80+",
+        price: "2,800,000",
+        description: "3 phòng ngủ • Hồ bơi riêng • 300m ra biển",
+        isPhoGroup: false,
+        image: "/images/khachsan-1.webp",
+        amenities: ["WiFi miễn phí", "Máy lạnh", "Bếp đầy đủ", "Hồ bơi riêng"],
+        location: "Gần bãi biển Ong Lang"
+    },
+    {
+        id: 8,
+        title: "Villa Sunset Paradise - Pho Retreat",
+        subtitle: "Villa riêng tư • Phú Quốc",
+        badges: ["Xác nhận tức thời", "Self check-in", "Gần chợ đêm"],
+        rating: "4.8",
+        reviews: "124",
+        bookings: "65+",
+        price: "2,200,000",
+        description: "2 phòng ngủ • View hoàng hôn • BBQ area",
+        isPhoGroup: false,
+        image: "/images/khachsan-2.webp",
+        amenities: ["WiFi miễn phí", "Máy lạnh", "Bếp nướng BBQ", "Ban công view biển"],
+        location: "Gần chợ đêm Dinh Cậu"
+    },
+    {
+        id: 9,
+        title: "Vinholidays Fiesta Phú Quốc",
+        subtitle: "Khách sạn • Phú Quốc",
+        badges: ["Xác nhận tức thời"],
+        rating: "4.7",
+        reviews: "320",
+        bookings: "150+",
+        price: "756,665",
+        description: "Resort cao cấp gần biển • Spa & Gym",
+        isPhoGroup: false,
+        image: "/images/khachsan-3.webp",
+        amenities: ["Spa", "Gym", "Nhà hàng", "Hồ bơi"],
+        location: "Bãi Dài"
+    },
+    {
+        id: 10,
+        title: "The Shells Resort & Spa Phu Quoc",
+        subtitle: "Khách sạn • Phú Quốc",
+        badges: ["Xác nhận tức thời"],
+        rating: "4.6",
+        reviews: "571",
+        price: "1,793,605",
+        description: "Resort & Spa sang trọng • All-inclusive",
+        isPhoGroup: false,
+        image: "/images/khachsan-4.webp",
+        amenities: ["Spa cao cấp", "3 nhà hàng", "Bar", "Dịch vụ butler"],
+        location: "Bãi Khem"
+    },
 ];
 
 export const travelGuidesData: TravelGuide[] = [
@@ -179,7 +238,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "Pho Group",
         readTime: "15 phút đọc",
         views: "32K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-1.webp",
         excerpt: "Khám phá những địa điểm không thể bỏ lỡ tại đảo ngọc Phú Quốc",
         publishDate: "2025-01-15",
         tags: ["địa điểm", "check-in", "du lịch"]
@@ -191,7 +250,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "PhoFood Team",
         readTime: "12 phút đọc",
         views: "28K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-2.webp",
         excerpt: "Tổng hợp những món đặc sản không thể bỏ lỡ khi đến Phú Quốc",
         publishDate: "2025-01-10",
         tags: ["ẩm thực", "đặc sản", "cá khô"]
@@ -203,7 +262,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "Pho Travel",
         readTime: "10 phút đọc",
         views: "25K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-3.webp",
         excerpt: "Hướng dẫn chi tiết trải nghiệm VinWonders Phú Quốc",
         publishDate: "2025-01-08",
         tags: ["vinwonders", "giải trí", "gia đình"]
@@ -215,7 +274,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "Pho Travel",
         readTime: "8 phút đọc",
         views: "22K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-4.webp",
         excerpt: "Khám phá cáp treo dài nhất thế giới tại Phú Quốc",
         publishDate: "2025-01-05",
         tags: ["cáp treo", "hòn thơm", "view đẹp"]
@@ -227,7 +286,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "Pho Group",
         readTime: "20 phút đọc",
         views: "35K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-1.webp",
         excerpt: "Tổng hợp các điểm đến lý tưởng cho gia đình có trẻ em",
         publishDate: "2025-01-03",
         tags: ["gia đình", "trẻ em", "du lịch"]
@@ -239,7 +298,7 @@ export const travelGuidesData: TravelGuide[] = [
         author: "PhoFood Team",
         readTime: "7 phút đọc",
         views: "18K",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000",
+        image: "/images/huongdandulich-2.webp",
         excerpt: "Những quán café và bar có view đẹp nhất Phú Quốc",
         publishDate: "2025-01-01",
         tags: ["café", "bar", "view đẹp"]

@@ -46,16 +46,14 @@ export default function FAQ() {
     return (
         <section className="py-8 bg-white">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                        Câu hỏi thường gặp về Phú Quốc
+                <div className="text-center mb-8 sm:mb-12">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                        ❓ Câu hỏi thường gặp
                     </h2>
                     <p className="text-gray-600 max-w-2xl mx-auto">
                         Tìm hiểu những thông tin hữu ích để có chuyến du lịch Phú Quốc hoàn hảo cùng Pho Group
                     </p>
                 </div>
-
-                {/* Most Popular FAQs */}
                 <div className="mb-8">
                     <h3 className="text-lg font-semibold mb-4 text-gray-800">🔥 Câu hỏi phổ biến nhất</h3>
                     <div className="space-y-4">

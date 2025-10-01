@@ -64,16 +64,24 @@ Xin chào! Tôi muốn đặt phòng:
     };
 
     return (
-        <section id="contact" className="py-12 bg-gradient-to-br from-blue-50 to-orange-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <section className="py-4 sm:py-6 bg-white/90 backdrop-blur-sm rounded-2xl mx-2 sm:mx-3 lg:mx-4 shadow-lg">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                <div className="text-center mb-4 sm:mb-6">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                        📞 Đặt tour ngay
+                    </h2>
+                    <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
+                        Liên hệ với chúng tôi để có trải nghiệm tuyệt vời nhất
+                    </p>
+                </div>
+                <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-start">
                     {/* Left side - Form */}
-                    <div className="bg-white rounded-2xl shadow-xl p-8">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-8">
+                        <div className="text-center mb-6 sm:mb-8">
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                                 {t.sections.contact}
-                            </h2>
-                            <p className="text-gray-600">
+                            </h3>
+                            <p className="text-sm sm:text-base text-gray-600">
                                 {t.common.quickBooking} - Liên hệ ngay để nhận ưu đãi tốt nhất!
                             </p>
                         </div>

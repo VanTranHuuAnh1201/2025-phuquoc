@@ -2,26 +2,31 @@ import { quickInfoData, weatherData } from '../lib/data';
 
 export default function WeatherInfo() {
     return (
-        <section className="py-8 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-                    Thông tin ngắn về Phú Quốc
-                </h2>
+        <section className="py-4 sm:py-6 bg-white/90 backdrop-blur-sm rounded-2xl mx-2 sm:mx-3 lg:mx-4 shadow-lg">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                <div className="text-center mb-4 sm:mb-6">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                        🌤️ Thông tin thời tiết
+                    </h2>
+                    <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
+                        Lựa chọn thời điểm tốt nhất cho chuyến đi
+                    </p>
+                </div>
 
-                <div className="bg-white rounded-lg p-6 border">
-                    <div className="grid lg:grid-cols-4 gap-8">
+                <div className="bg-white rounded-lg p-4 sm:p-6 border shadow-sm">
+                    <div className="grid lg:grid-cols-4 gap-6 sm:gap-8">
                         {/* Weather Section */}
                         <div className="lg:col-span-3">
                             {/* Weather Header */}
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-semibold text-gray-800">
+                            <div className="flex items-center justify-between mb-4 sm:mb-6">
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
                                     Thời tiết địa phương
                                 </h3>
                                 <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                                    <button className="px-3 py-1 bg-white rounded-md text-sm font-medium shadow-sm">
+                                    <button className="px-2 py-1 sm:px-3 sm:py-1 bg-white rounded-md text-xs sm:text-sm font-medium shadow-sm">
                                         °F
                                     </button>
-                                    <button className="px-3 py-1 text-sm font-medium text-gray-600">
+                                    <button className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm font-medium text-gray-600">
                                         °C
                                     </button>
                                 </div>

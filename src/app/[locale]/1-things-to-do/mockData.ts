@@ -214,7 +214,7 @@ export const thingsMock: ThingItem[] = [
   },
   {
     id: 14,
-    title: 'Klook Pass Phú Quốc',
+    title: 'PhoGroup Pass Phú Quốc',
     subtitle: 'Vé tham quan • Phú Quốc',
     category: 'Vé tham quan',
     rating: 4.4,
@@ -223,7 +223,7 @@ export const thingsMock: ThingItem[] = [
     price: 1609000,
     originalPrice: 1700000,
     image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1200',
-    badges: ['Miễn phí hủy', 'Klook độc quyền'],
+    badges: ['Miễn phí hủy', 'PhoGroup độc quyền'],
     tags: ['ve-tham-quan'],
     availableDates: []
   },
