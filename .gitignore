@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cho phep commit file mau env
+!.env.local.example
+
+# ket qua crawl (co the chua noi dung ben thu ba)
+/scripts/crawl/output/*.json
+
+# thung rac cua understand-anything
+.ua/.trash-*/

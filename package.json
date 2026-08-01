@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "crawl:hotel": "tsx --env-file=.env.local scripts/crawl/crawl-hotel.ts",
+    "crawl:seed": "tsx scripts/crawl/to-seed.ts",
+    "crawl:pages": "node scripts/crawl/crawl-pages.mjs",
+    "crawl:build": "node scripts/crawl/build-seed.mjs && node scripts/crawl/emit-ts.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.544.0",
@@ -17,13 +21,16 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@mendable/firecrawl-js": "^4.32.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",
+    "tsx": "^4.23.1",
     "typescript": "^5"
   }
 }
