@@ -1,0 +1,962 @@
+{
+  "name": "phuquoc",
+  "description": "Pho Group Phú Quốc is a comprehensive tourism platform for Phú Quốc island, combining three business modules (PhoFood, Pho Retreat, Pho Travel) with an admin CMS for managing content, bookings, and customers.",
+  "languages": [
+    "css",
+    "javascript",
+    "json",
+    "markdown",
+    "typescript",
+    "webp"
+  ],
+  "frameworks": [
+    "Next.js",
+    "React",
+    "Tailwind CSS",
+    "next-intl",
+    "ESLint"
+  ],
+  "files": [
+    {
+      "path": ".ua/.understandignore",
+      "language": "unknown",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "DEMO_KHACH_HANG.md",
+      "language": "markdown",
+      "sizeLines": 556,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "LAYOUT_COMPONENTS.md",
+      "language": "markdown",
+      "sizeLines": 293,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 556,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "language": "javascript",
+      "sizeLines": 25,
+      "fileCategory": "code"
+    },
+    {
+      "path": "next.config.ts",
+      "language": "typescript",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "package.json",
+      "language": "json",
+      "sizeLines": 29,
+      "fileCategory": "config"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "language": "javascript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/1.webp",
+      "language": "webp",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/10.webp",
+      "language": "webp",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/11.webp",
+      "language": "webp",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/2.webp",
+      "language": "webp",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/3.webp",
+      "language": "webp",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/4.webp",
+      "language": "webp",
+      "sizeLines": 132,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/5.webp",
+      "language": "webp",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/6.webp",
+      "language": "webp",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/7.webp",
+      "language": "webp",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/8.webp",
+      "language": "webp",
+      "sizeLines": 84,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/9.webp",
+      "language": "webp",
+      "sizeLines": 66,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-1.webp",
+      "language": "webp",
+      "sizeLines": 153,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-10.webp",
+      "language": "webp",
+      "sizeLines": 736,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-2.webp",
+      "language": "webp",
+      "sizeLines": 165,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-3.webp",
+      "language": "webp",
+      "sizeLines": 289,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-4.webp",
+      "language": "webp",
+      "sizeLines": 120,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-5.webp",
+      "language": "webp",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-6.webp",
+      "language": "webp",
+      "sizeLines": 767,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-7.webp",
+      "language": "webp",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-8.webp",
+      "language": "webp",
+      "sizeLines": 157,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/diemthamquan-9.webp",
+      "language": "webp",
+      "sizeLines": 189,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/huongdandulich-1.webp",
+      "language": "webp",
+      "sizeLines": 806,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/huongdandulich-2.webp",
+      "language": "webp",
+      "sizeLines": 666,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/huongdandulich-3.webp",
+      "language": "webp",
+      "sizeLines": 554,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/huongdandulich-4.webp",
+      "language": "webp",
+      "sizeLines": 876,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-1.webp",
+      "language": "webp",
+      "sizeLines": 129,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-10.webp",
+      "language": "webp",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-2.webp",
+      "language": "webp",
+      "sizeLines": 99,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-3.webp",
+      "language": "webp",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-4.webp",
+      "language": "webp",
+      "sizeLines": 111,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-6.webp",
+      "language": "webp",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-7.webp",
+      "language": "webp",
+      "sizeLines": 122,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-8.webp",
+      "language": "webp",
+      "sizeLines": 128,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/khachsan-9.webp",
+      "language": "webp",
+      "sizeLines": 432,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-1.webp",
+      "language": "webp",
+      "sizeLines": 144,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-2.webp",
+      "language": "webp",
+      "sizeLines": 108,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-3.webp",
+      "language": "webp",
+      "sizeLines": 144,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-4.webp",
+      "language": "webp",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-5.webp",
+      "language": "webp",
+      "sizeLines": 93,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/images/phuongtiendulich-6.webp",
+      "language": "webp",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "language": "typescript",
+      "sizeLines": 144,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/1-things-to-do/mockData.ts",
+      "language": "typescript",
+      "sizeLines": 314,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/1-things-to-do/page.tsx",
+      "language": "typescript",
+      "sizeLines": 249,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/about/page.tsx",
+      "language": "typescript",
+      "sizeLines": 231,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/blog/page.tsx",
+      "language": "typescript",
+      "sizeLines": 217,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/contact/page.tsx",
+      "language": "typescript",
+      "sizeLines": 269,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/hotels/[id]/page.tsx",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/hotels/mockData.ts",
+      "language": "typescript",
+      "sizeLines": 140,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 117,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/not-found.tsx",
+      "language": "typescript",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/page.tsx",
+      "language": "typescript",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/pho-food/page.tsx",
+      "language": "typescript",
+      "sizeLines": 248,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/pho-retreat/page.tsx",
+      "language": "typescript",
+      "sizeLines": 389,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/pho-travel/page.tsx",
+      "language": "typescript",
+      "sizeLines": 414,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/privacy/page.tsx",
+      "language": "typescript",
+      "sizeLines": 102,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/[locale]/terms/page.tsx",
+      "language": "typescript",
+      "sizeLines": 194,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/analytics/page.tsx",
+      "language": "typescript",
+      "sizeLines": 299,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/blog/page.tsx",
+      "language": "typescript",
+      "sizeLines": 272,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/customers/page.tsx",
+      "language": "typescript",
+      "sizeLines": 302,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/dashboard/page.tsx",
+      "language": "typescript",
+      "sizeLines": 224,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 149,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/login/page.tsx",
+      "language": "typescript",
+      "sizeLines": 176,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/orders/page.tsx",
+      "language": "typescript",
+      "sizeLines": 306,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/pho-food/page.tsx",
+      "language": "typescript",
+      "sizeLines": 262,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/pho-retreat/page.tsx",
+      "language": "typescript",
+      "sizeLines": 350,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/pho-travel/page.tsx",
+      "language": "typescript",
+      "sizeLines": 369,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/admin/settings/page.tsx",
+      "language": "typescript",
+      "sizeLines": 531,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/ActivityReviews.tsx",
+      "language": "typescript",
+      "sizeLines": 212,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Collections.tsx",
+      "language": "typescript",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Contact.tsx",
+      "language": "typescript",
+      "sizeLines": 119,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/ContactBookingForm.tsx",
+      "language": "typescript",
+      "sizeLines": 307,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/FAQ.tsx",
+      "language": "typescript",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/FilterModal.tsx",
+      "language": "typescript",
+      "sizeLines": 258,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/FloatingChat.tsx",
+      "language": "typescript",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Food.tsx",
+      "language": "typescript",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Footer.tsx",
+      "language": "typescript",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Guide.tsx",
+      "language": "typescript",
+      "sizeLines": 103,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Header.tsx",
+      "language": "typescript",
+      "sizeLines": 191,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Hero.tsx",
+      "language": "typescript",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Hotels.tsx",
+      "language": "typescript",
+      "sizeLines": 265,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/PhoGroupHero.tsx",
+      "language": "typescript",
+      "sizeLines": 129,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Retreat.tsx",
+      "language": "typescript",
+      "sizeLines": 118,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/ThingsCard.tsx",
+      "language": "typescript",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/ThingsFilterBar.tsx",
+      "language": "typescript",
+      "sizeLines": 172,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/ThingsFilterBarNew.tsx",
+      "language": "typescript",
+      "sizeLines": 174,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TopActivities.tsx",
+      "language": "typescript",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TopBar.tsx",
+      "language": "typescript",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TopDestinations.tsx",
+      "language": "typescript",
+      "sizeLines": 158,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TopPicks.tsx",
+      "language": "typescript",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Transportation.tsx",
+      "language": "typescript",
+      "sizeLines": 248,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/Travel.tsx",
+      "language": "typescript",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TravelEssentials.tsx",
+      "language": "typescript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/TravelGuides.tsx",
+      "language": "typescript",
+      "sizeLines": 248,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/WeatherInfo.tsx",
+      "language": "typescript",
+      "sizeLines": 128,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/index.ts",
+      "language": "typescript",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/layouts/ActivityDetailLayout.tsx",
+      "language": "typescript",
+      "sizeLines": 392,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/layouts/DestinationLayout.tsx",
+      "language": "typescript",
+      "sizeLines": 441,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/layouts/HotelDetailLayout.tsx",
+      "language": "typescript",
+      "sizeLines": 563,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/shared/BookingForm.tsx",
+      "language": "typescript",
+      "sizeLines": 336,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/components/shared/ImageGallery.tsx",
+      "language": "typescript",
+      "sizeLines": 195,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/contexts/LanguageContext.tsx",
+      "language": "typescript",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/globals.css",
+      "language": "css",
+      "sizeLines": 67,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/lib/analytics.ts",
+      "language": "typescript",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/lib/data.ts",
+      "language": "typescript",
+      "sizeLines": 498,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/not-found.tsx",
+      "language": "typescript",
+      "sizeLines": 50,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "language": "typescript",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/i18n.ts",
+      "language": "typescript",
+      "sizeLines": 122,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/locales/en.json",
+      "language": "json",
+      "sizeLines": 57,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/locales/vi.json",
+      "language": "json",
+      "sizeLines": 57,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/middleware.ts",
+      "language": "typescript",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/mockup/website.tsx",
+      "language": "typescript",
+      "sizeLines": 237,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tailwind.config.js",
+      "language": "javascript",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tsconfig.json",
+      "language": "json",
+      "sizeLines": 27,
+      "fileCategory": "config"
+    }
+  ],
+  "totalFiles": 123,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "importMap": {
+    ".ua/.understandignore": [],
+    "DEMO_KHACH_HANG.md": [],
+    "LAYOUT_COMPONENTS.md": [],
+    "README.md": [],
+    "eslint.config.mjs": [],
+    "next.config.ts": [],
+    "package.json": [],
+    "postcss.config.mjs": [],
+    "public/images/1.webp": [],
+    "public/images/10.webp": [],
+    "public/images/11.webp": [],
+    "public/images/2.webp": [],
+    "public/images/3.webp": [],
+    "public/images/4.webp": [],
+    "public/images/5.webp": [],
+    "public/images/6.webp": [],
+    "public/images/7.webp": [],
+    "public/images/8.webp": [],
+    "public/images/9.webp": [],
+    "public/images/diemthamquan-1.webp": [],
+    "public/images/diemthamquan-10.webp": [],
+    "public/images/diemthamquan-2.webp": [],
+    "public/images/diemthamquan-3.webp": [],
+    "public/images/diemthamquan-4.webp": [],
+    "public/images/diemthamquan-5.webp": [],
+    "public/images/diemthamquan-6.webp": [],
+    "public/images/diemthamquan-7.webp": [],
+    "public/images/diemthamquan-8.webp": [],
+    "public/images/diemthamquan-9.webp": [],
+    "public/images/huongdandulich-1.webp": [],
+    "public/images/huongdandulich-2.webp": [],
+    "public/images/huongdandulich-3.webp": [],
+    "public/images/huongdandulich-4.webp": [],
+    "public/images/khachsan-1.webp": [],
+    "public/images/khachsan-10.webp": [],
+    "public/images/khachsan-2.webp": [],
+    "public/images/khachsan-3.webp": [],
+    "public/images/khachsan-4.webp": [],
+    "public/images/khachsan-6.webp": [],
+    "public/images/khachsan-7.webp": [],
+    "public/images/khachsan-8.webp": [],
+    "public/images/khachsan-9.webp": [],
+    "public/images/phuongtiendulich-1.webp": [],
+    "public/images/phuongtiendulich-2.webp": [],
+    "public/images/phuongtiendulich-3.webp": [],
+    "public/images/phuongtiendulich-4.webp": [],
+    "public/images/phuongtiendulich-5.webp": [],
+    "public/images/phuongtiendulich-6.webp": [],
+    "src/app/[locale]/1-things-to-do/[id]/mockData.ts": [],
+    "src/app/[locale]/1-things-to-do/[id]/page.tsx": [
+      "src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "src/app/components/layouts/ActivityDetailLayout.tsx"
+    ],
+    "src/app/[locale]/1-things-to-do/mockData.ts": [],
+    "src/app/[locale]/1-things-to-do/page.tsx": [
+      "src/app/[locale]/1-things-to-do/mockData.ts",
+      "src/app/components/PhoGroupHero.tsx",
+      "src/app/components/ThingsCard.tsx",
+      "src/app/components/ThingsFilterBar.tsx"
+    ],
+    "src/app/[locale]/about/page.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/[locale]/blog/page.tsx": [],
+    "src/app/[locale]/contact/page.tsx": [],
+    "src/app/[locale]/hotels/[id]/page.tsx": [
+      "src/app/[locale]/hotels/mockData.ts",
+      "src/app/components/layouts/HotelDetailLayout.tsx"
+    ],
+    "src/app/[locale]/hotels/mockData.ts": [],
+    "src/app/[locale]/layout.tsx": [
+      "src/app/components/FloatingChat.tsx",
+      "src/app/components/Footer.tsx",
+      "src/app/components/Header.tsx",
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/[locale]/not-found.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/[locale]/page.tsx": [
+      "src/app/components/ActivityReviews.tsx",
+      "src/app/components/ContactBookingForm.tsx",
+      "src/app/components/FAQ.tsx",
+      "src/app/components/Hotels.tsx",
+      "src/app/components/PhoGroupHero.tsx",
+      "src/app/components/TopActivities.tsx",
+      "src/app/components/TopDestinations.tsx",
+      "src/app/components/Transportation.tsx",
+      "src/app/components/TravelGuides.tsx",
+      "src/app/components/WeatherInfo.tsx"
+    ],
+    "src/app/[locale]/pho-food/page.tsx": [
+      "src/app/components/PhoGroupHero.tsx"
+    ],
+    "src/app/[locale]/pho-retreat/page.tsx": [
+      "src/app/components/PhoGroupHero.tsx"
+    ],
+    "src/app/[locale]/pho-travel/page.tsx": [
+      "src/app/components/PhoGroupHero.tsx"
+    ],
+    "src/app/[locale]/privacy/page.tsx": [],
+    "src/app/[locale]/terms/page.tsx": [],
+    "src/app/admin/analytics/page.tsx": [],
+    "src/app/admin/blog/page.tsx": [],
+    "src/app/admin/customers/page.tsx": [],
+    "src/app/admin/dashboard/page.tsx": [],
+    "src/app/admin/layout.tsx": [],
+    "src/app/admin/login/page.tsx": [],
+    "src/app/admin/orders/page.tsx": [],
+    "src/app/admin/pho-food/page.tsx": [],
+    "src/app/admin/pho-retreat/page.tsx": [],
+    "src/app/admin/pho-travel/page.tsx": [],
+    "src/app/admin/settings/page.tsx": [],
+    "src/app/components/ActivityReviews.tsx": [],
+    "src/app/components/Collections.tsx": [],
+    "src/app/components/Contact.tsx": [],
+    "src/app/components/ContactBookingForm.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/components/FAQ.tsx": [
+      "src/app/lib/data.ts"
+    ],
+    "src/app/components/FilterModal.tsx": [
+      "src/app/[locale]/1-things-to-do/mockData.ts"
+    ],
+    "src/app/components/FloatingChat.tsx": [],
+    "src/app/components/Food.tsx": [],
+    "src/app/components/Footer.tsx": [
+      "src/app/contexts/LanguageContext.tsx",
+      "src/app/lib/data.ts"
+    ],
+    "src/app/components/Guide.tsx": [],
+    "src/app/components/Header.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/components/Hero.tsx": [],
+    "src/app/components/Hotels.tsx": [
+      "src/app/contexts/LanguageContext.tsx",
+      "src/app/lib/data.ts"
+    ],
+    "src/app/components/PhoGroupHero.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/components/Retreat.tsx": [],
+    "src/app/components/ThingsCard.tsx": [
+      "src/app/[locale]/1-things-to-do/mockData.ts"
+    ],
+    "src/app/components/ThingsFilterBar.tsx": [
+      "src/app/components/FilterModal.tsx"
+    ],
+    "src/app/components/ThingsFilterBarNew.tsx": [
+      "src/app/components/FilterModal.tsx"
+    ],
+    "src/app/components/TopActivities.tsx": [
+      "src/app/contexts/LanguageContext.tsx",
+      "src/mockup/website.tsx"
+    ],
+    "src/app/components/TopBar.tsx": [],
+    "src/app/components/TopDestinations.tsx": [
+      "src/app/contexts/LanguageContext.tsx",
+      "src/mockup/website.tsx"
+    ],
+    "src/app/components/TopPicks.tsx": [],
+    "src/app/components/Transportation.tsx": [
+      "src/app/contexts/LanguageContext.tsx"
+    ],
+    "src/app/components/Travel.tsx": [],
+    "src/app/components/TravelEssentials.tsx": [],
+    "src/app/components/TravelGuides.tsx": [
+      "src/app/lib/data.ts"
+    ],
+    "src/app/components/WeatherInfo.tsx": [
+      "src/app/lib/data.ts"
+    ],
+    "src/app/components/index.ts": [],
+    "src/app/components/layouts/ActivityDetailLayout.tsx": [],
+    "src/app/components/layouts/DestinationLayout.tsx": [],
+    "src/app/components/layouts/HotelDetailLayout.tsx": [],
+    "src/app/components/shared/BookingForm.tsx": [],
+    "src/app/components/shared/ImageGallery.tsx": [],
+    "src/app/contexts/LanguageContext.tsx": [
+      "src/i18n.ts"
+    ],
+    "src/app/globals.css": [],
+    "src/app/layout.tsx": [
+      "src/app/globals.css"
+    ],
+    "src/app/lib/analytics.ts": [],
+    "src/app/lib/data.ts": [],
+    "src/app/not-found.tsx": [],
+    "src/app/page.tsx": [],
+    "src/i18n.ts": [],
+    "src/locales/en.json": [],
+    "src/locales/vi.json": [],
+    "src/middleware.ts": [],
+    "src/mockup/website.tsx": [],
+    "tailwind.config.js": [],
+    "tsconfig.json": []
+  }
+}

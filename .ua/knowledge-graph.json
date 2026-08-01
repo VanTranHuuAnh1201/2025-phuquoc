@@ -1,0 +1,5631 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "phuquoc",
+    "languages": [
+      "css",
+      "javascript",
+      "json",
+      "markdown",
+      "typescript",
+      "webp"
+    ],
+    "frameworks": [
+      "Next.js",
+      "React",
+      "Tailwind CSS",
+      "next-intl",
+      "ESLint"
+    ],
+    "description": "Pho Group Phú Quốc is a comprehensive tourism platform for Phú Quốc island, combining three business modules (PhoFood, Pho Retreat, Pho Travel) with an admin CMS for managing content, bookings, and customers.",
+    "analyzedAt": "2026-07-31T18:38:01.856Z",
+    "gitCommitHash": "3b0a015a32189ee03ac488dbfe2357aeaee6b890"
+  },
+  "nodes": [
+    {
+      "id": "file:src/app/[locale]/about/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/about/page.tsx",
+      "summary": "About page for the locale-scoped route, rendering company/tourism information sections using the current language context.",
+      "tags": [
+        "component",
+        "page",
+        "locale",
+        "next-js"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/about/page.tsx:AboutPage",
+      "type": "function",
+      "name": "AboutPage",
+      "filePath": "src/app/[locale]/about/page.tsx",
+      "lineRange": [
+        9,
+        231
+      ],
+      "summary": "Default-exported page component that renders the About route content, consuming translations via useLanguage.",
+      "tags": [
+        "component",
+        "page",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/layout.tsx",
+      "type": "file",
+      "name": "layout.tsx",
+      "filePath": "src/app/[locale]/layout.tsx",
+      "summary": "Locale-scoped Next.js layout that wires up metadata generation, static params for supported locales, and composes the Header, Footer, and FloatingChat shell around page content.",
+      "tags": [
+        "entry-point",
+        "layout",
+        "next-js",
+        "i18n"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses Next.js App Router conventions: generateMetadata and generateStaticParams for static locale generation."
+    },
+    {
+      "id": "function:src/app/[locale]/layout.tsx:generateMetadata",
+      "type": "function",
+      "name": "generateMetadata",
+      "filePath": "src/app/[locale]/layout.tsx",
+      "lineRange": [
+        10,
+        53
+      ],
+      "summary": "Builds per-locale SEO metadata (title, description, OpenGraph tags) for the App Router layout.",
+      "tags": [
+        "metadata",
+        "seo",
+        "i18n"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "type": "function",
+      "name": "LocaleLayout",
+      "filePath": "src/app/[locale]/layout.tsx",
+      "lineRange": [
+        60,
+        110
+      ],
+      "summary": "Default-exported root layout for a given locale; wraps children with LanguageProvider and renders Header, Footer, and FloatingChat.",
+      "tags": [
+        "component",
+        "layout",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/layout.tsx:generateStaticParams",
+      "type": "function",
+      "name": "generateStaticParams",
+      "filePath": "src/app/[locale]/layout.tsx",
+      "lineRange": [
+        112,
+        117
+      ],
+      "summary": "Returns the list of supported locale params so Next.js can statically generate each localized route.",
+      "tags": [
+        "i18n",
+        "static-generation",
+        "next-js"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/[locale]/not-found.tsx",
+      "type": "file",
+      "name": "not-found.tsx",
+      "filePath": "src/app/[locale]/not-found.tsx",
+      "summary": "Localized 404 page shown when a route is not matched within the locale segment.",
+      "tags": [
+        "component",
+        "page",
+        "error-handling",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/not-found.tsx:NotFound",
+      "type": "function",
+      "name": "NotFound",
+      "filePath": "src/app/[locale]/not-found.tsx",
+      "lineRange": [
+        6,
+        56
+      ],
+      "summary": "Default-exported component rendering the localized not-found UI using translations from useLanguage.",
+      "tags": [
+        "component",
+        "error-handling",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/ContactBookingForm.tsx",
+      "type": "file",
+      "name": "ContactBookingForm.tsx",
+      "filePath": "src/app/components/ContactBookingForm.tsx",
+      "summary": "Booking/contact form component that collects guest details and submits an inquiry via a WhatsApp-style deep link (window.open with encoded message).",
+      "tags": [
+        "component",
+        "form",
+        "validation",
+        "booking"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/ContactBookingForm.tsx:ContactBookingForm",
+      "type": "function",
+      "name": "ContactBookingForm",
+      "filePath": "src/app/components/ContactBookingForm.tsx",
+      "lineRange": [
+        6,
+        308
+      ],
+      "summary": "Default-exported form component managing booking field state and building/opening a pre-filled outbound message link on submit.",
+      "tags": [
+        "component",
+        "form",
+        "event-handler",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/FloatingChat.tsx",
+      "type": "file",
+      "name": "FloatingChat.tsx",
+      "filePath": "src/app/components/FloatingChat.tsx",
+      "summary": "Floating chat widget with expand/collapse toggle state, rendered persistently across locale layouts.",
+      "tags": [
+        "component",
+        "widget",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/FloatingChat.tsx:FloatingChat",
+      "type": "function",
+      "name": "FloatingChat",
+      "filePath": "src/app/components/FloatingChat.tsx",
+      "lineRange": [
+        5,
+        60
+      ],
+      "summary": "Default-exported floating chat button component that toggles an expanded panel via local state.",
+      "tags": [
+        "component",
+        "widget",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/Footer.tsx",
+      "type": "file",
+      "name": "Footer.tsx",
+      "filePath": "src/app/components/Footer.tsx",
+      "summary": "Site footer rendering grouped link sections sourced from static footer data, localized via the language context.",
+      "tags": [
+        "component",
+        "layout",
+        "i18n"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Footer.tsx:FooterSectionComponent",
+      "type": "function",
+      "name": "FooterSectionComponent",
+      "filePath": "src/app/components/Footer.tsx",
+      "lineRange": [
+        11,
+        31
+      ],
+      "summary": "Renders a single footer section's heading and list of links, distinguishing internal from external URLs.",
+      "tags": [
+        "component",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Footer.tsx:Footer",
+      "type": "function",
+      "name": "Footer",
+      "filePath": "src/app/components/Footer.tsx",
+      "lineRange": [
+        34,
+        53
+      ],
+      "summary": "Default-exported footer component that maps footerSectionsData into FooterSectionComponent instances.",
+      "tags": [
+        "component",
+        "layout",
+        "entry-point"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/Header.tsx",
+      "type": "file",
+      "name": "Header.tsx",
+      "filePath": "src/app/components/Header.tsx",
+      "summary": "Site header with navigation links, mobile menu toggle, and a language switcher wired to the language context.",
+      "tags": [
+        "component",
+        "layout",
+        "navigation",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/Header.tsx:Header",
+      "type": "function",
+      "name": "Header",
+      "filePath": "src/app/components/Header.tsx",
+      "lineRange": [
+        7,
+        191
+      ],
+      "summary": "Default-exported header component managing mobile menu open/close state and locale toggling via useLanguage.",
+      "tags": [
+        "component",
+        "navigation",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/Transportation.tsx",
+      "type": "file",
+      "name": "Transportation.tsx",
+      "filePath": "src/app/components/Transportation.tsx",
+      "summary": "Transportation/transfer offerings carousel with scrollable groups, pricing display, and badges, localized via language context.",
+      "tags": [
+        "component",
+        "carousel",
+        "pricing",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/Transportation.tsx:Transportation",
+      "type": "function",
+      "name": "Transportation",
+      "filePath": "src/app/components/Transportation.tsx",
+      "lineRange": [
+        8,
+        249
+      ],
+      "summary": "Default-exported component rendering a grouped, scrollable list of transportation options with price formatting and scroll controls via a ref.",
+      "tags": [
+        "component",
+        "carousel",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "file",
+      "name": "LanguageContext.tsx",
+      "filePath": "src/app/contexts/LanguageContext.tsx",
+      "summary": "React context providing current locale, a locale setter, active translation dictionary, and a toggle function; consumed across the app via the useLanguage hook.",
+      "tags": [
+        "context",
+        "i18n",
+        "hook",
+        "state-management"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/contexts/LanguageContext.tsx:LanguageProvider",
+      "type": "function",
+      "name": "LanguageProvider",
+      "filePath": "src/app/contexts/LanguageContext.tsx",
+      "lineRange": [
+        15,
+        40
+      ],
+      "summary": "Provider component that holds the current locale in state and exposes it, translations, and a toggle function to descendants.",
+      "tags": [
+        "context",
+        "provider",
+        "i18n"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "function",
+      "name": "useLanguage",
+      "filePath": "src/app/contexts/LanguageContext.tsx",
+      "lineRange": [
+        42,
+        48
+      ],
+      "summary": "Custom hook that reads LanguageContext and throws if used outside of a LanguageProvider.",
+      "tags": [
+        "hook",
+        "context",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/i18n.ts",
+      "type": "file",
+      "name": "i18n.ts",
+      "filePath": "src/i18n.ts",
+      "summary": "Central i18n configuration defining supported locales, the default locale, and the full Vietnamese/English translation dictionary consumed by LanguageContext.",
+      "tags": [
+        "i18n",
+        "configuration",
+        "data-model",
+        "type-definition"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/page.tsx",
+      "summary": "Locale-aware home page for the Phu Quoc tourism site; composes the hero, activities, destinations, transportation, hotels, guides, reviews, weather, booking form, and FAQ sections into the main landing layout.",
+      "tags": [
+        "entry-point",
+        "page",
+        "component",
+        "layout",
+        "i18n"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Next.js App Router async server component reading `params` (a Promise) to resolve the current locale before rendering."
+    },
+    {
+      "id": "function:src/app/[locale]/page.tsx:Home",
+      "type": "function",
+      "name": "Home",
+      "filePath": "src/app/[locale]/page.tsx",
+      "lineRange": [
+        17,
+        77
+      ],
+      "summary": "Default-exported async page component that resolves the locale param and renders the full homepage section layout with breadcrumb navigation.",
+      "tags": [
+        "entry-point",
+        "component",
+        "page"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/ActivityReviews.tsx",
+      "type": "file",
+      "name": "ActivityReviews.tsx",
+      "filePath": "src/app/components/ActivityReviews.tsx",
+      "summary": "Renders a horizontally scrollable carousel of customer activity reviews with avatar initials, ratings, and grouped paging controls.",
+      "tags": [
+        "component",
+        "carousel",
+        "reviews",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/ActivityReviews.tsx:ReviewCard",
+      "type": "function",
+      "name": "ReviewCard",
+      "filePath": "src/app/components/ActivityReviews.tsx",
+      "lineRange": [
+        100,
+        137
+      ],
+      "summary": "Renders a single review card showing reviewer initial avatar, name, rating, and comment text.",
+      "tags": [
+        "component",
+        "reviews",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/ActivityReviews.tsx:ActivityReviews",
+      "type": "function",
+      "name": "ActivityReviews",
+      "filePath": "src/app/components/ActivityReviews.tsx",
+      "lineRange": [
+        139,
+        213
+      ],
+      "summary": "Default-exported component managing the scrollable review carousel, grouping reviews into pages of four and wiring left/right scroll handlers via a ref.",
+      "tags": [
+        "component",
+        "carousel",
+        "state",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/FAQ.tsx",
+      "type": "file",
+      "name": "FAQ.tsx",
+      "filePath": "src/app/components/FAQ.tsx",
+      "summary": "Renders an accordion-style frequently-asked-questions section split into two columns, sourcing question/answer data from the shared data module.",
+      "tags": [
+        "component",
+        "faq",
+        "accordion",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/FAQ.tsx:FAQItem",
+      "type": "function",
+      "name": "FAQItem",
+      "filePath": "src/app/components/FAQ.tsx",
+      "lineRange": [
+        10,
+        37
+      ],
+      "summary": "Renders a single collapsible FAQ entry that toggles open/closed state via a parent-supplied callback.",
+      "tags": [
+        "component",
+        "faq",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/FAQ.tsx:FAQ",
+      "type": "function",
+      "name": "FAQ",
+      "filePath": "src/app/components/FAQ.tsx",
+      "lineRange": [
+        39,
+        88
+      ],
+      "summary": "Default-exported component that manages which FAQ item is open and lays out the two-column FAQ grid using data from `faqsData`.",
+      "tags": [
+        "component",
+        "faq",
+        "state",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/Hotels.tsx",
+      "type": "file",
+      "name": "Hotels.tsx",
+      "filePath": "src/app/components/Hotels.tsx",
+      "summary": "Renders multiple horizontally scrollable carousels of hotel listings (Pho Group villas and other hotels), with per-hotel cards showing pricing, badges, and amenities, localized via the language context.",
+      "tags": [
+        "component",
+        "carousel",
+        "hotels",
+        "ui",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/Hotels.tsx:HotelCard",
+      "type": "function",
+      "name": "HotelCard",
+      "filePath": "src/app/components/Hotels.tsx",
+      "lineRange": [
+        13,
+        88
+      ],
+      "summary": "Renders a single hotel listing card with image, badges, rating, price formatting, and booking link.",
+      "tags": [
+        "component",
+        "hotels",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Hotels.tsx:Hotels",
+      "type": "function",
+      "name": "Hotels",
+      "filePath": "src/app/components/Hotels.tsx",
+      "lineRange": [
+        90,
+        265
+      ],
+      "summary": "Default-exported component that filters hotel data into Pho Group and other-hotel groups, manages three independent scroll carousels, and consumes the language context for localization.",
+      "tags": [
+        "component",
+        "carousel",
+        "hotels",
+        "state",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/TravelGuides.tsx",
+      "type": "file",
+      "name": "TravelGuides.tsx",
+      "filePath": "src/app/components/TravelGuides.tsx",
+      "summary": "Renders travel guide content in scrollable carousels split by category (activities and food guides) plus a featured special-guide card, sourcing data from the shared data module.",
+      "tags": [
+        "component",
+        "carousel",
+        "guides",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/TravelGuides.tsx:GuideCard",
+      "type": "function",
+      "name": "GuideCard",
+      "filePath": "src/app/components/TravelGuides.tsx",
+      "lineRange": [
+        12,
+        73
+      ],
+      "summary": "Renders a single travel guide card with image, tags, author, and read-time metadata.",
+      "tags": [
+        "component",
+        "guides",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/TravelGuides.tsx:SpecialGuideCard",
+      "type": "function",
+      "name": "SpecialGuideCard",
+      "filePath": "src/app/components/TravelGuides.tsx",
+      "lineRange": [
+        79,
+        103
+      ],
+      "summary": "Renders a highlighted featured-guide card distinct from the standard guide card layout.",
+      "tags": [
+        "component",
+        "guides",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "type": "function",
+      "name": "TravelGuides",
+      "filePath": "src/app/components/TravelGuides.tsx",
+      "lineRange": [
+        105,
+        249
+      ],
+      "summary": "Default-exported component that filters travel guide data by category and manages two independent scroll carousels for activities and food guides.",
+      "tags": [
+        "component",
+        "carousel",
+        "guides",
+        "state",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/WeatherInfo.tsx",
+      "type": "file",
+      "name": "WeatherInfo.tsx",
+      "filePath": "src/app/components/WeatherInfo.tsx",
+      "summary": "Renders a weekly weather forecast grid and a quick-info summary panel for Phu Quoc using data from the shared data module.",
+      "tags": [
+        "component",
+        "weather",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/WeatherInfo.tsx:WeatherInfo",
+      "type": "function",
+      "name": "WeatherInfo",
+      "filePath": "src/app/components/WeatherInfo.tsx",
+      "lineRange": [
+        3,
+        129
+      ],
+      "summary": "Default-exported component rendering the weather forecast cards and quick-info list by mapping over `weatherData` and `quickInfoData`.",
+      "tags": [
+        "component",
+        "weather",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/lib/data.ts",
+      "type": "file",
+      "name": "data.ts",
+      "filePath": "src/app/lib/data.ts",
+      "summary": "Central static data module for the Phu Quoc tourism site, defining TypeScript interfaces and exporting mock/content data for hotels, travel guides, weather, FAQs, footer sections, and region destinations.",
+      "tags": [
+        "data-model",
+        "type-definition",
+        "utility",
+        "static-data"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Pure data/type module with no functions or imports; nine named exports supply typed arrays consumed across many UI components."
+    },
+    {
+      "id": "file:src/app/[locale]/1-things-to-do/mockData.ts",
+      "type": "file",
+      "name": "mockData.ts",
+      "filePath": "src/app/[locale]/1-things-to-do/mockData.ts",
+      "summary": "Defines the ThingItem type, the CATEGORIES list of activity/tour categories, and the thingsMock dataset used to populate the Things To Do listing page and its filters.",
+      "tags": [
+        "data-model",
+        "mock-data",
+        "type-definition",
+        "constants"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "summary": "Next.js page for the Things To Do section that reads filter/sort state from the URL search params, applies filtering and sorting to the mock activities dataset, and renders the filter bar plus a grid of ThingsCard results.",
+      "tags": [
+        "entry-point",
+        "component",
+        "page",
+        "filtering"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/FilterModal.tsx",
+      "type": "file",
+      "name": "FilterModal.tsx",
+      "filePath": "src/app/components/FilterModal.tsx",
+      "summary": "Modal dialog component allowing users to select categories, price range, and rating filters, staging changes locally before applying them via a callback.",
+      "tags": [
+        "component",
+        "modal",
+        "filtering",
+        "form"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/ThingsCard.tsx",
+      "type": "file",
+      "name": "ThingsCard.tsx",
+      "filePath": "src/app/components/ThingsCard.tsx",
+      "summary": "Presentational card component that renders a single activity/tour item with image, badges, rating, and pricing information.",
+      "tags": [
+        "component",
+        "card",
+        "presentational"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/ThingsFilterBar.tsx",
+      "type": "file",
+      "name": "ThingsFilterBar.tsx",
+      "filePath": "src/app/components/ThingsFilterBar.tsx",
+      "summary": "Filter bar component for the Things To Do page providing date, category, price, and rating filter controls that sync state to URL query params via the router, opening FilterModal for detailed filter selection.",
+      "tags": [
+        "component",
+        "filtering",
+        "url-state",
+        "navigation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "type": "file",
+      "name": "ThingsFilterBarNew.tsx",
+      "filePath": "src/app/components/ThingsFilterBarNew.tsx",
+      "summary": "Near-duplicate variant of ThingsFilterBar providing the same date, category, price, and rating filter controls synced to URL query params, likely an in-progress redesign or A/B variant of the filter bar.",
+      "tags": [
+        "component",
+        "filtering",
+        "url-state",
+        "duplicate"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Structurally almost identical to ThingsFilterBar.tsx (same function names, same call graph shape), suggesting a copy used for iterative redesign rather than a distinct component."
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:useFilters",
+      "type": "function",
+      "name": "useFilters",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        10,
+        18
+      ],
+      "summary": "Custom hook that reads category, date, price, and rating filter values out of the URL search params.",
+      "tags": [
+        "hook",
+        "url-state",
+        "filtering"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:applyFilters",
+      "type": "function",
+      "name": "applyFilters",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        20,
+        62
+      ],
+      "summary": "Filters the list of activity items by selected categories, availability date, price range, and minimum rating.",
+      "tags": [
+        "utility",
+        "filtering"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:applySorting",
+      "type": "function",
+      "name": "applySorting",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        64,
+        90
+      ],
+      "summary": "Sorts the filtered activity items list according to a selected sort mode (e.g. price, rating, popularity).",
+      "tags": [
+        "utility",
+        "sorting"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "type": "function",
+      "name": "ThingsToDoContent",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        92,
+        219
+      ],
+      "summary": "Main content component that wires together filter/sort state, the filter bar, and the grid of ThingsCard results, updating the URL as filters change.",
+      "tags": [
+        "component",
+        "orchestration",
+        "filtering"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoLoading",
+      "type": "function",
+      "name": "ThingsToDoLoading",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        223,
+        242
+      ],
+      "summary": "Renders a skeleton loading placeholder grid shown while the Things To Do content is loading.",
+      "tags": [
+        "component",
+        "loading-state",
+        "skeleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoPage",
+      "type": "function",
+      "name": "ThingsToDoPage",
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "lineRange": [
+        244,
+        250
+      ],
+      "summary": "Default export page component that wraps ThingsToDoContent in a Suspense boundary with ThingsToDoLoading as fallback.",
+      "tags": [
+        "entry-point",
+        "component",
+        "suspense"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/FilterModal.tsx:FilterModal",
+      "type": "function",
+      "name": "FilterModal",
+      "filePath": "src/app/components/FilterModal.tsx",
+      "lineRange": [
+        28,
+        258
+      ],
+      "summary": "Renders the filter modal UI with local staged state for categories, price, and rating, syncing from props and applying changes back to the parent via onApplyFilters.",
+      "tags": [
+        "component",
+        "modal",
+        "filtering",
+        "form"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/ThingsCard.tsx:ThingsCard",
+      "type": "function",
+      "name": "ThingsCard",
+      "filePath": "src/app/components/ThingsCard.tsx",
+      "lineRange": [
+        7,
+        81
+      ],
+      "summary": "Renders a single activity item card showing image, badges, rounded rating, review count, and formatted current/original pricing.",
+      "tags": [
+        "component",
+        "card",
+        "presentational"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/ThingsFilterBar.tsx:formatDateLabel",
+      "type": "function",
+      "name": "formatDateLabel",
+      "filePath": "src/app/components/ThingsFilterBar.tsx",
+      "lineRange": [
+        7,
+        17
+      ],
+      "summary": "Formats a Date object into a short display label (day/month) for the date filter control.",
+      "tags": [
+        "utility",
+        "date",
+        "formatting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/ThingsFilterBar.tsx:ThingsFilterBar",
+      "type": "function",
+      "name": "ThingsFilterBar",
+      "filePath": "src/app/components/ThingsFilterBar.tsx",
+      "lineRange": [
+        19,
+        173
+      ],
+      "summary": "Renders the filter bar with date, category, price, and rating controls, updating URL search params through the Next.js router and opening FilterModal for detailed selection.",
+      "tags": [
+        "component",
+        "filtering",
+        "url-state",
+        "navigation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/ThingsFilterBarNew.tsx:formatDateLabel",
+      "type": "function",
+      "name": "formatDateLabel",
+      "filePath": "src/app/components/ThingsFilterBarNew.tsx",
+      "lineRange": [
+        7,
+        17
+      ],
+      "summary": "Formats a Date object into a short display label (day/month) for the date filter control, identical to the version in ThingsFilterBar.tsx.",
+      "tags": [
+        "utility",
+        "date",
+        "formatting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/ThingsFilterBarNew.tsx:ThingsFilterBar",
+      "type": "function",
+      "name": "ThingsFilterBar",
+      "filePath": "src/app/components/ThingsFilterBarNew.tsx",
+      "lineRange": [
+        19,
+        174
+      ],
+      "summary": "Renders the filter bar with date, category, price, and rating controls, updating URL search params through the Next.js router and opening FilterModal for detailed selection; structurally a near-duplicate of the component in ThingsFilterBar.tsx.",
+      "tags": [
+        "component",
+        "filtering",
+        "url-state",
+        "navigation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/pho-food/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/pho-food/page.tsx",
+      "summary": "PhoFood product listing page showcasing Phu Quoc seafood and dried-food products with pricing, ratings, and shop links, rendered under the PhoGroupHero navigation tabs.",
+      "tags": [
+        "page",
+        "component",
+        "e-commerce",
+        "product-listing",
+        "client-component"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Client component with a large inline bilingual (Vietnamese/English) product data array driving the rendered grid."
+    },
+    {
+      "id": "file:src/app/[locale]/pho-retreat/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/pho-retreat/page.tsx",
+      "summary": "PhoRetreat villa booking page listing Phu Quoc villas with pricing, amenities, images, and booking platform links, rendered under the PhoGroupHero navigation tabs.",
+      "tags": [
+        "page",
+        "component",
+        "booking",
+        "product-listing",
+        "client-component"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Client component with a large inline bilingual villa data array (amenities, pricing in VND/USD) driving the rendered listing."
+    },
+    {
+      "id": "file:src/app/[locale]/pho-travel/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/pho-travel/page.tsx",
+      "summary": "PhoTravel tour listing page presenting Phu Quoc tours and cable-car tickets with pricing, highlights, and ratings, rendered under the PhoGroupHero navigation tabs.",
+      "tags": [
+        "page",
+        "component",
+        "booking",
+        "product-listing",
+        "client-component"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Client component with a large inline bilingual tour data array (highlights, duration, pricing in VND/USD) driving the rendered listing."
+    },
+    {
+      "id": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "file",
+      "name": "PhoGroupHero.tsx",
+      "filePath": "src/app/components/PhoGroupHero.tsx",
+      "summary": "Shared hero/navigation header component for the Pho Group sub-brand pages, rendering the Phu Quoc intro banner plus a tab bar linking to Explore, Things To Do, PhoFood, PhoRetreat, and PhoTravel sections.",
+      "tags": [
+        "component",
+        "navigation",
+        "hero",
+        "shared-ui",
+        "client-component"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses locale-aware Link hrefs built from useLanguage's currentLocale, with separate desktop and mobile tab layouts."
+    },
+    {
+      "id": "file:src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "type": "file",
+      "name": "mockData.ts",
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "summary": "Static mock dataset for activity/tour detail pages, exporting activity records keyed by ID along with sample reviews and similar-activity suggestions used to render the 'things to do' detail view before a real backend exists.",
+      "tags": [
+        "data-model",
+        "mock-data",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "summary": "Next.js dynamic route page for a single activity/tour detail screen; looks up the activity by ID from mock data and renders the ActivityDetailLayout, statically generating params for all known activity IDs.",
+      "tags": [
+        "entry-point",
+        "page",
+        "dynamic-route",
+        "server-component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/layouts/ActivityDetailLayout.tsx",
+      "type": "file",
+      "name": "ActivityDetailLayout.tsx",
+      "filePath": "src/app/components/layouts/ActivityDetailLayout.tsx",
+      "summary": "Large client-side layout component rendering the full activity/tour detail page: image gallery with carousel, highlights, inclusions/exclusions, pricing and booking widget with date/guest selection, reviews section, and similar activities list.",
+      "tags": [
+        "component",
+        "page-layout",
+        "booking",
+        "tourism"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:ActivityDetailPage",
+      "type": "function",
+      "name": "ActivityDetailPage",
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "lineRange": [
+        8,
+        30
+      ],
+      "summary": "Async server component that resolves the route's activity ID param, looks it up in mock data, shows a not-found message if missing, and otherwise renders ActivityDetailLayout with the activity, reviews, and similar activities.",
+      "tags": [
+        "entry-point",
+        "server-component",
+        "page"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:generateStaticParams",
+      "type": "function",
+      "name": "generateStaticParams",
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "lineRange": [
+        33,
+        37
+      ],
+      "summary": "Next.js static generation hook that returns the list of activity IDs from mock data so each activity detail page can be pre-rendered at build time.",
+      "tags": [
+        "static-generation",
+        "build-system",
+        "next-js"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/layouts/ActivityDetailLayout.tsx:ActivityDetailLayout",
+      "type": "function",
+      "name": "ActivityDetailLayout",
+      "filePath": "src/app/components/layouts/ActivityDetailLayout.tsx",
+      "lineRange": [
+        44,
+        393
+      ],
+      "summary": "Client component implementing the full activity detail UI: manages image carousel index, favorite toggle, selected date, and guest count state, and renders gallery, highlights, inclusions/exclusions, pricing/booking panel, reviews, and similar-activities sections.",
+      "tags": [
+        "component",
+        "state-management",
+        "booking",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/hotels/[id]/page.tsx",
+      "summary": "Next.js dynamic route page for a single hotel's detail view; looks up the hotel by ID from mock data and renders the HotelDetailLayout, with static params pre-generated for all known hotel IDs.",
+      "tags": [
+        "entry-point",
+        "route-page",
+        "server-component",
+        "hotels"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/hotels/[id]/page.tsx:HotelDetailPage",
+      "type": "function",
+      "name": "HotelDetailPage",
+      "filePath": "src/app/[locale]/hotels/[id]/page.tsx",
+      "lineRange": [
+        8,
+        30
+      ],
+      "summary": "Default-exported async page component that resolves the hotel ID from route params, fetches matching mock hotel data, and renders a not-found message or the HotelDetailLayout with hotel/reviews/similarHotels data.",
+      "tags": [
+        "entry-point",
+        "route-page",
+        "async"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/[locale]/hotels/[id]/page.tsx:generateStaticParams",
+      "type": "function",
+      "name": "generateStaticParams",
+      "filePath": "src/app/[locale]/hotels/[id]/page.tsx",
+      "lineRange": [
+        33,
+        37
+      ],
+      "summary": "Next.js static generation hook that returns the list of hotel IDs from mock data so each hotel detail page can be statically pre-rendered.",
+      "tags": [
+        "static-generation",
+        "nextjs",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/[locale]/hotels/mockData.ts",
+      "type": "file",
+      "name": "mockData.ts",
+      "filePath": "src/app/[locale]/hotels/mockData.ts",
+      "summary": "Static mock dataset providing hotel details (rooms, amenities, policies, location), sample reviews, and a list of similar hotels used to populate the hotel detail page in absence of a real backend.",
+      "tags": [
+        "mock-data",
+        "data-model",
+        "hotels",
+        "fixture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/layouts/HotelDetailLayout.tsx",
+      "type": "file",
+      "name": "HotelDetailLayout.tsx",
+      "filePath": "src/app/components/layouts/HotelDetailLayout.tsx",
+      "summary": "Large client component rendering the full hotel detail page UI: image gallery, tabbed overview/rooms/amenities/location/policies sections, room booking widget with date/guest selectors, review list, and similar-hotel recommendations.",
+      "tags": [
+        "component",
+        "client-component",
+        "hotels",
+        "booking-ui"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Single large client component using multiple useState hooks for gallery index, favorite toggle, active tab, selected room, and booking form fields; heavy use of array mapping over hotel sub-collections (amenities, roomTypes, nearbyAttractions, reviews, similarHotels) to render UI sections."
+    },
+    {
+      "id": "function:src/app/components/layouts/HotelDetailLayout.tsx:HotelDetailLayout",
+      "type": "function",
+      "name": "HotelDetailLayout",
+      "filePath": "src/app/components/layouts/HotelDetailLayout.tsx",
+      "lineRange": [
+        86,
+        564
+      ],
+      "summary": "Default-exported hotel detail UI component that renders an image gallery with navigation, tabbed content sections, a room booking form with price calculation, guest reviews, and a similar-hotels carousel, driven by hotel/reviews/similarHotels props.",
+      "tags": [
+        "component",
+        "client-component",
+        "booking-ui",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/TopActivities.tsx",
+      "type": "file",
+      "name": "TopActivities.tsx",
+      "filePath": "src/app/components/TopActivities.tsx",
+      "summary": "Client component rendering a horizontally scrollable carousel of top tourism activities (tickets, tours) with pricing, ratings, and badges, sourced from mockup data and localized via the language context.",
+      "tags": [
+        "component",
+        "carousel",
+        "client-component",
+        "i18n",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/components/TopActivities.tsx:TopActivities",
+      "type": "function",
+      "name": "TopActivities",
+      "filePath": "src/app/components/TopActivities.tsx",
+      "lineRange": [
+        8,
+        199
+      ],
+      "summary": "Default-exported React component that displays a grouped, scrollable grid of activity cards with left/right scroll controls, loading fallback, and price/discount formatting.",
+      "tags": [
+        "component",
+        "carousel",
+        "entry-point",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/TopDestinations.tsx",
+      "type": "file",
+      "name": "TopDestinations.tsx",
+      "filePath": "src/app/components/TopDestinations.tsx",
+      "summary": "Client component rendering a horizontally scrollable carousel of top Phu Quoc destinations, sourced from mockup data and localized via the language context.",
+      "tags": [
+        "component",
+        "carousel",
+        "client-component",
+        "i18n",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/TopDestinations.tsx:TopDestinations",
+      "type": "function",
+      "name": "TopDestinations",
+      "filePath": "src/app/components/TopDestinations.tsx",
+      "lineRange": [
+        9,
+        159
+      ],
+      "summary": "Default-exported React component that displays a grouped, scrollable grid of destination cards with left/right scroll controls and a loading fallback.",
+      "tags": [
+        "component",
+        "carousel",
+        "entry-point",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/mockup/website.tsx",
+      "type": "file",
+      "name": "website.tsx",
+      "filePath": "src/mockup/website.tsx",
+      "summary": "Static mock dataset providing Vietnamese-language activity and destination listings (titles, prices, ratings, images) used to populate homepage carousels before a real backend/API is wired up.",
+      "tags": [
+        "mock-data",
+        "data-model",
+        "fixture",
+        "i18n"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Contains hardcoded Vietnamese-language tourism content (titles, subtitles, badges) rather than externalized i18n strings, suggesting this mock data is not yet translated per-locale."
+    },
+    {
+      "id": "document:DEMO_KHACH_HANG.md",
+      "type": "document",
+      "name": "DEMO_KHACH_HANG.md",
+      "filePath": "DEMO_KHACH_HANG.md",
+      "summary": "Detailed customer-facing demo guide for the Pho Group Phú Quốc tourism ecosystem, covering the PhoFood, Pho Retreat, and Pho Travel customer sites plus the admin management system, with step-by-step walkthroughs, tech stack notes, roadmap, and ROI/investment sections.",
+      "tags": [
+        "documentation",
+        "demo-guide",
+        "vietnamese",
+        "roadmap",
+        "overview"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:LAYOUT_COMPONENTS.md",
+      "type": "document",
+      "name": "LAYOUT_COMPONENTS.md",
+      "filePath": "LAYOUT_COMPONENTS.md",
+      "summary": "Documentation for the project's layout components (ActivityDetailLayout, HotelDetailLayout, DestinationLayout) and shared components (ImageGallery, BookingForm), including proposed folder structure, usage examples, and dependencies.",
+      "tags": [
+        "documentation",
+        "component-architecture",
+        "layout",
+        "frontend"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Project README containing the same detailed customer demo guide as DEMO_KHACH_HANG.md — an overview of the Pho Group Phú Quốc tourism ecosystem, its customer-facing sites, admin system, feature highlights, tech stack, and roadmap.",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "demo-guide",
+        "overview"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "npm manifest for the phuquoc Next.js project, defining dev/build/start/lint scripts and dependencies including Next.js 15, React 19, next-intl, Tailwind CSS 4, and lucide-react.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "dependencies",
+        "nextjs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration for the Next.js app, enabling strict mode, bundler module resolution, JSX preservation, and the `@/*` path alias mapped to `./src/*`.",
+      "tags": [
+        "configuration",
+        "typescript",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.ua/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".ua/.understandignore",
+      "summary": "Understand-Anything plugin ignore-pattern file (gitignore-style syntax) with all exclusion rules commented out, so no extra paths are excluded beyond the plugin's built-in defaults.",
+      "tags": [
+        "configuration",
+        "tooling",
+        "ignore-rules"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:eslint.config.mjs",
+      "type": "config",
+      "name": "eslint.config.mjs",
+      "filePath": "eslint.config.mjs",
+      "summary": "Flat ESLint configuration that extends Next.js's core-web-vitals and TypeScript rule sets via FlatCompat, while excluding build output directories from linting.",
+      "tags": [
+        "configuration",
+        "linting",
+        "build-system",
+        "typescript"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Uses ESLint's FlatCompat shim to bridge legacy 'extends'-style shareable configs into the new flat-config format."
+    },
+    {
+      "id": "config:next.config.ts",
+      "type": "config",
+      "name": "next.config.ts",
+      "filePath": "next.config.ts",
+      "summary": "Next.js build configuration allowing remote images from images.unsplash.com and enabling optimized package imports for @heroicons/react.",
+      "tags": [
+        "configuration",
+        "nextjs",
+        "build-system",
+        "images"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:postcss.config.mjs",
+      "type": "config",
+      "name": "postcss.config.mjs",
+      "filePath": "postcss.config.mjs",
+      "summary": "Minimal PostCSS configuration registering the @tailwindcss/postcss plugin to process Tailwind CSS during the build.",
+      "tags": [
+        "configuration",
+        "css",
+        "build-system",
+        "tailwind"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/1.webp",
+      "type": "file",
+      "name": "1.webp",
+      "filePath": "public/images/1.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site (likely a gallery or hero image).",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/10.webp",
+      "type": "file",
+      "name": "10.webp",
+      "filePath": "public/images/10.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/11.webp",
+      "type": "file",
+      "name": "11.webp",
+      "filePath": "public/images/11.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/2.webp",
+      "type": "file",
+      "name": "2.webp",
+      "filePath": "public/images/2.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/3.webp",
+      "type": "file",
+      "name": "3.webp",
+      "filePath": "public/images/3.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/4.webp",
+      "type": "file",
+      "name": "4.webp",
+      "filePath": "public/images/4.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/5.webp",
+      "type": "file",
+      "name": "5.webp",
+      "filePath": "public/images/5.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/6.webp",
+      "type": "file",
+      "name": "6.webp",
+      "filePath": "public/images/6.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/7.webp",
+      "type": "file",
+      "name": "7.webp",
+      "filePath": "public/images/7.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/8.webp",
+      "type": "file",
+      "name": "8.webp",
+      "filePath": "public/images/8.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/9.webp",
+      "type": "file",
+      "name": "9.webp",
+      "filePath": "public/images/9.webp",
+      "summary": "Static WebP image asset served from the public directory, used as visual content within the site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-1.webp",
+      "type": "file",
+      "name": "diemthamquan-1.webp",
+      "filePath": "public/images/diemthamquan-1.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-10.webp",
+      "type": "file",
+      "name": "diemthamquan-10.webp",
+      "filePath": "public/images/diemthamquan-10.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-2.webp",
+      "type": "file",
+      "name": "diemthamquan-2.webp",
+      "filePath": "public/images/diemthamquan-2.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-3.webp",
+      "type": "file",
+      "name": "diemthamquan-3.webp",
+      "filePath": "public/images/diemthamquan-3.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-4.webp",
+      "type": "file",
+      "name": "diemthamquan-4.webp",
+      "filePath": "public/images/diemthamquan-4.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-5.webp",
+      "type": "file",
+      "name": "diemthamquan-5.webp",
+      "filePath": "public/images/diemthamquan-5.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-6.webp",
+      "type": "file",
+      "name": "diemthamquan-6.webp",
+      "filePath": "public/images/diemthamquan-6.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-7.webp",
+      "type": "file",
+      "name": "diemthamquan-7.webp",
+      "filePath": "public/images/diemthamquan-7.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-8.webp",
+      "type": "file",
+      "name": "diemthamquan-8.webp",
+      "filePath": "public/images/diemthamquan-8.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/diemthamquan-9.webp",
+      "type": "file",
+      "name": "diemthamquan-9.webp",
+      "filePath": "public/images/diemthamquan-9.webp",
+      "summary": "Static WebP image asset depicting a tourist attraction ('điểm tham quan'), used in the sightseeing/attractions section of the Phú Quốc tourism site.",
+      "tags": [
+        "asset",
+        "image",
+        "static-content",
+        "tourism"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/huongdandulich-1.webp",
+      "type": "file",
+      "name": "huongdandulich-1.webp",
+      "filePath": "public/images/huongdandulich-1.webp",
+      "summary": "Travel guide illustration image used on tourism guide pages/sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "travel-guide"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/huongdandulich-2.webp",
+      "type": "file",
+      "name": "huongdandulich-2.webp",
+      "filePath": "public/images/huongdandulich-2.webp",
+      "summary": "Travel guide illustration image used on tourism guide pages/sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "travel-guide"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/huongdandulich-3.webp",
+      "type": "file",
+      "name": "huongdandulich-3.webp",
+      "filePath": "public/images/huongdandulich-3.webp",
+      "summary": "Travel guide illustration image used on tourism guide pages/sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "travel-guide"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/huongdandulich-4.webp",
+      "type": "file",
+      "name": "huongdandulich-4.webp",
+      "filePath": "public/images/huongdandulich-4.webp",
+      "summary": "Travel guide illustration image used on tourism guide pages/sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "travel-guide"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-1.webp",
+      "type": "file",
+      "name": "khachsan-1.webp",
+      "filePath": "public/images/khachsan-1.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-10.webp",
+      "type": "file",
+      "name": "khachsan-10.webp",
+      "filePath": "public/images/khachsan-10.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-2.webp",
+      "type": "file",
+      "name": "khachsan-2.webp",
+      "filePath": "public/images/khachsan-2.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-3.webp",
+      "type": "file",
+      "name": "khachsan-3.webp",
+      "filePath": "public/images/khachsan-3.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-4.webp",
+      "type": "file",
+      "name": "khachsan-4.webp",
+      "filePath": "public/images/khachsan-4.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-6.webp",
+      "type": "file",
+      "name": "khachsan-6.webp",
+      "filePath": "public/images/khachsan-6.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-7.webp",
+      "type": "file",
+      "name": "khachsan-7.webp",
+      "filePath": "public/images/khachsan-7.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-8.webp",
+      "type": "file",
+      "name": "khachsan-8.webp",
+      "filePath": "public/images/khachsan-8.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/khachsan-9.webp",
+      "type": "file",
+      "name": "khachsan-9.webp",
+      "filePath": "public/images/khachsan-9.webp",
+      "summary": "Hotel (khach san) photo asset used in hotel listing or detail sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "hotel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-1.webp",
+      "type": "file",
+      "name": "phuongtiendulich-1.webp",
+      "filePath": "public/images/phuongtiendulich-1.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-2.webp",
+      "type": "file",
+      "name": "phuongtiendulich-2.webp",
+      "filePath": "public/images/phuongtiendulich-2.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-3.webp",
+      "type": "file",
+      "name": "phuongtiendulich-3.webp",
+      "filePath": "public/images/phuongtiendulich-3.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-4.webp",
+      "type": "file",
+      "name": "phuongtiendulich-4.webp",
+      "filePath": "public/images/phuongtiendulich-4.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-5.webp",
+      "type": "file",
+      "name": "phuongtiendulich-5.webp",
+      "filePath": "public/images/phuongtiendulich-5.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:public/images/phuongtiendulich-6.webp",
+      "type": "file",
+      "name": "phuongtiendulich-6.webp",
+      "filePath": "public/images/phuongtiendulich-6.webp",
+      "summary": "Transportation (phuong tien du lich) photo asset used in travel/transport sections of the site.",
+      "tags": [
+        "asset",
+        "image",
+        "webp",
+        "transportation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/[locale]/blog/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/blog/page.tsx",
+      "summary": "Localized blog listing page that renders blog post categories and a grid of posts with dates.",
+      "tags": [
+        "page",
+        "component",
+        "blog",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/blog/page.tsx:BlogPage",
+      "type": "function",
+      "name": "BlogPage",
+      "filePath": "src/app/[locale]/blog/page.tsx",
+      "lineRange": [
+        4,
+        217
+      ],
+      "summary": "Default-exported page component rendering blog categories and a paginated/listed grid of blog posts with formatted dates.",
+      "tags": [
+        "component",
+        "page",
+        "blog"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/contact/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/contact/page.tsx",
+      "summary": "Localized contact page presenting company contact information and a contact form/section.",
+      "tags": [
+        "page",
+        "component",
+        "contact",
+        "i18n"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/[locale]/contact/page.tsx:ContactPage",
+      "type": "function",
+      "name": "ContactPage",
+      "filePath": "src/app/[locale]/contact/page.tsx",
+      "lineRange": [
+        4,
+        269
+      ],
+      "summary": "Default-exported page component rendering the contact page content for the localized route.",
+      "tags": [
+        "component",
+        "page",
+        "contact"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/[locale]/privacy/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/privacy/page.tsx",
+      "summary": "Localized privacy policy page displaying the site's privacy policy content.",
+      "tags": [
+        "page",
+        "component",
+        "legal",
+        "i18n"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/[locale]/privacy/page.tsx:PrivacyPage",
+      "type": "function",
+      "name": "PrivacyPage",
+      "filePath": "src/app/[locale]/privacy/page.tsx",
+      "lineRange": [
+        3,
+        102
+      ],
+      "summary": "Default-exported page component rendering the static privacy policy text for the localized route.",
+      "tags": [
+        "component",
+        "page",
+        "legal"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/[locale]/terms/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/[locale]/terms/page.tsx",
+      "summary": "Localized terms of service page displaying the site's terms and conditions content.",
+      "tags": [
+        "page",
+        "component",
+        "legal",
+        "i18n"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/[locale]/terms/page.tsx:TermsPage",
+      "type": "function",
+      "name": "TermsPage",
+      "filePath": "src/app/[locale]/terms/page.tsx",
+      "lineRange": [
+        6,
+        194
+      ],
+      "summary": "Default-exported page component rendering the static terms-of-service text for the localized route.",
+      "tags": [
+        "component",
+        "page",
+        "legal"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/admin/analytics/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/analytics/page.tsx",
+      "summary": "Admin analytics dashboard page displaying visitor, pageview, revenue, top pages, device, and location statistics with a time-range selector.",
+      "tags": [
+        "page",
+        "component",
+        "admin",
+        "dashboard",
+        "analytics"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/analytics/page.tsx:Analytics",
+      "type": "function",
+      "name": "Analytics",
+      "filePath": "src/app/admin/analytics/page.tsx",
+      "lineRange": [
+        5,
+        299
+      ],
+      "summary": "Default-exported admin component managing time-range state and rendering analytics metrics, top pages, device breakdown, and location breakdown tables/cards.",
+      "tags": [
+        "component",
+        "page",
+        "admin",
+        "dashboard",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/blog/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/blog/page.tsx",
+      "summary": "Admin blog management page for listing, filtering, and reviewing blog posts with status badges and category-based aggregate stats.",
+      "tags": [
+        "page",
+        "component",
+        "admin",
+        "blog",
+        "cms"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/blog/page.tsx:BlogManagement",
+      "type": "function",
+      "name": "BlogManagement",
+      "filePath": "src/app/admin/blog/page.tsx",
+      "lineRange": [
+        6,
+        272
+      ],
+      "summary": "Default-exported admin component managing post filter state and rendering filtered/aggregated blog post lists with status badges and category totals.",
+      "tags": [
+        "component",
+        "page",
+        "admin",
+        "state-management",
+        "filtering"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/customers/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/customers/page.tsx",
+      "summary": "Admin customer management page listing Pho Group customers with search, tier/status filtering and per-customer order history, backed by hardcoded demo data.",
+      "tags": [
+        "component",
+        "admin",
+        "crud-ui",
+        "data-table",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/customers/page.tsx:CustomersManagement",
+      "type": "function",
+      "name": "CustomersManagement",
+      "filePath": "src/app/admin/customers/page.tsx",
+      "lineRange": [
+        5,
+        302
+      ],
+      "summary": "Client React page component rendering the admin customer directory with local useState demo data, filter controls and a responsive customer table/card list.",
+      "tags": [
+        "component",
+        "admin",
+        "data-table",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/dashboard/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/dashboard/page.tsx",
+      "summary": "Admin dashboard landing page showing aggregate KPI stat cards, quick-action shortcuts and a recent-orders table for the Pho Group back office.",
+      "tags": [
+        "component",
+        "admin",
+        "dashboard",
+        "entry-point",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/dashboard/page.tsx:AdminDashboard",
+      "type": "function",
+      "name": "AdminDashboard",
+      "filePath": "src/app/admin/dashboard/page.tsx",
+      "lineRange": [
+        6,
+        224
+      ],
+      "summary": "Renders admin KPI stats loaded via a simulated useEffect timer, quick-action links to create pages, and a recent orders overview with status badges.",
+      "tags": [
+        "component",
+        "dashboard",
+        "admin",
+        "state-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/admin/layout.tsx",
+      "type": "file",
+      "name": "layout.tsx",
+      "filePath": "src/app/admin/layout.tsx",
+      "summary": "Next.js App Router layout for the /admin segment providing a collapsible sidebar navigation shell; bypasses the chrome for public pages such as /admin/login.",
+      "tags": [
+        "component",
+        "layout",
+        "admin",
+        "navigation",
+        "client-component"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Next.js nested layout using usePathname to conditionally skip the shell for public routes."
+    },
+    {
+      "id": "function:src/app/admin/layout.tsx:AdminLayout",
+      "type": "function",
+      "name": "AdminLayout",
+      "filePath": "src/app/admin/layout.tsx",
+      "lineRange": [
+        11,
+        149
+      ],
+      "summary": "Layout component rendering the admin sidebar (9 navigation entries), mobile backdrop toggle and content area, returning children bare when the route is a public page.",
+      "tags": [
+        "component",
+        "layout",
+        "navigation",
+        "admin"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/admin/login/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/login/page.tsx",
+      "summary": "Admin sign-in page with a demo-only credential check that stores a placeholder token in localStorage and redirects to the dashboard.",
+      "tags": [
+        "component",
+        "admin",
+        "authentication",
+        "form",
+        "security"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Credentials are hardcoded client-side (admin@phogroup.vn / admin123) - demo scaffolding, not production auth."
+    },
+    {
+      "id": "function:src/app/admin/login/page.tsx:LoginPage",
+      "type": "function",
+      "name": "LoginPage",
+      "filePath": "src/app/admin/login/page.tsx",
+      "lineRange": [
+        7,
+        176
+      ],
+      "summary": "Client login form managing email/password/visibility state and a simulated async handleLogin that sets an adminToken in localStorage before routing to /admin/dashboard.",
+      "tags": [
+        "component",
+        "authentication",
+        "form",
+        "client-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/admin/orders/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/orders/page.tsx",
+      "summary": "Admin orders management page listing bookings and product orders across PhoFood, PhoRetreat and PhoTravel with status badges and filtering.",
+      "tags": [
+        "component",
+        "admin",
+        "crud-ui",
+        "data-table",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/orders/page.tsx:OrdersManagement",
+      "type": "function",
+      "name": "OrdersManagement",
+      "filePath": "src/app/admin/orders/page.tsx",
+      "lineRange": [
+        5,
+        306
+      ],
+      "summary": "Renders the order list from hardcoded demo state with status/type filters plus getStatusBadge and getStatusText helpers for Vietnamese status labels.",
+      "tags": [
+        "component",
+        "admin",
+        "data-table",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/pho-food/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/pho-food/page.tsx",
+      "summary": "Admin page for managing the PhoFood dried-seafood product catalogue - stock, price, category and sales figures per product.",
+      "tags": [
+        "component",
+        "admin",
+        "crud-ui",
+        "catalog",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/pho-food/page.tsx:PhoFoodManagement",
+      "type": "function",
+      "name": "PhoFoodManagement",
+      "filePath": "src/app/admin/pho-food/page.tsx",
+      "lineRange": [
+        6,
+        262
+      ],
+      "summary": "Client component listing PhoFood products from local demo state with stock/status indicators and links to create and edit product routes.",
+      "tags": [
+        "component",
+        "admin",
+        "catalog",
+        "data-table"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/pho-retreat/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/pho-retreat/page.tsx",
+      "summary": "Admin page for managing Pho Retreat villa inventory including capacity, nightly pricing, booking rate and availability status.",
+      "tags": [
+        "component",
+        "admin",
+        "crud-ui",
+        "inventory",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/pho-retreat/page.tsx:PhoRetreatManagement",
+      "type": "function",
+      "name": "PhoRetreatManagement",
+      "filePath": "src/app/admin/pho-retreat/page.tsx",
+      "lineRange": [
+        6,
+        350
+      ],
+      "summary": "Client component rendering the villa management table/cards from hardcoded state with booking-rate metrics and CRUD action links.",
+      "tags": [
+        "component",
+        "admin",
+        "inventory",
+        "data-table"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/pho-travel/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/pho-travel/page.tsx",
+      "summary": "Admin page for managing Pho Travel tour and ticket products - duration, price, capacity, bookings and rating.",
+      "tags": [
+        "component",
+        "admin",
+        "crud-ui",
+        "catalog",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/pho-travel/page.tsx:PhoTravelManagement",
+      "type": "function",
+      "name": "PhoTravelManagement",
+      "filePath": "src/app/admin/pho-travel/page.tsx",
+      "lineRange": [
+        6,
+        369
+      ],
+      "summary": "Client component listing tours/tickets from local demo state with capacity and rating columns plus create/edit navigation links.",
+      "tags": [
+        "component",
+        "admin",
+        "catalog",
+        "data-table"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/admin/settings/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/admin/settings/page.tsx",
+      "summary": "Admin system settings page with six tabbed panels covering general, business info, notifications, security, integrations and backup configuration.",
+      "tags": [
+        "component",
+        "admin",
+        "configuration",
+        "tabs",
+        "client-component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/app/admin/settings/page.tsx:SettingsPage",
+      "type": "function",
+      "name": "SettingsPage",
+      "filePath": "src/app/admin/settings/page.tsx",
+      "lineRange": [
+        5,
+        531
+      ],
+      "summary": "Largest admin component: manages activeTab state across six settings panels and a simulated async handleSave with loading state and success alert.",
+      "tags": [
+        "component",
+        "admin",
+        "configuration",
+        "form",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/Collections.tsx",
+      "type": "file",
+      "name": "Collections.tsx",
+      "filePath": "src/app/components/Collections.tsx",
+      "summary": "Static marketing section rendering a horizontally scrollable row of suggested Phu Quoc collection cards with skeleton placeholders.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section",
+        "static"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/Collections.tsx:Collections",
+      "type": "function",
+      "name": "Collections",
+      "filePath": "src/app/components/Collections.tsx",
+      "lineRange": [
+        1,
+        24
+      ],
+      "summary": "Presentational section component rendering a scrollable grid of collection teaser cards linking to the travel section.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/Contact.tsx",
+      "type": "file",
+      "name": "Contact.tsx",
+      "filePath": "src/app/components/Contact.tsx",
+      "summary": "Landing-page contact section pairing company contact details with a controlled enquiry form that currently logs submissions and shows a confirmation alert.",
+      "tags": [
+        "component",
+        "form",
+        "landing-section",
+        "client-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Contact.tsx:Contact",
+      "type": "function",
+      "name": "Contact",
+      "filePath": "src/app/components/Contact.tsx",
+      "lineRange": [
+        5,
+        119
+      ],
+      "summary": "Client component managing name/email/message form state with handleSubmit and handleChange; submission is stubbed (console.log + alert) pending backend integration.",
+      "tags": [
+        "component",
+        "form",
+        "validation",
+        "state-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/Food.tsx",
+      "type": "file",
+      "name": "Food.tsx",
+      "filePath": "src/app/components/Food.tsx",
+      "summary": "PhoFood landing section showcasing featured dried-seafood products with pricing, discount badges and outbound Shopee/TikTok Shop links.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section",
+        "catalog"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Food.tsx:Food",
+      "type": "function",
+      "name": "Food",
+      "filePath": "src/app/components/Food.tsx",
+      "lineRange": [
+        1,
+        68
+      ],
+      "summary": "Static section rendering a hero product card plus a supplementary product grid for the PhoFood business line.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/Guide.tsx",
+      "type": "file",
+      "name": "Guide.tsx",
+      "filePath": "src/app/components/Guide.tsx",
+      "summary": "Travel guide and blog section combining a featured article teaser with an accordion FAQ answering four common Phu Quoc trip questions.",
+      "tags": [
+        "component",
+        "landing-section",
+        "faq",
+        "client-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Guide.tsx:Guide",
+      "type": "function",
+      "name": "Guide",
+      "filePath": "src/app/components/Guide.tsx",
+      "lineRange": [
+        5,
+        103
+      ],
+      "summary": "Client component holding openFaq index state and a toggleFaq handler to drive an accordion over four hardcoded Vietnamese FAQ entries.",
+      "tags": [
+        "component",
+        "faq",
+        "accordion",
+        "state-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/Hero.tsx",
+      "type": "file",
+      "name": "Hero.tsx",
+      "filePath": "src/app/components/Hero.tsx",
+      "summary": "Landing-page hero with the Pho Group value proposition, a destination/date search bar, quick tag chips and a USP strip.",
+      "tags": [
+        "component",
+        "presentational",
+        "hero",
+        "landing-section"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Hero.tsx:Hero",
+      "type": "function",
+      "name": "Hero",
+      "filePath": "src/app/components/Hero.tsx",
+      "lineRange": [
+        1,
+        72
+      ],
+      "summary": "Static hero section rendering the headline, search input with date pickers, popular-search chips and unique-selling-point badges.",
+      "tags": [
+        "component",
+        "hero",
+        "presentational"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/Retreat.tsx",
+      "type": "file",
+      "name": "Retreat.tsx",
+      "filePath": "src/app/components/Retreat.tsx",
+      "summary": "Pho Retreat villa section featuring a highlighted villa plus a quote-request form capturing name, contact and check-in/out dates.",
+      "tags": [
+        "component",
+        "form",
+        "landing-section",
+        "client-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Retreat.tsx:Retreat",
+      "type": "function",
+      "name": "Retreat",
+      "filePath": "src/app/components/Retreat.tsx",
+      "lineRange": [
+        5,
+        118
+      ],
+      "summary": "Client component managing villa enquiry form state (name, contact, checkin, checkout) with a stubbed handleSubmit that only logs the payload.",
+      "tags": [
+        "component",
+        "form",
+        "state-management",
+        "landing-section"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/components/TopBar.tsx",
+      "type": "file",
+      "name": "TopBar.tsx",
+      "filePath": "src/app/components/TopBar.tsx",
+      "summary": "Thin utility bar above the site header offering currency display, a VI/EN language toggle and quick account/help links.",
+      "tags": [
+        "component",
+        "navigation",
+        "i18n",
+        "client-component"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Language toggle is local component state only - not wired to next-intl routing."
+    },
+    {
+      "id": "function:src/app/components/TopBar.tsx:TopBar",
+      "type": "function",
+      "name": "TopBar",
+      "filePath": "src/app/components/TopBar.tsx",
+      "lineRange": [
+        5,
+        46
+      ],
+      "summary": "Client component toggling a local VI/EN language label and rendering currency, help, cart and auth shortcut links.",
+      "tags": [
+        "component",
+        "navigation",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/TopPicks.tsx",
+      "type": "file",
+      "name": "TopPicks.tsx",
+      "filePath": "src/app/components/TopPicks.tsx",
+      "summary": "Static section highlighting the top-rated Phu Quoc experience (Hon Thom cable car) with a consultation call-to-action.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section",
+        "static"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/TopPicks.tsx:TopPicks",
+      "type": "function",
+      "name": "TopPicks",
+      "filePath": "src/app/components/TopPicks.tsx",
+      "lineRange": [
+        1,
+        24
+      ],
+      "summary": "Presentational section rendering a single featured top-pick card with a link to the contact section.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/Travel.tsx",
+      "type": "file",
+      "name": "Travel.tsx",
+      "filePath": "src/app/components/Travel.tsx",
+      "summary": "Pho Travel section listing featured tours with a sticky filter/sort bar and a placeholder map teaser for pickup points.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section",
+        "catalog"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/Travel.tsx:Travel",
+      "type": "function",
+      "name": "Travel",
+      "filePath": "src/app/components/Travel.tsx",
+      "lineRange": [
+        1,
+        48
+      ],
+      "summary": "Static section rendering tour filter buttons, a featured speedboat tour card with discount pricing, and a map placeholder.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/TravelEssentials.tsx",
+      "type": "file",
+      "name": "TravelEssentials.tsx",
+      "filePath": "src/app/components/TravelEssentials.tsx",
+      "summary": "Small static section surfacing travel essentials tiles (transport, tips) that link into the travel guide section.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section",
+        "static"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/components/TravelEssentials.tsx:TravelEssentials",
+      "type": "function",
+      "name": "TravelEssentials",
+      "filePath": "src/app/components/TravelEssentials.tsx",
+      "lineRange": [
+        1,
+        21
+      ],
+      "summary": "Presentational section rendering three essentials tiles with skeleton placeholders.",
+      "tags": [
+        "component",
+        "presentational",
+        "landing-section"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/components/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "src/app/components/index.ts",
+      "summary": "Barrel module re-exporting the public site components plus the layout (ActivityDetail, Destination, HotelDetail) and shared (BookingForm, ImageGallery) component families.",
+      "tags": [
+        "barrel",
+        "entry-point",
+        "exports",
+        "module-index"
+      ],
+      "complexity": "simple",
+      "languageNotes": "TypeScript barrel mixing wildcard re-exports with named default re-exports."
+    },
+    {
+      "id": "file:src/app/components/layouts/DestinationLayout.tsx",
+      "type": "file",
+      "name": "DestinationLayout.tsx",
+      "filePath": "src/app/components/layouts/DestinationLayout.tsx",
+      "summary": "Reusable article-style layout for destination detail pages, rendering a hero, author byline, polymorphic content blocks (text/image/gallery/quote/list) and related destinations.",
+      "tags": [
+        "component",
+        "layout",
+        "content-renderer",
+        "client-component"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Discriminated-union content blocks drive a switch-based renderer, allowing CMS-style page composition."
+    },
+    {
+      "id": "function:src/app/components/layouts/DestinationLayout.tsx:DestinationLayout",
+      "type": "function",
+      "name": "DestinationLayout",
+      "filePath": "src/app/components/layouts/DestinationLayout.tsx",
+      "lineRange": [
+        69,
+        442
+      ],
+      "summary": "Largest shared layout component: renders destination hero, metadata, tag list, block-type-driven content body, share/favourite interactions and related-destination cards using lucide-react icons and next/image.",
+      "tags": [
+        "component",
+        "layout",
+        "content-renderer",
+        "seo"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/shared/BookingForm.tsx",
+      "type": "file",
+      "name": "BookingForm.tsx",
+      "filePath": "src/app/components/shared/BookingForm.tsx",
+      "summary": "Shared, polymorphic booking form supporting hotel, activity and restaurant booking types with date, guest count, room type, customer contact fields and price summary.",
+      "tags": [
+        "component",
+        "form",
+        "booking",
+        "validation",
+        "shared"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Prop type discriminates on booking type to vary defaults and visible fields from one component."
+    },
+    {
+      "id": "function:src/app/components/shared/BookingForm.tsx:BookingForm",
+      "type": "function",
+      "name": "BookingForm",
+      "filePath": "src/app/components/shared/BookingForm.tsx",
+      "lineRange": [
+        38,
+        337
+      ],
+      "summary": "Client booking form managing nested BookingFormData state (item, date, guests, room type, customer info), deriving guest defaults from the booking type and invoking an optional onSubmit callback.",
+      "tags": [
+        "component",
+        "form",
+        "booking",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/app/components/shared/ImageGallery.tsx",
+      "type": "file",
+      "name": "ImageGallery.tsx",
+      "filePath": "src/app/components/shared/ImageGallery.tsx",
+      "summary": "Shared responsive image gallery with adaptive grid layouts by image count and a lightbox modal supporting next/previous navigation.",
+      "tags": [
+        "component",
+        "ui",
+        "gallery",
+        "shared",
+        "client-component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/app/components/shared/ImageGallery.tsx:ImageGallery",
+      "type": "function",
+      "name": "ImageGallery",
+      "filePath": "src/app/components/shared/ImageGallery.tsx",
+      "lineRange": [
+        12,
+        196
+      ],
+      "summary": "Client gallery component tracking currentIndex and modal state with nextImage/prevImage wrap-around navigation and openModal/closeModal handlers over next/image thumbnails.",
+      "tags": [
+        "component",
+        "gallery",
+        "ui",
+        "state-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/globals.css",
+      "type": "file",
+      "name": "globals.css",
+      "filePath": "src/app/globals.css",
+      "summary": "Global stylesheet importing Tailwind CSS and defining the Pho Group brand color scale plus shared utilities (skeleton shimmer, no-scrollbar, sticky tab/filter bars, smooth scroll offsets).",
+      "tags": [
+        "stylesheet",
+        "theming",
+        "design-tokens",
+        "tailwind",
+        "global-styles"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Tailwind v4 style @import with CSS custom properties as brand design tokens."
+    },
+    {
+      "id": "file:src/app/layout.tsx",
+      "type": "file",
+      "name": "layout.tsx",
+      "filePath": "src/app/layout.tsx",
+      "summary": "Next.js root layout defining site-wide SEO metadata (OpenGraph, Twitter card, robots), loading the Inter font for Latin and Vietnamese subsets, and injecting Google Analytics and Search Console scripts.",
+      "tags": [
+        "entry-point",
+        "layout",
+        "seo",
+        "analytics",
+        "root"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Next.js Metadata API plus next/font and next/script with afterInteractive strategy."
+    },
+    {
+      "id": "function:src/app/layout.tsx:RootLayout",
+      "type": "function",
+      "name": "RootLayout",
+      "filePath": "src/app/layout.tsx",
+      "lineRange": [
+        42,
+        81
+      ],
+      "summary": "Root layout component rendering the html/body shell with lang=vi, the Inter font variable and afterInteractive analytics scripts wrapping all page children.",
+      "tags": [
+        "entry-point",
+        "layout",
+        "analytics"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/lib/analytics.ts",
+      "type": "file",
+      "name": "analytics.ts",
+      "filePath": "src/app/lib/analytics.ts",
+      "summary": "Google Analytics (gtag) wrapper exposing pageview and event helpers plus domain-specific trackers for bookings, searches, and language switches.",
+      "tags": [
+        "utility",
+        "analytics",
+        "tracking",
+        "service"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Guards every gtag call behind a typeof window check so the module is safe to import in Next.js server components."
+    },
+    {
+      "id": "function:src/app/lib/analytics.ts:pageview",
+      "type": "function",
+      "name": "pageview",
+      "filePath": "src/app/lib/analytics.ts",
+      "lineRange": [
+        9,
+        15
+      ],
+      "summary": "Sends a GA config call recording a page view for the supplied URL when gtag is available in the browser.",
+      "tags": [
+        "analytics",
+        "tracking",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/lib/analytics.ts:event",
+      "type": "function",
+      "name": "event",
+      "filePath": "src/app/lib/analytics.ts",
+      "lineRange": [
+        17,
+        35
+      ],
+      "summary": "Generic GA event dispatcher taking action, category, label, and value; the base primitive all specific trackers build on.",
+      "tags": [
+        "analytics",
+        "event-handler",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/lib/analytics.ts:trackBooking",
+      "type": "function",
+      "name": "trackBooking",
+      "filePath": "src/app/lib/analytics.ts",
+      "lineRange": [
+        37,
+        44
+      ],
+      "summary": "Records a booking conversion event for a given booking type, item, and monetary value.",
+      "tags": [
+        "analytics",
+        "tracking",
+        "conversion"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/lib/analytics.ts:trackSearch",
+      "type": "function",
+      "name": "trackSearch",
+      "filePath": "src/app/lib/analytics.ts",
+      "lineRange": [
+        46,
+        52
+      ],
+      "summary": "Records a search event carrying the user's query string as the GA label.",
+      "tags": [
+        "analytics",
+        "tracking",
+        "search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/lib/analytics.ts:trackLanguageChange",
+      "type": "function",
+      "name": "trackLanguageChange",
+      "filePath": "src/app/lib/analytics.ts",
+      "lineRange": [
+        54,
+        60
+      ],
+      "summary": "Records a locale-switch event so language preference behaviour can be analysed.",
+      "tags": [
+        "analytics",
+        "tracking",
+        "i18n"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/app/not-found.tsx",
+      "type": "file",
+      "name": "not-found.tsx",
+      "filePath": "src/app/not-found.tsx",
+      "summary": "Root-level Next.js App Router 404 page rendering a branded not-found screen with links back to the home page.",
+      "tags": [
+        "component",
+        "entry-point",
+        "error-handling",
+        "nextjs"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Next.js App Router reserves the not-found.tsx filename as the automatic 404 boundary."
+    },
+    {
+      "id": "function:src/app/not-found.tsx:NotFound",
+      "type": "function",
+      "name": "NotFound",
+      "filePath": "src/app/not-found.tsx",
+      "lineRange": [
+        3,
+        51
+      ],
+      "summary": "Default-exported React component rendering the 404 layout with heading, description, and navigation actions.",
+      "tags": [
+        "component",
+        "error-handling",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/app/page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "filePath": "src/app/page.tsx",
+      "summary": "Root route client component that detects the browser language and client-side redirects to the matching /vi or /en locale, showing a spinner meanwhile.",
+      "tags": [
+        "entry-point",
+        "component",
+        "i18n",
+        "routing",
+        "nextjs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/app/page.tsx:RootPage",
+      "type": "function",
+      "name": "RootPage",
+      "filePath": "src/app/page.tsx",
+      "lineRange": [
+        6,
+        31
+      ],
+      "summary": "Client component using useEffect and useRouter to replace the URL with the browser-preferred locale, defaulting to Vietnamese.",
+      "tags": [
+        "component",
+        "routing",
+        "i18n",
+        "hook"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:src/locales/en.json",
+      "type": "config",
+      "name": "en.json",
+      "filePath": "src/locales/en.json",
+      "summary": "English translation catalogue for the site, grouping strings for common UI, the 404 page, navigation, homepage sections, categories, and the three Pho Group business lines.",
+      "tags": [
+        "configuration",
+        "i18n",
+        "localization",
+        "content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:src/locales/vi.json",
+      "type": "config",
+      "name": "vi.json",
+      "filePath": "src/locales/vi.json",
+      "summary": "Vietnamese translation catalogue mirroring en.json key-for-key across common UI, 404, navigation, sections, categories, and business descriptions.",
+      "tags": [
+        "configuration",
+        "i18n",
+        "localization",
+        "content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/middleware.ts",
+      "type": "file",
+      "name": "middleware.ts",
+      "filePath": "src/middleware.ts",
+      "summary": "Next.js edge middleware that enforces locale-prefixed URLs, redirecting unprefixed requests to a locale chosen from the Accept-Language header while skipping static assets and API routes.",
+      "tags": [
+        "middleware",
+        "i18n",
+        "routing",
+        "entry-point",
+        "nextjs"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Exports a `config.matcher` object, the Next.js convention for scoping which paths the middleware runs on."
+    },
+    {
+      "id": "function:src/middleware.ts:getLocale",
+      "type": "function",
+      "name": "getLocale",
+      "filePath": "src/middleware.ts",
+      "lineRange": [
+        9,
+        35
+      ],
+      "summary": "Resolves the locale for a request by inspecting the existing path prefix and falling back to Accept-Language header parsing.",
+      "tags": [
+        "i18n",
+        "utility",
+        "validation",
+        "routing"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/middleware.ts:middleware",
+      "type": "function",
+      "name": "middleware",
+      "filePath": "src/middleware.ts",
+      "lineRange": [
+        37,
+        68
+      ],
+      "summary": "Exported edge middleware entry point that bypasses static/API paths and issues NextResponse redirects to locale-prefixed URLs when missing.",
+      "tags": [
+        "middleware",
+        "routing",
+        "i18n",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tailwind.config.js",
+      "type": "file",
+      "name": "tailwind.config.js",
+      "filePath": "tailwind.config.js",
+      "summary": "Tailwind CSS configuration scanning src/pages, src/components, and src/app, and extending the theme with a brand blue palette, Inter font variable, soft shadow, and fadeInUp/slideUp animations.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "styling",
+        "design-tokens"
+      ],
+      "complexity": "simple",
+      "languageNotes": "CommonJS module.exports config consumed by the Tailwind CLI/PostCSS pipeline rather than by application imports."
+    },
+    {
+      "id": "function:src/app/[locale]/pho-food/page.tsx:PhoFoodPage",
+      "type": "function",
+      "name": "PhoFoodPage",
+      "filePath": "src/app/[locale]/pho-food/page.tsx",
+      "summary": "Default-exported PhoFood page component rendering the Phu Quoc seafood and dried-food product listing beneath the PhoGroupHero navigation tabs.",
+      "tags": [
+        "component",
+        "page",
+        "entry-point",
+        "e-commerce"
+      ],
+      "complexity": "complex",
+      "lineRange": [
+        7,
+        248
+      ]
+    },
+    {
+      "id": "function:src/app/[locale]/pho-retreat/page.tsx:PhoRetreatPage",
+      "type": "function",
+      "name": "PhoRetreatPage",
+      "filePath": "src/app/[locale]/pho-retreat/page.tsx",
+      "summary": "Default-exported PhoRetreat page component rendering the Phu Quoc villa booking listing beneath the PhoGroupHero navigation tabs.",
+      "tags": [
+        "component",
+        "page",
+        "entry-point",
+        "booking"
+      ],
+      "complexity": "complex",
+      "lineRange": [
+        7,
+        389
+      ]
+    },
+    {
+      "id": "function:src/app/[locale]/pho-travel/page.tsx:PhoTravelPage",
+      "type": "function",
+      "name": "PhoTravelPage",
+      "filePath": "src/app/[locale]/pho-travel/page.tsx",
+      "summary": "Default-exported PhoTravel page component rendering Phu Quoc tour and cable-car ticket listings beneath the PhoGroupHero navigation tabs.",
+      "tags": [
+        "component",
+        "page",
+        "entry-point",
+        "booking"
+      ],
+      "complexity": "complex",
+      "lineRange": [
+        7,
+        414
+      ]
+    },
+    {
+      "id": "function:src/app/components/PhoGroupHero.tsx:PhoGroupHero",
+      "type": "function",
+      "name": "PhoGroupHero",
+      "filePath": "src/app/components/PhoGroupHero.tsx",
+      "summary": "Default-exported shared hero/navigation component rendering the Pho Group intro banner and locale-aware tab bar, consuming currentLocale via useLanguage.",
+      "tags": [
+        "component",
+        "navigation",
+        "shared-ui"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        12,
+        129
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/app/[locale]/about/page.tsx",
+      "target": "function:src/app/[locale]/about/page.tsx:AboutPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/about/page.tsx",
+      "target": "function:src/app/[locale]/about/page.tsx:AboutPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/about/page.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/[locale]/about/page.tsx:AboutPage",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:generateMetadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:generateStaticParams",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:generateMetadata",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "function:src/app/[locale]/layout.tsx:generateStaticParams",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "file:src/app/components/FloatingChat.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "file:src/app/components/Footer.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "file:src/app/components/Header.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/layout.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "target": "function:src/app/components/Header.tsx:Header",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "target": "function:src/app/components/Footer.tsx:Footer",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "target": "function:src/app/components/FloatingChat.tsx:FloatingChat",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/layout.tsx:LocaleLayout",
+      "target": "function:src/app/contexts/LanguageContext.tsx:LanguageProvider",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/not-found.tsx",
+      "target": "function:src/app/[locale]/not-found.tsx:NotFound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/not-found.tsx",
+      "target": "function:src/app/[locale]/not-found.tsx:NotFound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/not-found.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/[locale]/not-found.tsx:NotFound",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ContactBookingForm.tsx",
+      "target": "function:src/app/components/ContactBookingForm.tsx:ContactBookingForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ContactBookingForm.tsx",
+      "target": "function:src/app/components/ContactBookingForm.tsx:ContactBookingForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ContactBookingForm.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/ContactBookingForm.tsx:ContactBookingForm",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/FloatingChat.tsx",
+      "target": "function:src/app/components/FloatingChat.tsx:FloatingChat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/FloatingChat.tsx",
+      "target": "function:src/app/components/FloatingChat.tsx:FloatingChat",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Footer.tsx",
+      "target": "function:src/app/components/Footer.tsx:FooterSectionComponent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Footer.tsx",
+      "target": "function:src/app/components/Footer.tsx:Footer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Footer.tsx",
+      "target": "function:src/app/components/Footer.tsx:Footer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Footer.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/Footer.tsx",
+      "target": "file:src/app/lib/data.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/Footer.tsx:FooterSectionComponent",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/Footer.tsx:Footer",
+      "target": "file:src/app/lib/data.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/Header.tsx",
+      "target": "function:src/app/components/Header.tsx:Header",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Header.tsx",
+      "target": "function:src/app/components/Header.tsx:Header",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Header.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/Header.tsx:Header",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Transportation.tsx",
+      "target": "function:src/app/components/Transportation.tsx:Transportation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Transportation.tsx",
+      "target": "function:src/app/components/Transportation.tsx:Transportation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Transportation.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/Transportation.tsx:Transportation",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/Transportation.tsx:Transportation",
+      "target": "file:src/app/[locale]/page.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/contexts/LanguageContext.tsx",
+      "target": "function:src/app/contexts/LanguageContext.tsx:LanguageProvider",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/contexts/LanguageContext.tsx",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/contexts/LanguageContext.tsx",
+      "target": "function:src/app/contexts/LanguageContext.tsx:LanguageProvider",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/contexts/LanguageContext.tsx",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/contexts/LanguageContext.tsx",
+      "target": "file:src/i18n.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "function:src/app/[locale]/page.tsx:Home",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "function:src/app/[locale]/page.tsx:Home",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/ActivityReviews.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/ContactBookingForm.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/FAQ.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/Hotels.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/TopActivities.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/TopDestinations.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/Transportation.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/TravelGuides.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/page.tsx",
+      "target": "file:src/app/components/WeatherInfo.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/ActivityReviews.tsx:ActivityReviews",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/FAQ.tsx:FAQ",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/Hotels.tsx:Hotels",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/WeatherInfo.tsx:WeatherInfo",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/TopActivities.tsx:TopActivities",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/TopDestinations.tsx:TopDestinations",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/Transportation.tsx:Transportation",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ActivityReviews.tsx",
+      "target": "function:src/app/components/ActivityReviews.tsx:ReviewCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ActivityReviews.tsx",
+      "target": "function:src/app/components/ActivityReviews.tsx:ActivityReviews",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ActivityReviews.tsx",
+      "target": "function:src/app/components/ActivityReviews.tsx:ActivityReviews",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/ActivityReviews.tsx:ActivityReviews",
+      "target": "function:src/app/components/ActivityReviews.tsx:ReviewCard",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/FAQ.tsx",
+      "target": "function:src/app/components/FAQ.tsx:FAQItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/FAQ.tsx",
+      "target": "function:src/app/components/FAQ.tsx:FAQ",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/FAQ.tsx",
+      "target": "function:src/app/components/FAQ.tsx:FAQ",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/FAQ.tsx",
+      "target": "file:src/app/lib/data.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/FAQ.tsx:FAQ",
+      "target": "function:src/app/components/FAQ.tsx:FAQItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/FAQ.tsx:FAQ",
+      "target": "file:src/app/lib/data.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/Hotels.tsx",
+      "target": "function:src/app/components/Hotels.tsx:HotelCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Hotels.tsx",
+      "target": "function:src/app/components/Hotels.tsx:Hotels",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Hotels.tsx",
+      "target": "function:src/app/components/Hotels.tsx:Hotels",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Hotels.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/Hotels.tsx",
+      "target": "file:src/app/lib/data.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/Hotels.tsx:Hotels",
+      "target": "function:src/app/components/Hotels.tsx:HotelCard",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/Hotels.tsx:Hotels",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/Hotels.tsx:Hotels",
+      "target": "file:src/app/lib/data.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/TravelGuides.tsx",
+      "target": "function:src/app/components/TravelGuides.tsx:GuideCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TravelGuides.tsx",
+      "target": "function:src/app/components/TravelGuides.tsx:SpecialGuideCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TravelGuides.tsx",
+      "target": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TravelGuides.tsx",
+      "target": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TravelGuides.tsx",
+      "target": "file:src/app/lib/data.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "target": "function:src/app/components/TravelGuides.tsx:GuideCard",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "target": "function:src/app/components/TravelGuides.tsx:SpecialGuideCard",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/TravelGuides.tsx:TravelGuides",
+      "target": "file:src/app/lib/data.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/WeatherInfo.tsx",
+      "target": "function:src/app/components/WeatherInfo.tsx:WeatherInfo",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/WeatherInfo.tsx",
+      "target": "function:src/app/components/WeatherInfo.tsx:WeatherInfo",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/WeatherInfo.tsx",
+      "target": "file:src/app/lib/data.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/WeatherInfo.tsx:WeatherInfo",
+      "target": "file:src/app/lib/data.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:useFilters",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:applyFilters",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:applySorting",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoLoading",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:useFilters",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:applyFilters",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "target": "function:src/app/[locale]/1-things-to-do/page.tsx:applySorting",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "file:src/app/[locale]/1-things-to-do/mockData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "file:src/app/components/ThingsCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "file:src/app/components/ThingsFilterBar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "target": "file:src/app/components/ThingsCard.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/page.tsx:ThingsToDoContent",
+      "target": "file:src/app/components/ThingsFilterBar.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/FilterModal.tsx",
+      "target": "function:src/app/components/FilterModal.tsx:FilterModal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/FilterModal.tsx",
+      "target": "function:src/app/components/FilterModal.tsx:FilterModal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/FilterModal.tsx",
+      "target": "file:src/app/[locale]/1-things-to-do/mockData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/FilterModal.tsx:FilterModal",
+      "target": "file:src/app/[locale]/1-things-to-do/mockData.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/ThingsCard.tsx",
+      "target": "function:src/app/components/ThingsCard.tsx:ThingsCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ThingsCard.tsx",
+      "target": "function:src/app/components/ThingsCard.tsx:ThingsCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ThingsCard.tsx",
+      "target": "file:src/app/[locale]/1-things-to-do/mockData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBar.tsx",
+      "target": "function:src/app/components/ThingsFilterBar.tsx:formatDateLabel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBar.tsx",
+      "target": "function:src/app/components/ThingsFilterBar.tsx:ThingsFilterBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBar.tsx",
+      "target": "function:src/app/components/ThingsFilterBar.tsx:ThingsFilterBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBar.tsx",
+      "target": "file:src/app/components/FilterModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/ThingsFilterBar.tsx:ThingsFilterBar",
+      "target": "function:src/app/components/ThingsFilterBar.tsx:formatDateLabel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/ThingsFilterBar.tsx:ThingsFilterBar",
+      "target": "file:src/app/components/FilterModal.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "target": "function:src/app/components/ThingsFilterBarNew.tsx:formatDateLabel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "target": "function:src/app/components/ThingsFilterBarNew.tsx:ThingsFilterBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "target": "function:src/app/components/ThingsFilterBarNew.tsx:ThingsFilterBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "target": "file:src/app/components/FilterModal.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/ThingsFilterBarNew.tsx:ThingsFilterBar",
+      "target": "function:src/app/components/ThingsFilterBarNew.tsx:formatDateLabel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/components/ThingsFilterBarNew.tsx:ThingsFilterBar",
+      "target": "file:src/app/components/FilterModal.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/components/ThingsFilterBarNew.tsx",
+      "target": "file:src/app/components/ThingsFilterBar.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/[locale]/pho-food/page.tsx",
+      "target": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/pho-retreat/page.tsx",
+      "target": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/pho-travel/page.tsx",
+      "target": "file:src/app/components/PhoGroupHero.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/PhoGroupHero.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/PhoGroupHero.tsx",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "target": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:ActivityDetailPage",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "file:src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "file:src/app/components/layouts/ActivityDetailLayout.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:ActivityDetailPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:generateStaticParams",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:ActivityDetailPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "target": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:generateStaticParams",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/1-things-to-do/[id]/page.tsx:ActivityDetailPage",
+      "target": "function:src/app/components/layouts/ActivityDetailLayout.tsx:ActivityDetailLayout",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/layouts/ActivityDetailLayout.tsx",
+      "target": "function:src/app/components/layouts/ActivityDetailLayout.tsx:ActivityDetailLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/layouts/ActivityDetailLayout.tsx",
+      "target": "function:src/app/components/layouts/ActivityDetailLayout.tsx:ActivityDetailLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "file:src/app/[locale]/hotels/mockData.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "file:src/app/components/layouts/HotelDetailLayout.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "function:src/app/[locale]/hotels/[id]/page.tsx:HotelDetailPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "function:src/app/[locale]/hotels/[id]/page.tsx:generateStaticParams",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "function:src/app/[locale]/hotels/[id]/page.tsx:HotelDetailPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/hotels/[id]/page.tsx",
+      "target": "function:src/app/[locale]/hotels/[id]/page.tsx:generateStaticParams",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/hotels/[id]/page.tsx:HotelDetailPage",
+      "target": "file:src/app/components/layouts/HotelDetailLayout.tsx",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/layouts/HotelDetailLayout.tsx",
+      "target": "function:src/app/components/layouts/HotelDetailLayout.tsx:HotelDetailLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/layouts/HotelDetailLayout.tsx",
+      "target": "function:src/app/components/layouts/HotelDetailLayout.tsx:HotelDetailLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopActivities.tsx",
+      "target": "function:src/app/components/TopActivities.tsx:TopActivities",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TopActivities.tsx",
+      "target": "function:src/app/components/TopActivities.tsx:TopActivities",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopActivities.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/TopActivities.tsx",
+      "target": "file:src/mockup/website.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/TopActivities.tsx:TopActivities",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopDestinations.tsx",
+      "target": "function:src/app/components/TopDestinations.tsx:TopDestinations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TopDestinations.tsx",
+      "target": "function:src/app/components/TopDestinations.tsx:TopDestinations",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopDestinations.tsx",
+      "target": "file:src/app/contexts/LanguageContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/components/TopDestinations.tsx",
+      "target": "file:src/mockup/website.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/app/components/TopDestinations.tsx:TopDestinations",
+      "target": "function:src/app/contexts/LanguageContext.tsx:useLanguage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:package.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:tsconfig.json",
+      "target": "config:package.json",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:LAYOUT_COMPONENTS.md",
+      "target": "config:tsconfig.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:next.config.ts",
+      "target": "file:public/images/1.webp",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/app/[locale]/blog/page.tsx",
+      "target": "function:src/app/[locale]/blog/page.tsx:BlogPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/blog/page.tsx",
+      "target": "function:src/app/[locale]/blog/page.tsx:BlogPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/contact/page.tsx",
+      "target": "function:src/app/[locale]/contact/page.tsx:ContactPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/contact/page.tsx",
+      "target": "function:src/app/[locale]/contact/page.tsx:ContactPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/privacy/page.tsx",
+      "target": "function:src/app/[locale]/privacy/page.tsx:PrivacyPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/privacy/page.tsx",
+      "target": "function:src/app/[locale]/privacy/page.tsx:PrivacyPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/terms/page.tsx",
+      "target": "function:src/app/[locale]/terms/page.tsx:TermsPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/terms/page.tsx",
+      "target": "function:src/app/[locale]/terms/page.tsx:TermsPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/analytics/page.tsx",
+      "target": "function:src/app/admin/analytics/page.tsx:Analytics",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/analytics/page.tsx",
+      "target": "function:src/app/admin/analytics/page.tsx:Analytics",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/blog/page.tsx",
+      "target": "function:src/app/admin/blog/page.tsx:BlogManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/blog/page.tsx",
+      "target": "function:src/app/admin/blog/page.tsx:BlogManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/customers/page.tsx",
+      "target": "function:src/app/admin/customers/page.tsx:CustomersManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/customers/page.tsx",
+      "target": "function:src/app/admin/customers/page.tsx:CustomersManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/dashboard/page.tsx",
+      "target": "function:src/app/admin/dashboard/page.tsx:AdminDashboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/dashboard/page.tsx",
+      "target": "function:src/app/admin/dashboard/page.tsx:AdminDashboard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "function:src/app/admin/layout.tsx:AdminLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "function:src/app/admin/layout.tsx:AdminLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/login/page.tsx",
+      "target": "function:src/app/admin/login/page.tsx:LoginPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/login/page.tsx",
+      "target": "function:src/app/admin/login/page.tsx:LoginPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/orders/page.tsx",
+      "target": "function:src/app/admin/orders/page.tsx:OrdersManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/orders/page.tsx",
+      "target": "function:src/app/admin/orders/page.tsx:OrdersManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/pho-food/page.tsx",
+      "target": "function:src/app/admin/pho-food/page.tsx:PhoFoodManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/pho-food/page.tsx",
+      "target": "function:src/app/admin/pho-food/page.tsx:PhoFoodManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/pho-retreat/page.tsx",
+      "target": "function:src/app/admin/pho-retreat/page.tsx:PhoRetreatManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/pho-retreat/page.tsx",
+      "target": "function:src/app/admin/pho-retreat/page.tsx:PhoRetreatManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/pho-travel/page.tsx",
+      "target": "function:src/app/admin/pho-travel/page.tsx:PhoTravelManagement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/pho-travel/page.tsx",
+      "target": "function:src/app/admin/pho-travel/page.tsx:PhoTravelManagement",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/admin/settings/page.tsx",
+      "target": "function:src/app/admin/settings/page.tsx:SettingsPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/settings/page.tsx",
+      "target": "function:src/app/admin/settings/page.tsx:SettingsPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Collections.tsx",
+      "target": "function:src/app/components/Collections.tsx:Collections",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Collections.tsx",
+      "target": "function:src/app/components/Collections.tsx:Collections",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Contact.tsx",
+      "target": "function:src/app/components/Contact.tsx:Contact",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Contact.tsx",
+      "target": "function:src/app/components/Contact.tsx:Contact",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Food.tsx",
+      "target": "function:src/app/components/Food.tsx:Food",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Food.tsx",
+      "target": "function:src/app/components/Food.tsx:Food",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Guide.tsx",
+      "target": "function:src/app/components/Guide.tsx:Guide",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Guide.tsx",
+      "target": "function:src/app/components/Guide.tsx:Guide",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Hero.tsx",
+      "target": "function:src/app/components/Hero.tsx:Hero",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Hero.tsx",
+      "target": "function:src/app/components/Hero.tsx:Hero",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Retreat.tsx",
+      "target": "function:src/app/components/Retreat.tsx:Retreat",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Retreat.tsx",
+      "target": "function:src/app/components/Retreat.tsx:Retreat",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopBar.tsx",
+      "target": "function:src/app/components/TopBar.tsx:TopBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TopBar.tsx",
+      "target": "function:src/app/components/TopBar.tsx:TopBar",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TopPicks.tsx",
+      "target": "function:src/app/components/TopPicks.tsx:TopPicks",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TopPicks.tsx",
+      "target": "function:src/app/components/TopPicks.tsx:TopPicks",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/Travel.tsx",
+      "target": "function:src/app/components/Travel.tsx:Travel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/Travel.tsx",
+      "target": "function:src/app/components/Travel.tsx:Travel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/TravelEssentials.tsx",
+      "target": "function:src/app/components/TravelEssentials.tsx:TravelEssentials",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/TravelEssentials.tsx",
+      "target": "function:src/app/components/TravelEssentials.tsx:TravelEssentials",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/layouts/DestinationLayout.tsx",
+      "target": "function:src/app/components/layouts/DestinationLayout.tsx:DestinationLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/layouts/DestinationLayout.tsx",
+      "target": "function:src/app/components/layouts/DestinationLayout.tsx:DestinationLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/shared/BookingForm.tsx",
+      "target": "function:src/app/components/shared/BookingForm.tsx:BookingForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/shared/BookingForm.tsx",
+      "target": "function:src/app/components/shared/BookingForm.tsx:BookingForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/shared/ImageGallery.tsx",
+      "target": "function:src/app/components/shared/ImageGallery.tsx:ImageGallery",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/shared/ImageGallery.tsx",
+      "target": "function:src/app/components/shared/ImageGallery.tsx:ImageGallery",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/layout.tsx",
+      "target": "function:src/app/layout.tsx:RootLayout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/layout.tsx",
+      "target": "function:src/app/layout.tsx:RootLayout",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/layout.tsx",
+      "target": "file:src/app/globals.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/app/globals.css",
+      "target": "file:src/app/layout.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/components/index.ts",
+      "target": "file:src/app/components/layouts/DestinationLayout.tsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/index.ts",
+      "target": "file:src/app/components/shared/BookingForm.tsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/index.ts",
+      "target": "file:src/app/components/shared/ImageGallery.tsx",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/layouts/DestinationLayout.tsx",
+      "target": "file:src/app/components/shared/ImageGallery.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/customers/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/dashboard/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/login/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/orders/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/pho-food/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/pho-retreat/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/pho-travel/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/layout.tsx",
+      "target": "file:src/app/admin/settings/page.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/layout.tsx",
+      "target": "file:src/app/admin/layout.tsx",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/admin/dashboard/page.tsx",
+      "target": "file:src/app/admin/orders/page.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/admin/login/page.tsx",
+      "target": "file:src/app/admin/dashboard/page.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:pageview",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:event",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackBooking",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackSearch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackLanguageChange",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:pageview",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:event",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackBooking",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackSearch",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/lib/analytics.ts",
+      "target": "function:src/app/lib/analytics.ts:trackLanguageChange",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/lib/analytics.ts:trackBooking",
+      "target": "function:src/app/lib/analytics.ts:event",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/lib/analytics.ts:trackSearch",
+      "target": "function:src/app/lib/analytics.ts:event",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/lib/analytics.ts:trackLanguageChange",
+      "target": "function:src/app/lib/analytics.ts:event",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/not-found.tsx",
+      "target": "function:src/app/not-found.tsx:NotFound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/not-found.tsx",
+      "target": "function:src/app/not-found.tsx:NotFound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/page.tsx",
+      "target": "function:src/app/page.tsx:RootPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/page.tsx",
+      "target": "function:src/app/page.tsx:RootPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/middleware.ts",
+      "target": "function:src/middleware.ts:getLocale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware.ts",
+      "target": "function:src/middleware.ts:middleware",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/middleware.ts",
+      "target": "function:src/middleware.ts:middleware",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/middleware.ts:middleware",
+      "target": "function:src/middleware.ts:getLocale",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:src/locales/en.json",
+      "target": "file:src/app/not-found.tsx",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:src/locales/vi.json",
+      "target": "file:src/app/not-found.tsx",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:src/locales/en.json",
+      "target": "config:src/locales/vi.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:tailwind.config.js",
+      "target": "file:src/app/page.tsx",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:tailwind.config.js",
+      "target": "file:src/app/not-found.tsx",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/middleware.ts",
+      "target": "file:src/app/page.tsx",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/app/[locale]/pho-food/page.tsx",
+      "target": "function:src/app/[locale]/pho-food/page.tsx:PhoFoodPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/pho-food/page.tsx",
+      "target": "function:src/app/[locale]/pho-food/page.tsx:PhoFoodPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/pho-retreat/page.tsx",
+      "target": "function:src/app/[locale]/pho-retreat/page.tsx:PhoRetreatPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/pho-retreat/page.tsx",
+      "target": "function:src/app/[locale]/pho-retreat/page.tsx:PhoRetreatPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/pho-travel/page.tsx",
+      "target": "function:src/app/[locale]/pho-travel/page.tsx:PhoTravelPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/[locale]/pho-travel/page.tsx",
+      "target": "function:src/app/[locale]/pho-travel/page.tsx:PhoTravelPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/components/PhoGroupHero.tsx",
+      "target": "function:src/app/components/PhoGroupHero.tsx:PhoGroupHero",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/app/components/PhoGroupHero.tsx",
+      "target": "function:src/app/components/PhoGroupHero.tsx:PhoGroupHero",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/app/[locale]/page.tsx:Home",
+      "target": "function:src/app/components/PhoGroupHero.tsx:PhoGroupHero",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/app/[locale]/1-things-to-do/page.tsx",
+      "target": "function:src/app/components/PhoGroupHero.tsx:PhoGroupHero",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:public-routes",
+      "name": "Public Site Routes",
+      "description": "Locale-prefixed Next.js App Router pages and layouts for the public Pho Group site — home, PhoFood, Pho Retreat, Pho Travel, hotels, things-to-do, blog and legal pages — plus the root app shell.",
+      "nodeIds": [
+        "file:src/app/[locale]/about/page.tsx",
+        "file:src/app/[locale]/layout.tsx",
+        "file:src/app/[locale]/not-found.tsx",
+        "file:src/app/[locale]/page.tsx",
+        "file:src/app/[locale]/1-things-to-do/page.tsx",
+        "file:src/app/[locale]/pho-food/page.tsx",
+        "file:src/app/[locale]/pho-retreat/page.tsx",
+        "file:src/app/[locale]/pho-travel/page.tsx",
+        "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+        "file:src/app/[locale]/hotels/[id]/page.tsx",
+        "file:src/app/[locale]/blog/page.tsx",
+        "file:src/app/[locale]/contact/page.tsx",
+        "file:src/app/[locale]/privacy/page.tsx",
+        "file:src/app/[locale]/terms/page.tsx",
+        "file:src/app/layout.tsx",
+        "file:src/app/not-found.tsx",
+        "file:src/app/page.tsx"
+      ]
+    },
+    {
+      "id": "layer:admin",
+      "name": "Admin Back Office",
+      "description": "Client-side admin CMS routes (dashboard, orders, customers, blog, analytics, settings and per-module management screens) with their shared admin layout and login screen.",
+      "nodeIds": [
+        "file:src/app/admin/analytics/page.tsx",
+        "file:src/app/admin/blog/page.tsx",
+        "file:src/app/admin/customers/page.tsx",
+        "file:src/app/admin/dashboard/page.tsx",
+        "file:src/app/admin/layout.tsx",
+        "file:src/app/admin/login/page.tsx",
+        "file:src/app/admin/orders/page.tsx",
+        "file:src/app/admin/pho-food/page.tsx",
+        "file:src/app/admin/pho-retreat/page.tsx",
+        "file:src/app/admin/pho-travel/page.tsx",
+        "file:src/app/admin/settings/page.tsx"
+      ]
+    },
+    {
+      "id": "layer:ui-components",
+      "name": "Shared UI Components",
+      "description": "The reusable component library under src/app/components — headers, footers, hero sections, cards, sliders and the barrel index that every page imports from.",
+      "nodeIds": [
+        "file:src/app/components/ContactBookingForm.tsx",
+        "file:src/app/components/FloatingChat.tsx",
+        "file:src/app/components/Footer.tsx",
+        "file:src/app/components/Header.tsx",
+        "file:src/app/components/Transportation.tsx",
+        "file:src/app/components/ActivityReviews.tsx",
+        "file:src/app/components/FAQ.tsx",
+        "file:src/app/components/Hotels.tsx",
+        "file:src/app/components/TravelGuides.tsx",
+        "file:src/app/components/WeatherInfo.tsx",
+        "file:src/app/components/FilterModal.tsx",
+        "file:src/app/components/ThingsCard.tsx",
+        "file:src/app/components/ThingsFilterBar.tsx",
+        "file:src/app/components/ThingsFilterBarNew.tsx",
+        "file:src/app/components/PhoGroupHero.tsx",
+        "file:src/app/components/layouts/ActivityDetailLayout.tsx",
+        "file:src/app/components/layouts/HotelDetailLayout.tsx",
+        "file:src/app/components/TopActivities.tsx",
+        "file:src/app/components/TopDestinations.tsx",
+        "file:src/app/components/Collections.tsx",
+        "file:src/app/components/Contact.tsx",
+        "file:src/app/components/Food.tsx",
+        "file:src/app/components/Guide.tsx",
+        "file:src/app/components/Hero.tsx",
+        "file:src/app/components/Retreat.tsx",
+        "file:src/app/components/TopBar.tsx",
+        "file:src/app/components/TopPicks.tsx",
+        "file:src/app/components/Travel.tsx",
+        "file:src/app/components/TravelEssentials.tsx",
+        "file:src/app/components/index.ts",
+        "file:src/app/components/layouts/DestinationLayout.tsx",
+        "file:src/app/components/shared/BookingForm.tsx",
+        "file:src/app/components/shared/ImageGallery.tsx"
+      ]
+    },
+    {
+      "id": "layer:state-i18n",
+      "name": "State & Internationalization",
+      "description": "LanguageContext/useLanguage state provider, the next-intl i18n configuration, locale-prefix middleware and the en/vi translation dictionaries.",
+      "nodeIds": [
+        "file:src/app/contexts/LanguageContext.tsx",
+        "file:src/i18n.ts",
+        "config:src/locales/en.json",
+        "config:src/locales/vi.json",
+        "file:src/middleware.ts"
+      ]
+    },
+    {
+      "id": "layer:data",
+      "name": "Mock Data Layer",
+      "description": "Hardcoded demo datasets backing the site — per-route mockData files for hotels and things-to-do, the shared data helper and the website mockup module.",
+      "nodeIds": [
+        "file:src/app/lib/data.ts",
+        "file:src/app/[locale]/1-things-to-do/mockData.ts",
+        "file:src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+        "file:src/app/[locale]/hotels/mockData.ts",
+        "file:src/mockup/website.tsx"
+      ]
+    },
+    {
+      "id": "layer:utility",
+      "name": "Utilities",
+      "description": "Cross-cutting helpers, currently the Google Analytics gtag wrapper used for page and event tracking.",
+      "nodeIds": [
+        "file:src/app/lib/analytics.ts"
+      ]
+    },
+    {
+      "id": "layer:assets",
+      "name": "Static Assets & Styles",
+      "description": "The 40 WebP images served from public/images plus the global Tailwind stylesheet that defines site-wide design tokens.",
+      "nodeIds": [
+        "file:public/images/1.webp",
+        "file:public/images/10.webp",
+        "file:public/images/11.webp",
+        "file:public/images/2.webp",
+        "file:public/images/3.webp",
+        "file:public/images/4.webp",
+        "file:public/images/5.webp",
+        "file:public/images/6.webp",
+        "file:public/images/7.webp",
+        "file:public/images/8.webp",
+        "file:public/images/9.webp",
+        "file:public/images/diemthamquan-1.webp",
+        "file:public/images/diemthamquan-10.webp",
+        "file:public/images/diemthamquan-2.webp",
+        "file:public/images/diemthamquan-3.webp",
+        "file:public/images/diemthamquan-4.webp",
+        "file:public/images/diemthamquan-5.webp",
+        "file:public/images/diemthamquan-6.webp",
+        "file:public/images/diemthamquan-7.webp",
+        "file:public/images/diemthamquan-8.webp",
+        "file:public/images/diemthamquan-9.webp",
+        "file:public/images/huongdandulich-1.webp",
+        "file:public/images/huongdandulich-2.webp",
+        "file:public/images/huongdandulich-3.webp",
+        "file:public/images/huongdandulich-4.webp",
+        "file:public/images/khachsan-1.webp",
+        "file:public/images/khachsan-10.webp",
+        "file:public/images/khachsan-2.webp",
+        "file:public/images/khachsan-3.webp",
+        "file:public/images/khachsan-4.webp",
+        "file:public/images/khachsan-6.webp",
+        "file:public/images/khachsan-7.webp",
+        "file:public/images/khachsan-8.webp",
+        "file:public/images/khachsan-9.webp",
+        "file:public/images/phuongtiendulich-1.webp",
+        "file:public/images/phuongtiendulich-2.webp",
+        "file:public/images/phuongtiendulich-3.webp",
+        "file:public/images/phuongtiendulich-4.webp",
+        "file:public/images/phuongtiendulich-5.webp",
+        "file:public/images/phuongtiendulich-6.webp",
+        "file:src/app/globals.css"
+      ]
+    },
+    {
+      "id": "layer:build-config",
+      "name": "Build & Tooling Configuration",
+      "description": "Next.js, TypeScript, Tailwind, PostCSS and ESLint configuration together with package manifest and repo tooling files.",
+      "nodeIds": [
+        "config:package.json",
+        "config:tsconfig.json",
+        "file:.ua/.understandignore",
+        "config:eslint.config.mjs",
+        "config:next.config.ts",
+        "config:postcss.config.mjs",
+        "file:tailwind.config.js"
+      ]
+    },
+    {
+      "id": "layer:documentation",
+      "name": "Documentation",
+      "description": "Project README, layout/component reference and the customer demo walkthrough written for handover.",
+      "nodeIds": [
+        "document:DEMO_KHACH_HANG.md",
+        "document:LAYOUT_COMPONENTS.md",
+        "document:README.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "What This Project Is",
+      "description": "Start with the README and the customer demo guide, both written in Vietnamese for stakeholder handover. They frame the Pho Group Phu Quoc platform as one Next.js site serving three customer-facing business modules — PhoFood (seafood and specialty products), Pho Retreat (villa lodging) and Pho Travel (tours and experiences) — plus an admin back office. Read these first so the folder names you meet later map onto real business lines rather than arbitrary route slugs.",
+      "nodeIds": [
+        "document:README.md",
+        "document:DEMO_KHACH_HANG.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "How a Request Finds Its Locale",
+      "description": "Every URL on this site is locale-prefixed (/vi/... or /en/...), and two pieces enforce that before any page renders. The edge middleware intercepts unprefixed requests and redirects them to a locale chosen from the Accept-Language header, skipping static assets and API routes; the root page.tsx is a client-side fallback that detects the browser language and redirects while showing a spinner. Understanding this handshake is the prerequisite for everything else — it explains why almost all real pages live under src/app/[locale]/.",
+      "nodeIds": [
+        "file:src/middleware.ts",
+        "file:src/app/page.tsx",
+        "file:src/app/not-found.tsx"
+      ],
+      "languageLesson": "Next.js middleware runs on the Edge runtime before routing resolves, so it can rewrite or redirect a request without ever mounting a React tree. Its `matcher` config must explicitly exclude _next/static and image paths, otherwise every asset request pays the middleware cost."
+    },
+    {
+      "order": 3,
+      "title": "The Translation Layer",
+      "description": "With the locale decided, something has to supply the actual strings. src/i18n.ts is the central configuration declaring supported locales, the default, and the translation dictionary, while en.json and vi.json are key-for-key mirrored catalogues covering common UI, navigation, homepage sections, the 404 screen and the three business lines. Because the catalogues are structurally identical, adding a language is a matter of copying one file and translating values — no code change required.",
+      "nodeIds": [
+        "file:src/i18n.ts",
+        "config:src/locales/en.json",
+        "config:src/locales/vi.json"
+      ],
+      "languageLesson": "JSON translation catalogues gain a lot from nesting by feature (common, nav, sections) rather than flat keys — it makes missing-key diffs between locales readable, and lets TypeScript infer the key shape from one catalogue so the others are checked against it."
+    },
+    {
+      "order": 4,
+      "title": "Language State in React",
+      "description": "LanguageContext is the single most depended-upon module in the codebase — it has the highest fan-in of any node, pulled in by pages and components alike. It exposes the current locale, a setter, the active dictionary from Step 3, and a toggle, all reached through the useLanguage hook. This is the seam where the routing-level locale from Step 2 becomes ordinary React state that any component can read.",
+      "nodeIds": [
+        "file:src/app/contexts/LanguageContext.tsx"
+      ],
+      "languageLesson": "React Context is the right tool for low-frequency, widely-read values like locale or theme. Because every consumer re-renders when the provider value changes, a context that changes on every keystroke would be a performance problem — one that changes only on a language toggle is ideal."
+    },
+    {
+      "order": 5,
+      "title": "The App Shell",
+      "description": "Two nested layouts wrap every page. The root layout owns site-wide SEO metadata (OpenGraph, Twitter cards, robots), loads the Inter font with both Latin and Vietnamese subsets, and injects the Google Analytics and Search Console scripts. The locale layout beneath it generates per-locale metadata and static params, then composes the Header, Footer and FloatingChat shell around page content — this is the tightest cluster in the graph, with Header and Footer both reaching back into the LanguageContext from Step 4.",
+      "nodeIds": [
+        "file:src/app/layout.tsx",
+        "file:src/app/[locale]/layout.tsx",
+        "file:src/app/components/Header.tsx",
+        "file:src/app/components/Footer.tsx"
+      ],
+      "languageLesson": "Next.js App Router nests layouts by directory: the root layout renders once and persists across navigations, while [locale]/layout.tsx re-renders per locale segment. `generateStaticParams` in the locale layout is what lets Next pre-render /vi and /en variants at build time instead of resolving them per request."
+    },
+    {
+      "order": 6,
+      "title": "The Component Library",
+      "description": "All shared UI lives in src/app/components and is re-exported through a single barrel index.ts, which is why that file ranks near the top for fan-out and is imported by nearly every route. The barrel covers the public site sections plus two sub-families: layouts/ (ActivityDetail, Destination, HotelDetail) and shared/ (BookingForm, ImageGallery). Crucially, the dependency direction is strictly one-way — pages import components, and components never import pages back.",
+      "nodeIds": [
+        "file:src/app/components/index.ts",
+        "document:LAYOUT_COMPONENTS.md",
+        "file:src/app/components/shared/ImageGallery.tsx",
+        "file:src/app/components/shared/BookingForm.tsx"
+      ],
+      "languageLesson": "A barrel file (`export * from './X'`) gives consumers one import path and hides internal file organization, so components can be moved without touching callers. The trade-off is bundler work: without `optimizePackageImports` or good tree-shaking, importing one symbol can pull the whole barrel into the bundle."
+    },
+    {
+      "order": 7,
+      "title": "The Data Layer Is Mock",
+      "description": "There is no backend. src/app/lib/data.ts is the central static module defining the TypeScript interfaces and exporting content for hotels, travel guides, weather, FAQs, footer sections and destinations, while src/mockup/website.tsx supplies Vietnamese activity and destination listings for the homepage carousels. Both rank high in fan-in because pages consume them exactly where API calls would eventually go — the interfaces they define are the contract a real API would have to satisfy.",
+      "nodeIds": [
+        "file:src/app/lib/data.ts",
+        "file:src/mockup/website.tsx"
+      ],
+      "languageLesson": "Declaring interfaces alongside mock data is a useful pre-backend pattern: the type is the API contract, and swapping the hardcoded export for a `fetch` later is a local change because every consumer already codes against the interface, not the literal."
+    },
+    {
+      "order": 8,
+      "title": "The Home Page Composition",
+      "description": "The locale home page has the highest fan-out in the entire graph — it imports ten section components and composes them into the landing layout: hero, top activities, destinations, transportation, hotels, travel guides, reviews, weather, booking form and FAQ. This is the clearest demonstration of the architecture from Steps 6 and 7 in action, where the page itself holds almost no logic and acts purely as an assembly point over the component library and mock data.",
+      "nodeIds": [
+        "file:src/app/[locale]/page.tsx",
+        "file:src/app/components/PhoGroupHero.tsx",
+        "file:src/app/components/TopActivities.tsx",
+        "file:src/app/components/Hotels.tsx"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "The Three Business Modules",
+      "description": "Each business line from the README gets its own listing route, and all three share the PhoGroupHero component from Step 8 as a common banner and tab bar. PhoFood lists seafood and dried-food products with pricing and shop links, Pho Retreat lists villas with amenities and booking-platform links, and Pho Travel presents tours and cable-car tickets with highlights and ratings. Comparing the three side by side shows the deliberate structural symmetry — same shell, different catalogue.",
+      "nodeIds": [
+        "file:src/app/[locale]/pho-food/page.tsx",
+        "file:src/app/[locale]/pho-retreat/page.tsx",
+        "file:src/app/[locale]/pho-travel/page.tsx"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Search, Filter and Sort",
+      "description": "The Things To Do section is the most stateful part of the public site and forms its own tight cluster in the dependency graph. The page reads filter and sort state from URL search params, applies them to the activities dataset, and renders the filter bar plus a grid of cards; ThingsFilterBar syncs control changes back to the URL through the router, and opens FilterModal for detailed category, price and rating selection. Putting filter state in the URL rather than component state is what makes these views shareable and back-button friendly.",
+      "nodeIds": [
+        "file:src/app/[locale]/1-things-to-do/page.tsx",
+        "file:src/app/[locale]/1-things-to-do/mockData.ts",
+        "file:src/app/components/ThingsFilterBar.tsx",
+        "file:src/app/components/FilterModal.tsx",
+        "file:src/app/components/ThingsCard.tsx"
+      ],
+      "languageLesson": "URL search params as the source of truth for filters means the server can read them during render and the browser gets shareable, bookmarkable state for free. The modal still keeps local staging state so the user can adjust several filters before committing one router update, avoiding a navigation per checkbox."
+    },
+    {
+      "order": 11,
+      "title": "Dynamic Detail Pages",
+      "description": "Booking detail views are dynamic routes: /[locale]/hotels/[id] and /[locale]/1-things-to-do/[id] each look up their record by ID from a colocated mockData file and hand it to a large detail layout component. HotelDetailLayout renders the gallery, tabbed overview/rooms/amenities/location/policies sections, a room booking widget and reviews; ActivityDetailLayout does the equivalent for tours. Both reuse ImageGallery and BookingForm from Step 6, which is exactly why those shared components exist.",
+      "nodeIds": [
+        "file:src/app/[locale]/hotels/[id]/page.tsx",
+        "file:src/app/[locale]/hotels/mockData.ts",
+        "file:src/app/components/layouts/HotelDetailLayout.tsx",
+        "file:src/app/[locale]/1-things-to-do/[id]/page.tsx",
+        "file:src/app/components/layouts/ActivityDetailLayout.tsx"
+      ],
+      "languageLesson": "`generateStaticParams` on a dynamic segment tells Next.js which [id] values to pre-render at build time. With a fixed mock dataset every detail page becomes static HTML; once a real API arrives you either keep the list small, or switch to on-demand rendering with revalidation."
+    },
+    {
+      "order": 12,
+      "title": "The Admin Back Office",
+      "description": "The /admin tree is a parallel application with its own layout providing a collapsible sidebar, deliberately bypassed for the login screen. The dashboard shows KPI cards and recent orders, orders management spans bookings and product orders across all three modules, and each business line gets a management screen — Pho Retreat's, for example, edits villa capacity, nightly pricing and availability. Note what is absent: every admin page is 'use client' with hardcoded demo state and no data layer, and login stores a placeholder token in localStorage, so this is a UI prototype rather than a secured system.",
+      "nodeIds": [
+        "file:src/app/admin/layout.tsx",
+        "file:src/app/admin/login/page.tsx",
+        "file:src/app/admin/dashboard/page.tsx",
+        "file:src/app/admin/orders/page.tsx",
+        "file:src/app/admin/pho-retreat/page.tsx"
+      ],
+      "languageLesson": "A localStorage token with a client-side credential check is authentication theatre — the check runs in the user's own browser and can be edited away. Real protection has to live server-side, in middleware or a route handler, where the client cannot reach it."
+    },
+    {
+      "order": 13,
+      "title": "Styling and Design Tokens",
+      "description": "Visual consistency comes from two files working together. globals.css imports Tailwind and defines the Pho Group brand color scale plus shared utilities such as the skeleton shimmer, no-scrollbar, sticky tab and filter bars used by the Things To Do page from Step 10, and smooth-scroll offsets. tailwind.config.js extends the theme with the brand blue palette, the Inter font variable loaded by the root layout in Step 5, a soft shadow and the fadeInUp/slideUp animations.",
+      "nodeIds": [
+        "file:src/app/globals.css",
+        "file:tailwind.config.js"
+      ],
+      "languageLesson": "Tailwind's `theme.extend` adds to the default scale rather than replacing it, so brand tokens sit alongside the built-ins. Defining a color once in config and referencing it as a utility class everywhere is what keeps a design system from drifting into one-off hex values scattered through JSX."
+    },
+    {
+      "order": 14,
+      "title": "Analytics and Tracking",
+      "description": "The one genuine utility module wraps Google Analytics gtag, exposing pageview and event helpers plus domain-specific trackers for bookings, searches and language switches — the last of which pairs directly with the toggle from Step 4. The gtag script itself is injected by the root layout, so this module assumes that global exists. Isolating vendor calls behind named domain functions means swapping analytics providers touches one file instead of every call site.",
+      "nodeIds": [
+        "file:src/app/lib/analytics.ts"
+      ]
+    },
+    {
+      "order": 15,
+      "title": "Build Configuration",
+      "description": "Closing the loop, package.json pins the stack the whole tour has been built on: Next.js 15, React 19, next-intl, Tailwind CSS 4 and lucide-react, with the dev/build/start/lint scripts. next.config.ts whitelists remote images from Unsplash and enables optimized package imports for @heroicons/react, which mitigates the barrel-file bundling trade-off noted in Step 6. tsconfig.json and the ESLint flat config complete the tooling — together these define how everything you have read gets compiled and shipped.",
+      "nodeIds": [
+        "config:package.json",
+        "config:next.config.ts",
+        "config:tsconfig.json",
+        "config:eslint.config.mjs",
+        "config:postcss.config.mjs"
+      ],
+      "languageLesson": "`optimizePackageImports` rewrites barrel imports from large icon and component libraries into deep per-module imports at build time, so importing three icons does not pull in a thousand. Next's `images.remotePatterns` is a security boundary, not a convenience — the image optimizer will refuse any host not listed there."
+    }
+  ]
+}

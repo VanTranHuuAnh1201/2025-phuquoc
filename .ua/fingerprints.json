@@ -1,0 +1,3001 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "3b0a015a32189ee03ac488dbfe2357aeaee6b890",
+  "generatedAt": "2026-07-31T18:39:11.531Z",
+  "files": {
+    ".ua/.understandignore": {
+      "filePath": ".ua/.understandignore",
+      "contentHash": "aebf52576ddd2d65538ddf0357ffe605c7bdb390371bc524b54ee3731db7a7d3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 82,
+      "hasStructuralAnalysis": false
+    },
+    "DEMO_KHACH_HANG.md": {
+      "filePath": "DEMO_KHACH_HANG.md",
+      "contentHash": "fc33275816baa3668d296a7260b2698fd9842854ef86117a1bd574ec1816b364",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 557,
+      "hasStructuralAnalysis": true
+    },
+    "LAYOUT_COMPONENTS.md": {
+      "filePath": "LAYOUT_COMPONENTS.md",
+      "contentHash": "0338e6ba393db6961025386a037529ca86f022e7c3265ade3f6bb89cc75fa334",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 294,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "fc33275816baa3668d296a7260b2698fd9842854ef86117a1bd574ec1816b364",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 557,
+      "hasStructuralAnalysis": true
+    },
+    "eslint.config.mjs": {
+      "filePath": "eslint.config.mjs",
+      "contentHash": "6fffe9c06412f85d8e334eadfb0c9bed1b506409fdd03e7ddc8a56ae2768bab9",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "path",
+          "specifiers": [
+            "dirname"
+          ]
+        },
+        {
+          "source": "url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "source": "@eslint/eslintrc",
+          "specifiers": [
+            "FlatCompat"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "next.config.ts": {
+      "filePath": "next.config.ts",
+      "contentHash": "6c9db7d98b08a4484fe7ba9bd7ff3ad57d957016a91e0b9ce90d244be2e0ca2f",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "NextConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": true
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "b121557322090459d10a515d7b342095ba9ca7d9cff51227bcaeca876a6019e1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "postcss.config.mjs": {
+      "filePath": "postcss.config.mjs",
+      "contentHash": "c0b4a123ae7b1f40069fd2183841248c4af91f3153c4a2334b19e3bbc2017802",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "public/images/1.webp": {
+      "filePath": "public/images/1.webp",
+      "contentHash": "9f8852afa1c91c52c7dba6bd876afd074cf46fec9e2e1b8cdf67f782f60614c1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 213,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/10.webp": {
+      "filePath": "public/images/10.webp",
+      "contentHash": "b6c49250fa6a1801f659d8437630a19634c85278b03b0672badb70cc618238ca",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 106,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/11.webp": {
+      "filePath": "public/images/11.webp",
+      "contentHash": "032bb9ad34f2e2a7d1241876a47b2cc8c9630abde498558fcbb5a6006660218c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/2.webp": {
+      "filePath": "public/images/2.webp",
+      "contentHash": "a94ce19c7ea40a24bbb144da74eb82b29d9cb35a9e718cb21fce38d36542a89f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 80,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/3.webp": {
+      "filePath": "public/images/3.webp",
+      "contentHash": "ca4a1d8ffdf0bbff62f402125c0d3c34b1be645cf8ab15d06c3ce64e47a89ad1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 139,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/4.webp": {
+      "filePath": "public/images/4.webp",
+      "contentHash": "ef82f3895f14035bcce0a5d39d942f4a25462e2663d76704b20faff66de3f047",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 133,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/5.webp": {
+      "filePath": "public/images/5.webp",
+      "contentHash": "32de5c6e5db153801e7efe892703cff4a7fd7b9c7a2ea6484f3abcd029cb6ed3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/6.webp": {
+      "filePath": "public/images/6.webp",
+      "contentHash": "d61eea0fbdeb1a1292d239f848c4f8c8d95f19bcdc1c990baa27c5c455346940",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 93,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/7.webp": {
+      "filePath": "public/images/7.webp",
+      "contentHash": "ad753706aa04bac30983db4f1389ea34334e9a81b551797b4e5bffa684b72d90",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 139,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/8.webp": {
+      "filePath": "public/images/8.webp",
+      "contentHash": "99b2a8945fb5a1cb0431ba13bc1e98badddd81c062ae55de844ea3a7ea97cdf6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/9.webp": {
+      "filePath": "public/images/9.webp",
+      "contentHash": "6baac79401b292b73ba4b204ce1ae5ed0871d260044464e86b2b5a347e681b6d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 67,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-1.webp": {
+      "filePath": "public/images/diemthamquan-1.webp",
+      "contentHash": "e81f03b655234e9746ae977cf5b12be84051011848082a90610c22a150d5f21b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 154,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-10.webp": {
+      "filePath": "public/images/diemthamquan-10.webp",
+      "contentHash": "4d2d9e2da5d1df5081b5f3a1e8f0814c4b2bba958d7e813e7ff197e3add80211",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 737,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-2.webp": {
+      "filePath": "public/images/diemthamquan-2.webp",
+      "contentHash": "e50a53d2e152406e0a135bb84a23c6802104645e7f2935a077ae1495e7fbd038",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 166,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-3.webp": {
+      "filePath": "public/images/diemthamquan-3.webp",
+      "contentHash": "2b6aa21c9f8880f37d5b72b204c027fe20ad24a8a87c4f68a27b576dfc12c961",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 290,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-4.webp": {
+      "filePath": "public/images/diemthamquan-4.webp",
+      "contentHash": "b9853e09086215c109abbf7ea6c07c8c0da8293ab0ed0c6f3d7bc4d2066f0ebc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 121,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-5.webp": {
+      "filePath": "public/images/diemthamquan-5.webp",
+      "contentHash": "83f9f3dbba198f275d67d180445e4619c7156ea00a16bc00ef3d2745480df0f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 115,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-6.webp": {
+      "filePath": "public/images/diemthamquan-6.webp",
+      "contentHash": "77523a9d3b263a61ae0e2bfb48a430905f07228d1436817b4910017a71759fd6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 768,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-7.webp": {
+      "filePath": "public/images/diemthamquan-7.webp",
+      "contentHash": "c6eaea8477be0a0d40fa33127109fb7a8c785f69d6f7f28cd1419b8ca1713261",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-8.webp": {
+      "filePath": "public/images/diemthamquan-8.webp",
+      "contentHash": "56f694f100d9937c322f63ec28bda6231b4a1af48b756280a41c525b1fd27363",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 158,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/diemthamquan-9.webp": {
+      "filePath": "public/images/diemthamquan-9.webp",
+      "contentHash": "d31149a2e54a9b7be4098fea00cb23b23bb0ba524a59041f8009dc604fc361e4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 190,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/huongdandulich-1.webp": {
+      "filePath": "public/images/huongdandulich-1.webp",
+      "contentHash": "7baeb387bfcbcf356dcba00f6f29dbecabe468d14bc334888cfcf72f38d7448e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 807,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/huongdandulich-2.webp": {
+      "filePath": "public/images/huongdandulich-2.webp",
+      "contentHash": "c3c29fde7b68fc17bc244a6d396709703803a1d5e97e0f32da6622aa727fe5f3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 667,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/huongdandulich-3.webp": {
+      "filePath": "public/images/huongdandulich-3.webp",
+      "contentHash": "f56911288c4bd362cad649746da034a5358e78114ec2f866f0a207f591ae6174",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 555,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/huongdandulich-4.webp": {
+      "filePath": "public/images/huongdandulich-4.webp",
+      "contentHash": "1de046d80ec2e1e66ebb0d08e22b44b519b846483cac8240e20de8e767caefc6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 877,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-1.webp": {
+      "filePath": "public/images/khachsan-1.webp",
+      "contentHash": "19ff2e3a53605b803fe9b54892ae9846dcba7311c00c63442f85d919678b7a2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 130,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-10.webp": {
+      "filePath": "public/images/khachsan-10.webp",
+      "contentHash": "e707200f7457f0650c202ffa662bba38d180c15cc49aebc289d7eb8847cb7276",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 122,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-2.webp": {
+      "filePath": "public/images/khachsan-2.webp",
+      "contentHash": "71e65e7abda7f6e959933ad9908208a011cde4a17f7df3a8936fcc1966ca2a8f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 100,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-3.webp": {
+      "filePath": "public/images/khachsan-3.webp",
+      "contentHash": "2cb45ea2a7dd9bd616ac8a41151e6e0ae03219e59acd76b32de1e938e8ced2e1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 108,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-4.webp": {
+      "filePath": "public/images/khachsan-4.webp",
+      "contentHash": "162715b4870bd067e3a4eeaa2717067cab1589c3596148e94331f5cf1a983f04",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 112,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-6.webp": {
+      "filePath": "public/images/khachsan-6.webp",
+      "contentHash": "4566124d622a8be5fb176cba9c60c44b8645b046a3513bac8bb399a0c6bd45ba",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 88,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-7.webp": {
+      "filePath": "public/images/khachsan-7.webp",
+      "contentHash": "ceef76487698a174b324223b6fc24a1e2752eeb8362fc6efefc267ce5b3997fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 123,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-8.webp": {
+      "filePath": "public/images/khachsan-8.webp",
+      "contentHash": "c356ba65368058cc0bca419d155b83c7c519b2063ace6dbef4f8709416ed2374",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 129,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/khachsan-9.webp": {
+      "filePath": "public/images/khachsan-9.webp",
+      "contentHash": "f12d378214d83e8bf06c45910a48743d132ec28b03d714becbd4ef371c88eae6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 433,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-1.webp": {
+      "filePath": "public/images/phuongtiendulich-1.webp",
+      "contentHash": "c0284f3b6a15aa1836225fcd220505c3bda7d51f37ca3a3b8b705fe77a9d45ed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 145,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-2.webp": {
+      "filePath": "public/images/phuongtiendulich-2.webp",
+      "contentHash": "063a54d34fa16866591a858d5e1896dc5733017d47748bcca404634dd2ec55c7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 109,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-3.webp": {
+      "filePath": "public/images/phuongtiendulich-3.webp",
+      "contentHash": "fc240e3a0c7f327fefe362e8b4a621262bdf68e45d6b0edaa12af35e553a0dd3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 145,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-4.webp": {
+      "filePath": "public/images/phuongtiendulich-4.webp",
+      "contentHash": "0ea8a2a6d7f9d3f85d7cf25db151575a6923b9afda9eac340d9427ba1af326a9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-5.webp": {
+      "filePath": "public/images/phuongtiendulich-5.webp",
+      "contentHash": "0c8f264e78ca1f6367fa28a998689f27894cc3c09d11f61a9a3e8ac140528334",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 94,
+      "hasStructuralAnalysis": false
+    },
+    "public/images/phuongtiendulich-6.webp": {
+      "filePath": "public/images/phuongtiendulich-6.webp",
+      "contentHash": "0ea8a2a6d7f9d3f85d7cf25db151575a6923b9afda9eac340d9427ba1af326a9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/[locale]/1-things-to-do/[id]/mockData.ts": {
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/mockData.ts",
+      "contentHash": "ae836725b8379533591d7eea3c24640ee5882993c468700f87b3331d2d10c241",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "activityMockData",
+        "activityReviews",
+        "similarActivities"
+      ],
+      "totalLines": 145,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/1-things-to-do/[id]/page.tsx": {
+      "filePath": "src/app/[locale]/1-things-to-do/[id]/page.tsx",
+      "contentHash": "acacba151f1b8fb5d41f74f992562555b35a0767d34c8e4fc3a9371f960eddfd",
+      "functions": [
+        {
+          "name": "ActivityDetailPage",
+          "params": [
+            "{ params }"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "generateStaticParams",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../../components/layouts/ActivityDetailLayout",
+          "specifiers": [
+            "ActivityDetailLayout"
+          ]
+        },
+        {
+          "source": "./mockData",
+          "specifiers": [
+            "activityMockData",
+            "activityReviews",
+            "similarActivities"
+          ]
+        }
+      ],
+      "exports": [
+        "ActivityDetailPage",
+        "generateStaticParams"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/1-things-to-do/mockData.ts": {
+      "filePath": "src/app/[locale]/1-things-to-do/mockData.ts",
+      "contentHash": "0856990a95b365aab52cdc7e649f492cf047416794cfe40a46409efd2915a733",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "CATEGORIES",
+        "thingsMock"
+      ],
+      "totalLines": 315,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/1-things-to-do/page.tsx": {
+      "filePath": "src/app/[locale]/1-things-to-do/page.tsx",
+      "contentHash": "cb62b97a7622b882e6331d020aa87dfe9a348d33cb337c18dcd8723c8d6d4380",
+      "functions": [
+        {
+          "name": "useFilters",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "applyFilters",
+          "params": [
+            "items",
+            "cats",
+            "date",
+            "price",
+            "rating"
+          ],
+          "exported": false,
+          "lineCount": 43
+        },
+        {
+          "name": "applySorting",
+          "params": [
+            "items",
+            "sort"
+          ],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "ThingsToDoContent",
+          "params": [],
+          "exported": false,
+          "lineCount": 128
+        },
+        {
+          "name": "ThingsToDoLoading",
+          "params": [],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "ThingsToDoPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/app/components/PhoGroupHero",
+          "specifiers": [
+            "PhoGroupHero"
+          ]
+        },
+        {
+          "source": "@/app/components/ThingsCard",
+          "specifiers": [
+            "ThingsCard"
+          ]
+        },
+        {
+          "source": "@/app/components/ThingsFilterBar",
+          "specifiers": [
+            "ThingsFilterBar"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "Suspense"
+          ]
+        },
+        {
+          "source": "./mockData",
+          "specifiers": [
+            "ThingItem",
+            "thingsMock"
+          ]
+        }
+      ],
+      "exports": [
+        "ThingsToDoPage"
+      ],
+      "totalLines": 250,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/about/page.tsx": {
+      "filePath": "src/app/[locale]/about/page.tsx",
+      "contentHash": "86ddda87fbc252d465ec33b1676cb44b9662b9ee1813b9479655b02b2bee8a97",
+      "functions": [
+        {
+          "name": "AboutPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 223
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "AboutPage"
+      ],
+      "totalLines": 232,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/blog/page.tsx": {
+      "filePath": "src/app/[locale]/blog/page.tsx",
+      "contentHash": "f6485214271f33f26ef2860a8e4d8b92894d6230d8e8ce96ed9766bad2531d98",
+      "functions": [
+        {
+          "name": "BlogPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 214
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "BlogPage"
+      ],
+      "totalLines": 218,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/contact/page.tsx": {
+      "filePath": "src/app/[locale]/contact/page.tsx",
+      "contentHash": "b97c7502e64714c16e01cbcc96b26161988c13383c1e05cb60f877eba09a4307",
+      "functions": [
+        {
+          "name": "ContactPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 266
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "ContactPage"
+      ],
+      "totalLines": 270,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/hotels/[id]/page.tsx": {
+      "filePath": "src/app/[locale]/hotels/[id]/page.tsx",
+      "contentHash": "30eb14f597be4871e9d19c95d78b964b4cb328a87e38b5114d199142453d8685",
+      "functions": [
+        {
+          "name": "HotelDetailPage",
+          "params": [
+            "{ params }"
+          ],
+          "exported": true,
+          "lineCount": 23
+        },
+        {
+          "name": "generateStaticParams",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../../components/layouts/HotelDetailLayout",
+          "specifiers": [
+            "HotelDetailLayout"
+          ]
+        },
+        {
+          "source": "../mockData",
+          "specifiers": [
+            "hotelMockData",
+            "hotelReviews",
+            "similarHotels"
+          ]
+        }
+      ],
+      "exports": [
+        "HotelDetailPage",
+        "generateStaticParams"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/hotels/mockData.ts": {
+      "filePath": "src/app/[locale]/hotels/mockData.ts",
+      "contentHash": "62e266273b2e89be9a319434350c6e1c9491c5b74a691adc705710b15ef1622b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "hotelMockData",
+        "hotelReviews",
+        "similarHotels"
+      ],
+      "totalLines": 141,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/layout.tsx": {
+      "filePath": "src/app/[locale]/layout.tsx",
+      "contentHash": "d2b70e4069134fb827391e605ee965ffb6f9c5010823d32511bc03e0a1e8782f",
+      "functions": [
+        {
+          "name": "generateMetadata",
+          "params": [
+            "{ params }"
+          ],
+          "returnType": "Promise<Metadata>",
+          "exported": true,
+          "lineCount": 44
+        },
+        {
+          "name": "LocaleLayout",
+          "params": [
+            "{\r\n    children,\r\n    params,\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 51
+        },
+        {
+          "name": "generateStaticParams",
+          "params": [],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "next/font/google",
+          "specifiers": [
+            "Inter"
+          ]
+        },
+        {
+          "source": "../components/FloatingChat",
+          "specifiers": [
+            "FloatingChat"
+          ]
+        },
+        {
+          "source": "../components/Footer",
+          "specifiers": [
+            "Footer"
+          ]
+        },
+        {
+          "source": "../components/Header",
+          "specifiers": [
+            "Header"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "LanguageProvider"
+          ]
+        }
+      ],
+      "exports": [
+        "generateMetadata",
+        "viewport",
+        "LocaleLayout",
+        "generateStaticParams"
+      ],
+      "totalLines": 118,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/not-found.tsx": {
+      "filePath": "src/app/[locale]/not-found.tsx",
+      "contentHash": "da14c42eb2544c302e2f6b90a75cad0c97f3f29113bc231c5a0569641b8dd0ee",
+      "functions": [
+        {
+          "name": "NotFound",
+          "params": [],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "NotFound"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/page.tsx": {
+      "filePath": "src/app/[locale]/page.tsx",
+      "contentHash": "0a8d98e706f8dd174a68374aaec40082269f370ba5514980d37a1e6531ac9bd8",
+      "functions": [
+        {
+          "name": "Home",
+          "params": [
+            "{ params }"
+          ],
+          "exported": true,
+          "lineCount": 61
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../components/ActivityReviews",
+          "specifiers": [
+            "ActivityReviews"
+          ]
+        },
+        {
+          "source": "../components/ContactBookingForm",
+          "specifiers": [
+            "ContactBookingForm"
+          ]
+        },
+        {
+          "source": "../components/FAQ",
+          "specifiers": [
+            "FAQ"
+          ]
+        },
+        {
+          "source": "../components/Hotels",
+          "specifiers": [
+            "Hotels"
+          ]
+        },
+        {
+          "source": "../components/PhoGroupHero",
+          "specifiers": [
+            "PhoGroupHero"
+          ]
+        },
+        {
+          "source": "../components/TopActivities",
+          "specifiers": [
+            "TopActivities"
+          ]
+        },
+        {
+          "source": "../components/TopDestinations",
+          "specifiers": [
+            "TopDestinations"
+          ]
+        },
+        {
+          "source": "../components/Transportation",
+          "specifiers": [
+            "Transportation"
+          ]
+        },
+        {
+          "source": "../components/TravelGuides",
+          "specifiers": [
+            "TravelGuides"
+          ]
+        },
+        {
+          "source": "../components/WeatherInfo",
+          "specifiers": [
+            "WeatherInfo"
+          ]
+        }
+      ],
+      "exports": [
+        "Home"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/pho-food/page.tsx": {
+      "filePath": "src/app/[locale]/pho-food/page.tsx",
+      "contentHash": "326e203f5c5130a1891d3f48ccd4bc22905ed205e0bb6bc4220ebde73b2af0b9",
+      "functions": [
+        {
+          "name": "PhoFoodPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 242
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/app/components/PhoGroupHero",
+          "specifiers": [
+            "PhoGroupHero"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoFoodPage"
+      ],
+      "totalLines": 249,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/pho-retreat/page.tsx": {
+      "filePath": "src/app/[locale]/pho-retreat/page.tsx",
+      "contentHash": "722dfaed9c88634397044fbd24826a613e8f75669524ad38414d0976db3b9539",
+      "functions": [
+        {
+          "name": "PhoRetreatPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 383
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/app/components/PhoGroupHero",
+          "specifiers": [
+            "PhoGroupHero"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoRetreatPage"
+      ],
+      "totalLines": 390,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/pho-travel/page.tsx": {
+      "filePath": "src/app/[locale]/pho-travel/page.tsx",
+      "contentHash": "ea939444ac61fc08fdc150411dfb850ad3beae246e6d871654987a253d83dadc",
+      "functions": [
+        {
+          "name": "PhoTravelPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 408
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/app/components/PhoGroupHero",
+          "specifiers": [
+            "PhoGroupHero"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoTravelPage"
+      ],
+      "totalLines": 415,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/privacy/page.tsx": {
+      "filePath": "src/app/[locale]/privacy/page.tsx",
+      "contentHash": "cee9fc8abe61b1b0c077ac6c6a91d8287a828071eb8975b3154dccc53008fbe5",
+      "functions": [
+        {
+          "name": "PrivacyPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 100
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "PrivacyPage"
+      ],
+      "totalLines": 103,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/[locale]/terms/page.tsx": {
+      "filePath": "src/app/[locale]/terms/page.tsx",
+      "contentHash": "a2e77c8c60453033c451cd1e3fda6d78e570dd07de5b2d7ee974b77e3ef6b38e",
+      "functions": [
+        {
+          "name": "TermsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 189
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "TermsPage"
+      ],
+      "totalLines": 195,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/analytics/page.tsx": {
+      "filePath": "src/app/admin/analytics/page.tsx",
+      "contentHash": "bfb352c7a46b090f01d2d57b67f2852c70b936dad19740c2ec2b8356e5b366e0",
+      "functions": [
+        {
+          "name": "Analytics",
+          "params": [],
+          "exported": true,
+          "lineCount": 295
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "Analytics"
+      ],
+      "totalLines": 300,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/blog/page.tsx": {
+      "filePath": "src/app/admin/blog/page.tsx",
+      "contentHash": "34dc7c066f4a44e63e02a1bc49cdc66a9b843265fd2ba96d94771afc68ef7c54",
+      "functions": [
+        {
+          "name": "BlogManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 267
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "BlogManagement"
+      ],
+      "totalLines": 273,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/customers/page.tsx": {
+      "filePath": "src/app/admin/customers/page.tsx",
+      "contentHash": "56c626c0f03ed8531a92661f4a77a814843d992de6d30f32cfcacbbe69f339eb",
+      "functions": [
+        {
+          "name": "CustomersManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 298
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "CustomersManagement"
+      ],
+      "totalLines": 303,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/dashboard/page.tsx": {
+      "filePath": "src/app/admin/dashboard/page.tsx",
+      "contentHash": "0b4a79b7a74129e2b200e89cd162313a5cda83cf1f5ac44d128bbf6218db46ae",
+      "functions": [
+        {
+          "name": "AdminDashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 219
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminDashboard"
+      ],
+      "totalLines": 225,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/layout.tsx": {
+      "filePath": "src/app/admin/layout.tsx",
+      "contentHash": "50f6656a3037c0063df86bd6c1815912be456a3d208e596c08369eabac87862f",
+      "functions": [
+        {
+          "name": "AdminLayout",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 139
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "usePathname"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminLayout"
+      ],
+      "totalLines": 150,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/login/page.tsx": {
+      "filePath": "src/app/admin/login/page.tsx",
+      "contentHash": "93b35f88225a144320755c49208bc5f5382780d07bce055bacd23d80b17aacbd",
+      "functions": [
+        {
+          "name": "LoginPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 170
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "useRouter"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "LoginPage"
+      ],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/orders/page.tsx": {
+      "filePath": "src/app/admin/orders/page.tsx",
+      "contentHash": "efa255627c7c2c6c1dd37b82a067ecb7a31096feb635978121d2da9c50db159f",
+      "functions": [
+        {
+          "name": "OrdersManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 302
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "OrdersManagement"
+      ],
+      "totalLines": 307,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/pho-food/page.tsx": {
+      "filePath": "src/app/admin/pho-food/page.tsx",
+      "contentHash": "e00779ae18902e983fa1c09d420bcf242d6395de7fb89fed807184bf235cb7d2",
+      "functions": [
+        {
+          "name": "PhoFoodManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 257
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoFoodManagement"
+      ],
+      "totalLines": 263,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/pho-retreat/page.tsx": {
+      "filePath": "src/app/admin/pho-retreat/page.tsx",
+      "contentHash": "5a1e9aab205bdb677aafda051db01636635d0aeb156d04b34acef3edbce4f9cf",
+      "functions": [
+        {
+          "name": "PhoRetreatManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 345
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoRetreatManagement"
+      ],
+      "totalLines": 351,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/pho-travel/page.tsx": {
+      "filePath": "src/app/admin/pho-travel/page.tsx",
+      "contentHash": "569c5cf6c4d2d1903a6e70beed9e03215cff99f5b25275841f4bd1a3aa7b49a3",
+      "functions": [
+        {
+          "name": "PhoTravelManagement",
+          "params": [],
+          "exported": true,
+          "lineCount": 364
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoTravelManagement"
+      ],
+      "totalLines": 370,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/admin/settings/page.tsx": {
+      "filePath": "src/app/admin/settings/page.tsx",
+      "contentHash": "e1acf696f330bd8249057bec0bc3d06eac66d5147ad2fb57e95ee02c1bd85b8e",
+      "functions": [
+        {
+          "name": "SettingsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 527
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "SettingsPage"
+      ],
+      "totalLines": 532,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ActivityReviews.tsx": {
+      "filePath": "src/app/components/ActivityReviews.tsx",
+      "contentHash": "7cd2786fafd9931ccac681b941cf43e5d63b2ceeee76b96ac595cd0e11d791c2",
+      "functions": [
+        {
+          "name": "ReviewCard",
+          "params": [
+            "{ review }"
+          ],
+          "exported": false,
+          "lineCount": 38
+        },
+        {
+          "name": "ActivityReviews",
+          "params": [],
+          "exported": true,
+          "lineCount": 75
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        }
+      ],
+      "exports": [
+        "ActivityReviews"
+      ],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Collections.tsx": {
+      "filePath": "src/app/components/Collections.tsx",
+      "contentHash": "2cf13c2874bd16fae704664432910c016d777f4b942ba2c71ab398bc3cfa516a",
+      "functions": [
+        {
+          "name": "Collections",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Collections"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Contact.tsx": {
+      "filePath": "src/app/components/Contact.tsx",
+      "contentHash": "7a8550f10890d8eac1ba1e13152d570dfd9f86802df34e0b78a0cba301b58b9b",
+      "functions": [
+        {
+          "name": "Contact",
+          "params": [],
+          "exported": true,
+          "lineCount": 115
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "Contact"
+      ],
+      "totalLines": 120,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ContactBookingForm.tsx": {
+      "filePath": "src/app/components/ContactBookingForm.tsx",
+      "contentHash": "10d1d9eb8318291354075e1d75f0503f6325db40a1c78b32787337a947dbd104",
+      "functions": [
+        {
+          "name": "ContactBookingForm",
+          "params": [],
+          "exported": true,
+          "lineCount": 303
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "ContactBookingForm"
+      ],
+      "totalLines": 308,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/FAQ.tsx": {
+      "filePath": "src/app/components/FAQ.tsx",
+      "contentHash": "eea78a5ab9b8662bf073426c8665e63d861b4009bd16b4960410b8fbd0dec5f0",
+      "functions": [
+        {
+          "name": "FAQItem",
+          "params": [
+            "{ faq, isOpen, onToggle }"
+          ],
+          "exported": false,
+          "lineCount": 28
+        },
+        {
+          "name": "FAQ",
+          "params": [],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../lib/data",
+          "specifiers": [
+            "faqsData",
+            "FAQ"
+          ]
+        }
+      ],
+      "exports": [
+        "FAQ"
+      ],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/FilterModal.tsx": {
+      "filePath": "src/app/components/FilterModal.tsx",
+      "contentHash": "9da9b49d87a1a5ec5e7cd40489605be65b65127c2f3e37b500df1e25654f286a",
+      "functions": [
+        {
+          "name": "FilterModal",
+          "params": [
+            "{ isOpen, onClose, selectedCats, selectedPrice, selectedRating, onApplyFilters }"
+          ],
+          "exported": true,
+          "lineCount": 231
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../[locale]/1-things-to-do/mockData",
+          "specifiers": [
+            "CATEGORIES"
+          ]
+        }
+      ],
+      "exports": [
+        "FilterModal"
+      ],
+      "totalLines": 259,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/FloatingChat.tsx": {
+      "filePath": "src/app/components/FloatingChat.tsx",
+      "contentHash": "7a8841fbffbe3c346f82bb04e0c6467f70cec42f3606cbe384435cf613c01aa5",
+      "functions": [
+        {
+          "name": "FloatingChat",
+          "params": [],
+          "exported": true,
+          "lineCount": 56
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "FloatingChat"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Food.tsx": {
+      "filePath": "src/app/components/Food.tsx",
+      "contentHash": "4e7c5230c4f34a21297da44a89f79d94231b30113fbba90175d35727ce0eb6dd",
+      "functions": [
+        {
+          "name": "Food",
+          "params": [],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Food"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Footer.tsx": {
+      "filePath": "src/app/components/Footer.tsx",
+      "contentHash": "efd0874499530b70a4799bdf02adac2e1b56457dd68b75f18dc7408315a73852",
+      "functions": [
+        {
+          "name": "FooterSectionComponent",
+          "params": [
+            "{ section }"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "Footer",
+          "params": [],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        },
+        {
+          "source": "../lib/data",
+          "specifiers": [
+            "footerSectionsData",
+            "FooterSection"
+          ]
+        }
+      ],
+      "exports": [
+        "Footer"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Guide.tsx": {
+      "filePath": "src/app/components/Guide.tsx",
+      "contentHash": "538b40be679306426eee34b62b41113188338f389692401bd9a8793faa7d075e",
+      "functions": [
+        {
+          "name": "Guide",
+          "params": [],
+          "exported": true,
+          "lineCount": 99
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "Guide"
+      ],
+      "totalLines": 104,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Header.tsx": {
+      "filePath": "src/app/components/Header.tsx",
+      "contentHash": "15c2e58325ec76285273f29d534fc848cf3728442217c2534d81b52b74d0b815",
+      "functions": [
+        {
+          "name": "Header",
+          "params": [],
+          "exported": true,
+          "lineCount": 185
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "Header"
+      ],
+      "totalLines": 192,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Hero.tsx": {
+      "filePath": "src/app/components/Hero.tsx",
+      "contentHash": "67fb43f854e695a344a304f59630c8d851209a69dbabc5a6ee52b0f2d0c48812",
+      "functions": [
+        {
+          "name": "Hero",
+          "params": [],
+          "exported": true,
+          "lineCount": 72
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Hero"
+      ],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Hotels.tsx": {
+      "filePath": "src/app/components/Hotels.tsx",
+      "contentHash": "665f03c28a28c88dd6ed27c9906f958263c2166dcfa070389b0155752c94f5fe",
+      "functions": [
+        {
+          "name": "HotelCard",
+          "params": [
+            "{ hotel }"
+          ],
+          "exported": false,
+          "lineCount": 76
+        },
+        {
+          "name": "Hotels",
+          "params": [],
+          "exported": true,
+          "lineCount": 176
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        },
+        {
+          "source": "../lib/data",
+          "specifiers": [
+            "hotelsData",
+            "Hotel"
+          ]
+        }
+      ],
+      "exports": [
+        "Hotels"
+      ],
+      "totalLines": 266,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/PhoGroupHero.tsx": {
+      "filePath": "src/app/components/PhoGroupHero.tsx",
+      "contentHash": "effc63200cbaccb20df630badb48e58f7273f576bd47324ef3e54aefddc42156",
+      "functions": [
+        {
+          "name": "PhoGroupHero",
+          "params": [
+            "{ activeTab = 'explore' }"
+          ],
+          "exported": true,
+          "lineCount": 118
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "PhoGroupHero"
+      ],
+      "totalLines": 130,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Retreat.tsx": {
+      "filePath": "src/app/components/Retreat.tsx",
+      "contentHash": "99834945c5715f3c26b753dd8a8ab9ff2c637b6fdf71a09416a70f55475caa86",
+      "functions": [
+        {
+          "name": "Retreat",
+          "params": [],
+          "exported": true,
+          "lineCount": 114
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "Retreat"
+      ],
+      "totalLines": 119,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ThingsCard.tsx": {
+      "filePath": "src/app/components/ThingsCard.tsx",
+      "contentHash": "ba6f89fe3104e9ff8f423f4cbd79d83a157ab0ba2e012909acee888a29f69271",
+      "functions": [
+        {
+          "name": "ThingsCard",
+          "params": [
+            "{ item }"
+          ],
+          "exported": true,
+          "lineCount": 75
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../[locale]/1-things-to-do/mockData",
+          "specifiers": [
+            "ThingItem"
+          ]
+        }
+      ],
+      "exports": [
+        "ThingsCard"
+      ],
+      "totalLines": 82,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ThingsFilterBar.tsx": {
+      "filePath": "src/app/components/ThingsFilterBar.tsx",
+      "contentHash": "97b9a3d9018ad3ce2a87d140f7eda6e8b18f319497ec51f62415c972ad9bfdcc",
+      "functions": [
+        {
+          "name": "formatDateLabel",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "ThingsFilterBar",
+          "params": [],
+          "exported": true,
+          "lineCount": 155
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "usePathname",
+            "useRouter",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "./FilterModal",
+          "specifiers": [
+            "FilterModal"
+          ]
+        }
+      ],
+      "exports": [
+        "ThingsFilterBar"
+      ],
+      "totalLines": 173,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/ThingsFilterBarNew.tsx": {
+      "filePath": "src/app/components/ThingsFilterBarNew.tsx",
+      "contentHash": "e135e1bc62b29c2f9c24a910508927e219ea95fa25e1b7d16582ff2217264272",
+      "functions": [
+        {
+          "name": "formatDateLabel",
+          "params": [
+            "date"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "ThingsFilterBar",
+          "params": [],
+          "exported": true,
+          "lineCount": 156
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "usePathname",
+            "useRouter",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "./FilterModal",
+          "specifiers": [
+            "FilterModal"
+          ]
+        }
+      ],
+      "exports": [
+        "ThingsFilterBar"
+      ],
+      "totalLines": 175,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TopActivities.tsx": {
+      "filePath": "src/app/components/TopActivities.tsx",
+      "contentHash": "139bd07f00a459b42ce4d8a60e0325a8bc6fe5aa255a2c86da750b169b588a40",
+      "functions": [
+        {
+          "name": "TopActivities",
+          "params": [],
+          "exported": true,
+          "lineCount": 192
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/mockup/website",
+          "specifiers": [
+            "activities"
+          ]
+        },
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "TopActivities"
+      ],
+      "totalLines": 201,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TopBar.tsx": {
+      "filePath": "src/app/components/TopBar.tsx",
+      "contentHash": "69e25befd6114fc0415d6b954bb3625e03ac4722c75f48e9528ed07d19bfd325",
+      "functions": [
+        {
+          "name": "TopBar",
+          "params": [],
+          "exported": true,
+          "lineCount": 42
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "TopBar"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TopDestinations.tsx": {
+      "filePath": "src/app/components/TopDestinations.tsx",
+      "contentHash": "c65214c2fc3f0bf5e3a967bd74f571eff159c9f8cee34c0647e19c4a2f8097c8",
+      "functions": [
+        {
+          "name": "TopDestinations",
+          "params": [],
+          "exported": true,
+          "lineCount": 151
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/mockup/website",
+          "specifiers": [
+            "destinations"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "TopDestinations"
+      ],
+      "totalLines": 159,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TopPicks.tsx": {
+      "filePath": "src/app/components/TopPicks.tsx",
+      "contentHash": "3115cbe187273d0bcffeebc91df3afcf33316d6773e93214283b71b5a0e8b343",
+      "functions": [
+        {
+          "name": "TopPicks",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "TopPicks"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Transportation.tsx": {
+      "filePath": "src/app/components/Transportation.tsx",
+      "contentHash": "58979153a89e0e00cb4a5674fd22add16fd750143c91c56b55f19fa43ee962c7",
+      "functions": [
+        {
+          "name": "Transportation",
+          "params": [],
+          "exported": true,
+          "lineCount": 242
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "../contexts/LanguageContext",
+          "specifiers": [
+            "useLanguage"
+          ]
+        }
+      ],
+      "exports": [
+        "Transportation"
+      ],
+      "totalLines": 249,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/Travel.tsx": {
+      "filePath": "src/app/components/Travel.tsx",
+      "contentHash": "9b0a35b5d1f6dbcd9fc9da8394bee2079afa2fb8e6e0846ea7a597535a1ee69e",
+      "functions": [
+        {
+          "name": "Travel",
+          "params": [],
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Travel"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TravelEssentials.tsx": {
+      "filePath": "src/app/components/TravelEssentials.tsx",
+      "contentHash": "c8731692588c89e47ac8fbbd1a2c350b9da401002d244766a1fb682f399c8db0",
+      "functions": [
+        {
+          "name": "TravelEssentials",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "TravelEssentials"
+      ],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/TravelGuides.tsx": {
+      "filePath": "src/app/components/TravelGuides.tsx",
+      "contentHash": "b514a648eda8305074d6cc4d72ca7aa0c4e0ce8ee9042b9e4f5bad15ac36e3bd",
+      "functions": [
+        {
+          "name": "GuideCard",
+          "params": [
+            "{ guide }"
+          ],
+          "exported": false,
+          "lineCount": 62
+        },
+        {
+          "name": "SpecialGuideCard",
+          "params": [
+            "{ guide }"
+          ],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "TravelGuides",
+          "params": [],
+          "exported": true,
+          "lineCount": 145
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "../lib/data",
+          "specifiers": [
+            "travelGuidesData",
+            "SpecialGuide",
+            "TravelGuide"
+          ]
+        }
+      ],
+      "exports": [
+        "TravelGuides"
+      ],
+      "totalLines": 249,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/WeatherInfo.tsx": {
+      "filePath": "src/app/components/WeatherInfo.tsx",
+      "contentHash": "1d503ffa752b6b5869f0983d487e290f0be79280dc04a1a470cb8171f3a6bc79",
+      "functions": [
+        {
+          "name": "WeatherInfo",
+          "params": [],
+          "exported": true,
+          "lineCount": 127
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/data",
+          "specifiers": [
+            "quickInfoData",
+            "weatherData"
+          ]
+        }
+      ],
+      "exports": [
+        "WeatherInfo"
+      ],
+      "totalLines": 129,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/index.ts": {
+      "filePath": "src/app/components/index.ts",
+      "contentHash": "91fa3d35cf28d4cb9a613c441b36e5196d1295d4078a1e7c37ce8df494b055d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "ActivityDetailLayout",
+        "DestinationLayout",
+        "HotelDetailLayout",
+        "BookingForm",
+        "ImageGallery"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/layouts/ActivityDetailLayout.tsx": {
+      "filePath": "src/app/components/layouts/ActivityDetailLayout.tsx",
+      "contentHash": "d96d953c5e484577eda90b3a9cbf14f01e02de40be024e3dd441ae1eaa479455",
+      "functions": [
+        {
+          "name": "ActivityDetailLayout",
+          "params": [
+            "{\r\n    activity,\r\n    reviews = [],\r\n    similarActivities = []\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 350
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Calendar",
+            "ChevronLeft",
+            "ChevronRight",
+            "Clock",
+            "Heart",
+            "MapPin",
+            "Share",
+            "Star",
+            "Users"
+          ]
+        },
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "ActivityDetailLayout"
+      ],
+      "totalLines": 393,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/layouts/DestinationLayout.tsx": {
+      "filePath": "src/app/components/layouts/DestinationLayout.tsx",
+      "contentHash": "4bddb962f74250775b065e2a721421ba9c1d2cf820a18dba2f8a4abafd77d265",
+      "functions": [
+        {
+          "name": "DestinationLayout",
+          "params": [
+            "{\r\n    destination,\r\n    relatedDestinations = [],\r\n    recommendedActivities = [],\r\n    recommendedHotels = []\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 374
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BookOpen",
+            "Calendar",
+            "Camera",
+            "ChevronRight",
+            "Clock",
+            "Heart",
+            "MapPin",
+            "Share",
+            "Star",
+            "User",
+            "Utensils"
+          ]
+        },
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "DestinationLayout"
+      ],
+      "totalLines": 442,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/layouts/HotelDetailLayout.tsx": {
+      "filePath": "src/app/components/layouts/HotelDetailLayout.tsx",
+      "contentHash": "2400f1a796577ceb5d424f76805364ce0835e0816f497c4fdd57d3997710eb9d",
+      "functions": [
+        {
+          "name": "HotelDetailLayout",
+          "params": [
+            "{\r\n    hotel,\r\n    reviews = [],\r\n    similarHotels = []\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 479
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "AirVent",
+            "Car",
+            "Check",
+            "ChevronLeft",
+            "ChevronRight",
+            "Coffee",
+            "Heart",
+            "MapPin",
+            "Share",
+            "Shield",
+            "Spool",
+            "Star",
+            "Utensils",
+            "Wifi",
+            "X"
+          ]
+        },
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "HotelDetailLayout"
+      ],
+      "totalLines": 564,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/shared/BookingForm.tsx": {
+      "filePath": "src/app/components/shared/BookingForm.tsx",
+      "contentHash": "11ba5d9d4341302918a881cfa95bde37c5639dea1bb8ba4b351d01d6946d0985",
+      "functions": [
+        {
+          "name": "BookingForm",
+          "params": [
+            "{ type, item, onSubmit, className = '' }"
+          ],
+          "exported": true,
+          "lineCount": 300
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "BookingForm"
+      ],
+      "totalLines": 337,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/components/shared/ImageGallery.tsx": {
+      "filePath": "src/app/components/shared/ImageGallery.tsx",
+      "contentHash": "a2c2ae2f54d98630bf855d5474644690a315a3a303caf6f27b4ae08d78053f5a",
+      "functions": [
+        {
+          "name": "ImageGallery",
+          "params": [
+            "{ images, title, className = '' }"
+          ],
+          "exported": true,
+          "lineCount": 185
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "ImageGallery"
+      ],
+      "totalLines": 196,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/contexts/LanguageContext.tsx": {
+      "filePath": "src/app/contexts/LanguageContext.tsx",
+      "contentHash": "90bfab954fa9650fdbd0341e5b56824e7d24ba32898de006f8db089974da75f7",
+      "functions": [
+        {
+          "name": "LanguageProvider",
+          "params": [
+            "{\r\n    children,\r\n    initialLocale = 'vi',\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "useLanguage",
+          "params": [],
+          "returnType": "LanguageContextType",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "createContext",
+            "useContext",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../i18n",
+          "specifiers": [
+            "Locale",
+            "translations"
+          ]
+        }
+      ],
+      "exports": [
+        "LanguageProvider",
+        "useLanguage"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/globals.css": {
+      "filePath": "src/app/globals.css",
+      "contentHash": "db40e2fd1c92c2c91c878874f590f7daef96cb74897212d6b2e1ef33b290780e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/layout.tsx": {
+      "filePath": "src/app/layout.tsx",
+      "contentHash": "f101e4889d1f01d244378c3bbaec5263d2f2e718e76ac08e1fffbfcf09130d57",
+      "functions": [
+        {
+          "name": "RootLayout",
+          "params": [
+            "{\r\n  children,\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 40
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "next/font/google",
+          "specifiers": [
+            "Inter"
+          ]
+        },
+        {
+          "source": "next/script",
+          "specifiers": [
+            "Script"
+          ]
+        },
+        {
+          "source": "./globals.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "metadata",
+        "RootLayout"
+      ],
+      "totalLines": 82,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/lib/analytics.ts": {
+      "filePath": "src/app/lib/analytics.ts",
+      "contentHash": "c645a8e30ca2d4023cbc779617fe5c3943c91fb82f9d6cb6b4bdfbf3c8988059",
+      "functions": [
+        {
+          "name": "pageview",
+          "params": [
+            "url"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "event",
+          "params": [
+            "{\r\n    action,\r\n    category,\r\n    label,\r\n    value,\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "trackBooking",
+          "params": [
+            "type",
+            "item",
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "trackSearch",
+          "params": [
+            "query"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "trackLanguageChange",
+          "params": [
+            "language"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "GA_TRACKING_ID",
+        "pageview",
+        "event",
+        "trackBooking",
+        "trackSearch",
+        "trackLanguageChange"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/lib/data.ts": {
+      "filePath": "src/app/lib/data.ts",
+      "contentHash": "84184122ad79087a4657f3582a1a827d2a3b1da4e2dbb18abad48433e5fbfdb6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "hotelsData",
+        "travelGuidesData",
+        "specialGuidesData",
+        "weatherData",
+        "quickInfoData",
+        "currentWeatherData",
+        "faqsData",
+        "footerSectionsData",
+        "regionDestinationsData"
+      ],
+      "totalLines": 499,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/not-found.tsx": {
+      "filePath": "src/app/not-found.tsx",
+      "contentHash": "d44c8fe8dbfa94f0f64bab873aec36b722fe156f7eed4c3459feed66adb0c3bc",
+      "functions": [
+        {
+          "name": "NotFound",
+          "params": [],
+          "exported": true,
+          "lineCount": 49
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "NotFound"
+      ],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/page.tsx": {
+      "filePath": "src/app/page.tsx",
+      "contentHash": "2a18d65228321ba74cee9321fee518badde310599678ef0e521385eac4fef7e5",
+      "functions": [
+        {
+          "name": "RootPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "useRouter"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        }
+      ],
+      "exports": [
+        "RootPage"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/i18n.ts": {
+      "filePath": "src/i18n.ts",
+      "contentHash": "a722d8510557f90ec4787a924b6162afbc1840f708055247593ea003b3023496",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "locales",
+        "defaultLocale",
+        "translations"
+      ],
+      "totalLines": 123,
+      "hasStructuralAnalysis": true
+    },
+    "src/locales/en.json": {
+      "filePath": "src/locales/en.json",
+      "contentHash": "5f65d319ec3ea27d227a902751e396f6f251a4a9fdd8a6cb4919e58e944f1bbd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/locales/vi.json": {
+      "filePath": "src/locales/vi.json",
+      "contentHash": "12362386c5bfe605c2a6c60b5043c87dca769e7706d95cfe5b42e0f8daedf0c4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/middleware.ts": {
+      "filePath": "src/middleware.ts",
+      "contentHash": "eb9a82646f0612137676545de04c4a6b304dca745f12d89b7d1f341f7b76d19e",
+      "functions": [
+        {
+          "name": "getLocale",
+          "params": [
+            "request"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "middleware",
+          "params": [
+            "request"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/server",
+          "specifiers": [
+            "NextRequest"
+          ]
+        },
+        {
+          "source": "next/server",
+          "specifiers": [
+            "NextResponse"
+          ]
+        }
+      ],
+      "exports": [
+        "middleware",
+        "config"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "src/mockup/website.tsx": {
+      "filePath": "src/mockup/website.tsx",
+      "contentHash": "055e67b1f13dc0435373b4e1c283a524c47952d7176461cb7554c1f09357c096",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "activities",
+        "destinations"
+      ],
+      "totalLines": 238,
+      "hasStructuralAnalysis": true
+    },
+    "tailwind.config.js": {
+      "filePath": "tailwind.config.js",
+      "contentHash": "5880d22a75d2b8c5b57bfd0f6d95dbe9ccfeaa574a7d08dd82d6cb96d0933ffb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "172c71e5b3e27ff690fa63a1b74598be508bef99b18f001e6d48c2bdf4fb9eff",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    }
+  }
+}
