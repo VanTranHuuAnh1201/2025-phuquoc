@@ -13,9 +13,10 @@ export function Header({ forceSolid = false }: HeaderProps) {
   const { language, setLanguage, t } = useLanguage()
   const pathname = usePathname()
   const isHomePage = pathname === '/'
-  
+
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [favCount, setFavCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,17 +32,38 @@ export function Header({ forceSolid = false }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const updateFavs = () => {
+      try {
+        const stored = localStorage.getItem('ndh:saved-rooms')
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (Array.isArray(parsed)) setFavCount(parsed.length)
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+    updateFavs()
+    window.addEventListener('storage', updateFavs)
+    const interval = setInterval(updateFavs, 1000)
+    return () => {
+      window.removeEventListener('storage', updateFavs)
+      clearInterval(interval)
+    }
+  }, [])
+
   const isSolid = forceSolid || !isHomePage || scrolled
 
   const brandColor = isSolid ? '#0b1b26' : '#ffffff'
-  const brandSubColor = isSolid ? '#6b8394' : 'rgba(255,255,255,0.72)'
-  const navLinkColor = isSolid ? '#0b1b26' : 'rgba(255,255,255,0.90)'
-  const headerBg = isSolid ? 'rgba(255, 255, 255, 0.95)' : 'transparent'
+  const brandSubColor = isSolid ? '#0284c7' : 'rgba(255,255,255,0.72)'
+  const navLinkColor = isSolid ? '#3d5462' : 'rgba(255,255,255,0.90)'
+  const headerBg = isSolid ? 'rgba(255, 255, 255, 0.94)' : 'transparent'
   const headerBorder = isSolid
-    ? '1px solid rgba(2, 132, 199, 0.12)'
+    ? '1px solid rgba(2, 132, 199, 0.10)'
     : '1px solid rgba(255, 255, 255, 0.14)'
-  const headerShadow = isSolid ? '0 4px 20px rgba(6, 40, 58, 0.08)' : 'none'
-  const langBoxBg = isSolid ? '#f2f8fc' : 'rgba(255,255,255,0.18)'
+  const headerShadow = isSolid ? '0 4px 20px rgba(6, 40, 58, 0.06)' : 'none'
+  const langBoxBg = isSolid ? '#eef6fb' : 'rgba(255,255,255,0.18)'
 
   return (
     <header
@@ -52,7 +74,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
         right: 0,
         zIndex: 100,
         background: headerBg,
-        backdropFilter: isSolid ? 'blur(12px)' : 'none',
+        backdropFilter: isSolid ? 'blur(18px)' : 'none',
         borderBottom: headerBorder,
         boxShadow: headerShadow,
         transition: 'background 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
@@ -62,7 +84,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
         style={{
           maxWidth: '1320px',
           margin: '0 auto',
-          padding: '14px 32px',
+          padding: '13px 32px',
           display: 'flex',
           alignItems: 'center',
           gap: '20px',
@@ -82,12 +104,12 @@ export function Header({ forceSolid = false }: HeaderProps) {
           <img
             src="/uploads/OP5-b8f91eaa.png"
             alt="The Nam Du Hill"
-            style={{ width: '42px', height: '42px', objectFit: 'contain' }}
+            style={{ width: '40px', height: '40px', objectFit: 'contain' }}
           />
           <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
             <span
               style={{
-                fontSize: '15px',
+                fontSize: '14.5px',
                 fontWeight: 800,
                 letterSpacing: '-0.02em',
                 color: brandColor,
@@ -98,9 +120,9 @@ export function Header({ forceSolid = false }: HeaderProps) {
             </span>
             <span
               style={{
-                fontSize: '10px',
-                fontWeight: 600,
-                letterSpacing: '0.16em',
+                fontSize: '9.5px',
+                fontWeight: 700,
+                letterSpacing: '0.15em',
                 color: brandSubColor,
                 transition: 'color 200ms ease',
               }}
@@ -125,8 +147,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
             href="/rooms"
             style={{
               fontSize: '14px',
-              fontWeight: 600,
-              color: navLinkColor,
+              fontWeight: pathname === '/rooms' ? 700 : 600,
+              color: pathname === '/rooms' ? '#0284c7' : navLinkColor,
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               transition: 'color 200ms ease',
@@ -138,8 +160,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
             href="/dining"
             style={{
               fontSize: '14px',
-              fontWeight: 600,
-              color: navLinkColor,
+              fontWeight: pathname === '/dining' ? 700 : 600,
+              color: pathname === '/dining' ? '#0284c7' : navLinkColor,
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               transition: 'color 200ms ease',
@@ -151,8 +173,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
             href="/explore"
             style={{
               fontSize: '14px',
-              fontWeight: 600,
-              color: navLinkColor,
+              fontWeight: pathname === '/explore' ? 700 : 600,
+              color: pathname === '/explore' ? '#0284c7' : navLinkColor,
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               transition: 'color 200ms ease',
@@ -164,8 +186,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
             href="/contact"
             style={{
               fontSize: '14px',
-              fontWeight: 600,
-              color: navLinkColor,
+              fontWeight: pathname === '/contact' ? 700 : 600,
+              color: pathname === '/contact' ? '#0284c7' : navLinkColor,
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               transition: 'color 200ms ease',
@@ -188,8 +210,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
             width: '40px',
             height: '40px',
             borderRadius: '12px',
-            border: isSolid ? '1px solid rgba(2,132,199,0.2)' : '1px solid rgba(255,255,255,0.28)',
-            background: isSolid ? '#f2f8fc' : 'rgba(255,255,255,0.14)',
+            border: isSolid ? '1px solid #dbe7ef' : '1px solid rgba(255,255,255,0.28)',
+            background: isSolid ? '#ffffff' : 'rgba(255,255,255,0.14)',
             color: isSolid ? '#0b1b26' : '#ffffff',
             fontSize: '17px',
             cursor: 'pointer',
@@ -201,6 +223,28 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
         {/* Language Switcher & Book Now CTA */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+          {favCount > 0 && (
+            <Link
+              href="/rooms"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                border: '1px solid #dbe7ef',
+                background: '#ffffff',
+                color: '#0b1b26',
+                padding: '6px 12px',
+                borderRadius: '999px',
+                fontSize: '12.5px',
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}
+            >
+              <span>♥</span>
+              <span>{favCount}</span>
+            </Link>
+          )}
+
           <div
             style={{
               display: 'flex',
@@ -246,21 +290,21 @@ export function Header({ forceSolid = false }: HeaderProps) {
           </div>
 
           <Link
-            href="/#booking"
+            href="/rooms"
             style={{
               background: '#0284c7',
               color: '#ffffff',
               fontSize: '13px',
               fontWeight: 700,
-              padding: '11px 22px',
+              padding: '11px 20px',
               borderRadius: '999px',
-              boxShadow: '0 6px 18px rgba(2,132,199,0.32)',
+              boxShadow: '0 6px 18px rgba(2,132,199,0.30)',
               whiteSpace: 'nowrap',
               textDecoration: 'none',
               display: 'inline-block',
             }}
           >
-            {t('Đặt phòng', 'Book now')}
+            {t('Đặt phòng', 'Book a room')}
           </Link>
         </div>
       </div>
