@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif; background: #f7fbfd; color: #0b1b26; -webkit-font-smoothing: antialiased; }
+  a { color: #0284c7; text-decoration: none; }
+  a:hover { color: #0369a1; }
+  :focus-visible { outline: 3px solid #0284c7; outline-offset: 3px; border-radius: 6px; }
+  input, button, select, textarea { font-family: inherit; }
+  input::placeholder, textarea::placeholder { color: #b3c4d0; }
+  @keyframes ndIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  ::selection { background: #00c46a; color: #04241a; }
+</style>
+</helmet>
+
+<div>
+
+<header style="position: sticky; top: 0; z-index: 100; backdrop-filter: blur(18px); background: rgba(255,255,255,0.94); border-bottom: 1px solid rgba(2,132,199,0.10);">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 13px 32px; display: flex; align-items: center; gap: 20px;">
+    <a href="Nam Du Hill.dc.html" style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+      <img src="uploads/OP5-b8f91eaa.png" alt="The Nam Du Hill" style="width: 40px; height: 40px; object-fit: contain;" />
+      <span style="display: flex; flex-direction: column; line-height: 1.1;">
+        <span style="font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">THE NAM DU HILL</span>
+        <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; color: #0284c7;">HILLTOP BOUTIQUE RESORT</span>
+      </span>
+    </a>
+    <div ref="{{ stepsRef }}" style="display: flex; align-items: center; gap: 10px; margin: 0 auto; min-width: 0;">
+      <div data-step="1" style="display: flex; align-items: center; gap: 9px;">
+        <span data-dot style="width: 26px; height: 26px; border-radius: 50%; background: #0284c7; color: #ffffff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">1</span>
+        <span data-label data-en="Your details" style="font-size: 13px; font-weight: 700; color: #0b1b26; white-space: nowrap;">Thông tin</span>
+      </div>
+      <span style="width: 30px; height: 1px; background: #dbe7ef;"></span>
+      <div data-step="2" style="display: flex; align-items: center; gap: 9px;">
+        <span data-dot style="width: 26px; height: 26px; border-radius: 50%; background: #e6eef4; color: #8fa5b3; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">2</span>
+        <span data-label data-en="Payment" style="font-size: 13px; font-weight: 600; color: #8fa5b3; white-space: nowrap;">Thanh toán</span>
+      </div>
+      <span style="width: 30px; height: 1px; background: #dbe7ef;"></span>
+      <div data-step="3" style="display: flex; align-items: center; gap: 9px;">
+        <span data-dot style="width: 26px; height: 26px; border-radius: 50%; background: #e6eef4; color: #8fa5b3; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">3</span>
+        <span data-label data-en="Confirmed" style="font-size: 13px; font-weight: 600; color: #8fa5b3; white-space: nowrap;">Xác nhận</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+      <div ref="{{ langRef }}" style="display: flex; align-items: center; background: #eef6fb; border-radius: 999px; padding: 3px;">
+        <button onClick="{{ setVI }}" data-lang="vi" style="border: none; background: #ffffff; color: #0b1b26; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.10);">VI</button>
+        <button onClick="{{ setEN }}" data-lang="en" style="border: none; background: transparent; color: #6b8394; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer;">EN</button>
+      </div>
+      <a ref="{{ helpRef }}" href="tel:0985000650" data-en="Need help? 0985 000 650" style="font-size: 13px; font-weight: 700; color: #0284c7; white-space: nowrap;">Cần hỗ trợ? 0985 000 650</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width: 1240px; margin: 0 auto; padding: 36px 32px 0;">
+  <div style="display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 26px; align-items: start;">
+
+    <div style="display: grid; gap: 16px;">
+
+      <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+        <div style="display: grid; gap: 16px; animation: ndIn 220ms ease both;">
+
+          <section style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 24px; padding: 28px 30px;">
+            <h2 data-en="Who is staying" style="margin: 0 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.024em; color: #0b1b26;">Ai sẽ đến ở</h2>
+            <p data-en="We only ask for what the front desk actually needs." style="margin: 0 0 22px; font-size: 13.5px; color: #8fa5b3;">Chúng tôi chỉ hỏi những gì lễ tân thật sự cần.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Full name *" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Họ và tên *</span>
+                <input ref="{{ nameRef }}" onInput="{{ onName }}" type="text" placeholder="Nguyễn Văn A" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Phone number *" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Số điện thoại *</span>
+                <input ref="{{ phoneRef }}" onInput="{{ onPhone }}" type="tel" placeholder="0912 345 678" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Email" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Email</span>
+                <input type="email" placeholder="email@example.com" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Guests" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Số khách</span>
+                <input type="number" min="1" value="{{ guests }}" onChange="{{ onGuests }}" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Check in" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Ngày nhận phòng</span>
+                <input type="date" onChange="{{ onCI }}" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Check out" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Ngày trả phòng</span>
+                <input type="date" onChange="{{ onCO }}" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+              </label>
+            </div>
+
+            <label style="display: flex; flex-direction: column; gap: 7px; margin-top: 14px;">
+              <span data-en="Anything we should know" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Yêu cầu đặc biệt</span>
+              <textarea rows="3" placeholder="Đến muộn, giường phụ, ăn chay, kỷ niệm..." style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; resize: vertical;"></textarea>
+            </label>
+          </section>
+
+          <section style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 24px; padding: 28px 30px;">
+            <h2 data-en="Pier transfer" style="margin: 0 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.024em; color: #0b1b26;">Đưa đón bến tàu</h2>
+            <p data-en="Free both ways. Tell us the boat and we will be standing at Cu Tron pier." style="margin: 0 0 20px; font-size: 13.5px; color: #8fa5b3;">Miễn phí hai chiều. Cho chúng tôi biết chuyến tàu, xe sẽ đợi sẵn ở bến Củ Tron.</p>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Arriving boat" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Chuyến tàu đến</span>
+                <select style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; cursor: pointer;">
+                  <option>Chưa biết — sẽ báo sau</option>
+                  <option>Superdong · 07:30 Rạch Giá</option>
+                  <option>Phú Quốc Express · 08:00 Rạch Giá</option>
+                  <option>Ngọc Thành · 08:30 Rạch Giá</option>
+                  <option>Hòa Bình Ship · 13:00 Rạch Giá</option>
+                </select>
+              </label>
+              <label style="display: flex; flex-direction: column; gap: 7px;">
+                <span data-en="Scooter rental" style="font-size: 12.5px; font-weight: 700; color: #3d5462;">Thuê xe máy</span>
+                <select onChange="{{ onBike }}" style="border: 1px solid #dbe7ef; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; cursor: pointer;">
+                  <option value="0">Không cần</option>
+                  <option value="1">1 xe · 150.000₫/ngày</option>
+                  <option value="2">2 xe · 300.000₫/ngày</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <button onClick="{{ goStep2 }}" data-en="Continue to payment" style="justify-self: start; background: #0284c7; color: #ffffff; border: none; font-size: 15px; font-weight: 700; padding: 17px 34px; border-radius: 16px; cursor: pointer; box-shadow: 0 8px 22px rgba(2,132,199,0.30); transition: background 150ms ease;" style-hover="background:#0369a1">Tiếp tục thanh toán</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+        <div style="display: grid; gap: 16px; animation: ndIn 220ms ease both;">
+
+          <section style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 24px; padding: 28px 30px;">
+            <h2 data-en="Hold your room with a 50% deposit" style="margin: 0 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.024em; color: #0b1b26;">Giữ phòng bằng cọc 50%</h2>
+            <p data-en="Sea weather can change plans. Deposits are always refunded when the boats stop running." style="margin: 0 0 22px; font-size: 13.5px; color: #8fa5b3;">Thời tiết biển có thể đổi kế hoạch. Tàu ngừng chạy thì cọc luôn được hoàn.</p>
+
+            <div style="display: grid; gap: 10px; margin-bottom: 24px;">
+              <sc-for list="{{ methods }}" as="p" hint-placeholder-count="3">
+                <button onClick="{{ p.onClick }}" style="{{ p.style }}">
+                  <span style="{{ p.radio }}"></span>
+                  <span style="flex: 1; min-width: 0; text-align: left;">
+                    <span style="display: block; font-size: 15px; font-weight: 700; color: #0b1b26;">{{ p.title }}</span>
+                    <span style="display: block; font-size: 12.5px; color: #8fa5b3; margin-top: 3px;">{{ p.sub }}</span>
+                  </span>
+                  <span style="font-size: 12px; font-weight: 800; color: #00a85c; white-space: nowrap;">{{ p.tag }}</span>
+                </button>
+              </sc-for>
+            </div>
+
+            <div ref="{{ qrBoxRef }}" style="display: grid; grid-template-columns: 188px minmax(0, 1fr); gap: 26px; align-items: center; padding: 24px; border-radius: 20px; background: #f7fbfd; border: 1px solid #e6eef4;">
+              <div style="border-radius: 16px; overflow: hidden; border: 1px solid #e6eef4; background: #ffffff;">
+                <img ref="{{ qrRef }}" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="VietQR" style="width: 100%; height: 188px; object-fit: contain; display: block;" />
+              </div>
+              <div>
+                <div data-en="Scan with any Vietnamese banking app" style="font-size: 15px; font-weight: 800; color: #0b1b26; margin-bottom: 12px;">Quét bằng bất kỳ app ngân hàng nào</div>
+                <div style="display: grid; gap: 9px; margin-bottom: 16px;">
+                  <div style="display: flex; justify-content: space-between; gap: 14px; font-size: 13.5px;">
+                    <span data-en="Account" style="color: #8fa5b3; font-weight: 600;">Tài khoản</span>
+                    <span style="color: #0b1b26; font-weight: 700;">THE NAM DU HILL</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; gap: 14px; font-size: 13.5px;">
+                    <span data-en="Number" style="color: #8fa5b3; font-weight: 600;">Số tài khoản</span>
+                    <span style="color: #0b1b26; font-weight: 700; font-family: ui-monospace, monospace;">0985 000 650</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; gap: 14px; font-size: 13.5px;">
+                    <span data-en="Reference" style="color: #8fa5b3; font-weight: 600;">Nội dung</span>
+                    <span ref="{{ syntaxRef }}" style="color: #0284c7; font-weight: 800; font-family: ui-monospace, monospace;"></span>
+                  </div>
+                </div>
+                <div data-en="Keep the reference exactly as shown — it is how we match your transfer to this booking." style="font-size: 12px; line-height: 1.55; color: #8fa5b3;">Giữ đúng nội dung chuyển khoản như trên — đó là cách chúng tôi khớp tiền với đơn của bạn.</div>
+              </div>
+            </div>
+          </section>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onClick="{{ goStep1 }}" data-en="Back" style="background: #ffffff; border: 1px solid #dbe7ef; color: #0b1b26; font-size: 15px; font-weight: 700; padding: 17px 28px; border-radius: 16px; cursor: pointer; transition: background 150ms ease;" style-hover="background:#f2f8fc">Quay lại</button>
+            <button onClick="{{ goStep3 }}" data-en="I have transferred the deposit" style="background: #00c46a; color: #04241a; border: none; font-size: 15px; font-weight: 800; padding: 17px 34px; border-radius: 16px; cursor: pointer; box-shadow: 0 8px 22px rgba(0,196,106,0.30); transition: background 150ms ease;" style-hover="background:#00e07a">Tôi đã chuyển cọc</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <section style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 24px; padding: 44px 40px; animation: ndIn 220ms ease both;">
+          <div style="width: 62px; height: 62px; border-radius: 50%; background: #e8f9f0; display: flex; align-items: center; justify-content: center; font-size: 27px; color: #00a85c; margin-bottom: 22px;">✓</div>
+          <h2 data-en="Deposit received — we will confirm within 30 minutes" style="margin: 0 0 12px; font-size: 27px; font-weight: 800; letter-spacing: -0.028em; color: #0b1b26; line-height: 1.16; max-width: 22ch;">Đã ghi nhận — chúng tôi xác nhận trong 30 phút</h2>
+          <p data-en="Someone at the resort checks transfers by hand, so you will get a Zalo message from a real person, not an automated email." style="margin: 0 0 26px; font-size: 15.5px; line-height: 1.6; color: #566e7d; max-width: 56ch;">Có người ở resort kiểm tra chuyển khoản thủ công, nên bạn sẽ nhận tin nhắn Zalo từ người thật, không phải email tự động.</p>
+
+          <div ref="{{ codeRef }}" style="display: inline-block; background: #0b1b26; color: #ffffff; font-size: 17px; font-weight: 800; font-family: ui-monospace, monospace; padding: 15px 24px; border-radius: 14px; margin-bottom: 26px;"></div>
+
+          <div style="display: grid; gap: 10px; max-width: 460px;">
+            <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" data-en="Send the receipt on Zalo" style="text-align: center; background: #0284c7; color: #ffffff; font-size: 15px; font-weight: 700; padding: 16px 24px; border-radius: 14px;" style-hover="background:#0369a1">Gửi ảnh chuyển khoản qua Zalo</a>
+            <a href="Explore Nam Du.dc.html" data-en="Plan what to do on the island" style="text-align: center; border: 1px solid #dbe7ef; color: #0b1b26; font-size: 15px; font-weight: 700; padding: 16px 24px; border-radius: 14px;" style-hover="background:#f2f8fc">Lên kế hoạch chơi gì ngoài đảo</a>
+          </div>
+        </section>
+      </sc-if>
+
+    </div>
+
+    <aside style="position: sticky; top: 92px; display: grid; gap: 14px;">
+      <div style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 24px; overflow: hidden; box-shadow: 0 14px 40px rgba(6,40,58,0.08);">
+        <div style="position: relative; height: 152px; background: #eef4f8;">
+          <image-slot id="{{ slotId }}" placeholder="{{ slotHint }}" style="position: absolute; inset: 0;"></image-slot>
+          <span style="position: absolute; top: 12px; left: 12px; display: inline-block; white-space: nowrap; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); color: #0b1b26; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; padding: 6px 11px; border-radius: 999px;">{{ code }}</span>
+        </div>
+        <div style="padding: 20px 22px 22px;">
+          <h3 style="margin: 0 0 6px; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26; line-height: 1.26;">{{ roomName }}</h3>
+          <div style="font-size: 13px; color: #8fa5b3; margin-bottom: 16px;">{{ meta }}</div>
+
+          <div style="display: grid; gap: 9px; padding: 16px 0; border-top: 1px solid #eef4f8; border-bottom: 1px solid #eef4f8;">
+            <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13.5px;">
+              <span data-en="Check in" style="color: #8fa5b3; font-weight: 600;">Nhận phòng</span>
+              <span ref="{{ ciRef }}" style="color: #0b1b26; font-weight: 700;">Chưa chọn</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13.5px;">
+              <span data-en="Check out" style="color: #8fa5b3; font-weight: 600;">Trả phòng</span>
+              <span ref="{{ coRef }}" style="color: #0b1b26; font-weight: 700;">Chưa chọn</span>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: 7px; padding: 16px 0 0;">
+            <sc-for list="{{ lines }}" as="l" hint-placeholder-count="4">
+              <div style="{{ l.style }}">
+                <span>{{ l.label }}</span>
+                <span style="{{ l.valStyle }}">{{ l.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #e6eef4; border-radius: 20px; padding: 20px 22px; display: grid; gap: 12px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: #00c46a; font-size: 13px; line-height: 1.4;">✓</span>
+          <span data-en="Free cancellation up to 7 days before arrival" style="font-size: 13px; line-height: 1.5; color: #3d5462;">Huỷ miễn phí trước 7 ngày</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: #00c46a; font-size: 13px; line-height: 1.4;">✓</span>
+          <span data-en="Full refund if the boats stop for weather" style="font-size: 13px; line-height: 1.5; color: #3d5462;">Hoàn 100% nếu tàu ngừng chạy do thời tiết</span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="color: #00c46a; font-size: 13px; line-height: 1.4;">✓</span>
+          <span data-en="Breakfast and pier transfer already included" style="font-size: 13px; line-height: 1.5; color: #3d5462;">Đã gồm bữa sáng và đưa đón bến tàu</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer style="max-width: 1240px; margin: 56px auto 0; padding: 26px 32px 48px; border-top: 1px solid #e6eef4; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+  <span style="font-size: 12.5px; color: #8fa5b3;">© 2026 The Nam Du Hill · Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang</span>
+  <span style="font-size: 12.5px; color: #8fa5b3;">MST 1702244746 · <a href="tel:0985000650" style="font-weight: 700;">0985 000 650</a></span>
+</footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1360}}">
+const ROOMS = [
+  { code: '#01', vi: 'Phòng gia đình nhìn ra biển', en: 'Family Room with Sea View', p: 1886000, a: 28, cap: 4 },
+  { code: '#02', vi: 'Phòng giường đôi nhìn ra vườn', en: 'Double Room with Garden View', p: 1546000, a: 24, cap: 3 },
+  { code: '#03-04', vi: 'Phòng giường đôi ban công view biển', en: 'Double Room, Balcony &amp; Sea View', p: 1546000, a: 15, cap: 2 },
+  { code: '#05', vi: 'Phòng tiêu chuẩn Lục Giác Kính 360°', en: 'Hexagon 360° Glass Room', p: 1546000, a: 21, cap: 2 },
+  { code: '#06', vi: 'Phòng Deluxe view biển & hồ bơi', en: 'Deluxe with Sea &amp; Pool View', p: 1776000, a: 20, cap: 2 },
+  { code: '#07', vi: 'Phòng Superior King (Bồn sục Jacuzzi)', en: 'Superior King with Jacuzzi', p: 2971000, a: 53, cap: 4 },
+  { code: '#08', vi: 'Phòng gia đình view biển (gác lửng)', en: 'Family Sea View, Mezzanine', p: 3088000, a: 40, cap: 4 },
+  { code: '#09', vi: 'Phòng gia đình view biển (gác lửng)', en: 'Family Sea View, Mezzanine', p: 3088000, a: 40, cap: 4 },
+  { code: '#10', vi: 'Phòng giường đôi có sân trong', en: 'Double Room with Courtyard', p: 1776000, a: 20, cap: 3 },
+  { code: '#11', vi: 'Phòng gia đình view biển trực diện', en: 'Family Room, Direct Sea View', p: 3088000, a: 30, cap: 4 },
+  { code: '#12', vi: 'Phòng giường đôi có ban công', en: 'Double Room with Balcony', p: 1862000, a: 19, cap: 2 },
+  { code: '#13', vi: 'Phòng gia đình tầng 2 view biển', en: 'Second Floor Family, Sea View', p: 3088000, a: 35, cap: 4 },
+  { code: '#14', vi: 'Rock Deluxe — Phòng Hang Đá', en: 'Rock Deluxe — Cave Room', p: 1776000, a: 21, cap: 2 },
+  { code: '#15', vi: 'Phòng giường đôi tiêu chuẩn', en: 'Standard Double Room', p: 1587000, a: 18, cap: 2 },
+  { code: '#16', vi: 'Phòng gia đình tầng 1 view biển', en: 'First Floor Family, Sea View', p: 2987000, a: 31, cap: 4 },
+  { code: '#17', vi: 'Phòng 3 người hướng thung lũng', en: 'Triple Room, Valley Side', p: 2411000, a: 26, cap: 3 },
+  { code: '#18', vi: 'Phòng 3 người có ban công', en: 'Triple Room with Balcony', p: 2411000, a: 32, cap: 3 },
+  { code: '#08-09', vi: 'Suite 2 phòng ngủ cho 8 khách', en: 'Two-Bedroom Suite for 8', p: 5662000, a: 70, cap: 8 },
+  { code: '#10-11', vi: 'Suite 2 phòng ngủ cho 6 khách', en: 'Two-Bedroom Suite for 6', p: 4287000, a: 50, cap: 6 },
+  { code: '#15-16', vi: 'Suite 2 phòng ngủ cho 6 khách', en: 'Two-Bedroom Suite for 6', p: 4287000, a: 50, cap: 6 }
+];
+function pickRoom() {
+  var q = '';
+  try { q = new URLSearchParams(window.location.search).get('room') || ''; } catch (e) {}
+  if (!q) { try { q = window.localStorage.getItem('ndh:last-room') || ''; } catch (e) {} }
+  const want = '#' + String(q).replace(/^#/, '');
+  for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].code === want) return ROOMS[i];
+  return ROOMS[12];
+}
+const slug = (c) => 'ndh-room-' + c.replace(/#/g, '').replace(/-/g, '_');
+const BIKE = 150000;
+const vnd = (n) => n.toLocaleString('vi-VN') + '₫';
+
+const METHODS = [
+  { k: 'qr', vi: 'VietQR — chuyển khoản ngân hàng', en: 'VietQR — bank transfer', svi: 'Quét mã, tiền vào ngay, không phí', sen: 'Scan, instant, no fee', tvi: 'PHỔ BIẾN NHẤT', ten: 'MOST USED' },
+  { k: 'momo', vi: 'Ví MoMo', en: 'MoMo wallet', svi: 'Chuyển tới 0985 000 650', sen: 'Send to 0985 000 650', tvi: '', ten: '' },
+  { k: 'cash', vi: 'Trả toàn bộ khi nhận phòng', en: 'Pay in full on arrival', svi: 'Chỉ áp dụng ngoài mùa cao điểm, cần xác nhận qua Zalo', sen: 'Off-peak only, needs Zalo confirmation', tvi: '', ten: '' }
+];
+
+class Component extends DCLogic {
+  state = { lang: 'vi', step: 1, ci: '', co: '', guests: 2, bikes: 0, method: 'qr', name: '', phone: '' };
+  room = ROOMS[12];
+  langRef = React.createRef();
+  helpRef = React.createRef();
+  stepsRef = React.createRef();
+  qrRef = React.createRef();
+  qrBoxRef = React.createRef();
+  syntaxRef = React.createRef();
+  codeRef = React.createRef();
+  ciRef = React.createRef();
+  coRef = React.createRef();
+  nameRef = React.createRef();
+  phoneRef = React.createRef();
+
+  setLang = (lang) => {
+    if (lang === this.state.lang) return;
+    document.querySelectorAll('[data-en]').forEach((el) => {
+      if (!el.dataset.vi) el.dataset.vi = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.vi;
+    });
+    const box = this.langRef.current;
+    if (box) box.querySelectorAll('[data-lang]').forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.style.background = on ? '#ffffff' : 'transparent';
+      b.style.color = on ? '#0b1b26' : '#6b8394';
+      b.style.boxShadow = on ? '0 1px 3px rgba(0,0,0,0.10)' : 'none';
+    });
+    document.documentElement.lang = lang;
+    this.setState({ lang });
+  };
+
+  nights() {
+    const { ci, co } = this.state;
+    if (!ci || !co) return 1;
+    const d = (new Date(co) - new Date(ci)) / 86400000;
+    return d > 0 ? Math.round(d) : 1;
+  }
+
+  total() { return this.room.p * this.nights() + this.state.bikes * BIKE * this.nights(); }
+  deposit() { return Math.round(this.total() / 2); }
+
+  ref() {
+    const p = (this.state.phone || '').replace(/\D/g, '').slice(-4);
+    return 'NAMDU ' + this.room.code.replace('#', '') + ' ' + this.nights() + 'D' + (p ? ' ' + p : '');
+  }
+
+  fmt(d) {
+    if (!d) return this.state.lang === 'en' ? 'Not set' : 'Chưa chọn';
+    const [y, m, dd] = d.split('-');
+    return dd + '/' + m + '/' + y;
+  }
+
+  paint() {
+    const s = this.state.step;
+    const box = this.stepsRef.current;
+    if (box) box.querySelectorAll('[data-step]').forEach((el) => {
+      const n = Number(el.dataset.step);
+      const dot = el.querySelector('[data-dot]');
+      const label = el.querySelector('[data-label]');
+      const done = n < s, now = n === s;
+      if (dot) {
+        dot.style.background = done ? '#00c46a' : (now ? '#0284c7' : '#e6eef4');
+        dot.style.color = (done || now) ? '#ffffff' : '#8fa5b3';
+        dot.textContent = done ? '✓' : String(n);
+      }
+      if (label) {
+        label.style.color = now ? '#0b1b26' : (done ? '#00a85c' : '#8fa5b3');
+        label.style.fontWeight = now ? '700' : '600';
+      }
+    });
+
+    if (this.ciRef.current) this.ciRef.current.textContent = this.fmt(this.state.ci);
+    if (this.coRef.current) this.coRef.current.textContent = this.fmt(this.state.co);
+
+    const info = this.ref();
+    if (this.syntaxRef.current) this.syntaxRef.current.textContent = info;
+    if (this.codeRef.current) this.codeRef.current.textContent = info;
+
+    const el = this.qrRef.current;
+    if (el) {
+      const src = 'https://img.vietqr.io/image/970436-0985000650-compact.png?amount=' + this.deposit() +
+        '&addInfo=' + encodeURIComponent(info) + '&accountName=' + encodeURIComponent('THE NAM DU HILL');
+      if (el.getAttribute('src') !== src) el.setAttribute('src', src);
+    }
+    if (this.qrBoxRef.current) this.qrBoxRef.current.style.display = this.state.method === 'qr' ? 'grid' : 'none';
+  }
+
+  applyLayout = () => {
+    const narrow = window.innerWidth < 1080;
+    const box = this.stepsRef.current;
+    if (box) box.querySelectorAll('[data-label]').forEach((el) => { el.style.display = narrow ? 'none' : 'inline'; });
+    if (this.helpRef.current) this.helpRef.current.style.display = narrow ? 'none' : 'inline';
+  };
+
+  componentDidMount() {
+    this.room = pickRoom();
+    this.applyLayout();
+    window.addEventListener('resize', this.applyLayout);
+    this.forceUpdate();
+    this.paint();
+  }
+
+  componentWillUnmount() { window.removeEventListener('resize', this.applyLayout); }
+  componentDidUpdate() { this.paint(); }
+
+  renderVals() {
+    const en = this.state.lang === 'en';
+    const nights = this.nights();
+    const row = 'display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; font-weight: 600; color: #566e7d;';
+    const last = 'display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 13px; margin-top: 6px; border-top: 1px solid #eef4f8; font-size: 15px; font-weight: 800; color: #0b1b26;';
+
+    const lines = [
+      { label: vnd(this.room.p) + ' × ' + (en ? nights + ' night(s)' : nights + ' đêm'), value: vnd(this.room.p * nights), style: row, valStyle: 'color:#0b1b26; font-weight:700;' }
+    ];
+    if (this.state.bikes) {
+      lines.push({ label: (en ? this.state.bikes + ' scooter(s) × ' + nights + ' day(s)' : this.state.bikes + ' xe máy × ' + nights + ' ngày'), value: vnd(this.state.bikes * BIKE * nights), style: row, valStyle: 'color:#0b1b26; font-weight:700;' });
+    }
+    lines.push({ label: en ? 'Breakfast &amp; pier transfer' : 'Bữa sáng & đưa đón bến tàu', value: en ? 'Included' : 'Đã gồm', style: row, valStyle: 'color:#00a85c; font-weight:700;' });
+    lines.push({ label: en ? 'Total' : 'Tổng cộng', value: vnd(this.total()), style: last, valStyle: 'color:#0b1b26; font-weight:800;' });
+    lines.push({ label: en ? 'Deposit now (50%)' : 'Cọc ngay (50%)', value: vnd(this.deposit()), style: last, valStyle: 'color:#0284c7; font-weight:800;' });
+
+    return {
+      langRef: this.langRef,
+      helpRef: this.helpRef,
+      stepsRef: this.stepsRef,
+      qrRef: this.qrRef,
+      qrBoxRef: this.qrBoxRef,
+      syntaxRef: this.syntaxRef,
+      codeRef: this.codeRef,
+      ciRef: this.ciRef,
+      coRef: this.coRef,
+      nameRef: this.nameRef,
+      phoneRef: this.phoneRef,
+      setVI: () => this.setLang('vi'),
+      setEN: () => this.setLang('en'),
+
+      isStep1: this.state.step === 1,
+      isStep2: this.state.step === 2,
+      isStep3: this.state.step === 3,
+      goStep1: () => { this.setState({ step: 1 }); window.scrollTo(0, 0); },
+      goStep2: () => { this.setState({ step: 2 }); window.scrollTo(0, 0); },
+      goStep3: () => { this.setState({ step: 3 }); window.scrollTo(0, 0); },
+
+      code: this.room.code,
+      roomName: en ? this.room.en : this.room.vi,
+      meta: this.room.a + ' m² · ' + (en ? this.room.cap + ' guests' : this.room.cap + ' khách'),
+      slotId: slug(this.room.code) + '_g0',
+      slotHint: this.room.code + ' — ' + (en ? this.room.en : this.room.vi),
+      guests: this.state.guests,
+      lines,
+
+      methods: METHODS.map((m) => {
+        const on = this.state.method === m.k;
+        return {
+          title: en ? m.en : m.vi,
+          sub: en ? m.sen : m.svi,
+          tag: en ? m.ten : m.tvi,
+          onClick: () => this.setState({ method: m.k }),
+          style: 'display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 18px 20px; border-radius: 16px; cursor: pointer; transition: all 150ms ease; background: ' +
+            (on ? '#f2f8fc' : '#ffffff') + '; border: 1.5px solid ' + (on ? '#0284c7' : '#e6eef4') + ';',
+          radio: 'width: 19px; height: 19px; border-radius: 50%; flex-shrink: 0; border: 5.5px solid ' + (on ? '#0284c7' : '#dbe7ef') + '; background: #ffffff; box-sizing: border-box;'
+        };
+      }),
+
+      onCI: (e) => this.setState({ ci: e.target.value }),
+      onCO: (e) => this.setState({ co: e.target.value }),
+      onGuests: (e) => this.setState({ guests: Number(e.target.value) || 1 }),
+      onBike: (e) => this.setState({ bikes: Number(e.target.value) || 0 }),
+      onName: (e) => { this.state.name = e.target.value; },
+      onPhone: (e) => { this.state.phone = e.target.value; this.paint(); }
+    };
+  }
+}
+
+</script>
+</body>
+</html>
