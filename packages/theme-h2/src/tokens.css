@@ -1,0 +1,62 @@
+/**
+ * Mẫu 02 — Teal & Amber.
+ *
+ * Bảng màu trích từ prototype `Home 02 - Nam Du Hill.dc.html`:
+ * teal #066168 làm nền thương hiệu, cam #FFAA0D làm màu nhấn, chữ nâu #443935,
+ * nền phụ #EAF4F4, font Figtree.
+ *
+ * Tính cách: ấm áp, mời gọi, nhiều nhịp điệu hơn mẫu 01.
+ *
+ * Chỉ khai báo biến — không viết selector cho component của `ui`.
+ */
+
+[data-theme='h2'] {
+    /* --- màu ------------------------------------------------------------ */
+    /* Màu xanh nước biển sâu làm thương hiệu chính, xanh da trời làm màu nhấn phụ. */
+    --brand: #0284c7;
+    --brand-dark: #0369a1;
+    --brand-light: #38bdf8;
+    /* Nhấn là cam hổ phách: nút chính, chấm, số thứ tự. Chữ trên nền cam là nâu đậm. */
+    --accent: #ffaa0d;
+    --accent-dark: #ffc152;
+
+    --surface: #ffffff;
+    --surface-alt: #f0f9ff;
+    --surface-tint: #e0f2fe;
+    --surface-inverse: #0369a1;
+
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --text-inverse: #ffffff;
+
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+
+    --success: #0284c7;
+    --danger: #b91c1c;
+
+    --overlay-soft: rgba(255, 255, 255, 0.2);
+    --overlay-line: rgba(255, 255, 255, 0.4);
+    --overlay-scrim: rgba(3, 105, 161, 0.72);
+
+    /* --- chữ ------------------------------------------------------------ */
+    --font-body: Figtree, ui-sans-serif, system-ui, sans-serif;
+    --font-display: Figtree, ui-sans-serif, system-ui, sans-serif;
+
+    /* Thang chữ prototype: h1 50px, h2 34px. */
+    --text-3xl: 3.125rem;
+    --text-2xl: 2.125rem;
+    --text-xl: 1.5rem;
+    --text-lg: 1.0625rem;
+    --text-base: 0.97rem;
+
+    /* --- hình khối ------------------------------------------------------ */
+    /* Bo góc lớn hơn mẫu 01 — thẻ 20px, ảnh hero bo một góc 50px. */
+    --radius-sm: 8px;
+    --radius: 14px;
+    --radius-lg: 20px;
+
+    --shadow-sm: 0 2px 6px rgba(6, 97, 104, 0.1);
+    --shadow: 0 10px 28px rgba(6, 97, 104, 0.16);
+    --shadow-lg: 0 14px 40px rgba(6, 97, 104, 0.24);
+}

@@ -21,7 +21,8 @@
     "crawl:travlla": "node scripts/crawl/crawl-travlla.mjs",
     "crawl:travlla:build": "node scripts/crawl/build-travlla-seed.mjs && node scripts/crawl/emit-travlla-ts.mjs",
     "crawl:rooms": "node scripts/crawl/crawl-room-details.mjs",
-    "crawl:full": "node scripts/crawl/crawl-full-site.mjs"
+    "crawl:full": "node scripts/crawl/crawl-full-site.mjs",
+    "crawl:property": "node resources/scripts/crawl/emit-property-data.mjs"
   },
   "devDependencies": {
     "@mendable/firecrawl-js": "^4.32.0",

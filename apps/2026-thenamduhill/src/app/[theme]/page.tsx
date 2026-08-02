@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { findTheme, getProperty, isLocale, themeSlugs, DEFAULT_LOCALE } from '@repo/core'
 
 import { themes } from '@/themes/registry'
+import { LocaleProvider } from '@/components/LocaleProvider'
+import { SiteOverlay } from '@/components/SiteOverlay'
 
 /**
  * Route render mọi mẫu: /<slug>  (vd /h1, /h2)
@@ -42,5 +44,11 @@ export default async function ThemePage({ params, searchParams }: PageProps) {
     const data = await getProperty()
 
     const { Home } = theme
-    return <Home data={data} locale={locale} />
+    return (
+        <LocaleProvider>
+            {/* Cụm tài khoản + chuông, chung cho cả N mẫu — xem SiteOverlay. */}
+            <SiteOverlay />
+            <Home data={data} locale={locale} />
+        </LocaleProvider>
+    )
 }

@@ -19,8 +19,14 @@
     --accent-dark: #075e9e;
 
     --surface: #ffffff;
-    --surface-alt: #edf6ff;
+    /* Prototype dùng #F8FAFC cho dải nền xen kẽ, #EDF6FF cho vùng nhấn. */
+    --surface-alt: #f8fafc;
+    --surface-tint: #edf6ff;
     --surface-inverse: #0f1729;
+
+    --overlay-soft: rgba(255, 255, 255, 0.14);
+    --overlay-line: rgba(255, 255, 255, 0.24);
+    --overlay-scrim: rgba(15, 23, 41, 0.62);
 
     --text: #0f1729;
     --text-muted: #4b5563;
@@ -36,7 +42,12 @@
     --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-    --text-3xl: 3rem;
+    /* Thang chữ prototype: h1 60px, h2 36px, sub 15.5px. */
+    --text-3xl: 3.75rem;
+    --text-2xl: 2.25rem;
+    --text-xl: 1.5rem;
+    --text-lg: 1.125rem;
+    --text-base: 0.97rem;
 
     /* --- hình khối ------------------------------------------------------ */
     --radius-sm: 6px;

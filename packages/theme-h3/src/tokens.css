@@ -1,0 +1,57 @@
+/**
+ * Mẫu 03 — Teal & Amber, bản tạp chí.
+ *
+ * Dùng chung bảng màu với mẫu 02 (teal #066168 + cam #FFAA0D, font Figtree) —
+ * đây là chủ ý của prototype: hai mẫu cùng tông nhưng khác hẳn cách bố cục.
+ * Mẫu 03 đặc trưng bởi dải "chọn theo chủ đề" và nhịp trình bày dày hơn.
+ *
+ * Khác biệt token so với mẫu 02: bo góc nhỏ hơn, bóng nhẹ hơn, nền phụ ngả
+ * xanh (#DDE9E9) để phân tách các dải nội dung sát nhau.
+ */
+
+[data-theme='h3'] {
+    /* --- màu ------------------------------------------------------------ */
+    --brand: #066168;
+    --brand-dark: #044a50;
+    --brand-light: #0a7d86;
+    --accent: #ffaa0d;
+    --accent-dark: #8a5d00;
+
+    --surface: #ffffff;
+    --surface-alt: #f4f9f9;
+    --surface-tint: #dde9e9;
+    --surface-inverse: #066168;
+
+    --text: #443935;
+    --text-muted: #6e625d;
+    --text-inverse: #ffffff;
+
+    --border: #dde9e9;
+    --border-strong: #bcd3d3;
+
+    --success: #0a7d86;
+    --danger: #b91c1c;
+
+    --overlay-soft: rgba(255, 255, 255, 0.15);
+    --overlay-line: rgba(255, 255, 255, 0.36);
+    --overlay-scrim: rgba(6, 97, 104, 0.68);
+
+    /* --- chữ ------------------------------------------------------------ */
+    --font-body: Figtree, ui-sans-serif, system-ui, sans-serif;
+    --font-display: Figtree, ui-sans-serif, system-ui, sans-serif;
+
+    --text-3xl: 3rem;
+    --text-2xl: 2rem;
+    --text-xl: 1.4375rem;
+    --text-lg: 1.0625rem;
+    --text-base: 0.97rem;
+
+    /* --- hình khối ------------------------------------------------------ */
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 1px 4px rgba(6, 97, 104, 0.08);
+    --shadow: 0 6px 18px rgba(6, 97, 104, 0.1);
+    --shadow-lg: 0 12px 32px rgba(6, 97, 104, 0.16);
+}

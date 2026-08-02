@@ -34,6 +34,16 @@ export function formatPrice(amount: number, locale: Locale): string {
         : `${amount.toLocaleString('en-US')}₫`
 }
 
+/**
+ * Số điện thoại → href cho thẻ `tel:`.
+ *
+ * Cả bốn mẫu đều lặp lại phép này ở header, khối đặt phòng và chân trang. Nó
+ * là phép định dạng dữ liệu chứ không phải hình thức, nên chỗ của nó là `core`.
+ */
+export function telHref(phone: string): string {
+    return `tel:${phone.replace(/\s/g, '')}`
+}
+
 export function formatDate(date: Date, locale: Locale): string {
     return date.toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
         day: '2-digit',

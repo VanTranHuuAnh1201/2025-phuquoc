@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { SectionId } from '@repo/core'
+import type { ThemeSectionId } from '@repo/core'
 
 /**
  * Khung section chuẩn.
@@ -9,7 +9,7 @@ import type { SectionId } from '@repo/core'
  */
 
 export interface SectionProps {
-    id: SectionId
+    id: ThemeSectionId
     children: ReactNode
     /** Nền xen kẽ để phân tách các dải nội dung. */
     tone?: 'default' | 'alt' | 'inverse'

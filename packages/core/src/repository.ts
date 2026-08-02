@@ -9,19 +9,40 @@
  * phải đổi khi có backend thật.
  */
 
-import { namDuHill } from './data/nam-du-hill'
+import { propertyData } from './data'
 import type { Addon, Dining, Place, PropertyData, Room, RoomExtra, Tour } from './types'
 
 /** Id cơ sở lưu trú mặc định khi chưa có multi-tenant. */
 export const DEFAULT_PROPERTY_ID = 'nam-du-hill'
 
+/**
+ * Nguồn dữ liệu chung cho cả N theme, đến từ đúng một đầu mối `./data`
+ * (luật R8). Không import thẳng file nội dung ở đây — `./data/index.ts` mới là
+ * nơi quyết định dùng bản thủ công hay bản ghép seed crawl.
+ */
 const properties: Record<string, PropertyData> = {
-    [DEFAULT_PROPERTY_ID]: namDuHill,
+    [DEFAULT_PROPERTY_ID]: propertyData,
 }
 
 export async function getProperty(
     propertyId: string = DEFAULT_PROPERTY_ID,
 ): Promise<PropertyData> {
+    return getPropertySync(propertyId)
+}
+
+/**
+ * Bản đồng bộ của `getProperty()`.
+ *
+ * Chỉ dành cho những chỗ BẮT BUỘC phải đồng bộ — cụ thể là hàm khởi tạo state
+ * của store phía client, nơi React không cho phép await.
+ *
+ * Mọi chỗ khác dùng `getProperty()`. Khi chuyển sang Supabase, hàm này sẽ phục
+ * vụ từ bộ nhớ đệm đã nạp sẵn chứ không biến mất — nhờ vậy nơi gọi không phải
+ * sửa. Đây là lý do nó tồn tại thay vì để mỗi nơi tự lách một kiểu.
+ */
+export function getPropertySync(
+    propertyId: string = DEFAULT_PROPERTY_ID,
+): PropertyData {
     const property = properties[propertyId]
     if (!property) {
         throw new Error(`Không tìm thấy dữ liệu cho property "${propertyId}"`)

@@ -1,77 +1,101 @@
-import { formatPrice, pick, type Locale, type PropertyData } from '@repo/core'
-import { Section } from '@repo/ui'
+import {
+    formatPrice,
+    pick,
+    roomPath,
+    themePath,
+    type Locale,
+    type PropertyData,
+} from '@repo/core'
+import { Card, ImageSlot, Pill, SectionHeader } from '@repo/ui'
+
+import { meta } from '../meta'
+import { ui } from '../strings'
+
+const SLUG = meta.slug
 
 /**
- * Danh sách hạng phòng mẫu 01 — lưới thẻ, ảnh tỉ lệ 16/10.
+ * Lưới hạng phòng — ảnh trên, giá và nút đặt ở chân thẻ.
  *
  * Giá lấy qua `formatPrice` của core — theme KHÔNG tự định dạng hay tính lại,
  * nhờ vậy N giao diện luôn hiện cùng một con số (luật R8).
  */
 
 export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) {
+    const t = ui[locale]
+
     return (
-        <Section id="rooms" tone="alt">
-            <header style={{ marginBottom: 'var(--space-8)' }}>
-                <h2
-                    style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 'var(--text-2xl)',
-                        fontWeight: 800,
-                        color: 'var(--brand)',
-                        margin: '0 0 var(--space-2)',
-                    }}
-                >
-                    {locale === 'vi' ? 'Hạng phòng' : 'Rooms & Suites'}
-                </h2>
-                <p style={{ color: 'var(--text-muted)', margin: 0 }}>
-                    {locale === 'vi'
-                        ? 'Chọn hạng phòng phù hợp với chuyến đi của bạn.'
-                        : 'Choose the room that fits your trip.'}
-                </p>
-            </header>
-
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                    gap: 'var(--space-6)',
-                }}
-            >
-                {data.rooms.map((room) => (
-                    <article
-                        key={room.id}
-                        style={{
-                            background: 'var(--surface)',
-                            border: '1px solid var(--border)',
-                            borderRadius: 'var(--radius-lg)',
-                            overflow: 'hidden',
-                            boxShadow: 'var(--shadow-sm)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}
-                    >
-                        <div
+        <section
+            id="rooms"
+            style={{
+                background: 'var(--surface-alt)',
+                padding: 'var(--space-16) var(--space-6) var(--space-20)',
+                scrollMarginTop: '80px',
+            }}
+        >
+            <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+                <SectionHeader
+                    kicker={t.roomsKicker}
+                    title={t.roomsTitle}
+                    sub={t.roomsSub}
+                    action={
+                        <a
+                            href={themePath(SLUG, 'rooms')}
                             style={{
-                                aspectRatio: '16 / 10',
-                                background: 'var(--surface-alt)',
-                            }}
-                        />
-
-                        <div
-                            style={{
-                                padding: 'var(--space-4)',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 'var(--space-2)',
-                                flex: 1,
+                                padding: '11px 22px',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--border-strong)',
+                                background: 'var(--surface)',
+                                fontSize: 'var(--text-sm)',
+                                fontWeight: 600,
+                                color: 'var(--text)',
+                                textDecoration: 'none',
+                                whiteSpace: 'nowrap',
                             }}
                         >
+                            {t.viewAll}
+                        </a>
+                    }
+                />
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
+                        gap: 'var(--space-6)',
+                    }}
+                >
+                    {data.rooms.map((room) => (
+                        <Card
+                            key={room.id}
+                            media={
+                                <ImageSlot
+                                    placeholder={pick(room.name, locale)}
+                                    src={room.images?.[0]}
+                                    height={208}
+                                    style={{ borderRadius: 0 }}
+                                />
+                            }
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 6,
+                                    marginBottom: 'var(--space-3)',
+                                }}
+                            >
+                                {room.tags.map((tag) => (
+                                    <Pill key={tag.en}>{pick(tag, locale)}</Pill>
+                                ))}
+                            </div>
+
                             <h3
                                 style={{
-                                    fontSize: 'var(--text-lg)',
+                                    fontSize: 'var(--text-base)',
                                     fontWeight: 700,
-                                    margin: 0,
-                                    lineHeight: 1.3,
+                                    color: 'var(--text)',
+                                    margin: '0 0 var(--space-2)',
+                                    lineHeight: 1.4,
                                 }}
                             >
                                 {pick(room.name, locale)}
@@ -80,76 +104,80 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                             <p
                                 style={{
                                     fontSize: 'var(--text-sm)',
+                                    lineHeight: 1.6,
                                     color: 'var(--text-muted)',
-                                    margin: 0,
+                                    margin: '0 0 var(--space-3)',
+                                    flex: 1,
                                 }}
                             >
                                 {pick(room.desc, locale)}
                             </p>
 
-                            <p
-                                style={{
-                                    fontSize: 'var(--text-sm)',
-                                    color: 'var(--text-muted)',
-                                    margin: 0,
-                                }}
-                            >
-                                {room.area} ·{' '}
-                                {locale === 'vi'
-                                    ? `${room.guests} khách`
-                                    : `${room.guests} guests`}
-                            </p>
-
-                            <ul
+                            <div
                                 style={{
                                     display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: 'var(--space-1)',
-                                    listStyle: 'none',
-                                    padding: 0,
-                                    margin: 'var(--space-2) 0 0',
+                                    gap: 'var(--space-3)',
+                                    fontSize: 'var(--text-xs)',
+                                    color: 'var(--text-muted)',
+                                    paddingBottom: 'var(--space-3)',
+                                    marginBottom: 'var(--space-3)',
+                                    borderBottom: '1px solid var(--border)',
                                 }}
                             >
-                                {room.tags.map((tag) => (
-                                    <li
-                                        key={tag.en}
+                                <span>{room.area}</span>
+                                <span>
+                                    {room.guests} {t.guestsWord}
+                                </span>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: 'var(--space-3)',
+                                }}
+                            >
+                                <div>
+                                    <div
+                                        style={{
+                                            fontSize: 'var(--text-lg)',
+                                            fontWeight: 800,
+                                            color: 'var(--text)',
+                                            letterSpacing: '-0.02em',
+                                        }}
+                                    >
+                                        {formatPrice(room.price, locale)}
+                                    </div>
+                                    <div
                                         style={{
                                             fontSize: 'var(--text-xs)',
-                                            padding: '2px var(--space-2)',
-                                            borderRadius: 'var(--radius-pill)',
-                                            background: 'var(--surface-alt)',
                                             color: 'var(--text-muted)',
                                         }}
                                     >
-                                        {pick(tag, locale)}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <p
-                                style={{
-                                    marginTop: 'auto',
-                                    paddingTop: 'var(--space-4)',
-                                    fontSize: 'var(--text-xl)',
-                                    fontWeight: 800,
-                                    color: 'var(--brand)',
-                                }}
-                            >
-                                {formatPrice(room.price, locale)}
-                                <span
+                                        {t.perNight}
+                                    </div>
+                                </div>
+                                <a
+                                    href={roomPath(SLUG, room.id)}
                                     style={{
+                                        padding: '10px 18px',
+                                        borderRadius: 'var(--radius-pill)',
+                                        background: 'var(--accent)',
+                                        color: 'var(--text-inverse)',
                                         fontSize: 'var(--text-sm)',
-                                        fontWeight: 400,
-                                        color: 'var(--text-muted)',
+                                        fontWeight: 700,
+                                        whiteSpace: 'nowrap',
+                                        textDecoration: 'none',
                                     }}
                                 >
-                                    {locale === 'vi' ? ' / đêm' : ' / night'}
-                                </span>
-                            </p>
-                        </div>
-                    </article>
-                ))}
+                                    {t.bookNow}
+                                </a>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
             </div>
-        </Section>
+        </section>
     )
 }

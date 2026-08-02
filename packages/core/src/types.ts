@@ -38,6 +38,23 @@ export const SECTION_IDS = [
 
 export type SectionId = (typeof SECTION_IDS)[number]
 
+/**
+ * Section riêng của một mẫu, ngoài bộ id chuẩn.
+ *
+ * Prototype cho thấy nhu cầu này có thật: mẫu 02 có dải "các bước đặt phòng"
+ * (`steps`), mẫu 03 có dải "chọn theo chủ đề" (`themes`). Chúng là cách trình
+ * bày riêng của từng mẫu, không phải dữ liệu nghiệp vụ — nên `core` chỉ cần
+ * thừa nhận sự tồn tại của chúng, không cần biết chúng chứa gì.
+ *
+ * Vì sao không nhét thẳng vào `SECTION_IDS`: bộ id đó là hợp đồng điều hướng
+ * và deep-link mà MỌI theme phải hiểu (luật R7). Một section chỉ mẫu 02 có thì
+ * không thuộc về hợp đồng chung.
+ */
+export type CustomSectionId = string & {}
+
+/** Id dùng được trong danh sách section của theme: chuẩn hoặc riêng. */
+export type ThemeSectionId = SectionId | CustomSectionId
+
 export interface NavItem {
     href: string
     label: I18nText

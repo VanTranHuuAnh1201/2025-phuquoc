@@ -10,7 +10,7 @@
  */
 
 import type { I18nText } from './i18n'
-import type { SectionId } from './types'
+import type { ThemeSectionId } from './types'
 
 /** Thẻ mô tả một mẫu, dùng cho trang hub liệt kê các giao diện. */
 export interface ThemeMeta {
@@ -36,12 +36,49 @@ export interface ThemeMeta {
  * `Component` cố ý để kiểu rộng: core không được biết React là gì. Phía
  * `apps/2026-thenamduhill` sẽ ép về `ComponentType<ThemePageProps>` khi render.
  */
-export interface ThemeDefinition<TComponent = unknown> {
+export interface ThemeDefinition<
+    THomeComponent = unknown,
+    TRoomsComponent = unknown,
+    TRoomDetailComponent = unknown,
+    TCheckoutComponent = unknown,
+    TToursComponent = unknown,
+    TTourDetailComponent = unknown,
+    TGalleryComponent = unknown,
+    TContactComponent = unknown,
+> {
     meta: ThemeMeta
-    /** Thứ tự section mẫu này render — tập con của SECTION_IDS (luật R7). */
-    sections: readonly SectionId[]
-    /** Component trang chủ của mẫu. */
-    Home: TComponent
+    /**
+     * Thứ tự section mẫu này render.
+     *
+     * Phần lớn là tập con của `SECTION_IDS` (luật R7); mẫu nào có dải riêng
+     * thì thêm id của nó vào đây để trang hub và điều hướng biết mà bỏ qua.
+     */
+    sections: readonly ThemeSectionId[]
+    /** Component trang chủ của mẫu. Bắt buộc. */
+    Home: THomeComponent
+
+    /*
+     * Các trang con — TUỲ CHỌN.
+     *
+     * Mẫu nào chưa dựng thì route tự rơi về `Home`, nên thêm mẫu mới không phải
+     * dựng đủ tám trang mới chạy được. Route đọc slot từ registry chứ không
+     * kiểm tra tên mẫu — nếu route phải viết `slug === 'h1'` thì kiến trúc đang
+     * rò rỉ (luật R5).
+     */
+    /** Danh sách hạng phòng. */
+    Rooms?: TRoomsComponent
+    /** Chi tiết một hạng phòng. */
+    RoomDetail?: TRoomDetailComponent
+    /** Trang thanh toán / chốt đặt phòng. */
+    Checkout?: TCheckoutComponent
+    /** Danh sách combo & tour. */
+    Tours?: TToursComponent
+    /** Chi tiết một combo. */
+    TourDetail?: TTourDetailComponent
+    /** Thư viện ảnh. */
+    Gallery?: TGalleryComponent
+    /** Trang liên hệ. */
+    Contact?: TContactComponent
 }
 
 /** Props mọi theme nhận được. Dữ liệu đến từ core, theme chỉ hiển thị. */
@@ -50,17 +87,33 @@ export interface ThemePageProps<TData = unknown> {
     locale: string
 }
 
+/**
+ * Bất kỳ `ThemeDefinition` nào, không quan tâm kiểu component cụ thể.
+ *
+ * Hai hàm tra cứu dưới đây chỉ đọc `meta.slug`, nên chúng không cần biết theme
+ * mang những component gì. Nhận qua một tham số kiểu duy nhất thay vì liệt kê
+ * từng slot — thêm slot thứ chín sau này không phải sửa chữ ký hàm.
+ */
+export type AnyTheme = ThemeDefinition<
+    unknown,
+    unknown,
+    unknown,
+    unknown,
+    unknown,
+    unknown,
+    unknown,
+    unknown
+>
+
 /** Tra theme theo slug. Trả undefined nếu không có — route sẽ trả 404. */
-export function findTheme<T>(
-    themes: readonly ThemeDefinition<T>[],
+export function findTheme<T extends AnyTheme>(
+    themes: readonly T[],
     slug: string,
-): ThemeDefinition<T> | undefined {
+): T | undefined {
     return themes.find((theme) => theme.meta.slug === slug)
 }
 
 /** Sinh danh sách slug cho generateStaticParams. */
-export function themeSlugs<T>(
-    themes: readonly ThemeDefinition<T>[],
-): string[] {
+export function themeSlugs<T extends AnyTheme>(themes: readonly T[]): string[] {
     return themes.map((theme) => theme.meta.slug)
 }
