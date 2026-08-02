@@ -131,7 +131,7 @@ export function RoomsSection() {
                 <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3' }}>{t('/đêm', '/night')}</span>
               </div>
               <Link
-                href="/rooms#room-14"
+                href="/rooms/14"
                 style={{
                   background: '#0284c7',
                   color: '#ffffff',
@@ -210,7 +210,7 @@ export function RoomsSection() {
                 <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3' }}>{t('/đêm', '/night')}</span>
               </div>
               <Link
-                href="/rooms#room-05"
+                href="/rooms/05"
                 style={{
                   background: '#0284c7',
                   color: '#ffffff',
@@ -270,7 +270,7 @@ export function RoomsSection() {
                 <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3' }}>{t('/đêm', '/night')}</span>
               </div>
               <Link
-                href="/rooms#room-07"
+                href="/rooms/07"
                 style={{
                   background: '#0284c7',
                   color: '#ffffff',

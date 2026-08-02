@@ -78,6 +78,7 @@ export function DiningSection() {
       >
         {/* Large Feature Card: BBQ */}
         <div
+          className="nd-card nd-card-img-zoom"
           style={{
             gridColumn: 'span 2',
             gridRow: 'span 2',
@@ -85,6 +86,7 @@ export function DiningSection() {
             overflow: 'hidden',
             position: 'relative',
             background: '#f6ede4',
+            cursor: 'pointer',
           }}
         >
           <ImageSlot id="ndh-bbq" placeholder="BBQ hải sản ngoài trời buổi tối" style={{ position: 'absolute', inset: 0 }} />
@@ -116,7 +118,7 @@ export function DiningSection() {
         </div>
 
         {/* Gỏi cá trích */}
-        <div style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8' }}>
+        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
           <ImageSlot id="ndh-goica" placeholder="Gỏi cá trích" style={{ position: 'absolute', inset: 0 }} />
           <div
             style={{
@@ -136,6 +138,7 @@ export function DiningSection() {
 
         {/* Sunset Café & Bar */}
         <div
+          className="nd-card"
           style={{
             borderRadius: '26px',
             padding: '26px',
@@ -145,6 +148,7 @@ export function DiningSection() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            cursor: 'pointer',
           }}
         >
           <span style={{ fontSize: '30px', fontWeight: 900, color: '#00c46a', letterSpacing: '-0.03em', lineHeight: 1 }}>
@@ -161,7 +165,7 @@ export function DiningSection() {
         </div>
 
         {/* Lẩu hải sản */}
-        <div style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8' }}>
+        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
           <ImageSlot id="ndh-lau" placeholder="Lẩu hải sản chua cay" style={{ position: 'absolute', inset: 0 }} />
           <div
             style={{
@@ -180,7 +184,7 @@ export function DiningSection() {
         </div>
 
         {/* Mực nướng sa tế */}
-        <div style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8' }}>
+        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '26px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
           <ImageSlot id="ndh-muc" placeholder="Mực nướng sa tế" style={{ position: 'absolute', inset: 0 }} />
           <div
             style={{

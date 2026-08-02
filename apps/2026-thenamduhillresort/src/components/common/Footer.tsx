@@ -149,6 +149,9 @@ export function Footer() {
             <Link href="/explore" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
               {t('Khám phá Nam Du', 'Explore Nam Du')}
             </Link>
+            <Link href="/blog" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
+              {t('Cẩm nang kinh nghiệm', 'Resort Journal')}
+            </Link>
           </div>
         </div>
 

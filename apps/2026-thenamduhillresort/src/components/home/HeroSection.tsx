@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
 import { VideoModal } from '../modals/VideoModal'
 
@@ -13,10 +14,10 @@ const SLIDES = [
 ]
 
 export function HeroSection() {
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
+  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
-  const [availMsg, setAvailMsg] = useState('')
 
   // Default dates: Today & Tomorrow
   const [checkIn, setCheckIn] = useState(() => new Date().toISOString().split('T')[0])
@@ -27,16 +28,18 @@ export function HeroSection() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
-    }, 6000)
+    }, 2000)
     return () => clearInterval(timer)
   }, [])
 
   const handleCheckAvailability = () => {
-    setAvailMsg(
-      language === 'en'
-        ? '4 room types available for your dates — Rock Deluxe #14 has 1 room left.'
-        : 'Còn 4 hạng phòng trống cho ngày bạn chọn — Rock Deluxe #14 chỉ còn 1 phòng.'
-    )
+    const params = new URLSearchParams()
+    if (checkIn) params.set('checkIn', checkIn)
+    if (checkOut) params.set('checkOut', checkOut)
+    if (guests) params.set('guests', guests)
+    if (roomType && roomType !== 'Tất cả 20 hạng phòng') params.set('roomType', roomType)
+
+    router.push(`/rooms?${params.toString()}`)
   }
 
   return (
@@ -65,10 +68,55 @@ export function HeroSection() {
               height: '100%',
               objectFit: 'cover',
               opacity: currentSlide === idx ? 1 : 0,
-              transition: 'opacity 900ms ease',
+              transition: 'opacity 900ms ease, transform 1200ms ease-out',
+              transform: currentSlide === idx ? 'scale(1.03)' : 'scale(1)',
             }}
           />
         ))}
+      </div>
+
+      {/* Cloud Layer on Default Item (Slide 0) */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 2,
+          opacity: currentSlide === 0 ? 0.95 : 0,
+          transition: 'opacity 800ms ease',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Cloud 1: Top 100px */}
+        <img
+          src="/uploads/cloud-1.png"
+          alt="Cloud 1"
+          style={{
+            position: 'absolute',
+            top: '100px',
+            left: 0,
+            width: '340px',
+            maxHeight: '170px',
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.18))',
+            animation: 'floatCloudRight1 26s linear infinite',
+          }}
+        />
+        {/* Cloud 2: Top 160px */}
+        <img
+          src="/uploads/cloud-2.png"
+          alt="Cloud 2"
+          style={{
+            position: 'absolute',
+            top: '160px',
+            left: 0,
+            width: '290px',
+            maxHeight: '145px',
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.15))',
+            animation: 'floatCloudRight2 34s linear infinite 5s',
+          }}
+        />
       </div>
 
       {/* Dark Overlay Gradient */}
@@ -76,6 +124,7 @@ export function HeroSection() {
         style={{
           position: 'absolute',
           inset: 0,
+          zIndex: 3,
           background:
             'linear-gradient(180deg, rgba(3,20,32,0.66) 0%, rgba(3,20,32,0.30) 32%, rgba(3,20,32,0.52) 66%, rgba(3,20,32,0.86) 100%)',
         }}
@@ -86,6 +135,7 @@ export function HeroSection() {
         className="hero-container nd-section-container"
         style={{
           position: 'relative',
+          zIndex: 4,
           width: '100%',
           maxWidth: '1320px',
           margin: '0 auto',
@@ -386,22 +436,6 @@ export function HeroSection() {
           </button>
         </div>
 
-        {availMsg && (
-          <div
-            style={{
-              marginTop: '10px',
-              padding: '13px 20px',
-              borderRadius: '14px',
-              background: 'rgba(0,196,106,0.94)',
-              fontSize: '13.5px',
-              fontWeight: 700,
-              color: '#04241a',
-            }}
-          >
-            {availMsg}
-          </div>
-        )}
-
         {/* Bottom Guarantee Note & Slide Dots */}
         <div
           style={{
@@ -445,6 +479,22 @@ export function HeroSection() {
       <VideoModal isOpen={isVideoModalOpen} onClose={() => setIsVideoModalOpen(false)} />
 
       <style jsx global>{`
+        @keyframes floatCloudRight1 {
+          0% {
+            transform: translateX(-360px);
+          }
+          100% {
+            transform: translateX(100vw);
+          }
+        }
+        @keyframes floatCloudRight2 {
+          0% {
+            transform: translateX(-400px);
+          }
+          100% {
+            transform: translateX(100vw);
+          }
+        }
         @media (max-width: 960px) {
           .hero-container {
             padding-top: calc(90px + max(14px, env(safe-area-inset-top, 14px))) !important;

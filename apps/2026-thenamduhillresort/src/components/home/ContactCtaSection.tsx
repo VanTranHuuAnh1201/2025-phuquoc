@@ -72,6 +72,7 @@ export function ContactCtaSection() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <Link
                 href="/rooms"
+                className="nd-btn-primary"
                 style={{
                   background: '#00c46a',
                   color: '#04241a',
@@ -86,6 +87,7 @@ export function ContactCtaSection() {
               </Link>
               <a
                 href="tel:0985000650"
+                className="nd-interactive-pill"
                 style={{
                   border: '1px solid rgba(255,255,255,0.28)',
                   color: '#ffffff',
@@ -94,20 +96,23 @@ export function ContactCtaSection() {
                   padding: '17px 30px',
                   borderRadius: '999px',
                   textDecoration: 'none',
+                  display: 'inline-block',
                 }}
               >
-                0985 000 650
+                📞 0985 000 650
               </a>
             </div>
           </div>
 
           <div style={{ display: 'grid', gap: '12px' }}>
             <div
+              className="nd-card"
               style={{
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.10)',
+                border: '1px solid rgba(255,255,255,0.12)',
                 borderRadius: '20px',
                 padding: '22px 24px',
+                backdropFilter: 'blur(8px)',
               }}
             >
               <div
@@ -116,7 +121,7 @@ export function ContactCtaSection() {
                   fontWeight: 800,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.44)',
+                  color: 'rgba(255,255,255,0.50)',
                   marginBottom: '7px',
                 }}
               >
@@ -131,11 +136,13 @@ export function ContactCtaSection() {
             </div>
 
             <div
+              className="nd-card"
               style={{
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.10)',
+                border: '1px solid rgba(255,255,255,0.12)',
                 borderRadius: '20px',
                 padding: '22px 24px',
+                backdropFilter: 'blur(8px)',
               }}
             >
               <div
@@ -144,7 +151,7 @@ export function ContactCtaSection() {
                   fontWeight: 800,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.44)',
+                  color: 'rgba(255,255,255,0.50)',
                   marginBottom: '7px',
                 }}
               >

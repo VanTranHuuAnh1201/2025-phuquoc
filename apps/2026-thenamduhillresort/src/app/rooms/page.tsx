@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
 import { ROOMS, Room, formatVND, roomSlug } from '../../data/rooms'
 import { ImageSlot } from '../../components/common/ImageSlot'
 import { BookingModal } from '../../components/rooms/BookingModal'
-import { RoomDetailModal } from '../../components/rooms/RoomDetailModal'
 
 const FILTERS = [
   { k: 'all', vi: 'Tất cả', en: 'All' },
@@ -18,7 +19,13 @@ const FILTERS = [
 
 const FAV_KEY = 'ndh:saved-rooms'
 
-export default function RoomsPage() {
+function RoomsContent() {
+  const searchParams = useSearchParams()
+  const checkIn = searchParams.get('checkIn')
+  const checkOut = searchParams.get('checkOut')
+  const guests = searchParams.get('guests')
+  const roomType = searchParams.get('roomType')
+
   const { t, language } = useLanguage()
   const isEn = language === 'en'
 
@@ -26,9 +33,21 @@ export default function RoomsPage() {
   const [activeSort, setActiveSort] = useState('rec')
   const [favOnly, setFavOnly] = useState(false)
   const [favs, setFavs] = useState<string[]>([])
-
   const [bookingRoom, setBookingRoom] = useState<Room | null>(null)
-  const [detailRoom, setDetailRoom] = useState<Room | null>(null)
+
+  // Sync category filter from query params
+  useEffect(() => {
+    if (roomType) {
+      if (roomType.includes('Rock Deluxe') || roomType.includes('#14')) setActiveFilter('signature')
+      else if (roomType.includes('Lục Giác') || roomType.includes('#05')) setActiveFilter('couple')
+      else if (roomType.includes('Superior') || roomType.includes('#07')) setActiveFilter('family')
+      else if (roomType.includes('Suite') || roomType.includes('#08-09')) setActiveFilter('suite')
+    } else if (guests) {
+      if (guests.includes('2')) setActiveFilter('couple')
+      else if (guests.includes('3') || guests.includes('4')) setActiveFilter('family')
+      else if (guests.includes('6') || guests.includes('8')) setActiveFilter('suite')
+    }
+  }, [guests, roomType])
 
   useEffect(() => {
     try {
@@ -75,11 +94,62 @@ export default function RoomsPage() {
   }
 
   const visibleRooms = getVisibleRooms()
+  const hasDateFilter = !!(checkIn || checkOut)
 
   return (
     <main className="nd-page-main" style={{ paddingTop: '90px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
       {/* Top Title Banner */}
       <section className="nd-section-container" style={{ padding: '32px 32px 0', maxWidth: '1320px', margin: '0 auto' }}>
+        {/* Availability Notice Banner if search params present */}
+        {hasDateFilter && (
+          <div
+            style={{
+              background: '#f0fdf4',
+              border: '1px solid #bbf7d0',
+              borderRadius: '20px',
+              padding: '16px 24px',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span style={{ fontSize: '24px' }}>🗓️</span>
+              <div>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: '#166534' }}>
+                  {t(
+                    `Kiểm tra phòng trống: ${checkIn || ''} đến ${checkOut || ''} ${guests ? `(${guests})` : ''}`,
+                    `Availability search: ${checkIn || ''} to ${checkOut || ''} ${guests ? `(${guests})` : ''}`
+                  )}
+                </div>
+                <div style={{ fontSize: '13.5px', color: '#15803d', marginTop: '2px', fontWeight: 600 }}>
+                  {t(
+                    `Còn ${visibleRooms.length} hạng phòng trống cho ngày bạn chọn — Rock Deluxe #14 chỉ còn 1 phòng.`,
+                    `${visibleRooms.length} room types available for your dates — Rock Deluxe #14 has 1 room left.`
+                  )}
+                </div>
+              </div>
+            </div>
+            <Link
+              href="/rooms"
+              style={{
+                fontSize: '13px',
+                fontWeight: 700,
+                color: '#15803d',
+                background: '#dcfce7',
+                padding: '8px 16px',
+                borderRadius: '999px',
+                textDecoration: 'none',
+              }}
+            >
+              {t('Xóa bộ lọc ngày ✕', 'Clear date filter ✕')}
+            </Link>
+          </div>
+        )}
+
         <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.35fr) minmax(0, 1fr)', gap: '32px', alignItems: 'end', padding: '20px 0 30px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
@@ -203,26 +273,26 @@ export default function RoomsPage() {
               style={{
                 border: '1px solid #dbe7ef',
                 background: '#ffffff',
-                borderRadius: '12px',
+                color: '#0b1b26',
                 fontSize: '13px',
                 fontWeight: 600,
-                color: '#0b1b26',
-                padding: '10px 14px',
+                padding: '9px 14px',
+                borderRadius: '999px',
                 cursor: 'pointer',
               }}
             >
-              <option value="rec">{t('Đề xuất', 'Recommended')}</option>
-              <option value="asc">{t('Giá thấp → cao', 'Price: low to high')}</option>
-              <option value="desc">{t('Giá cao → thấp', 'Price: high to low')}</option>
-              <option value="area">{t('Diện tích lớn nhất', 'Largest first')}</option>
+              <option value="rec">{t('Sắp xếp: Khuyên dùng', 'Sort: Recommended')}</option>
+              <option value="asc">{t('Giá: Thấp đến cao', 'Price: Low to High')}</option>
+              <option value="desc">{t('Giá: Cao đến thấp', 'Price: High to Low')}</option>
+              <option value="area">{t('Diện tích rộng nhất', 'Largest area')}</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Room Cards Grid */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '30px 32px 0' }}>
-        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+      {/* Main Room Cards Grid */}
+      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '40px 32px 80px' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
           {visibleRooms.map((r) => {
             const isFavorite = favs.includes(r.code)
             return (
@@ -236,20 +306,18 @@ export default function RoomsPage() {
                   border: '1px solid #e6eef4',
                   display: 'flex',
                   flexDirection: 'column',
-                  transition: 'box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease',
                 }}
               >
                 {/* Image & Badges */}
-                <div
-                  onClick={() => setDetailRoom(r)}
-                  style={{ position: 'relative', height: '208px', background: '#eef4f8', cursor: 'pointer' }}
-                >
-                  <ImageSlot
-                    id={roomSlug(r.code)}
-                    placeholder={`${r.code} — ${isEn ? r.nameEn : r.name}`}
-                    src={r.images?.[0]}
-                    style={{ position: 'absolute', inset: 0 }}
-                  />
+                <div style={{ position: 'relative', height: '208px', background: '#eef4f8' }}>
+                  <Link href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`} style={{ display: 'block', position: 'absolute', inset: 0 }}>
+                    <ImageSlot
+                      id={roomSlug(r.code)}
+                      placeholder={`${r.code} — ${isEn ? r.nameEn : r.name}`}
+                      src={r.images?.[0]}
+                      style={{ position: 'absolute', inset: 0 }}
+                    />
+                  </Link>
 
                   {/* Room Code Badge */}
                   <span
@@ -257,138 +325,137 @@ export default function RoomsPage() {
                       position: 'absolute',
                       top: '12px',
                       left: '12px',
-                      display: 'inline-block',
-                      whiteSpace: 'nowrap',
-                      background: 'rgba(255,255,255,0.94)',
+                      background: 'rgba(6,40,58,0.85)',
                       backdropFilter: 'blur(8px)',
-                      color: '#0b1b26',
+                      color: '#ffffff',
                       fontSize: '11px',
                       fontWeight: 800,
                       letterSpacing: '0.06em',
-                      padding: '6px 11px',
+                      padding: '5px 11px',
                       borderRadius: '999px',
                     }}
                   >
                     {r.code}
                   </span>
 
-                  {/* Tag Badge */}
+                  {/* Optional Hot/Tag Badge */}
                   {r.tag && (
                     <span
                       style={{
                         position: 'absolute',
                         top: '12px',
-                        right: '12px',
-                        display: 'inline-block',
-                        whiteSpace: 'nowrap',
-                        background: r.hot === 2 ? 'rgba(11,27,38,0.86)' : 'rgba(0,196,106,0.94)',
+                        left: '60px',
+                        background: 'rgba(0,196,106,0.92)',
                         backdropFilter: 'blur(8px)',
-                        color: r.hot === 2 ? '#ffffff' : '#04241a',
+                        color: '#04241a',
                         fontSize: '10.5px',
                         fontWeight: 800,
-                        letterSpacing: '0.07em',
-                        padding: '6px 11px',
+                        letterSpacing: '0.06em',
+                        padding: '5px 10px',
                         borderRadius: '999px',
                       }}
                     >
-                      {isEn ? r.tagEn : r.tag}
+                      {r.tag}
                     </span>
                   )}
 
                   {/* Favorite Button */}
                   <button
                     onClick={(e) => toggleFav(r.code, e)}
-                    aria-label="Lưu phòng"
+                    aria-label={isFavorite ? 'Bỏ lưu' : 'Lưu phòng'}
                     style={{
                       position: 'absolute',
-                      top: r.tag ? '54px' : '12px',
+                      top: '12px',
                       right: '12px',
                       width: '36px',
                       height: '36px',
                       borderRadius: '50%',
                       border: 'none',
-                      cursor: 'pointer',
+                      background: isFavorite ? '#0284c7' : 'rgba(255,255,255,0.88)',
+                      backdropFilter: 'blur(8px)',
+                      color: isFavorite ? '#ffffff' : '#0b1b26',
+                      fontSize: '16px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '17px',
-                      backdropFilter: 'blur(8px)',
-                      background: isFavorite ? '#0284c7' : 'rgba(255,255,255,0.92)',
-                      color: isFavorite ? '#ffffff' : '#0b1b26',
-                      boxShadow: '0 3px 10px rgba(3,20,32,0.18)',
-                      transition: 'all 150ms ease',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
                     }}
                   >
                     {isFavorite ? '♥' : '♡'}
                   </button>
                 </div>
 
-                {/* Card Details */}
-                <div style={{ padding: '20px 20px 22px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div
-                    onClick={() => setDetailRoom(r)}
-                    style={{
-                      cursor: 'pointer',
-                      margin: '0 0 8px',
-                      fontSize: '18px',
-                      fontWeight: 800,
-                      letterSpacing: '-0.02em',
-                      color: '#0b1b26',
-                      lineHeight: 1.24,
-                    }}
-                  >
-                    {isEn ? r.nameEn : r.name}
-                  </div>
+                {/* Card Content Body */}
+                <div style={{ padding: '20px 22px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <h2 style={{ margin: '0 0 6px', fontSize: '19px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
+                    <Link href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {isEn ? r.nameEn : r.name}
+                    </Link>
+                  </h2>
 
-                  <p style={{ margin: '0 0 14px', fontSize: '13.5px', lineHeight: 1.5, color: '#566e7d' }}>
-                    {isEn ? r.viewEn : r.view}
+                  <p style={{ margin: '0 0 16px', fontSize: '13.5px', lineHeight: 1.5, color: '#566e7d', flex: 1 }}>
+                    {isEn ? r.blurbEn : r.blurb}
                   </p>
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
-                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 10px', borderRadius: '8px' }}>
+                  {/* Specifications Pills */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
                       {r.area} m²
                     </span>
-                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 10px', borderRadius: '8px' }}>
-                      {isEn ? `${r.cap} guests` : `${r.cap} khách`}
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
+                      {r.cap} {t('khách', 'guests')}
                     </span>
-                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 10px', borderRadius: '8px' }}>
-                      {r.exPrice
-                        ? isEn
-                          ? `Extra bed ${formatVND(r.exPrice)}`
-                          : `Giường phụ ${formatVND(r.exPrice)}`
-                        : isEn
-                        ? 'No surcharge'
-                        : 'Không phụ thu'}
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
+                      {isEn ? r.viewEn : r.view}
                     </span>
                   </div>
 
+                  {/* Card Footer: Price & Actions */}
                   <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #eef4f8' }}>
                     <div>
-                      <div style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26', lineHeight: 1.1 }}>
+                      <span style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
                         {formatVND(r.price)}
-                      </div>
-                      <div style={{ fontSize: '11.5px', fontWeight: 500, color: '#8fa5b3', marginTop: '2px' }}>
-                        {t('mỗi đêm, đã gồm bữa sáng', 'per night, incl. breakfast')}
-                      </div>
+                      </span>
+                      <span style={{ fontSize: '12px', fontWeight: 500, color: '#8fa5b3' }}>{t('/đêm', '/night')}</span>
                     </div>
 
-                    <button
-                      onClick={() => setBookingRoom(r)}
-                      style={{
-                        background: '#0284c7',
-                        color: '#ffffff',
-                        border: 'none',
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        padding: '11px 19px',
-                        borderRadius: '999px',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        transition: 'background 150ms ease',
-                      }}
-                    >
-                      {t('Đặt phòng', 'Book')}
-                    </button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <Link
+                        href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`}
+                        style={{
+                          background: '#f2f8fc',
+                          border: '1px solid rgba(2,132,199,0.16)',
+                          color: '#0284c7',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          padding: '10px 16px',
+                          borderRadius: '999px',
+                          textDecoration: 'none',
+                          display: 'inline-block',
+                        }}
+                      >
+                        {t('Chi tiết', 'Details')}
+                      </Link>
+
+                      <button
+                        onClick={() => setBookingRoom(r)}
+                        style={{
+                          background: '#0284c7',
+                          color: '#ffffff',
+                          border: 'none',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          padding: '11px 19px',
+                          borderRadius: '999px',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                          transition: 'background 150ms ease',
+                        }}
+                      >
+                        {t('Đặt phòng', 'Book')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -435,9 +502,14 @@ export default function RoomsPage() {
 
       {/* Booking Deposit Modal */}
       {bookingRoom && <BookingModal room={bookingRoom} onClose={() => setBookingRoom(null)} />}
-
-      {/* Room Detail Modal */}
-      {detailRoom && <RoomDetailModal room={detailRoom} onClose={() => setDetailRoom(null)} />}
     </main>
+  )
+}
+
+export default function RoomsPage() {
+  return (
+    <Suspense fallback={<div style={{ paddingTop: '120px', textAlign: 'center' }}>Đang tải...</div>}>
+      <RoomsContent />
+    </Suspense>
   )
 }

@@ -63,6 +63,7 @@ export function ExploreSection() {
         }}
       >
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
             overflow: 'hidden',
@@ -71,6 +72,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
+            cursor: 'pointer',
           }}
         >
           <ImageSlot id="ndh-island-haibodap" placeholder="Hòn Hai Bờ Đập" style={{ position: 'absolute', inset: 0 }} />
@@ -96,6 +98,7 @@ export function ExploreSection() {
         </article>
 
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
             overflow: 'hidden',
@@ -104,6 +107,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
+            cursor: 'pointer',
           }}
         >
           <ImageSlot id="ndh-island-honmau" placeholder="Hòn Mấu" style={{ position: 'absolute', inset: 0 }} />
@@ -129,6 +133,7 @@ export function ExploreSection() {
         </article>
 
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
             overflow: 'hidden',
@@ -137,6 +142,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
+            cursor: 'pointer',
           }}
         >
           <ImageSlot id="ndh-spot-caymen" placeholder="Bãi Cây Mến" style={{ position: 'absolute', inset: 0 }} />
@@ -162,6 +168,7 @@ export function ExploreSection() {
         </article>
 
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
             overflow: 'hidden',
@@ -170,6 +177,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
+            cursor: 'pointer',
           }}
         >
           <ImageSlot id="ndh-spot-haidang" placeholder="Hải đăng Nam Du" style={{ position: 'absolute', inset: 0 }} />
@@ -205,6 +213,7 @@ export function ExploreSection() {
       >
         <Link
           href="/explore"
+          className="nd-card"
           style={{
             border: '1px solid #e6eef4',
             borderRadius: '24px',
@@ -212,6 +221,7 @@ export function ExploreSection() {
             display: 'flex',
             flexDirection: 'column',
             textDecoration: 'none',
+            background: '#ffffff',
           }}
         >
           <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', color: '#0284c7', marginBottom: '12px' }}>
@@ -232,6 +242,7 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
+          className="nd-card"
           style={{
             border: '1px solid #e6eef4',
             borderRadius: '24px',
@@ -239,6 +250,7 @@ export function ExploreSection() {
             display: 'flex',
             flexDirection: 'column',
             textDecoration: 'none',
+            background: '#ffffff',
           }}
         >
           <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', color: '#00a85c', marginBottom: '12px' }}>
@@ -259,6 +271,7 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
+          className="nd-card nd-glow-card"
           style={{
             borderRadius: '24px',
             padding: '28px 30px',

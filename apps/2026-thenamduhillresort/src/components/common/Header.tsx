@@ -184,6 +184,19 @@ export function Header({ forceSolid = false }: HeaderProps) {
             {t('Khám phá Nam Du', 'Explore Nam Du')}
           </Link>
           <Link
+            href="/blog"
+            style={{
+              fontSize: '14px',
+              fontWeight: pathname.startsWith('/blog') ? 700 : 600,
+              color: pathname.startsWith('/blog') ? '#0284c7' : navLinkColor,
+              whiteSpace: 'nowrap',
+              textDecoration: 'none',
+              transition: 'color 200ms ease',
+            }}
+          >
+            {t('Cẩm nang', 'Journal')}
+          </Link>
+          <Link
             href="/contact"
             style={{
               fontSize: '14px',
@@ -368,6 +381,20 @@ export function Header({ forceSolid = false }: HeaderProps) {
               }}
             >
               {t('Khám phá Nam Du', 'Explore Nam Du')}
+            </Link>
+            <Link
+              href="/blog"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontSize: '15px',
+                fontWeight: 700,
+                color: '#0b1b26',
+                padding: '12px 0',
+                borderBottom: '1px solid #eef4f8',
+                textDecoration: 'none',
+              }}
+            >
+              {t('Cẩm nang', 'Journal')}
             </Link>
             <Link
               href="/contact"

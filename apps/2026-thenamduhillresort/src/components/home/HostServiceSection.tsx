@@ -53,16 +53,16 @@ export function HostServiceSection() {
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            <span style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px' }}>
+            <span className="nd-interactive-pill" style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px', cursor: 'pointer' }}>
               {t('Hỗ trợ 24/7', '24/7 support')}
             </span>
-            <span style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px' }}>
+            <span className="nd-interactive-pill" style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px', cursor: 'pointer' }}>
               {t('Đón tiễn miễn phí', 'Free pier transfer')}
             </span>
-            <span style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px' }}>
+            <span className="nd-interactive-pill" style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px', cursor: 'pointer' }}>
               {t('Tour cano riêng', 'Private canoe tour')}
             </span>
-            <span style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px' }}>
+            <span className="nd-interactive-pill" style={{ background: '#ffffff', border: '1px solid rgba(2,132,199,0.16)', fontSize: '13px', fontWeight: 700, color: '#0284c7', padding: '9px 16px', borderRadius: '999px', cursor: 'pointer' }}>
               {t('Bàn bida', 'Billiards & games')}
             </span>
           </div>
@@ -70,7 +70,7 @@ export function HostServiceSection() {
 
         {/* 3 Review Blockquotes */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-          <blockquote style={{ margin: 0, background: '#ffffff', borderRadius: '22px', padding: '26px', boxShadow: '0 4px 18px rgba(6,40,58,0.06)' }}>
+          <blockquote className="nd-card" style={{ margin: 0, background: '#ffffff', borderRadius: '22px', padding: '26px', boxShadow: '0 4px 18px rgba(6,40,58,0.06)' }}>
             <div style={{ fontSize: '15px', color: '#00c46a', letterSpacing: '2px', marginBottom: '12px' }}>★★★★★</div>
             <p style={{ margin: '0 0 16px', fontSize: '15px', lineHeight: 1.6, fontWeight: 500, color: '#0b1b26' }}>
               {t('“Bà chủ rất chu đáo, tận tâm với khách hàng.”', '“The owner is genuinely attentive — she checked on us more than any hotel we’ve stayed at.”')}
@@ -78,15 +78,15 @@ export function HostServiceSection() {
             <footer style={{ fontSize: '12.5px', fontWeight: 600, color: '#8fa5b3' }}>Ngọc Anh · TP.HCM</footer>
           </blockquote>
 
-          <blockquote style={{ margin: 0, background: '#0284c7', borderRadius: '22px', padding: '26px' }}>
+          <blockquote className="nd-card" style={{ margin: 0, background: '#0284c7', borderRadius: '22px', padding: '26px', boxShadow: '0 8px 24px -4px rgba(2,132,199,0.35)' }}>
             <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', letterSpacing: '2px', marginBottom: '12px' }}>★★★★★</div>
             <p style={{ margin: '0 0 16px', fontSize: '15px', lineHeight: 1.6, fontWeight: 500, color: '#ffffff' }}>
               {t('“Dậy ngắm bình minh rồi ngồi luôn trên sân thượng tới lúc chợ đêm lên đèn.”', '“We woke for the sunrise and stayed on the terrace until the night market lit up.”')}
             </p>
-            <footer style={{ fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.68)' }}>Minh Trí · Cần Thơ</footer>
+            <footer style={{ fontSize: '12.5px', fontWeight: 600, color: 'rgba(255,255,255,0.76)' }}>Minh Trí · Cần Thơ</footer>
           </blockquote>
 
-          <blockquote style={{ gridColumn: '1 / -1', margin: 0, background: '#ffffff', borderRadius: '22px', padding: '26px', boxShadow: '0 4px 18px rgba(6,40,58,0.06)' }}>
+          <blockquote className="nd-card" style={{ gridColumn: '1 / -1', margin: 0, background: '#ffffff', borderRadius: '22px', padding: '26px', boxShadow: '0 4px 18px rgba(6,40,58,0.06)' }}>
             <div style={{ fontSize: '15px', color: '#00c46a', letterSpacing: '2px', marginBottom: '12px' }}>★★★★★</div>
             <p style={{ margin: '0 0 16px', fontSize: '15px', lineHeight: 1.6, fontWeight: 500, color: '#0b1b26' }}>
               {t('“Phòng 14 không phải phòng trang trí theo chủ đề. Đó là vách đá thật trong phòng ngủ, đêm nghe rõ tiếng suối.”', '“Room 14 is not a themed room. That is an actual cliff in the bedroom, and you can hear the stream at night.”')}
