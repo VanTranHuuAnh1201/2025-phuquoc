@@ -163,6 +163,7 @@ export default function BlogPage() {
           {filteredPosts.map((post) => (
             <article
               key={post.id}
+              className="nd-card nd-card-img-zoom"
               style={{
                 borderRadius: '24px',
                 overflow: 'hidden',
@@ -170,7 +171,7 @@ export default function BlogPage() {
                 border: '1px solid #e6eef4',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'transform 200ms ease, box-shadow 200ms ease',
+                cursor: 'pointer',
               }}
             >
               <div style={{ position: 'relative', height: '220px', background: '#eef4f8' }}>

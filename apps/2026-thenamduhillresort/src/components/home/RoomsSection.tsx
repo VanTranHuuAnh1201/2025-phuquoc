@@ -71,6 +71,7 @@ export function RoomsSection() {
       >
         {/* Room 14 */}
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '26px',
             overflow: 'hidden',
@@ -81,7 +82,9 @@ export function RoomsSection() {
           }}
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
-            <ImageSlot id="ndh-room-14" placeholder="Rock Deluxe #14" style={{ position: 'absolute', inset: 0 }} />
+            <Link href="/rooms/14" style={{ display: 'block', position: 'absolute', inset: 0 }}>
+              <ImageSlot id="ndh-room-14" placeholder="Rock Deluxe #14" style={{ position: 'absolute', inset: 0 }} />
+            </Link>
             <span
               style={{
                 position: 'absolute',
@@ -97,6 +100,7 @@ export function RoomsSection() {
                 letterSpacing: '0.08em',
                 padding: '7px 13px',
                 borderRadius: '999px',
+                pointerEvents: 'none',
               }}
             >
               {t('ĐỘC BẢN', 'SIGNATURE')}
@@ -104,7 +108,9 @@ export function RoomsSection() {
           </div>
           <div style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
             <h3 style={{ margin: '0 0 6px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26' }}>
-              Rock Deluxe #14
+              <Link href="/rooms/14" style={{ color: 'inherit', textDecoration: 'none' }}>
+                Rock Deluxe #14
+              </Link>
             </h3>
             <p style={{ margin: '0 0 18px', fontSize: '14px', lineHeight: 1.55, color: '#566e7d' }}>
               {t(
@@ -150,6 +156,7 @@ export function RoomsSection() {
 
         {/* Room 05 */}
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '26px',
             overflow: 'hidden',
@@ -160,7 +167,9 @@ export function RoomsSection() {
           }}
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
-            <ImageSlot id="ndh-room-05" placeholder="Lục Giác Khung Kính #05" style={{ position: 'absolute', inset: 0 }} />
+            <Link href="/rooms/05" style={{ display: 'block', position: 'absolute', inset: 0 }}>
+              <ImageSlot id="ndh-room-05" placeholder="Lục Giác Khung Kính #05" style={{ position: 'absolute', inset: 0 }} />
+            </Link>
             <span
               style={{
                 position: 'absolute',
@@ -176,6 +185,7 @@ export function RoomsSection() {
                 letterSpacing: '0.08em',
                 padding: '7px 13px',
                 borderRadius: '999px',
+                pointerEvents: 'none',
               }}
             >
               {t('ĐƯỢC ĐẶT NHIỀU', 'POPULAR')}
@@ -183,7 +193,9 @@ export function RoomsSection() {
           </div>
           <div style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
             <h3 style={{ margin: '0 0 6px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26' }}>
-              Lục Giác Khung Kính #05
+              <Link href="/rooms/05" style={{ color: 'inherit', textDecoration: 'none' }}>
+                Lục Giác Khung Kính #05
+              </Link>
             </h3>
             <p style={{ margin: '0 0 18px', fontSize: '14px', lineHeight: 1.55, color: '#566e7d' }}>
               {t(
@@ -229,6 +241,7 @@ export function RoomsSection() {
 
         {/* Room 07 */}
         <article
+          className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '26px',
             overflow: 'hidden',
@@ -239,11 +252,15 @@ export function RoomsSection() {
           }}
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
-            <ImageSlot id="ndh-room-07" placeholder="Superior King #07" style={{ position: 'absolute', inset: 0 }} />
+            <Link href="/rooms/07" style={{ display: 'block', position: 'absolute', inset: 0 }}>
+              <ImageSlot id="ndh-room-07" placeholder="Superior King #07" style={{ position: 'absolute', inset: 0 }} />
+            </Link>
           </div>
           <div style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
             <h3 style={{ margin: '0 0 6px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26' }}>
-              Superior King #07
+              <Link href="/rooms/07" style={{ color: 'inherit', textDecoration: 'none' }}>
+                Superior King #07
+              </Link>
             </h3>
             <p style={{ margin: '0 0 18px', fontSize: '14px', lineHeight: 1.55, color: '#566e7d' }}>
               {t(

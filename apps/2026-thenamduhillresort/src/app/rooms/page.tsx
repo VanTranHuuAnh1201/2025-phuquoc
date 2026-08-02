@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
 import { ROOMS, Room, formatVND, roomSlug } from '../../data/rooms'
 import { ImageSlot } from '../../components/common/ImageSlot'
@@ -20,6 +20,7 @@ const FILTERS = [
 const FAV_KEY = 'ndh:saved-rooms'
 
 function RoomsContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const checkIn = searchParams.get('checkIn')
   const checkOut = searchParams.get('checkOut')
@@ -34,6 +35,12 @@ function RoomsContent() {
   const [favOnly, setFavOnly] = useState(false)
   const [favs, setFavs] = useState<string[]>([])
   const [bookingRoom, setBookingRoom] = useState<Room | null>(null)
+
+  const handleCardClick = (e: React.MouseEvent, code: string) => {
+    const target = e.target as HTMLElement
+    if (target.closest('button') || target.closest('a')) return
+    router.push(`/rooms/${encodeURIComponent(code.replace('#', ''))}`)
+  }
 
   // Sync category filter from query params
   useEffect(() => {
@@ -298,7 +305,8 @@ function RoomsContent() {
             return (
               <article
                 key={r.code}
-                className="nd-card"
+                className="nd-card nd-card-img-zoom"
+                onClick={(e) => handleCardClick(e, r.code)}
                 style={{
                   borderRadius: '24px',
                   overflow: 'hidden',
@@ -306,6 +314,7 @@ function RoomsContent() {
                   border: '1px solid #e6eef4',
                   display: 'flex',
                   flexDirection: 'column',
+                  cursor: 'pointer',
                 }}
               >
                 {/* Image & Badges */}

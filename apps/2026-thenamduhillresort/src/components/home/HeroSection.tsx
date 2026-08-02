@@ -1,16 +1,16 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { VideoModal } from '../modals/VideoModal'
 
 const SLIDES = [
+  { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
   { src: '/uploads/pasted-1785691965790-0.png', alt: 'Vịnh Nam Du nhìn từ trên đồi' },
   { src: '/uploads/pasted-1785690604574-0.png', alt: 'Sân hiên The Nam Du Hill' },
   { src: '/uploads/pasted-1785690578814-0.png', alt: 'Sân hiên lục giác nhìn từ trên cao về đêm' },
-  { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
 ]
 
 export function HeroSection() {
@@ -28,7 +28,7 @@ export function HeroSection() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
-    }, 2000)
+    }, 30000) // Slide show interval: 7 seconds (7s)
     return () => clearInterval(timer)
   }, [])
 
@@ -68,16 +68,17 @@ export function HeroSection() {
               height: '100%',
               objectFit: 'cover',
               opacity: currentSlide === idx ? 1 : 0,
-              transition: 'opacity 900ms ease, transform 1200ms ease-out',
+              transition: 'opacity 1200ms ease, transform 1500ms ease-out',
               transform: currentSlide === idx ? 'scale(1.03)' : 'scale(1)',
             }}
           />
         ))}
       </div>
 
-      {/* Cloud Layer on Default Item (Slide 0) */}
+      {/* Cloud Layer (Tạm thời dừng animation đám mây theo yêu cầu) */}
       <div
         style={{
+          display: 'none', // Tạm thời dừng animation đám mây
           position: 'absolute',
           inset: 0,
           pointerEvents: 'none',
@@ -99,7 +100,7 @@ export function HeroSection() {
             maxHeight: '170px',
             objectFit: 'contain',
             filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.18))',
-            animation: 'floatCloudRight1 26s linear infinite',
+            animation: 'floatCloudRight1 70s linear infinite',
           }}
         />
         {/* Cloud 2: Top 160px */}
@@ -114,7 +115,7 @@ export function HeroSection() {
             maxHeight: '145px',
             objectFit: 'contain',
             filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.15))',
-            animation: 'floatCloudRight2 34s linear infinite 5s',
+            animation: 'floatCloudRight2 90s linear infinite 6s',
           }}
         />
       </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../common/ImageSlot'
 
@@ -237,7 +236,7 @@ export function WhyUsSection() {
         <div
           className="nd-card nd-card-img-zoom"
           style={{
-            gridColumn: 'span 2',
+            gridColumn: 'span 3',
             borderRadius: '26px',
             overflow: 'hidden',
             position: 'relative',
