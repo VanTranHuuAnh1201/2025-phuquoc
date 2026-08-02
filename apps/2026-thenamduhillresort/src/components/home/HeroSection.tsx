@@ -68,7 +68,7 @@ export function HeroSection() {
               height: '100%',
               objectFit: 'cover',
               opacity: currentSlide === idx ? 1 : 0,
-              transition: 'opacity 1200ms ease, transform 1500ms ease-out',
+              transition: 'opacity 2500ms ease-in-out, transform 3000ms ease-out',
               transform: currentSlide === idx ? 'scale(1.03)' : 'scale(1)',
             }}
           />
