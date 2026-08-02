@@ -23,6 +23,7 @@ export const namDuHill: PropertyData = {
         phone: '0909 000 000',
         email: 'booking@thenamduhill.com',
         site: 'thenamduhill.com',
+        logo: '/OP5.png',
     },
 
     nav: [
@@ -50,6 +51,7 @@ export const namDuHill: PropertyData = {
             t('Xác nhận trong 15 phút', 'Confirmed in 15 minutes'),
             t('Hỗ trợ đưa đón bến tàu', 'Free pier transfer'),
         ],
+        images: ['/hero-1.jpg', '/hero-2.jpg'],
     },
 
     facts: [

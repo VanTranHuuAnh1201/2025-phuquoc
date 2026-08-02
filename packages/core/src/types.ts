@@ -15,6 +15,7 @@ export interface Brand {
     phone: string
     email: string
     site: string
+    logo?: string
 }
 
 // -------------------------------------------------------------------- section
@@ -160,6 +161,7 @@ export interface Hero {
     title: I18nText
     sub: I18nText
     badges: I18nText[]
+    images?: string[]
 }
 
 // -------------------------------------------------------------- gói dữ liệu site

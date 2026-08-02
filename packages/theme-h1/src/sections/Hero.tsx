@@ -44,14 +44,15 @@ const LABEL: React.CSSProperties = {
 export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
     const { hero } = data
     const t = ui[locale]
+    const heroImages = hero.images?.length ? hero.images : HERO_IMAGES
     const [currentSlide, setCurrentSlide] = useState(0)
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % HERO_IMAGES.length)
+            setCurrentSlide((prev) => (prev + 1) % heroImages.length)
         }, 5000)
         return () => clearInterval(timer)
-    }, [])
+    }, [heroImages.length])
 
     return (
         <section
@@ -64,7 +65,7 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
             }}
         >
             {/* Auto-sliding Banner Images */}
-            {HERO_IMAGES.map((src, idx) => (
+            {heroImages.map((src, idx) => (
                 <div
                     key={src}
                     style={{
@@ -97,7 +98,7 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                     gap: 8,
                 }}
             >
-                {HERO_IMAGES.map((_, idx) => (
+                {heroImages.map((_, idx) => (
                     <button
                         key={idx}
                         type="button"

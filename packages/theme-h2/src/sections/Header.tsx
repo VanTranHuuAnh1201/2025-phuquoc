@@ -170,7 +170,7 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         }}
                     >
                         <img
-                            src="/OP5.png"
+                            src={brand.logo || '/OP5.png'}
                             alt={brand.name}
                             style={{
                                 height: 40,
