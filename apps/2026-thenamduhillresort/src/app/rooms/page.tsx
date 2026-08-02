@@ -77,10 +77,10 @@ export default function RoomsPage() {
   const visibleRooms = getVisibleRooms()
 
   return (
-    <main style={{ paddingTop: '80px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
+    <main className="nd-page-main" style={{ paddingTop: '90px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
       {/* Top Title Banner */}
-      <section style={{ padding: '40px 32px 0', maxWidth: '1320px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.35fr) minmax(0, 1fr)', gap: '48px', alignItems: 'end', padding: '20px 0 30px' }}>
+      <section className="nd-section-container" style={{ padding: '32px 32px 0', maxWidth: '1320px', margin: '0 auto' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.35fr) minmax(0, 1fr)', gap: '32px', alignItems: 'end', padding: '20px 0 30px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
               <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
@@ -110,7 +110,7 @@ export default function RoomsPage() {
           </div>
 
           {/* Rating Cards */}
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="nd-grid-responsive" style={{ display: 'flex', gap: '12px' }}>
             <div style={{ flex: 1, background: 'linear-gradient(150deg, #0284c7 0%, #075985 100%)', borderRadius: '22px', padding: '22px 24px', color: '#ffffff' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                 <span style={{ fontSize: '38px', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>8.5</span>
@@ -221,8 +221,8 @@ export default function RoomsPage() {
       </div>
 
       {/* Room Cards Grid */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '30px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
+      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '30px 32px 0' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
           {visibleRooms.map((r) => {
             const isFavorite = favs.includes(r.code)
             return (
@@ -247,6 +247,7 @@ export default function RoomsPage() {
                   <ImageSlot
                     id={roomSlug(r.code)}
                     placeholder={`${r.code} — ${isEn ? r.nameEn : r.name}`}
+                    src={r.images?.[0]}
                     style={{ position: 'absolute', inset: 0 }}
                   />
 

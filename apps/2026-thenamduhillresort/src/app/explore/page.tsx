@@ -42,12 +42,13 @@ export default function ExplorePage() {
           }}
         />
         <div
+          className="hero-container nd-section-container"
           style={{
             position: 'relative',
             width: '100%',
             maxWidth: '1320px',
             margin: '0 auto',
-            padding: '160px 32px 50px',
+            padding: '140px 32px 50px',
             pointerEvents: 'none',
           }}
         >

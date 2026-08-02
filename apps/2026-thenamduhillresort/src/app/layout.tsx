@@ -21,36 +21,51 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <style>{`
           *, *::before, *::after { box-sizing: border-box; }
-          body {
+          html, body {
             margin: 0;
+            padding: 0;
             font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
             background: #ffffff;
             color: #0b1b26;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            width: 100%;
           }
           a { color: #0284c7; text-decoration: none; }
           a:hover { color: #0369a1; }
           :focus-visible { outline: 3px solid #0284c7; outline-offset: 3px; border-radius: 6px; }
-          input, button, select, textarea { font-family: inherit; }
+          input, button, select, textarea { font-family: inherit; max-width: 100%; }
+          img, iframe { max-width: 100%; }
           @keyframes ndFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
           @keyframes ndRise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
           ::selection { background: #00c46a; color: #04241a; }
 
-          /* Global responsive side padding & layout adjustments for mobile */
+          /* Responsive & Safe Top Layout Rules */
+          :root {
+            --sat: max(14px, env(safe-area-inset-top, 14px));
+          }
+
           @media (max-width: 768px) {
-            main, section, header, footer {
-              padding-left: 16px !important;
-              padding-right: 16px !important;
+            .nd-page-main {
+              padding-top: calc(64px + var(--sat)) !important;
             }
-            .mobile-grid-1col {
+            .nd-section-container {
+              padding-left: 14px !important;
+              padding-right: 14px !important;
+            }
+            .nd-card-padding {
+              padding: 16px 14px !important;
+            }
+            .nd-grid-responsive {
               grid-template-columns: 1fr !important;
             }
-            .mobile-padding-sm {
-              padding: 20px 16px !important;
+            .nd-flex-responsive {
+              flex-direction: column !important;
+              align-items: stretch !important;
             }
           }
           @media (max-width: 480px) {
-            main, section, header, footer {
+            .nd-section-container {
               padding-left: 12px !important;
               padding-right: 12px !important;
             }

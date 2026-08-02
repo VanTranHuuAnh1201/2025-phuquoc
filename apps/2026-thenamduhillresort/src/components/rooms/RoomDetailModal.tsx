@@ -43,7 +43,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
 
   const allAmenities = (room.amenities || []).concat(BASE_AMENITIES)
 
-  const shotsCount = room.shots || 8
+  const shotsCount = (room.images && room.images.length) ? room.images.length : (room.shots || 8)
   const galleryItems = Array.from({ length: shotsCount }, (_, i) => ({
     slotId: `${roomSlug(room.code)}_g${i}`,
     hint: `${room.code} — ${isEn ? room.nameEn : room.name} (${i + 1})`,
@@ -121,19 +121,19 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
             onClick={() => setLightbox(true)}
             style={{ gridRow: 'span 2', position: 'relative', borderRadius: '24px 8px 8px 24px', overflow: 'hidden', background: '#eef4f8', cursor: 'zoom-in' }}
           >
-            <ImageSlot id={`${roomSlug(room.code)}_g0`} placeholder={`${room.code} — Main`} style={{ position: 'absolute', inset: 0 }} />
+            <ImageSlot id={`${roomSlug(room.code)}_g0`} src={room.images?.[0]} placeholder={`${room.code} — Main`} style={{ position: 'absolute', inset: 0 }} />
           </div>
           <div
             onClick={() => setLightbox(true)}
             style={{ position: 'relative', borderRadius: '8px 24px 8px 8px', overflow: 'hidden', background: '#eef4f8', cursor: 'zoom-in' }}
           >
-            <ImageSlot id={`${roomSlug(room.code)}_g1`} placeholder="Góc giường" style={{ position: 'absolute', inset: 0 }} />
+            <ImageSlot id={`${roomSlug(room.code)}_g1`} src={room.images?.[1] || room.images?.[0]} placeholder="Góc giường" style={{ position: 'absolute', inset: 0 }} />
           </div>
           <div
             onClick={() => setLightbox(true)}
             style={{ position: 'relative', borderRadius: '8px 8px 24px 8px', overflow: 'hidden', background: '#eef4f8', cursor: 'zoom-in' }}
           >
-            <ImageSlot id={`${roomSlug(room.code)}_g2`} placeholder="Phòng tắm / ban công" style={{ position: 'absolute', inset: 0 }} />
+            <ImageSlot id={`${roomSlug(room.code)}_g2`} src={room.images?.[2] || room.images?.[0]} placeholder="Phòng tắm / ban công" style={{ position: 'absolute', inset: 0 }} />
             <button
               onClick={(e) => {
                 e.stopPropagation()
@@ -426,7 +426,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
             >
               {galleryItems.map((g, idx) => (
                 <div key={idx} style={{ position: 'relative', aspectRatio: '4 / 3', borderRadius: '16px', overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
-                  <ImageSlot id={g.slotId} placeholder={g.hint} style={{ position: 'absolute', inset: 0 }} />
+                  <ImageSlot id={g.slotId} src={room.images?.[idx] || room.images?.[0]} placeholder={g.hint} style={{ position: 'absolute', inset: 0 }} />
                 </div>
               ))}
             </div>

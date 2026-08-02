@@ -18,7 +18,7 @@
     "check": "turbo lint typecheck",
     "clean": "turbo clean && rimraf node_modules",
     "crawl:pages": "node resources/scripts/crawl/crawl-pages.mjs",
-    "crawl:build": "node resources/scripts/crawl/build-seed.mjs && node resources/scripts/crawl/emit-ts.mjs",
+    "crawl:build": "node resources/scripts/crawl/build-seed.mjs && node resources/scripts/crawl/emit-ts.mjs && node resources/scripts/crawl/emit-property-data.mjs && node resources/scripts/crawl/emit-resort-data.mjs",
     "crawl:travlla": "node resources/scripts/crawl/crawl-travlla.mjs",
     "crawl:travlla:build": "node resources/scripts/crawl/build-travlla-seed.mjs && node resources/scripts/crawl/emit-travlla-ts.mjs",
     "crawl:rooms": "node resources/scripts/crawl/crawl-room-details.mjs",

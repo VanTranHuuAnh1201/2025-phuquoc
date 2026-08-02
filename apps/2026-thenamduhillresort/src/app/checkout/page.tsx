@@ -243,8 +243,8 @@ function CheckoutContent() {
       </header>
 
       {/* Main Container */}
-      <main style={{ maxWidth: '1240px', margin: '0 auto', padding: '36px 32px 64px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(0, 1fr)', gap: '26px', alignItems: 'start' }}>
+      <main className="nd-page-main nd-section-container" style={{ maxWidth: '1240px', margin: '0 auto', padding: '36px 32px 64px' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(0, 1fr)', gap: '24px', alignItems: 'start' }}>
           
           {/* Main Form Columns */}
           <div style={{ display: 'grid', gap: '16px' }}>
@@ -259,7 +259,7 @@ function CheckoutContent() {
                     {t('Chúng tôi chỉ hỏi những gì lễ tân thật sự cần.', 'We only ask for what the front desk actually needs.')}
                   </p>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
+                  <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
                     <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                       <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>{t('Họ và tên *', 'Full name *')}</span>
                       <input
@@ -344,7 +344,7 @@ function CheckoutContent() {
                   <p style={{ margin: '0 0 20px', fontSize: '13.5px', color: '#8fa5b3' }}>
                     {t('Miễn phí hai chiều. Cho chúng tôi biết chuyến tàu, xe sẽ đợi sẵn ở bến Củ Tron.', 'Free both ways. Tell us the boat and we will be standing at Cu Tron pier.')}
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
+                  <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
                     <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
                       <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>{t('Chuyến tàu đến', 'Arriving boat')}</span>
                       <select
@@ -459,10 +459,11 @@ function CheckoutContent() {
 
                   {method === 'qr' && (
                     <div
+                      className="nd-grid-responsive"
                       style={{
                         display: 'grid',
                         gridTemplateColumns: '188px minmax(0, 1fr)',
-                        gap: '26px',
+                        gap: '24px',
                         alignItems: 'center',
                         padding: '24px',
                         borderRadius: '20px',

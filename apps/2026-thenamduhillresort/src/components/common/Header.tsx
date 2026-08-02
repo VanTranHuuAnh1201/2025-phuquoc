@@ -81,13 +81,14 @@ export function Header({ forceSolid = false }: HeaderProps) {
       }}
     >
       <div
+        className="nd-header-container"
         style={{
           maxWidth: '1320px',
           margin: '0 auto',
-          padding: '13px 32px',
+          padding: '12px 24px',
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
+          gap: '16px',
         }}
       >
         {/* Brand Logo & Title */}
@@ -392,6 +393,12 @@ export function Header({ forceSolid = false }: HeaderProps) {
           }
           .mobile-menu-btn {
             display: flex !important;
+          }
+          .nd-header-container {
+            padding-top: max(14px, env(safe-area-inset-top, 14px)) !important;
+            padding-bottom: 10px !important;
+            padding-left: 14px !important;
+            padding-right: 14px !important;
           }
         }
       `}</style>

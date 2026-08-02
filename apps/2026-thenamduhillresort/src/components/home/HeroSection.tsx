@@ -83,6 +83,7 @@ export function HeroSection() {
 
       {/* Hero Content Container */}
       <div
+        className="hero-container nd-section-container"
         style={{
           position: 'relative',
           width: '100%',
@@ -445,6 +446,12 @@ export function HeroSection() {
 
       <style jsx global>{`
         @media (max-width: 960px) {
+          .hero-container {
+            padding-top: calc(90px + max(14px, env(safe-area-inset-top, 14px))) !important;
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+            padding-bottom: 24px !important;
+          }
           .booking-bar {
             grid-template-columns: 1fr !important;
           }

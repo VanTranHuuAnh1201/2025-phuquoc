@@ -13,10 +13,10 @@ export default function ContactPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
+    <main className="nd-page-main" style={{ minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
       {/* Header section */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '116px 32px 0' }}>
-        <div style={{ padding: '30px 0 34px', maxWidth: '720px' }}>
+      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '110px 32px 0' }}>
+        <div style={{ padding: '20px 0 28px', maxWidth: '720px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
             <span
@@ -34,8 +34,8 @@ export default function ContactPage() {
           <h1
             style={{
               margin: '0 0 14px',
-              fontSize: 'clamp(32px, 4vw, 52px)',
-              lineHeight: 1.04,
+              fontSize: 'clamp(28px, 4vw, 52px)',
+              lineHeight: 1.08,
               fontWeight: 800,
               letterSpacing: '-0.036em',
               color: '#0b1b26',
@@ -44,7 +44,7 @@ export default function ContactPage() {
           >
             {t('Liên hệ & đặt phòng', 'Contact & booking')}
           </h1>
-          <p style={{ margin: 0, fontSize: '17px', lineHeight: 1.6, color: '#566e7d' }}>
+          <p style={{ margin: 0, fontSize: '16px', lineHeight: 1.6, color: '#566e7d' }}>
             {t(
               'Gửi form và chúng tôi trả lời qua Zalo trong vòng một tiếng — thường là nhanh hơn nhiều. Đặt trực tiếp luôn rẻ hơn giá trên OTA.',
               'Send the form and we reply on Zalo within the hour — usually much sooner. Booking direct always beats the OTA rate.'
@@ -54,21 +54,23 @@ export default function ContactPage() {
 
         {/* Main Grid: Form Left, Contact Info Right */}
         <div
+          className="nd-grid-responsive"
           style={{
             display: 'grid',
             gridTemplateColumns: 'minmax(0, 1.25fr) minmax(0, 1fr)',
-            gap: '26px',
+            gap: '24px',
             alignItems: 'start',
           }}
         >
           {/* Form */}
           <form
+            className="nd-card-padding"
             onSubmit={handleSubmit}
             style={{
               background: '#ffffff',
               border: '1px solid #e6eef4',
               borderRadius: '26px',
-              padding: '32px 34px',
+              padding: '28px 28px',
               boxShadow: '0 14px 40px rgba(6,40,58,0.07)',
             }}
           >

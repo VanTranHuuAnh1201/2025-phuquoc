@@ -42,12 +42,13 @@ export default function DiningPage() {
           }}
         />
         <div
+          className="hero-container nd-section-container"
           style={{
             position: 'relative',
             width: '100%',
             maxWidth: '1320px',
             margin: '0 auto',
-            padding: '160px 32px 52px',
+            padding: '140px 32px 52px',
             pointerEvents: 'none',
           }}
         >
@@ -68,7 +69,7 @@ export default function DiningPage() {
           <h1
             style={{
               margin: '0 0 18px',
-              fontSize: 'clamp(34px, 4.6vw, 62px)',
+              fontSize: 'clamp(30px, 4.6vw, 62px)',
               lineHeight: 1.03,
               fontWeight: 800,
               letterSpacing: '-0.036em',
@@ -100,8 +101,8 @@ export default function DiningPage() {
       </section>
 
       {/* 3 Venue Cards Grid */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '72px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px' }}>
+      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '64px 32px 0' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px' }}>
           {/* Card 1 */}
           <article
             className="nd-card"
