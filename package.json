@@ -10,6 +10,7 @@
     "dev": "turbo dev",
     "dev:portfolio": "turbo dev --filter=@repo/portfolio",
     "dev:thenamduhill": "turbo dev --filter=@repo/2026-thenamduhill",
+    "dev:thenamduhillresort": "turbo dev --filter=@repo/2026-thenamduhillresort",
     "dev:phogroup": "turbo dev --filter=@repo/2025-phogroup",
     "build": "turbo build",
     "lint": "turbo lint",

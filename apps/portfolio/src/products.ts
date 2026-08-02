@@ -27,7 +27,9 @@ export interface Product {
 
 /** Đọc env, có giá trị dự phòng cho môi trường local. */
 function url(envValue: string | undefined, localFallback: string): string {
-    return envValue?.replace(/\/$/, '') ?? localFallback
+    // Bien khai bao nhung de rong cung tinh la chua co -> dung fallback.
+    const value = envValue?.trim()
+    return value ? value.replace(/\/$/, '') : localFallback
 }
 
 export const products: Product[] = [
@@ -46,6 +48,25 @@ export const products: Product[] = [
         status: 'demo',
         accent: '#075E9E',
         tech: ['Next.js 15', 'React 19', 'TypeScript', 'Turborepo'],
+    },
+    {
+        id: '2026-thenamduhillresort',
+        name: 'The Nam Du Hill Resort — bản độc lập',
+        tagline: {
+            vi: 'Website resort, triển khai riêng',
+            en: 'Standalone resort website',
+        },
+        description: {
+            vi: 'Bản dựng riêng cho The Nam Du Hill Resort, tách khỏi bản đa giao diện. Deploy độc lập, có domain riêng.',
+            en: 'A dedicated build for The Nam Du Hill Resort, separate from the multi-theme edition. Deployed independently on its own domain.',
+        },
+        url: url(
+            process.env.NEXT_PUBLIC_URL_2026_THENAMDUHILLRESORT,
+            'http://localhost:3003',
+        ),
+        status: 'wip',
+        accent: '#0F766E',
+        tech: ['Next.js 15', 'React 19', 'TypeScript'],
     },
     {
         id: '2025-phogroup',
