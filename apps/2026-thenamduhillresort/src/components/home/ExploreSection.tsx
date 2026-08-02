@@ -62,7 +62,8 @@ export function ExploreSection() {
           marginBottom: '40px',
         }}
       >
-        <article
+        <Link
+          href="/explore"
           className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
@@ -72,7 +73,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
-            cursor: 'pointer',
+            textDecoration: 'none',
           }}
         >
           <ImageSlot id="ndh-island-haibodap" placeholder="Hòn Hai Bờ Đập" style={{ position: 'absolute', inset: 0 }} />
@@ -95,9 +96,10 @@ export function ExploreSection() {
               {t('Hai đảo nối nhau bằng dải đá tự nhiên — chỗ lặn ngắm san hô.', 'Two islets joined by a natural stone causeway — the snorkelling stop.')}
             </p>
           </div>
-        </article>
+        </Link>
 
-        <article
+        <Link
+          href="/explore"
           className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
@@ -107,7 +109,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
-            cursor: 'pointer',
+            textDecoration: 'none',
           }}
         >
           <ImageSlot id="ndh-island-honmau" placeholder="Hòn Mấu" style={{ position: 'absolute', inset: 0 }} />
@@ -130,9 +132,10 @@ export function ExploreSection() {
               {t('Đầu này cát trắng, đầu kia toàn đá cuội đen bóng.', 'White sand at one end, polished black pebbles at the other.')}
             </p>
           </div>
-        </article>
+        </Link>
 
-        <article
+        <Link
+          href="/explore"
           className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
@@ -142,7 +145,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
-            cursor: 'pointer',
+            textDecoration: 'none',
           }}
         >
           <ImageSlot id="ndh-spot-caymen" placeholder="Bãi Cây Mến" style={{ position: 'absolute', inset: 0 }} />
@@ -165,9 +168,10 @@ export function ExploreSection() {
               {t('Bãi đẹp nhất đảo, dưới hàng dừa 80 năm tuổi.', 'The prettiest beach on the island, under 80-year-old palms.')}
             </p>
           </div>
-        </article>
+        </Link>
 
-        <article
+        <Link
+          href="/explore"
           className="nd-card nd-card-img-zoom"
           style={{
             borderRadius: '24px',
@@ -177,7 +181,7 @@ export function ExploreSection() {
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
-            cursor: 'pointer',
+            textDecoration: 'none',
           }}
         >
           <ImageSlot id="ndh-spot-haidang" placeholder="Hải đăng Nam Du" style={{ position: 'absolute', inset: 0 }} />
@@ -200,7 +204,7 @@ export function ExploreSection() {
               {t('Từ trên đỉnh nhìn thấy cả 21 hòn đảo cùng lúc.', 'From the top you see all 21 islands at once.')}
             </p>
           </div>
-        </article>
+        </Link>
       </div>
 
       {/* 3 Itinerary Cards Row */}

@@ -8,10 +8,10 @@ const IMAGE_MAP: Record<string, string> = {
   // Pool
   'ndh-pool': '/uploads/pasted-1785690635080-0.png',
 
-  // Rooms
-  'ndh-room-14': '/uploads/pasted-1785689529606-0.png',
-  'ndh-room-05': '/uploads/pasted-1785608187734-0.png',
-  'ndh-room-07': '/uploads/pasted-1785692406438-0.png',
+  // Rooms (Crawled seed data)
+  'ndh-room-14': 'https://thenamduhill.com/image/catalog/room-suite/14-rock-deluxe-room/cover14.jpg',
+  'ndh-room-05': 'https://thenamduhill.com/image/catalog/room-suite/5-phong-tieu-chuan-luc-giac/full.jpg',
+  'ndh-room-07': 'https://thenamduhill.com/image/catalog/room-suite/7-phong-superior-co-giuong-co-king/dai-dien-2.jpg',
 
   // Dining Venues
   'ndh-dining-hero': 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80',

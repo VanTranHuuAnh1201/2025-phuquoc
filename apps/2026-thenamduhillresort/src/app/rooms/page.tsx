@@ -447,23 +447,23 @@ function RoomsContent() {
                         {t('Chi tiết', 'Details')}
                       </Link>
 
-                      <button
-                        onClick={() => setBookingRoom(r)}
+                      <Link
+                        href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`}
                         style={{
                           background: '#0284c7',
                           color: '#ffffff',
-                          border: 'none',
                           fontSize: '13px',
                           fontWeight: 700,
                           padding: '11px 19px',
                           borderRadius: '999px',
-                          cursor: 'pointer',
+                          textDecoration: 'none',
+                          display: 'inline-block',
                           whiteSpace: 'nowrap',
                           transition: 'background 150ms ease',
                         }}
                       >
                         {t('Đặt phòng', 'Book')}
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

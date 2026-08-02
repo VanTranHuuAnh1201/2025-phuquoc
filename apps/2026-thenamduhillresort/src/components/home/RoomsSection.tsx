@@ -4,9 +4,16 @@ import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../common/ImageSlot'
+import { ROOMS } from '../../data/rooms'
 
 export function RoomsSection() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  const isEn = language === 'en'
+
+  // Seed featured rooms directly from official crawled ROOMS dataset
+  const room14 = ROOMS.find((r) => r.code === '#14') || ROOMS[0]
+  const room05 = ROOMS.find((r) => r.code === '#05') || ROOMS[1]
+  const room07 = ROOMS.find((r) => r.code === '#07') || ROOMS[2]
 
   return (
     <section id="rooms" style={{ maxWidth: '1280px', margin: '0 auto', padding: '100px 32px 0' }}>
@@ -83,7 +90,12 @@ export function RoomsSection() {
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
             <Link href="/rooms/14" style={{ display: 'block', position: 'absolute', inset: 0 }}>
-              <ImageSlot id="ndh-room-14" placeholder="Rock Deluxe #14" style={{ position: 'absolute', inset: 0 }} />
+              <ImageSlot
+                id="ndh-room-14"
+                src={room14?.images?.[0]}
+                placeholder={`${room14?.code ?? '#14'} — ${isEn ? room14?.nameEn : room14?.name}`}
+                style={{ position: 'absolute', inset: 0 }}
+              />
             </Link>
             <span
               style={{
@@ -103,30 +115,27 @@ export function RoomsSection() {
                 pointerEvents: 'none',
               }}
             >
-              {t('ĐỘC BẢN', 'SIGNATURE')}
+              {room14?.tag ? (isEn ? room14.tagEn : room14.tag) : t('ĐỘC BẢN', 'SIGNATURE')}
             </span>
           </div>
           <div style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
             <h3 style={{ margin: '0 0 6px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26' }}>
               <Link href="/rooms/14" style={{ color: 'inherit', textDecoration: 'none' }}>
-                Rock Deluxe #14
+                {isEn ? room14?.nameEn : room14?.name}
               </Link>
             </h3>
             <p style={{ margin: '0 0 18px', fontSize: '14px', lineHeight: 1.55, color: '#566e7d' }}>
-              {t(
-                'Vách đá tự nhiên trong phòng ngủ, phòng tắm trong hang đá, lò sưởi Châu Âu, suối chảy nội khu.',
-                'Natural cliff wall in the bedroom, bathroom carved into the cave, European fireplace, stream running through.'
-              )}
+              {isEn ? room14?.blurbEn : room14?.blurb}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
               <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 11px', borderRadius: '8px' }}>
-                21 m²
+                {room14?.area} m²
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 11px', borderRadius: '8px' }}>
-                {t('2 khách', '2 guests')}
+                {room14?.cap} {t('khách', 'guests')}
               </span>
               <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '6px 11px', borderRadius: '8px' }}>
-                {t('Lò sưởi', 'Fireplace')}
+                {isEn ? room14?.viewEn : room14?.view}
               </span>
             </div>
             <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingTop: '18px', borderTop: '1px solid #eef4f8' }}>
@@ -168,7 +177,12 @@ export function RoomsSection() {
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
             <Link href="/rooms/05" style={{ display: 'block', position: 'absolute', inset: 0 }}>
-              <ImageSlot id="ndh-room-05" placeholder="Lục Giác Khung Kính #05" style={{ position: 'absolute', inset: 0 }} />
+              <ImageSlot
+                id="ndh-room-05"
+                src={room05?.images?.[0]}
+                placeholder={`${room05?.code ?? '#05'} — ${isEn ? room05?.nameEn : room05?.name}`}
+                style={{ position: 'absolute', inset: 0 }}
+              />
             </Link>
             <span
               style={{
@@ -253,7 +267,12 @@ export function RoomsSection() {
         >
           <div style={{ position: 'relative', height: '250px', background: '#eef4f8' }}>
             <Link href="/rooms/07" style={{ display: 'block', position: 'absolute', inset: 0 }}>
-              <ImageSlot id="ndh-room-07" placeholder="Superior King #07" style={{ position: 'absolute', inset: 0 }} />
+              <ImageSlot
+                id="ndh-room-07"
+                src={room07?.images?.[0]}
+                placeholder={`${room07?.code ?? '#07'} — ${isEn ? room07?.nameEn : room07?.name}`}
+                style={{ position: 'absolute', inset: 0 }}
+              />
             </Link>
           </div>
           <div style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', flex: 1 }}>
