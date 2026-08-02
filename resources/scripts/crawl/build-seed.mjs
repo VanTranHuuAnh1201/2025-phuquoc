@@ -6,9 +6,11 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ORIGIN = "https://thenamduhill.com";
-const OUT = path.join(process.cwd(), "scripts", "crawl", "output");
+const OUT = path.join(HERE, "output");
 
 const data = JSON.parse(await readFile(path.join(OUT, "pages.json"), "utf8"));
 const page = (s) => data.pages.find((p) => p.section === s && !p.parent);

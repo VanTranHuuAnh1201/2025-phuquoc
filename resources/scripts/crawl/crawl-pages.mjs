@@ -10,9 +10,11 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ORIGIN = "https://thenamduhill.com";
-const OUTPUT_DIR = path.join(process.cwd(), "scripts", "crawl", "output");
+const OUTPUT_DIR = path.join(HERE, "output");
 
 const SEED_PAGES = [
     { url: `${ORIGIN}/`, section: "home" },

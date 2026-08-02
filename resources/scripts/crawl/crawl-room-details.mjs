@@ -12,9 +12,11 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ORIGIN = "https://thenamduhill.com";
-const OUT = path.join(process.cwd(), "scripts", "crawl", "output");
+const OUT = path.join(HERE, "output");
 const LIST_URL = `${ORIGIN}/collections/rooms-suites`;
 
 const dedupe = (a) => [...new Set(a)];

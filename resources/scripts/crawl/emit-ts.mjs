@@ -6,8 +6,10 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const OUT = path.join(process.cwd(), "scripts", "crawl", "output");
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const OUT = path.join(HERE, "output");
 const s = JSON.parse(await readFile(path.join(OUT, "seed-data.json"), "utf8"));
 
 const q = (v) => JSON.stringify(v);

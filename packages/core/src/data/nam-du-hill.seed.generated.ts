@@ -10,11 +10,10 @@
  * Nơi biến nó thành `PropertyData` là `./seed-dto.ts`.
  *
  * ---------------------------------------------------------------------------
- * BẢN QUYỀN
- * Nội dung và toàn bộ URL ảnh dưới đây thuộc về The Nam Du Hill Resort. Bản
- * demo này dựng cho chính họ xem nên được phép hiển thị (ngoại lệ có chủ đích
- * so với luật R9). Đang HOTLINK về máy chủ của họ — xem `propertyImages()`
- * trong seed-dto.ts để biết hai việc phải xử lý trước khi chạy thật.
+ * BẢN QUYỀN (luật R9)
+ * Nội dung và toàn bộ URL ảnh dưới đây thuộc về The Nam Du Hill Resort. Chỉ
+ * dùng để dựng cấu trúc giao diện ở môi trường dev. Ảnh KHÔNG được hotlink lên
+ * production — `devImages()` trong seed-dto.ts chịu trách nhiệm chặn.
  * ---------------------------------------------------------------------------
  */
 
