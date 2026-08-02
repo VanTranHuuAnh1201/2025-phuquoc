@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 112px; }
+  [id] { scroll-margin-top: 112px; }
+  #top { scroll-margin-top: 0; }
+  body { background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  a { color: #075E9E; text-decoration: none; }
+  a:hover { color: #064B7F; }
+  ::selection { background: #C7E6FF; color: #0F1729; }
+  input, select, button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid #0B6FB8; outline-offset: 2px; }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0F1729; background: #FFFFFF; overflow-x: hidden">
+
+  <div style="{{ headerWrapStyle }}">
+    <div style="{{ topbarStyle }}">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px">
+        <span>{{ address }}</span>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <a href="tel:0909000000" style="color: inherit" style-hover="opacity: 0.7; color: inherit">{{ t.phoneLabel }}: 0909 000 000</a>
+          <div style="display: flex; gap: 4px">
+            <button type="button" onClick="{{ setVi }}" style="{{ viBtn }}">VI</button>
+            <button type="button" onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <header style="{{ headerStyle }}">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 10px 24px; min-height: 66px; display: flex; align-items: center; gap: 20px">
+        <a href="#top" style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; white-space: nowrap">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 56px; height: 50px; object-fit: cover; object-position: center 34%; flex-shrink: 0; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25))" />
+          <span style="display: grid; gap: 1px">
+            <span style="{{ logoTextStyle }}">THE NAM DU HILL</span>
+            <span style="{{ logoSubStyle }}">Resort · Nam Du Island</span>
+          </span>
+        </a>
+        <nav style="display: flex; gap: 4px; margin-left: auto; align-items: center; flex-wrap: wrap; min-width: 0; overflow: hidden">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="{{ item.style }}" style-hover="opacity: 0.65">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <a href="Rooms - Nam Du Hill.dc.html" style="{{ ctaStyle }}" style-hover="opacity: 0.88">{{ t.bookNow }}</a>
+      </div>
+    </header>
+  </div>
+
+  <section id="top" style="position: relative; height: 100vh; min-height: 800px; overflow: hidden; background: #0F1729">
+    <div style="position: absolute; inset: 0; color: rgba(255,255,255,0.85)">
+      <image-slot id="h1-hero" shape="rect" fit="cover" placeholder="Ảnh banner full màn hình — resort trên đồi hướng biển Nam Du (2560×1600)"></image-slot>
+    </div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,41,0.62) 0%, rgba(15,23,41,0.18) 34%, rgba(15,23,41,0.3) 62%, rgba(15,23,41,0.85) 100%); pointer-events: none"></div>
+    <div style="position: relative; height: 100%; max-width: 1200px; margin: 0 auto; padding: 150px 24px 250px; display: flex; flex-direction: column; justify-content: center; pointer-events: none">
+      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 9999px; background: rgba(255,255,255,0.16); backdrop-filter: blur(6px); font-size: 12.5px; font-weight: 600; color: #FFFFFF; margin-bottom: 22px; width: max-content">
+        <span style="width: 6px; height: 6px; border-radius: 9999px; background: #8FD3FF"></span>{{ heroKicker }}
+      </div>
+      <h1 style="font-size: 60px; line-height: 1.08; font-weight: 800; color: #FFFFFF; margin: 0 0 18px; max-width: 820px; letter-spacing: -0.035em; text-wrap: balance; text-shadow: 0 4px 30px rgba(0,0,0,0.35)">{{ heroTitle }}</h1>
+      <p style="font-size: 18px; line-height: 1.62; color: rgba(255,255,255,0.88); margin: 0 0 24px; max-width: 580px; text-wrap: pretty">{{ heroSub }}</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px">
+        <sc-for list="{{ heroBadges }}" as="b" hint-placeholder-count="3">
+          <span style="padding: 7px 14px; border-radius: 9999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); font-size: 12.5px; font-weight: 500; color: #FFFFFF">{{ b }}</span>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; pointer-events: auto">
+        <a href="#rooms" style="padding: 16px 34px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; font-size: 15.5px; font-weight: 700; box-shadow: 0 10px 24px rgba(11,111,184,0.34); transition: background 150ms ease, transform 150ms ease" style-hover="background: #075E9E; color: #FFFFFF; transform: translateY(-2px)">{{ t.bookNow }}</a>
+        <a href="#tours" style="padding: 15px 30px; border-radius: 9999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.34); color: #FFFFFF; font-size: 15px; font-weight: 600; backdrop-filter: blur(6px); transition: background 150ms ease" style-hover="background: rgba(255,255,255,0.26); color: #FFFFFF">{{ t.toursKicker }}</a>
+      </div>
+    </div>
+    <div style="position: absolute; left: 0; right: 0; bottom: 52px; z-index: 25; padding: 0 24px">
+      <div style="max-width: 1000px; margin: 0 auto; background: #FFFFFF; border-radius: 9999px; border: 1px solid #E7EDF3; box-shadow: 0 12px 34px rgba(15,23,41,0.16); padding: 12px 12px 12px 8px; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)) auto; align-items: stretch">
+        <div style="padding: 6px 26px; border-right: 1px solid #EDF1F5; display: grid; gap: 3px; align-content: center; min-width: 0">
+          <label for="h1-in" style="font-size: 12px; font-weight: 500; color: #8A94A1">{{ t.checkIn }}</label>
+          <input id="h1-in" type="date" style="width: 100%; border: none; background: transparent; font-size: 14.5px; font-weight: 700; color: #0B6FB8; outline: none; padding: 0" />
+        </div>
+        <div style="padding: 6px 26px; border-right: 1px solid #EDF1F5; display: grid; gap: 3px; align-content: center; min-width: 0">
+          <label for="h1-out" style="font-size: 12px; font-weight: 500; color: #8A94A1">{{ t.checkOut }}</label>
+          <input id="h1-out" type="date" style="width: 100%; border: none; background: transparent; font-size: 14.5px; font-weight: 700; color: #0B6FB8; outline: none; padding: 0" />
+        </div>
+        <div style="padding: 6px 26px; border-right: 1px solid #EDF1F5; display: grid; gap: 3px; align-content: center; min-width: 0">
+          <label for="h1-guests" style="font-size: 12px; font-weight: 500; color: #8A94A1">{{ t.guests }}</label>
+          <select id="h1-guests" style="width: 100%; border: none; background: transparent; font-size: 14.5px; font-weight: 700; color: #0B6FB8; outline: none; padding: 0">
+            <option>2 · 1</option>
+            <option>4 · 2</option>
+            <option>6 · 2</option>
+            <option>8 · 3</option>
+          </select>
+        </div>
+        <div style="padding: 6px 26px; display: grid; gap: 3px; align-content: center; min-width: 0">
+          <label for="h1-type" style="font-size: 12px; font-weight: 500; color: #8A94A1">{{ t.stayType }}</label>
+          <select id="h1-type" style="width: 100%; border: none; background: transparent; font-size: 14.5px; font-weight: 700; color: #0B6FB8; outline: none; padding: 0">
+            <option>{{ t.stayRoom }}</option>
+            <option>{{ t.stayCombo2 }}</option>
+            <option>{{ t.stayCombo3 }}</option>
+          </select>
+        </div>
+        <a href="#rooms" aria-label="{{ t.search }}" style="width: 54px; height: 54px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0; transition: background 150ms ease" style-hover="background: #075E9E; color: #FFFFFF">⌕</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #FFFFFF; padding: 56px 24px 8px">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px">
+      <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
+        <div style="background: #F8FAFC; border: 1px solid #E5E7EB; border-radius: 12px; padding: 22px 24px">
+          <div style="font-size: 30px; font-weight: 800; color: #0B6FB8; letter-spacing: -0.03em; margin-bottom: 4px">{{ f.value }}</div>
+          <div style="font-size: 13.5px; color: #4B5563; line-height: 1.5">{{ f.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="about" style="background: #FFFFFF; padding: 64px 24px">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 56px; align-items: center">
+      <div>
+        <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 16px">{{ aboutKicker }}</div>
+        <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0 0 18px; letter-spacing: -0.03em">{{ aboutTitle }}</h2>
+        <p style="font-size: 15.5px; line-height: 1.8; color: #4B5563; margin: 0 0 14px; text-wrap: pretty">{{ aboutP1 }}</p>
+        <p style="font-size: 15.5px; line-height: 1.8; color: #4B5563; margin: 0 0 28px; text-wrap: pretty">{{ aboutP2 }}</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+            <span style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 9999px; background: #F8FAFC; border: 1px solid #E5E7EB; font-size: 13.5px; font-weight: 600; color: #0F1729">
+              <span style="width: 7px; height: 7px; border-radius: 9999px; background: #1690DF"></span>{{ s }}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); grid-template-rows: 176px 176px; gap: 12px">
+        <div style="position: relative; grid-row: span 2; border-radius: 16px; overflow: hidden"><image-slot id="h1-about-1" shape="rect" fit="cover" placeholder="Toàn cảnh resort"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-about-2" shape="rect" fit="cover" placeholder="Hồ bơi"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-about-3" shape="rect" fit="cover" placeholder="Café &amp; Bar"></image-slot></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rooms" style="background: #F8FAFC; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 32px; flex-wrap: wrap">
+        <div>
+          <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 14px">{{ t.roomsKicker }}</div>
+          <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.roomsTitle }}</h2>
+          <p style="font-size: 15px; color: #4B5563; margin: 0">{{ t.roomsSub }}</p>
+        </div>
+        <a href="Rooms - Nam Du Hill.dc.html" style="padding: 11px 22px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #FFFFFF; font-size: 13.5px; font-weight: 600; color: #0F1729; transition: border-color 150ms ease, background 150ms ease" style-hover="border-color: #1690DF; background: #EDF6FF; color: #075E9E">{{ t.allRooms }}</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px">
+        <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="6">
+          <article style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 200ms ease, transform 200ms ease" style-hover="box-shadow: 0 10px 15px -3px rgba(15,23,41,0.12), 0 4px 6px -4px rgba(15,23,41,0.1); transform: translateY(-4px)">
+            <div style="position: relative; height: 208px; background: #F1F5F9"><image-slot id="{{ r.id }}" shape="rect" fit="cover" placeholder="{{ r.name }}"></image-slot></div>
+            <div style="padding: 20px; display: flex; flex-direction: column; flex: 1">
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px">
+                <sc-for list="{{ r.tags }}" as="tag" hint-placeholder-count="2">
+                  <span style="padding: 4px 10px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 11.5px; font-weight: 600">{{ tag }}</span>
+                </sc-for>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: #0F1729; margin: 0 0 8px; line-height: 1.4; letter-spacing: -0.01em">{{ r.name }}</h3>
+              <p style="font-size: 13.5px; line-height: 1.6; color: #6B7280; margin: 0 0 14px; flex: 1">{{ r.desc }}</p>
+              <div style="display: flex; gap: 14px; font-size: 12.5px; color: #6B7280; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid #F1F5F9">
+                <span>{{ r.area }}</span>
+                <span>{{ r.guestsLabel }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+                <div>
+                  <div style="font-size: 18px; font-weight: 800; color: #0F1729; letter-spacing: -0.02em">{{ r.price }}</div>
+                  <div style="font-size: 11.5px; color: #9CA3AF">{{ t.perNight }}</div>
+                </div>
+                <a href="{{ r.href }}" style="padding: 10px 18px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; font-size: 13px; font-weight: 700; white-space: nowrap; transition: background 150ms ease" style-hover="background: #075E9E; color: #FFFFFF">{{ t.bookNow }}</a>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="tours" style="background: #FFFFFF; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="text-align: center; margin-bottom: 32px">
+        <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 14px">{{ t.toursKicker }}</div>
+        <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.toursTitle }}</h2>
+        <p style="font-size: 15px; color: #4B5563; margin: 0 auto; max-width: 520px">{{ t.toursSub }}</p>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap">
+        <sc-for list="{{ tourTabs }}" as="tab" hint-placeholder-count="2">
+          <button type="button" onClick="{{ tab.select }}" style="{{ tab.style }}">{{ tab.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 32px; align-items: start">
+        <div style="display: grid; gap: 16px">
+          <sc-for list="{{ activeTourDays }}" as="d" hint-placeholder-count="2">
+            <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 24px 26px">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px">
+                <span style="width: 30px; height: 30px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0">{{ d.n }}</span>
+                <h3 style="font-size: 17px; font-weight: 700; color: #0F1729; margin: 0; letter-spacing: -0.01em">{{ d.label }}</h3>
+              </div>
+              <div style="display: grid; gap: 12px">
+                <sc-for list="{{ d.items }}" as="it" hint-placeholder-count="4">
+                  <div style="display: flex; gap: 12px; align-items: flex-start">
+                    <span style="width: 6px; height: 6px; border-radius: 9999px; background: #1690DF; margin-top: 8px; flex-shrink: 0"></span>
+                    <span style="font-size: 14.5px; line-height: 1.65; color: #374151">{{ it }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <aside style="background: #0F1729; border-radius: 16px; padding: 26px; position: sticky; top: 96px">
+          <div style="font-size: 12px; font-weight: 600; color: #8FD3FF; margin-bottom: 8px">{{ activeTour.code }}</div>
+          <div style="font-size: 20px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px; line-height: 1.3">{{ activeTour.name }}</div>
+          <p style="font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.66); margin: 0 0 20px">{{ activeTour.summary }}</p>
+          <div style="padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.14); border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 20px">
+            <div style="font-size: 11.5px; color: rgba(255,255,255,0.5); margin-bottom: 4px">{{ t.fromPrice }}</div>
+            <div style="font-size: 26px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em">{{ activeTour.price }}</div>
+            <div style="font-size: 11.5px; color: rgba(255,255,255,0.5)">{{ t.perGuest }}</div>
+          </div>
+          <a href="Tours - Nam Du Hill.dc.html" style="display: block; text-align: center; padding: 14px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; font-size: 14.5px; font-weight: 700; transition: background 150ms ease" style-hover="background: #075E9E; color: #FFFFFF">{{ t.bookTour }}</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="places" style="background: #F8FAFC; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="text-align: center; margin-bottom: 32px">
+        <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 14px">{{ t.placesKicker }}</div>
+        <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.placesTitle }}</h2>
+        <p style="font-size: 15px; color: #4B5563; margin: 0 auto; max-width: 560px">{{ t.placesSub }}</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 20px">
+        <sc-for list="{{ places }}" as="p" hint-placeholder-count="8">
+          <article style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden; transition: box-shadow 200ms ease, transform 200ms ease" style-hover="box-shadow: 0 10px 15px -3px rgba(15,23,41,0.12); transform: translateY(-4px)">
+            <div style="position: relative; height: 168px; background: #F1F5F9"><image-slot id="{{ p.id }}" shape="rect" fit="cover" placeholder="{{ p.name }}"></image-slot></div>
+            <div style="padding: 18px">
+              <span style="display: inline-block; padding: 4px 10px; border-radius: 9999px; background: #F1F5F9; color: #4B5563; font-size: 11.5px; font-weight: 600; margin-bottom: 10px">{{ p.tag }}</span>
+              <h3 style="font-size: 15.5px; font-weight: 700; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.01em">{{ p.name }}</h3>
+              <p style="font-size: 13px; line-height: 1.65; color: #6B7280; margin: 0">{{ p.desc }}</p>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="dining" style="background: #FFFFFF; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 32px; flex-wrap: wrap">
+        <div>
+          <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 14px">{{ t.diningKicker }}</div>
+          <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.diningTitle }}</h2>
+          <p style="font-size: 15px; color: #4B5563; margin: 0">{{ t.diningSub }}</p>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 20px">
+        <sc-for list="{{ dining }}" as="d" hint-placeholder-count="4">
+          <article style="border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden; background: #FFFFFF; transition: box-shadow 200ms ease, transform 200ms ease" style-hover="box-shadow: 0 10px 15px -3px rgba(15,23,41,0.12); transform: translateY(-4px)">
+            <div style="position: relative; height: 176px; background: #F1F5F9"><image-slot id="{{ d.id }}" shape="rect" fit="cover" placeholder="{{ d.name }}"></image-slot></div>
+            <div style="padding: 18px">
+              <h3 style="font-size: 15.5px; font-weight: 700; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.01em">{{ d.name }}</h3>
+              <p style="font-size: 13px; line-height: 1.65; color: #6B7280; margin: 0 0 12px">{{ d.desc }}</p>
+              <span style="display: inline-block; padding: 4px 10px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 11.5px; font-weight: 600">{{ d.note }}</span>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #F8FAFC; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,1fr); gap: 48px; align-items: start">
+      <div>
+        <h2 style="font-size: 30px; line-height: 1.2; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.transportTitle }}</h2>
+        <p style="font-size: 14.5px; color: #4B5563; margin: 0 0 24px">{{ t.transportSub }}</p>
+        <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden">
+          <sc-for list="{{ transport }}" as="tr" hint-placeholder-count="4">
+            <div style="padding: 18px 20px; border-bottom: 1px solid #F1F5F9; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; align-items: center">
+              <div>
+                <div style="font-size: 14.5px; font-weight: 700; color: #0F1729; margin-bottom: 4px">{{ tr.leg }}</div>
+                <div style="font-size: 13px; color: #6B7280; line-height: 1.55">{{ tr.mode }}</div>
+              </div>
+              <div style="font-size: 13.5px; font-weight: 700; color: #075E9E; white-space: nowrap">{{ tr.price }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 20px; padding: 20px; border-radius: 16px; background: #EDF6FF; border: 1px solid #C7E6FF">
+          <div style="font-size: 13px; font-weight: 700; color: #075E9E; margin-bottom: 10px">{{ t.notesTitle }}</div>
+          <div style="display: grid; gap: 8px">
+            <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+              <div style="display: flex; gap: 10px; align-items: flex-start">
+                <span style="width: 5px; height: 5px; border-radius: 9999px; background: #0B6FB8; margin-top: 7px; flex-shrink: 0"></span>
+                <span style="font-size: 13px; line-height: 1.6; color: #064B7F">{{ n }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size: 30px; line-height: 1.2; font-weight: 800; color: #0F1729; margin: 0 0 8px; letter-spacing: -0.03em">{{ t.faqTitle }}</h2>
+        <p style="font-size: 14.5px; color: #4B5563; margin: 0 0 24px">{{ t.faqSub }}</p>
+        <div style="display: grid; gap: 10px">
+          <sc-for list="{{ faq }}" as="f" hint-placeholder-count="5">
+            <div style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden">
+              <button type="button" onClick="{{ f.toggle }}" style="width: 100%; text-align: left; padding: 16px 18px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 14.5px; font-weight: 600; color: #0F1729">
+                <span>{{ f.q }}</span>
+                <span style="{{ f.iconStyle }}">+</span>
+              </button>
+              <sc-if value="{{ f.open }}">
+                <div style="padding: 0 18px 18px; font-size: 13.5px; line-height: 1.7; color: #4B5563">{{ f.a }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" style="background: #FFFFFF; padding: 72px 24px 80px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="text-align: center; margin-bottom: 32px">
+        <div style="display: inline-block; padding: 5px 12px; border-radius: 9999px; background: #EDF6FF; color: #075E9E; font-size: 12px; font-weight: 600; margin-bottom: 14px">{{ t.galleryKicker }}</div>
+        <h2 style="font-size: 36px; line-height: 1.18; font-weight: 800; color: #0F1729; margin: 0; letter-spacing: -0.03em">{{ t.galleryTitle }}</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); grid-auto-rows: 180px; gap: 14px">
+        <div style="position: relative; grid-column: span 2; grid-row: span 2; border-radius: 16px; overflow: hidden"><image-slot id="h1-gal-1" shape="rect" fit="cover" placeholder="Ảnh nổi bật"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-gal-2" shape="rect" fit="cover" placeholder="Hồ bơi"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-gal-3" shape="rect" fit="cover" placeholder="Bãi Cây Mến"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-gal-4" shape="rect" fit="cover" placeholder="BBQ hải sản"></image-slot></div>
+        <div style="position: relative; border-radius: 16px; overflow: hidden"><image-slot id="h1-gal-5" shape="rect" fit="cover" placeholder="Hoàng hôn"></image-slot></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="booking" style="background: #FFFFFF; padding: 8px 24px 88px">
+    <div style="max-width: 1200px; margin: 0 auto; border-radius: 24px; background: #0F1729; padding: 56px 48px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 40px; align-items: center">
+      <div>
+        <h2 style="font-size: 34px; line-height: 1.2; font-weight: 800; color: #FFFFFF; margin: 0 0 12px; letter-spacing: -0.03em; text-wrap: balance">{{ t.ctaTitle }}</h2>
+        <p style="font-size: 15.5px; line-height: 1.68; color: rgba(255,255,255,0.68); margin: 0; max-width: 520px">{{ t.ctaSub }}</p>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap">
+        <a href="tel:0909000000" style="padding: 15px 30px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; font-size: 15px; font-weight: 700; white-space: nowrap; transition: background 150ms ease" style-hover="background: #075E9E; color: #FFFFFF">Zalo · 0909 000 000</a>
+        <a href="mailto:booking@thenamduhill.com" style="padding: 15px 28px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.24); color: #FFFFFF; font-size: 15px; font-weight: 600; white-space: nowrap; transition: background 150ms ease, border-color 150ms ease" style-hover="background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #FFFFFF">{{ t.emailUs }}</a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" style="background: #F8FAFC; border-top: 1px solid #E5E7EB; padding: 56px 24px 28px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="display: grid; grid-template-columns: minmax(0,1.4fr) repeat(3, minmax(0,1fr)); gap: 40px; padding-bottom: 36px; border-bottom: 1px solid #E5E7EB">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px">
+            <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 42px; height: 38px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+            <span style="font-size: 15px; font-weight: 700; color: #0F1729">The Nam Du Hill Resort</span>
+          </div>
+          <p style="font-size: 13.5px; line-height: 1.7; color: #6B7280; margin: 0 0 14px; max-width: 320px">{{ t.footerAbout }}</p>
+          <div style="font-size: 13.5px; color: #6B7280; line-height: 1.7">{{ address }}</div>
+        </div>
+        <div>
+          <div style="font-size: 12.5px; font-weight: 700; color: #0F1729; margin-bottom: 14px">{{ t.footerNav }}</div>
+          <div style="display: grid; gap: 9px">
+            <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+              <a href="{{ item.href }}" style="font-size: 13.5px; color: #6B7280" style-hover="color: #075E9E">{{ item.label }}</a>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 12.5px; font-weight: 700; color: #0F1729; margin-bottom: 14px">{{ t.footerContact }}</div>
+          <div style="display: grid; gap: 9px; font-size: 13.5px; color: #6B7280">
+            <a href="tel:0909000000" style="color: #6B7280" style-hover="color: #075E9E">0909 000 000</a>
+            <a href="mailto:booking@thenamduhill.com" style="color: #6B7280" style-hover="color: #075E9E">booking@thenamduhill.com</a>
+            <a href="https://thenamduhill.com/" target="_blank" rel="noopener" style="color: #6B7280" style-hover="color: #075E9E">thenamduhill.com</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 12.5px; font-weight: 700; color: #0F1729; margin-bottom: 14px">{{ t.footerFollow }}</div>
+          <div style="display: grid; gap: 9px; font-size: 13.5px">
+            <a href="#" style="color: #6B7280" style-hover="color: #075E9E">Facebook</a>
+            <a href="#" style="color: #6B7280" style-hover="color: #075E9E">Instagram</a>
+            <a href="#" style="color: #6B7280" style-hover="color: #075E9E">TikTok</a>
+            <a href="#" style="color: #6B7280" style-hover="color: #075E9E">Google Maps</a>
+          </div>
+        </div>
+      </div>
+      <div style="padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: #9CA3AF">
+        <span>© 2026 The Nam Du Hill Resort</span>
+        <a href="Showcase Hub.dc.html" style="color: #9CA3AF" style-hover="color: #075E9E">← {{ t.backHub }}</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const LANG_BTN = "padding:3px 9px;border-radius:9999px;border:none;cursor:pointer;font-size:11px;font-weight:700;transition:background 150ms ease,color 150ms ease;";
+const TAB = "padding:11px 24px;border-radius:9999px;border:1px solid #E5E7EB;cursor:pointer;font-size:14px;font-weight:600;transition:background 150ms ease,color 150ms ease,border-color 150ms ease;";
+
+const UI = {
+  vi: {
+    phoneLabel: "Hotline / Zalo", bookNow: "Đặt phòng", checkIn: "Ngày nhận phòng", checkOut: "Ngày trả phòng",
+    guests: "Khách / phòng", stayType: "Hình thức", stayRoom: "Chỉ phòng nghỉ", stayCombo2: "Combo 2N1Đ",
+    stayCombo3: "Combo 3N2Đ", search: "Kiểm tra giá", perNight: "mỗi đêm", allRooms: "Xem tất cả hạng phòng",
+    roomsKicker: "Hạng phòng", roomsTitle: "Không gian nghỉ dưỡng của bạn",
+    roomsSub: "Sáu hạng phòng từ 26 m² đến 56 m², tất cả đều hướng biển hoặc thung lũng.",
+    toursKicker: "Lịch trình", toursTitle: "Combo trọn gói, không lo lịch trình",
+    toursSub: "Vé tàu khứ hồi, phòng nghỉ và tour đảo trong một lần đặt.",
+    fromPrice: "Giá từ", perGuest: "mỗi khách", bookTour: "Đặt combo này",
+    placesKicker: "Điểm đến", placesTitle: "21 hòn đảo, tám điểm không nên bỏ qua",
+    placesSub: "Từ bãi tắm kín gió đến hải đăng cao nhất Việt Nam — tất cả trong bán kính một chuyến tàu gỗ.",
+    diningKicker: "Nhà hàng & Bar", diningTitle: "Ẩm thực đảo, đánh bắt trong ngày",
+    diningSub: "Hải sản mua trực tiếp từ ghe thuyền và lồng bè Hòn Ngang.",
+    transportTitle: "Cách đến Nam Du", transportSub: "Hai chặng: đường bộ tới Rạch Giá, rồi tàu cao tốc ra đảo.",
+    notesTitle: "Lưu ý trước chuyến đi",
+    faqTitle: "Câu hỏi thường gặp", faqSub: "Những điều khách hay hỏi nhất trước khi đặt.",
+    galleryKicker: "Thư viện ảnh", galleryTitle: "Không gian thực tế tại resort",
+    ctaTitle: "Chọn ngày, phần còn lại để chúng tôi lo.", ctaSub: "Nhắn Zalo hoặc gửi email — chúng tôi xác nhận phòng và vé tàu trong vòng 15 phút.",
+    emailUs: "Gửi email",
+    footerAbout: "Khu nghỉ dưỡng trên đồi hướng biển tại Hòn Củ Tron, quần đảo Nam Du.",
+    footerNav: "Liên kết", footerContact: "Liên hệ", footerFollow: "Theo dõi", backHub: "Về trang tổng",
+    guestsWord: "khách"
+  },
+  en: {
+    phoneLabel: "Hotline / Zalo", bookNow: "Book now", checkIn: "Check in", checkOut: "Check out",
+    guests: "Guests / rooms", stayType: "Stay type", stayRoom: "Room only", stayCombo2: "2D1N bundle",
+    stayCombo3: "3D2N bundle", search: "Check rates", perNight: "per night", allRooms: "See all room types",
+    roomsKicker: "Rooms & Suites", roomsTitle: "Your space on the island",
+    roomsSub: "Six room types from 26 m² to 56 m², all facing the sea or the valley.",
+    toursKicker: "Itineraries", toursTitle: "All-in bundles, no planning needed",
+    toursSub: "Return ferry, accommodation and island tour in a single booking.",
+    fromPrice: "From", perGuest: "per guest", bookTour: "Book this bundle",
+    placesKicker: "Destinations", placesTitle: "21 islands, eight you shouldn't miss",
+    placesSub: "From sheltered beaches to one of Vietnam's highest lighthouses — all within one boat ride.",
+    diningKicker: "Wining & Dining", diningTitle: "Island food, caught the same day",
+    diningSub: "Seafood bought straight off the boats and Hon Ngang's floating pens.",
+    transportTitle: "Getting to Nam Du", transportSub: "Two legs: overland to Rach Gia, then a speedboat to the island.",
+    notesTitle: "Before you travel",
+    faqTitle: "Frequently asked", faqSub: "What guests ask most before booking.",
+    galleryKicker: "Gallery", galleryTitle: "Real spaces at the resort",
+    ctaTitle: "Pick your dates. We handle the rest.", ctaSub: "Message us on Zalo or send an email — we confirm rooms and ferry tickets within 15 minutes.",
+    emailUs: "Email us",
+    footerAbout: "A hillside resort facing the sea on Hon Cu Tron, Nam Du archipelago.",
+    footerNav: "Links", footerContact: "Contact", footerFollow: "Follow", backHub: "Back to showcase",
+    guestsWord: "guests"
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: "vi", data: null, tour: 0, openFaq: 0, scrolled: false };
+
+  componentDidMount() {
+    import("./namdu-data.js")
+      .then((m) => this.setState({ data: m.default }))
+      .catch((e) => console.error("namdu-data.js failed to load", e));
+    this._onScroll = () => {
+      const s = window.scrollY > 60;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) window.removeEventListener("scroll", this._onScroll);
+  }
+
+  renderVals() {
+    const L = this.state.lang;
+    const isVi = L === "vi";
+    const ui = UI[L];
+    const d = this.state.data;
+    const pick = (v) => (v && typeof v === "object" && "vi" in v ? v[L] : v);
+    const money = (n) => (isVi ? n.toLocaleString("vi-VN") + "đ" : n.toLocaleString("en-US") + "₫");
+
+    const on = LANG_BTN + "background:#1690DF;color:#FFFFFF;";
+    const off = LANG_BTN + "background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.72);";
+
+    const sc = this.state.scrolled;
+    const chrome = {
+      headerWrapStyle: "position:fixed;top:0;left:0;right:0;z-index:60;transition:transform 260ms ease",
+      topbarStyle: sc
+        ? "max-height:0;opacity:0;overflow:hidden;color:#FFFFFF;transition:max-height 260ms ease,opacity 200ms ease"
+        : "max-height:44px;opacity:1;overflow:hidden;color:rgba(255,255,255,0.86);border-bottom:1px solid rgba(255,255,255,0.16);transition:max-height 260ms ease,opacity 200ms ease",
+      headerStyle: sc
+        ? "background:rgba(255,255,255,0.96);backdrop-filter:blur(14px);border-bottom:1px solid #E5E7EB;box-shadow:0 4px 6px -1px rgba(15,23,41,0.08);transition:background 240ms ease,box-shadow 240ms ease"
+        : "background:transparent;border-bottom:1px solid rgba(255,255,255,0.001);transition:background 240ms ease,box-shadow 240ms ease",
+      logoTextStyle: "font-size:14.5px;font-weight:800;letter-spacing:0.02em;transition:color 240ms ease;color:" + (sc ? "#0F1729" : "#FFFFFF"),
+      logoSubStyle: "font-size:11px;transition:color 240ms ease;color:" + (sc ? "#6B7280" : "rgba(255,255,255,0.72)"),
+      ctaStyle: "padding:10px 20px;border-radius:9999px;font-size:13.5px;font-weight:600;white-space:nowrap;flex-shrink:0;transition:background 200ms ease;" +
+        (sc ? "background:#0B6FB8;color:#FFFFFF;box-shadow:0 6px 14px rgba(11,111,184,0.28);"
+            : "background:#0B6FB8;color:#FFFFFF;box-shadow:0 6px 16px rgba(11,111,184,0.32);")
+    };
+    const navStyle = "padding:8px 12px;border-radius:8px;font-size:13.5px;font-weight:500;white-space:nowrap;flex-shrink:0;transition:color 240ms ease;color:" + (sc ? "#374151" : "#FFFFFF");
+
+    const base = {
+      t: ui,
+      ...chrome,
+      viBtn: isVi ? on : off,
+      enBtn: isVi ? off : on,
+      setVi: () => this.setState({ lang: "vi" }),
+      setEn: () => this.setState({ lang: "en" })
+    };
+    if (!d) return base;
+
+    const tours = d.tours;
+    const active = tours[this.state.tour] || tours[0];
+
+    return {
+      ...base,
+      address: pick(d.brand.address),
+      nav: d.nav.map((n) => ({ href: ({
+        "#rooms": "Rooms - Nam Du Hill.dc.html",
+        "#tours": "Tours - Nam Du Hill.dc.html",
+        "#gallery": "Gallery - Nam Du Hill.dc.html",
+        "#contact": "Contact - Nam Du Hill.dc.html"
+      })[n.href] || n.href, label: pick(n.label), style: navStyle })),
+      heroKicker: pick(d.hero.kicker),
+      heroTitle: pick(d.hero.title),
+      heroSub: pick(d.hero.sub),
+      heroBadges: d.hero.badges.map(pick),
+      facts: d.facts.map((f) => ({ value: f.value, label: pick(f.label) })),
+      aboutKicker: pick(d.about.kicker),
+      aboutTitle: pick(d.about.title),
+      aboutP1: pick(d.about.body[0]),
+      aboutP2: pick(d.about.body[1]),
+      services: d.about.services.map(pick),
+      rooms: d.rooms.map((r) => ({
+        id: r.id, name: pick(r.name), desc: pick(r.desc), area: r.area,
+        guestsLabel: r.guests + " " + ui.guestsWord, price: money(r.price),
+        href: "Room Detail - Nam Du Hill.dc.html#" + r.id,
+        tags: r.tags.map(pick)
+      })),
+      tourTabs: tours.map((tr, i) => ({
+        label: pick(tr.name),
+        select: () => this.setState({ tour: i }),
+        style: TAB + (i === this.state.tour
+          ? "background:#0F1729;color:#FFFFFF;border-color:#0F1729;"
+          : "background:#FFFFFF;color:#374151;")
+      })),
+      activeTour: {
+        code: active.code, name: pick(active.name), summary: pick(active.summary), price: money(active.price)
+      },
+      activeTourDays: active.days.map((day, i) => ({
+        n: i + 1, label: pick(day.label), items: day.items.map(pick)
+      })),
+      places: d.places.map((p) => ({ id: p.id, name: pick(p.name), tag: pick(p.tag), desc: pick(p.desc) })),
+      dining: d.dining.map((x) => ({ id: x.id, name: pick(x.name), desc: pick(x.desc), note: pick(x.note) })),
+      transport: d.transport.map((x) => ({ leg: pick(x.leg), mode: pick(x.mode), price: pick(x.price) })),
+      notes: d.notes.map(pick),
+      faq: d.faq.map((f, i) => {
+        const open = this.state.openFaq === i;
+        return {
+          q: pick(f.q), a: pick(f.a), open,
+          toggle: () => this.setState({ openFaq: open ? -1 : i }),
+          iconStyle: "font-size:20px;line-height:1;font-weight:400;color:#0B6FB8;flex-shrink:0;transition:transform 150ms ease;transform:rotate(" + (open ? "45deg" : "0deg") + ")"
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

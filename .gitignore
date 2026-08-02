@@ -1,8 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Luu y: monorepo -> dung pattern KHONG neo goc, de bat ca apps/*/ va packages/*/
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -11,18 +12,23 @@
 !.yarn/versions
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build/
+dist/
+
+# turborepo
+.turbo/
 
 # misc
 .DS_Store
 *.pem
+*.stackdump
 
 # debug
 npm-debug.log*
@@ -43,8 +49,11 @@ next-env.d.ts
 # cho phep commit file mau env
 !.env.local.example
 
-# ket qua crawl (co the chua noi dung ben thu ba)
-/scripts/crawl/output/*.json
+# Ket qua crawl - noi dung va anh cua ben thu ba, KHONG duoc commit (luat R9).
+# Ca file .seed.ts cung bi loai: chung hotlink hang nghin anh tu site goc
+# (vd travlla-botble-com.seed.ts co ~1800 URL toi theme thuong mai CodeCanyon).
+# Chay lai `pnpm crawl:*` de tao lai khi can.
+/scripts/crawl/output/
 
 # thung rac cua understand-anything
 .ua/.trash-*/

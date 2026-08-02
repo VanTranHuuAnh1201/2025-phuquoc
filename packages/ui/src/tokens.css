@@ -1,0 +1,78 @@
+/**
+ * Hợp đồng design token.
+ *
+ * Đây là danh sách ĐẦY ĐỦ các biến mà `@repo/ui` được phép dùng. Mỗi theme
+ * ghi đè các biến này trong `tokens.css` của mình; `ui` không bao giờ
+ * hard-code màu, font hay radius (luật R3).
+ *
+ * Giá trị dưới đây chỉ là dự phòng trung tính — cố ý xám xịt để nếu một
+ * theme quên khai báo biến nào thì lỗi lộ ra ngay, thay vì âm thầm trông
+ * "tạm ổn".
+ */
+
+:root {
+    /* --- màu ------------------------------------------------------------ */
+    --brand: #4a5568;
+    --brand-dark: #2d3748;
+    --brand-light: #718096;
+    --accent: #a0aec0;
+    --accent-dark: #718096;
+
+    --surface: #ffffff;
+    --surface-alt: #f7fafc;
+    --surface-inverse: #2d3748;
+
+    --text: #1a202c;
+    --text-muted: #4a5568;
+    --text-inverse: #ffffff;
+
+    --border: #e2e8f0;
+    --border-strong: #cbd5e0;
+
+    --success: #38a169;
+    --danger: #e53e3e;
+
+    /* --- chữ ------------------------------------------------------------ */
+    --font-body: system-ui, -apple-system, sans-serif;
+    --font-display: var(--font-body);
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 2rem;
+    --text-3xl: 2.75rem;
+
+    /* --- hình khối ------------------------------------------------------ */
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 16px;
+    --radius-pill: 999px;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+
+    /* --- khoảng cách ---------------------------------------------------- */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    --container: 1360px;
+
+    /* --- chuyển động ---------------------------------------------------- */
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --duration: 0ms;
+    }
+}

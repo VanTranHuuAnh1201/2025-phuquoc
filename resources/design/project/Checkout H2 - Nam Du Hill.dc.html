@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap&subset=latin,latin-ext,vietnamese" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 112px; }
+  body { background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  a { color: #066168; text-decoration: none; }
+  a:hover { color: #044A50; }
+  ::selection { background: #FFAA0D; color: #443935; }
+  input, select, button, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid #FFAA0D; outline-offset: 2px; }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="font-family: Figtree, ui-sans-serif, system-ui, sans-serif; color: #443935; background: #FFFFFF; overflow-x: hidden">
+
+  <div style="{{ headerWrapStyle }}">
+    <div style="{{ topbarStyle }}">
+      <div style="max-width: 1240px; margin: 0 auto; padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px">
+        <span>{{ address }}</span>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <a href="tel:0909000000" style="color: inherit" style-hover="opacity: 0.72; color: inherit">{{ t.phoneLabel }}: 0909 000 000</a>
+          <div style="display: flex; gap: 4px">
+            <button type="button" onClick="{{ setVi }}" style="{{ viBtn }}">VI</button>
+            <button type="button" onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <header style="{{ headerStyle }}">
+      <div style="max-width: 1240px; margin: 0 auto; padding: 10px 24px; min-height: 68px; display: flex; align-items: center; gap: 20px">
+        <a href="Home 02 - Nam Du Hill.dc.html" style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; white-space: nowrap">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 54px; height: 48px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 1px">
+            <span style="{{ logoTextStyle }}">THE NAM DU HILL</span>
+            <span style="{{ logoSubStyle }}">Resort · Nam Du Island</span>
+          </span>
+        </a>
+        <nav style="display: flex; gap: 4px; margin-left: auto; align-items: center; flex-wrap: wrap; min-width: 0; overflow: hidden">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="{{ item.style }}" style-hover="opacity: 0.66">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <a href="tel:0909000000" style="{{ ctaStyle }}" style-hover="opacity: 0.9">{{ t.needHelp }}</a>
+      </div>
+    </header>
+  </div>
+
+  <section style="background: #066168; padding: 128px 24px 44px">
+    <div style="max-width: 1240px; margin: 0 auto">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.72); margin-bottom: 16px">
+        <a href="Home 02 - Nam Du Hill.dc.html" style="color: rgba(255,255,255,0.72)" style-hover="color: #FFAA0D">{{ t.home }}</a>
+        <span>/</span>
+        <a href="Rooms H2 - Nam Du Hill.dc.html" style="color: rgba(255,255,255,0.72)" style-hover="color: #FFAA0D">{{ t.roomsPage }}</a>
+        <span>/</span>
+        <span style="color: #FFFFFF">{{ t.pageTitle }}</span>
+      </div>
+      <h1 style="font-size: 40px; line-height: 1.14; font-weight: 800; color: #FFFFFF; margin: 0 0 26px; letter-spacing: -0.03em">{{ t.pageTitle }}</h1>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <button type="button" onClick="{{ s.go }}" style="{{ s.style }}">
+            <span style="{{ s.numStyle }}">{{ s.n }}</span>
+            <span>{{ s.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #FFFFFF; padding: 40px 24px 88px">
+    <div style="max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,400px); gap: 34px; align-items: start">
+
+      <div>
+        <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+          <div style="border-radius: 30px; background: #EAF4F4; padding: 30px 32px">
+            <h2 style="font-size: 24px; font-weight: 800; color: #066168; margin: 0 0 6px; letter-spacing: -0.03em">{{ t.step1 }}</h2>
+            <p style="font-size: 14px; color: #6E625D; margin: 0 0 24px">{{ t.step1Sub }}</p>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px">
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-name" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fName }}</label>
+                <input id="h2co-name" type="text" placeholder="{{ t.phName }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-phone" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fPhone }}</label>
+                <input id="h2co-phone" type="tel" placeholder="09xx xxx xxx" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-email" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fEmail }}</label>
+                <input id="h2co-email" type="email" placeholder="ban@email.com" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-id" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fId }}</label>
+                <input id="h2co-id" type="text" placeholder="{{ t.phId }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-in" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.checkIn }}</label>
+                <input id="h2co-in" type="date" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h2co-out" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.checkOut }}</label>
+                <input id="h2co-out" type="date" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none" />
+              </div>
+            </div>
+            <div style="display: grid; gap: 6px; margin-top: 16px">
+              <label for="h2co-note" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fNote }}</label>
+              <textarea id="h2co-note" rows="3" placeholder="{{ t.phNote }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 10px; font-size: 14px; background: #FFFFFF; outline: none; resize: vertical"></textarea>
+            </div>
+            <button type="button" onClick="{{ next }}" style="margin-top: 24px; padding: 15px 34px; border-radius: 9999px; border: none; background: #FFAA0D; color: #443935; font-size: 14.5px; font-weight: 800; cursor: pointer; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.nextPay }}</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isStep2 }}">
+          <div style="border-radius: 30px; background: #EAF4F4; padding: 30px 32px">
+            <h2 style="font-size: 24px; font-weight: 800; color: #066168; margin: 0 0 6px; letter-spacing: -0.03em">{{ t.step2 }}</h2>
+            <p style="font-size: 14px; color: #6E625D; margin: 0 0 22px">{{ t.step2Sub }}</p>
+            <div style="display: grid; gap: 12px">
+              <sc-for list="{{ payments }}" as="p" hint-placeholder-count="4">
+                <button type="button" onClick="{{ p.select }}" style="{{ p.style }}">
+                  <span style="{{ p.dotStyle }}"></span>
+                  <span style="display: grid; gap: 3px; text-align: left; flex: 1">
+                    <span style="font-size: 15px; font-weight: 800; color: #066168">{{ p.name }}</span>
+                    <span style="font-size: 12.5px; color: #6E625D">{{ p.note }}</span>
+                  </span>
+                  <span style="font-size: 12px; font-weight: 800; color: #B87A00; white-space: nowrap">{{ p.badge }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap">
+              <button type="button" onClick="{{ back }}" style="padding: 15px 28px; border-radius: 9999px; border: 1px solid #066168; background: transparent; color: #066168; font-size: 14px; font-weight: 800; cursor: pointer; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.back }}</button>
+              <button type="button" onClick="{{ next }}" style="padding: 15px 34px; border-radius: 9999px; border: none; background: #FFAA0D; color: #443935; font-size: 14.5px; font-weight: 800; cursor: pointer; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.nextConfirm }}</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isStep3 }}">
+          <div style="border-radius: 30px; background: #EAF4F4; padding: 30px 32px">
+            <h2 style="font-size: 24px; font-weight: 800; color: #066168; margin: 0 0 6px; letter-spacing: -0.03em">{{ t.step3 }}</h2>
+            <p style="font-size: 14px; color: #6E625D; margin: 0 0 22px">{{ t.step3Sub }}</p>
+            <div style="display: grid; gap: 10px; margin-bottom: 22px">
+              <sc-for list="{{ policies }}" as="x" hint-placeholder-count="4">
+                <div style="display: flex; gap: 11px; align-items: flex-start; background: #FFFFFF; border-radius: 14px; padding: 14px 16px">
+                  <span style="width: 20px; height: 20px; border-radius: 9999px; background: #FFAA0D; color: #443935; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px">✓</span>
+                  <span style="font-size: 14px; line-height: 1.6; color: #554944">{{ x }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <label for="h2co-agree" style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; background: #FFFFFF; border-radius: 14px; padding: 16px 18px">
+              <input id="h2co-agree" type="checkbox" checked="{{ agreed }}" onChange="{{ toggleAgree }}" style="margin: 2px 0 0; width: 17px; height: 17px; accent-color: #066168; flex-shrink: 0" />
+              <span style="font-size: 13.5px; line-height: 1.6; color: #443935">{{ t.agree }}</span>
+            </label>
+            <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap">
+              <button type="button" onClick="{{ back }}" style="padding: 15px 28px; border-radius: 9999px; border: 1px solid #066168; background: transparent; color: #066168; font-size: 14px; font-weight: 800; cursor: pointer; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.back }}</button>
+              <button type="button" style="{{ payBtnStyle }}">{{ payLabel }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <aside style="position: sticky; top: 100px; display: grid; gap: 16px">
+        <div style="border-radius: 30px; overflow: hidden; background: #066168">
+          <div style="padding: 22px 26px 18px">
+            <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #FFAA0D; margin-bottom: 4px">{{ t.orderTitle }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.7)">{{ t.orderSub }}</div>
+          </div>
+          <div style="background: #FFFFFF; margin: 0 10px 10px; border-radius: 22px; padding: 20px 22px">
+            <div style="display: flex; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid #EFF4F4; margin-bottom: 16px">
+              <div style="position: relative; width: 88px; height: 68px; border-radius: 14px; overflow: hidden; background: #EAF4F4; flex-shrink: 0"><image-slot id="h2co-room" shape="rect" fit="cover" placeholder="{{ room.name }}"></image-slot></div>
+              <div style="flex: 1; min-width: 0">
+                <div style="font-size: 14px; font-weight: 800; color: #066168; line-height: 1.4; margin-bottom: 4px">{{ room.name }}</div>
+                <div style="font-size: 12.5px; color: #6E625D">{{ room.area }} · {{ room.guestsLabel }}</div>
+                <div style="font-size: 13px; font-weight: 800; color: #B87A00; margin-top: 4px">{{ room.price }}</div>
+              </div>
+            </div>
+
+            <div style="display: grid; gap: 6px; margin-bottom: 16px">
+              <span style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.nights }}</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-radius: 10px; background: #EAF4F4">
+                <button type="button" onClick="{{ decNights }}" style="width: 32px; height: 32px; border-radius: 9999px; border: none; background: #FFFFFF; cursor: pointer; font-size: 16px; font-weight: 800; color: #066168">−</button>
+                <span style="font-size: 14.5px; font-weight: 800; color: #066168">{{ nightsLabel }}</span>
+                <button type="button" onClick="{{ incNights }}" style="width: 32px; height: 32px; border-radius: 9999px; border: none; background: #FFAA0D; cursor: pointer; font-size: 16px; font-weight: 800; color: #443935">+</button>
+              </div>
+            </div>
+
+            <div style="display: grid; gap: 9px; margin-bottom: 16px">
+              <sc-for list="{{ addons }}" as="a" hint-placeholder-count="6">
+                <label for="{{ a.id }}" style="display: flex; align-items: flex-start; gap: 11px; cursor: pointer">
+                  <input id="{{ a.id }}" type="checkbox" checked="{{ a.on }}" onChange="{{ a.toggle }}" style="margin: 2px 0 0; width: 16px; height: 16px; accent-color: #066168; flex-shrink: 0" />
+                  <span style="flex: 1; font-size: 13.5px; color: #443935">{{ a.name }}</span>
+                  <span style="font-size: 12.5px; color: #6E625D; white-space: nowrap">{{ a.priceLabel }}</span>
+                </label>
+              </sc-for>
+            </div>
+
+            <div style="padding-top: 16px; border-top: 1px solid #EFF4F4; display: grid; gap: 8px">
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6E625D">
+                <span>{{ t.roomsTotal }}</span>
+                <span style="font-weight: 800; color: #443935">{{ roomsSubtotal }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6E625D">
+                <span>{{ t.addonsTotal }}</span>
+                <span style="font-weight: 800; color: #443935">{{ addonsSubtotal }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6E625D">
+                <span>{{ t.vat }}</span>
+                <span style="font-weight: 800; color: #443935">{{ vat }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid #EFF4F4">
+                <span style="font-size: 14.5px; font-weight: 800; color: #066168">{{ t.total }}</span>
+                <span style="font-size: 24px; font-weight: 800; color: #066168; letter-spacing: -0.025em">{{ total }}</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #6E625D; padding-top: 4px">
+                <span>{{ t.deposit }}</span>
+                <span style="font-weight: 800; color: #B87A00">{{ deposit }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-radius: 30px; background: #EAF4F4; padding: 22px 24px">
+          <div style="font-size: 12.5px; font-weight: 800; color: #B87A00; margin-bottom: 10px; letter-spacing: 0.1em; text-transform: uppercase">{{ t.helpTitle }}</div>
+          <p style="font-size: 13px; line-height: 1.65; color: #6E625D; margin: 0 0 14px">{{ t.helpSub }}</p>
+          <a href="tel:0909000000" style="display: block; text-align: center; padding: 13px; border-radius: 9999px; background: #066168; color: #FFFFFF; font-size: 13.5px; font-weight: 800; transition: background 200ms ease" style-hover="background: #FFAA0D; color: #443935">Zalo · 0909 000 000</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer id="contact" style="background: #EAF4F4; padding: 46px 24px 28px">
+    <div style="max-width: 1240px; margin: 0 auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid #D7E6E6">
+        <div style="display: flex; align-items: center; gap: 11px">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 46px; height: 42px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 2px">
+            <span style="font-size: 15px; font-weight: 800; color: #066168">THE NAM DU HILL</span>
+            <span style="font-size: 13px; color: #6E625D">{{ address }}</span>
+          </span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="color: #6E625D" style-hover="color: #066168">{{ item.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: #61574F">
+        <span>© 2026 The Nam Du Hill Resort · 0909 000 000</span>
+        <a href="Showcase Hub.dc.html" style="color: #61574F" style-hover="color: #066168">← {{ t.backHub }}</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const LANG_BTN = "padding:3px 9px;border-radius:9999px;border:none;cursor:pointer;font-size:11px;font-weight:800;transition:background 150ms ease,color 150ms ease;";
+const PAY = "width:100%;display:flex;align-items:center;gap:13px;padding:17px 20px;border-radius:20px;cursor:pointer;text-align:left;transition:background 200ms ease,box-shadow 200ms ease;";
+
+const UI = {
+  vi: {
+    phoneLabel: "Hotline / Zalo", home: "Trang chủ", roomsPage: "Hạng phòng", needHelp: "Cần hỗ trợ?",
+    pageTitle: "Hoàn tất đặt phòng",
+    stepGuest: "Thông tin khách", stepPay: "Thanh toán", stepDone: "Xác nhận",
+    step1: "Thông tin người đặt", step1Sub: "Chúng tôi dùng thông tin này để giữ phòng và làm thủ tục lên tàu.",
+    step2: "Phương thức thanh toán", step2Sub: "Cọc 30% khi đặt, phần còn lại thanh toán khi nhận phòng.",
+    step3: "Chính sách & xác nhận", step3Sub: "Đọc nhanh các điều kiện trước khi hoàn tất.",
+    fName: "Họ và tên", phName: "Nguyễn Văn A", fPhone: "Số điện thoại / Zalo",
+    fEmail: "Email", fId: "CCCD / Hộ chiếu", phId: "Số giấy tờ dùng để lên tàu",
+    checkIn: "Ngày nhận phòng", checkOut: "Ngày trả phòng",
+    fNote: "Ghi chú thêm", phNote: "Giờ đến dự kiến, yêu cầu giường phụ, dị ứng thực phẩm…",
+    nextPay: "Tiếp tục · Thanh toán", nextConfirm: "Tiếp tục · Xác nhận", back: "Quay lại",
+    orderTitle: "Đơn của bạn", orderSub: "Giữ chỗ trong 30 phút",
+    nights: "Số đêm", nightsWord: "đêm",
+    roomsTotal: "Tiền phòng", addonsTotal: "Tiện ích", vat: "Thuế & phí dịch vụ", total: "Tổng cộng",
+    deposit: "Cọc 30% khi đặt", payNow: "Thanh toán", payDisabled: "Vui lòng đồng ý điều kiện",
+    helpTitle: "Cần người tư vấn?", helpSub: "Nhắn Zalo để được giữ phòng và vé tàu ngay, không cần chờ.",
+    agree: "Tôi đã đọc và đồng ý với chính sách huỷ, đổi lịch và điều kiện lưu trú của resort.",
+    backHub: "Về trang tổng", guestsWord: "khách",
+    payments: [
+      ["VNPay QR", "Quét mã bằng app ngân hàng, xác nhận tức thì", "Phổ biến"],
+      ["MoMo", "Ví MoMo, hoàn tiền vào ví nếu huỷ đúng hạn", ""],
+      ["Thẻ quốc tế", "Visa · Mastercard · JCB, thanh toán 3D Secure", ""],
+      ["Chuyển khoản ngân hàng", "Chuyển cọc, gửi biên lai qua Zalo", "Không phí"]
+    ],
+    policies: [
+      "Huỷ miễn phí trước 72 giờ so với ngày nhận phòng.",
+      "Đổi lịch miễn phí nếu tàu cao tốc ngừng chạy do biển động.",
+      "Nhận phòng từ 14:00, trả phòng trước 12:00.",
+      "Vui lòng mang CCCD hoặc hộ chiếu để làm thủ tục lên tàu."
+    ]
+  },
+  en: {
+    phoneLabel: "Hotline / Zalo", home: "Home", roomsPage: "Rooms", needHelp: "Need help?",
+    pageTitle: "Complete your booking",
+    stepGuest: "Guest details", stepPay: "Payment", stepDone: "Confirm",
+    step1: "Who's booking", step1Sub: "We use these details to hold the room and clear ferry boarding.",
+    step2: "Payment method", step2Sub: "30% deposit now, the balance is due at check-in.",
+    step3: "Policies & confirmation", step3Sub: "A quick read before you finish.",
+    fName: "Full name", phName: "Jane Doe", fPhone: "Phone / Zalo",
+    fEmail: "Email", fId: "ID / Passport", phId: "The document you'll board with",
+    checkIn: "Check in", checkOut: "Check out",
+    fNote: "Notes", phNote: "Arrival time, extra bed request, food allergies…",
+    nextPay: "Continue · Payment", nextConfirm: "Continue · Confirm", back: "Back",
+    orderTitle: "Your order", orderSub: "Held for 30 minutes",
+    nights: "Nights", nightsWord: "nights",
+    roomsTotal: "Room", addonsTotal: "Add-ons", vat: "Tax & service", total: "Total",
+    deposit: "30% deposit now", payNow: "Pay now", payDisabled: "Please accept the conditions",
+    helpTitle: "Want to talk first?", helpSub: "Message us on Zalo and we'll hold the room and ferry seats right away.",
+    agree: "I have read and accept the cancellation, rescheduling and stay conditions.",
+    backHub: "Back to showcase", guestsWord: "guests",
+    payments: [
+      ["VNPay QR", "Scan with your banking app, confirmed instantly", "Popular"],
+      ["MoMo", "MoMo wallet, refunded to wallet on timely cancellation", ""],
+      ["International card", "Visa · Mastercard · JCB with 3D Secure", ""],
+      ["Bank transfer", "Transfer the deposit and send the receipt on Zalo", "No fee"]
+    ],
+    policies: [
+      "Free cancellation up to 72 hours before check-in.",
+      "Free rescheduling if the speedboat is cancelled due to rough seas.",
+      "Check in from 14:00, check out before 12:00.",
+      "Bring your ID or passport for ferry boarding."
+    ]
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: "vi", data: null, scrolled: false, step: 0, nights: 1, addons: { "addon-ferry": true }, pay: 0, agreed: false };
+
+  componentDidMount() {
+    import("./namdu-data.js")
+      .then((m) => this.setState({ data: m.default }))
+      .catch((e) => console.error("namdu-data.js failed to load", e));
+    this._onScroll = () => {
+      const s = window.scrollY > 60;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) window.removeEventListener("scroll", this._onScroll);
+  }
+
+  renderVals() {
+    const L = this.state.lang;
+    const isVi = L === "vi";
+    const ui = UI[L];
+    const d = this.state.data;
+    const pick = (v) => (v && typeof v === "object" && "vi" in v ? v[L] : v);
+    const money = (n) => (isVi ? Math.round(n).toLocaleString("vi-VN") + "đ" : Math.round(n).toLocaleString("en-US") + "₫");
+
+    const on = LANG_BTN + "background:#FFAA0D;color:#443935;";
+    const off = LANG_BTN + "background:rgba(255,255,255,0.16);color:rgba(255,255,255,0.74);";
+    const sc = this.state.scrolled;
+    const step = this.state.step;
+
+    const base = {
+      t: ui,
+      headerWrapStyle: "position:fixed;top:0;left:0;right:0;z-index:60",
+      topbarStyle: "background:#044A50;color:rgba(255,255,255,0.84);overflow:hidden;transition:max-height 260ms ease,opacity 200ms ease;" + (sc ? "max-height:0;opacity:0;" : "max-height:46px;opacity:1;"),
+      headerStyle: sc
+        ? "background:rgba(255,255,255,0.97);backdrop-filter:blur(14px);box-shadow:0 6px 18px rgba(6,97,104,0.1);transition:background 240ms ease"
+        : "background:#066168;transition:background 240ms ease",
+      logoTextStyle: "font-size:14.5px;font-weight:800;letter-spacing:0.02em;transition:color 240ms ease;color:" + (sc ? "#066168" : "#FFFFFF"),
+      logoSubStyle: "font-size:11px;transition:color 240ms ease;color:" + (sc ? "#8E837E" : "rgba(255,255,255,0.74)"),
+      ctaStyle: "padding:11px 22px;border-radius:9999px;font-size:13.5px;font-weight:800;white-space:nowrap;flex-shrink:0;background:#FFAA0D;color:#443935;transition:background 200ms ease",
+      viBtn: isVi ? on : off,
+      enBtn: isVi ? off : on,
+      setVi: () => this.setState({ lang: "vi" }),
+      setEn: () => this.setState({ lang: "en" }),
+      isStep1: step === 0,
+      isStep2: step === 1,
+      isStep3: step === 2,
+      next: () => this.setState({ step: Math.min(2, step + 1) }),
+      back: () => this.setState({ step: Math.max(0, step - 1) }),
+      agreed: this.state.agreed,
+      toggleAgree: () => this.setState((s) => ({ agreed: !s.agreed })),
+      steps: [ui.stepGuest, ui.stepPay, ui.stepDone].map((label, i) => ({
+        n: i + 1, label,
+        go: () => this.setState({ step: i }),
+        style: "display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:9999px;border:none;cursor:pointer;font-size:13.5px;font-weight:800;transition:background 200ms ease,color 200ms ease;" +
+          (i === step ? "background:#FFAA0D;color:#443935;" : "background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);"),
+        numStyle: "width:22px;height:22px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;" +
+          (i === step ? "background:#066168;color:#FFFFFF;" : "background:rgba(255,255,255,0.2);color:#FFFFFF;")
+      })),
+      payments: ui.payments.map(([name, note, badge], i) => {
+        const active = this.state.pay === i;
+        return {
+          name, note, badge,
+          select: () => this.setState({ pay: i }),
+          style: PAY + (active ? "background:#FFFFFF;box-shadow:0 0 0 2px #066168;" : "background:#FFFFFF;"),
+          dotStyle: "width:18px;height:18px;border-radius:9999px;flex-shrink:0;" +
+            (active ? "border:5px solid #066168;background:#FFFFFF;" : "border:2px solid #D7E6E6;background:#FFFFFF;")
+        };
+      }),
+      policies: ui.policies
+    };
+    if (!d) return base;
+
+    const navStyle = "padding:8px 12px;border-radius:9999px;font-size:13.5px;font-weight:600;white-space:nowrap;flex-shrink:0;transition:color 240ms ease;color:" + (sc ? "#443935" : "#FFFFFF");
+    const navHrefs = {
+      "#top": "Home 02 - Nam Du Hill.dc.html",
+      "#rooms": "Rooms H2 - Nam Du Hill.dc.html"
+    };
+
+    const room = d.rooms[0];
+    const nights = this.state.nights;
+    const guests = room.guests;
+    const roomsSum = room.price * nights;
+    const addonsSum = d.addons.reduce((s, a) => {
+      if (!this.state.addons[a.id] || !a.price) return s;
+      return s + a.price * (a.id === "addon-bike" ? nights : guests);
+    }, 0);
+    const vat = (roomsSum + addonsSum) * 0.08;
+    const total = roomsSum + addonsSum + vat;
+
+    return {
+      ...base,
+      address: pick(d.brand.address),
+      nav: d.nav.map((n) => ({ href: navHrefs[n.href] || ("Home 02 - Nam Du Hill.dc.html" + n.href), label: pick(n.label), style: navStyle })),
+      room: { name: pick(room.name), area: room.area, guestsLabel: room.guests + " " + ui.guestsWord, price: money(room.price) },
+      nightsLabel: nights + " " + ui.nightsWord,
+      incNights: () => this.setState({ nights: Math.min(14, nights + 1) }),
+      decNights: () => this.setState({ nights: Math.max(1, nights - 1) }),
+      addons: d.addons.map((a) => ({
+        id: "h2co-" + a.id, name: pick(a.name), on: !!this.state.addons[a.id],
+        priceLabel: a.price ? money(a.price) : pick(a.unit),
+        toggle: () => this.setState((s) => {
+          const next = Object.assign({}, s.addons);
+          next[a.id] = !next[a.id];
+          return { addons: next };
+        })
+      })),
+      roomsSubtotal: money(roomsSum),
+      addonsSubtotal: money(addonsSum),
+      vat: money(vat),
+      total: money(total),
+      deposit: money(total * 0.3),
+      payLabel: this.state.agreed ? ui.payNow + " · " + money(total * 0.3) : ui.payDisabled,
+      payBtnStyle: "padding:15px 34px;border-radius:9999px;border:none;font-size:14.5px;font-weight:800;transition:background 200ms ease;" +
+        (this.state.agreed ? "background:#066168;color:#FFFFFF;cursor:pointer;" : "background:#D7E6E6;color:#6E625D;cursor:not-allowed;")
+    };
+  }
+}
+</script>
+</body>
+</html>

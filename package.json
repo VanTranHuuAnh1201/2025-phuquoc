@@ -1,36 +1,34 @@
 {
-  "name": "phuquoc",
+  "name": "booking-platform",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "crawl:hotel": "tsx --env-file=.env.local scripts/crawl/crawl-hotel.ts",
-    "crawl:seed": "tsx scripts/crawl/to-seed.ts",
-    "crawl:pages": "node scripts/crawl/crawl-pages.mjs",
-    "crawl:build": "node scripts/crawl/build-seed.mjs && node scripts/crawl/emit-ts.mjs"
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=20"
   },
-  "dependencies": {
-    "lucide-react": "^0.544.0",
-    "next": "^15.5.4",
-    "next-intl": "^4.3.9",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:portfolio": "turbo dev --filter=@repo/portfolio",
+    "dev:thenamduhill": "turbo dev --filter=@repo/2026-thenamduhill",
+    "dev:phogroup": "turbo dev --filter=@repo/2025-phogroup",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "check": "turbo lint typecheck",
+    "clean": "turbo clean && rimraf node_modules",
+    "crawl:pages": "node scripts/crawl/crawl-pages.mjs",
+    "crawl:build": "node scripts/crawl/build-seed.mjs && node scripts/crawl/emit-ts.mjs",
+    "crawl:travlla": "node scripts/crawl/crawl-travlla.mjs",
+    "crawl:travlla:build": "node scripts/crawl/build-travlla-seed.mjs && node scripts/crawl/emit-travlla-ts.mjs",
+    "crawl:rooms": "node scripts/crawl/crawl-room-details.mjs",
+    "crawl:full": "node scripts/crawl/crawl-full-site.mjs"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@mendable/firecrawl-js": "^4.32.0",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.4",
-    "tailwindcss": "^4",
+    "rimraf": "^6.0.1",
     "tsx": "^4.23.1",
+    "turbo": "^2.3.3",
     "typescript": "^5"
   }
 }

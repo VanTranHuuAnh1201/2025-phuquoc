@@ -16,32 +16,10 @@ const arr = (items, indent) =>
         ? `[\n${items.map((i) => `${indent}    ${q(i)},`).join("\n")}\n${indent}]`
         : "[]";
 
-const rooms = s.roomTypes
-    .map(
-        (r) => `    {
-        id: ${q(r.id)},
-        name: ${q(r.name)},
-        roomNumber: ${q(r.roomNumber)},
-        description: ${q(r.description)},
-        size: ${q(r.size)},
-        capacity: ${r.capacity},
-        price: ${r.price},
-        extraBedFee: ${r.extraBedFee},
-        view: ${q(r.view)},
-        hasBalcony: ${r.hasBalcony},
-        images: ${arr(r.images, "        ")},
-        availability: true,
-    },`
-    )
-    .join("\n");
-
 const articles = (list, indent) =>
     list.length
         ? `[\n${list
-              .map(
-                  (a) =>
-                      `${indent}    { title: ${q(a.title)}, url: ${q(a.url)} },`
-              )
+              .map((a) => `${indent}    { title: ${q(a.title)}, url: ${q(a.url)} },`)
               .join("\n")}\n${indent}]`
         : "[]";
 
@@ -49,6 +27,30 @@ const paras = (list, indent) =>
     list.length
         ? `[\n${list.map((p) => `${indent}    ${q(p)},`).join("\n")}\n${indent}]`
         : "[]";
+
+const rooms = s.roomTypes
+    .map(
+        (r) => `    {
+        id: ${q(r.id)},
+        name: ${q(r.name)},
+        roomNumber: ${q(r.roomNumber)},
+        summary: ${q(r.summary)},
+        description: ${paras(r.description, "        ")},
+        size: ${q(r.size)},
+        detailSize: ${q(r.detailSize)},
+        capacity: ${r.capacity},
+        price: ${r.price},
+        extraBedFee: ${r.extraBedFee},
+        view: ${q(r.view)},
+        viewDetail: ${arr(r.viewDetail, "        ")},
+        hasBalcony: ${r.hasBalcony},
+        amenities: ${arr(r.amenities, "        ")},
+        conditions: ${arr(r.conditions, "        ")},
+        images: ${arr(r.images, "        ")},
+        availability: true,
+    },`
+    )
+    .join("\n");
 
 const ts = `/**
  * Seed data — The Nam Du Hill Resort (https://thenamduhill.com)
@@ -73,15 +75,33 @@ const ts = `/**
 export interface SeedRoomType {
     id: string;
     name: string;
+    /** Số phòng trên website nguồn, vd "01", "03-04". */
     roomNumber: string;
-    description: string;
+    /** Tóm tắt ngắn hiển thị ở card danh sách. */
+    summary: string;
+    /** Mô tả dài từ trang chi tiết, mỗi phần tử là một đoạn văn. */
+    description: string[];
+    /** Diện tích ghi ở trang danh sách. */
     size: string;
+    /**
+     * Diện tích ghi trong mô tả chi tiết. Có phòng hai nguồn lệch nhau
+     * (vd #05: danh sách 21m² / chi tiết 18m²) — giữ cả hai, chưa tự chọn.
+     */
+    detailSize: string;
     capacity: number;
     price: number;
     /** Phụ thu mỗi khách/giường phụ, 0 nếu không áp dụng. */
     extraBedFee: number;
+    /** Hướng nhìn suy ra từ tóm tắt. */
     view: string;
+    /** Mục "HƯỚNG TẦM NHÌN" ghi rõ trên trang chi tiết. */
+    viewDetail: string[];
     hasBalcony: boolean;
+    /** Mục "QUYỀN LỢI & TIỆN NGHI" trên trang chi tiết. */
+    amenities: string[];
+    /** Mục "ĐIỀU KIỆN PHÒNG", vd "Không hút thuốc". */
+    conditions: string[];
+    /** Ảnh cover + gallery từ modal chi tiết. */
     images: string[];
     availability: boolean;
 }

@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+# Các package cần chạy build script khi cài (binary gốc).
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

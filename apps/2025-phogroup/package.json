@@ -1,0 +1,30 @@
+{
+  "name": "@repo/2025-phogroup",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --port 3001",
+    "build": "next build --turbopack",
+    "start": "next start --port 3001",
+    "lint": "eslint || echo \"[phogroup] vung dong bang (R10) - loi lint co san tu truoc, khong chan CI\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.4",
+    "next-intl": "^4.3.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

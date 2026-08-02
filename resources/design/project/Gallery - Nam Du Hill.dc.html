@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 112px; }
+  [id] { scroll-margin-top: 112px; }
+  body { background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  a { color: #075E9E; text-decoration: none; }
+  a:hover { color: #064B7F; }
+  ::selection { background: #C7E6FF; color: #0F1729; }
+  input, select, button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid #0B6FB8; outline-offset: 2px; }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0F1729; background: #FFFFFF; overflow-x: hidden">
+
+  <div style="{{ headerWrapStyle }}">
+    <div style="{{ topbarStyle }}">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px">
+        <span>{{ address }}</span>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <a href="tel:0909000000" style="color: inherit" style-hover="opacity: 0.7; color: inherit">{{ t.phoneLabel }}: 0909 000 000</a>
+          <div style="display: flex; gap: 4px">
+            <button type="button" onClick="{{ setVi }}" style="{{ viBtn }}">VI</button>
+            <button type="button" onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <header style="{{ headerStyle }}">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 10px 24px; min-height: 66px; display: flex; align-items: center; gap: 20px">
+        <a href="Home 01 - Nam Du Hill.dc.html" style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; white-space: nowrap">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 56px; height: 50px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 1px">
+            <span style="{{ logoTextStyle }}">THE NAM DU HILL</span>
+            <span style="{{ logoSubStyle }}">Resort · Nam Du Island</span>
+          </span>
+        </a>
+        <nav style="display: flex; gap: 4px; margin-left: auto; align-items: center; flex-wrap: wrap; min-width: 0; overflow: hidden">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="{{ item.style }}" style-hover="opacity: 0.65">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <a href="Rooms - Nam Du Hill.dc.html" style="{{ ctaStyle }}" style-hover="opacity: 0.88">{{ t.bookNow }}</a>
+      </div>
+    </header>
+  </div>
+
+  <section style="position: relative; height: 400px; background: #0F1729; overflow: hidden">
+    <div style="position: absolute; inset: 0; color: rgba(255,255,255,0.85)">
+      <image-slot id="gal-hero" shape="rect" fit="cover" placeholder="Ảnh banner thư viện ảnh (2400×900)"></image-slot>
+    </div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,41,0.62) 0%, rgba(15,23,41,0.3) 50%, rgba(15,23,41,0.8) 100%); pointer-events: none"></div>
+    <div style="position: relative; height: 100%; max-width: 1200px; margin: 0 auto; padding: 130px 24px 44px; display: flex; flex-direction: column; justify-content: flex-end">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 14px">
+        <a href="Home 01 - Nam Du Hill.dc.html" style="color: rgba(255,255,255,0.75)" style-hover="color: #8FD3FF">{{ t.home }}</a>
+        <span>/</span>
+        <span style="color: #FFFFFF">{{ t.pageTitle }}</span>
+      </div>
+      <h1 style="font-size: 44px; line-height: 1.12; font-weight: 800; color: #FFFFFF; margin: 0 0 10px; letter-spacing: -0.03em">{{ t.pageTitle }}</h1>
+      <p style="font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.85); margin: 0; max-width: 560px">{{ t.pageSub }}</p>
+    </div>
+  </section>
+
+  <section id="grid" style="background: #FFFFFF; padding: 36px 24px 88px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 26px">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+            <button type="button" onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <span style="font-size: 13.5px; color: #6B7280">{{ countLabel }}</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); grid-auto-rows: 200px; gap: 14px">
+        <sc-for list="{{ shots }}" as="s" hint-placeholder-count="12">
+          <div style="{{ s.wrapStyle }}">
+            <image-slot id="{{ s.id }}" shape="rect" fit="cover" placeholder="{{ s.hint }}"></image-slot>
+            <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 12px; background: linear-gradient(180deg, rgba(15,23,41,0) 0%, rgba(15,23,41,0.82) 100%); font-size: 12.5px; font-weight: 600; color: #FFFFFF; pointer-events: none">{{ s.hint }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: 44px; border: 1px solid #C7E6FF; background: #EDF6FF; border-radius: 16px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap">
+        <div>
+          <div style="font-size: 19px; font-weight: 800; color: #0F1729; margin-bottom: 6px; letter-spacing: -0.02em">{{ t.ctaTitle }}</div>
+          <div style="font-size: 14px; color: #064B7F">{{ t.ctaSub }}</div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <a href="Rooms - Nam Du Hill.dc.html" style="padding: 13px 26px; border-radius: 9999px; background: #0B6FB8; color: #FFFFFF; font-size: 14px; font-weight: 700; white-space: nowrap; transition: background 150ms ease" style-hover="background: #075E9E; color: #FFFFFF">{{ t.bookNow }}</a>
+          <a href="Contact - Nam Du Hill.dc.html" style="padding: 13px 24px; border-radius: 9999px; background: #FFFFFF; color: #075E9E; font-size: 14px; font-weight: 700; white-space: nowrap; transition: background 150ms ease" style-hover="background: #0F1729; color: #FFFFFF">{{ t.contactPage }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" style="background: #F8FAFC; border-top: 1px solid #E5E7EB; padding: 46px 24px 26px">
+    <div style="max-width: 1200px; margin: 0 auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid #E5E7EB">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 42px; height: 38px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 2px">
+            <span style="font-size: 15px; font-weight: 700; color: #0F1729">The Nam Du Hill Resort</span>
+            <span style="font-size: 13px; color: #6B7280">{{ address }}</span>
+          </span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="color: #6B7280" style-hover="color: #075E9E">{{ item.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: #6B7280">
+        <span>© 2026 The Nam Du Hill Resort · 0909 000 000</span>
+        <a href="Showcase Hub.dc.html" style="color: #6B7280" style-hover="color: #075E9E">← {{ t.backHub }}</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const LANG_BTN = "padding:3px 9px;border-radius:9999px;border:none;cursor:pointer;font-size:11px;font-weight:700;transition:background 150ms ease,color 150ms ease;";
+const CHIP = "padding:10px 18px;border-radius:9999px;border:1px solid #E5E7EB;cursor:pointer;font-size:13.5px;font-weight:600;transition:background 150ms ease,color 150ms ease,border-color 150ms ease;";
+
+const SHOTS = [
+  ["room", "Suite hướng biển", "Sea-view suite", "wide"],
+  ["room", "Ban công riêng", "Private balcony", ""],
+  ["pool", "Hồ bơi vô cực", "Infinity pool", "tall"],
+  ["room", "Phòng tắm", "Bathroom", ""],
+  ["food", "BBQ hải sản", "Seafood BBQ", ""],
+  ["pool", "Ghế tắm nắng", "Sun loungers", ""],
+  ["food", "Café trên cao", "Rooftop café", "wide"],
+  ["island", "Bãi Cây Mến", "Bai Cay Men", ""],
+  ["island", "Hải đăng Nam Du", "Nam Du lighthouse", "tall"],
+  ["island", "Hòn Hai Bờ Đập", "Hon Hai Bo Dap", ""],
+  ["food", "Lẩu cá bớp", "Cobia hotpot", ""],
+  ["island", "Hoàng hôn trên đồi", "Sunset on the hill", "wide"],
+  ["room", "Phòng gia đình", "Family room", ""],
+  ["pool", "Bida & sân chơi", "Billiards & games", ""],
+  ["island", "Tàu gỗ ra đảo", "Wooden tour boat", ""],
+  ["food", "Nhum nướng mỡ hành", "Grilled sea urchin", ""]
+];
+
+const UI = {
+  vi: {
+    phoneLabel: "Hotline / Zalo", home: "Trang chủ", bookNow: "Đặt phòng",
+    pageTitle: "Thư viện ảnh", pageSub: "Ảnh thực tế tại resort và các điểm đến quanh quần đảo Nam Du.",
+    catAll: "Tất cả", catRoom: "Phòng nghỉ", catPool: "Hồ bơi & tiện ích", catFood: "Ẩm thực", catIsland: "Đảo & điểm đến",
+    countLabel: "ảnh", contactPage: "Liên hệ",
+    ctaTitle: "Muốn xem trực tiếp?", ctaSub: "Chọn ngày và hạng phòng, chúng tôi xác nhận trong 15 phút.",
+    backHub: "Về trang tổng"
+  },
+  en: {
+    phoneLabel: "Hotline / Zalo", home: "Home", bookNow: "Book now",
+    pageTitle: "Gallery", pageSub: "Real photos of the resort and the destinations around the Nam Du archipelago.",
+    catAll: "All", catRoom: "Rooms", catPool: "Pool & facilities", catFood: "Food", catIsland: "Islands",
+    countLabel: "photos", contactPage: "Contact",
+    ctaTitle: "Want to see it for yourself?", ctaSub: "Pick your dates and room type — confirmed within 15 minutes.",
+    backHub: "Back to showcase"
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: "vi", data: null, scrolled: false, cat: "all" };
+
+  componentDidMount() {
+    import("./namdu-data.js")
+      .then((m) => this.setState({ data: m.default }))
+      .catch((e) => console.error("namdu-data.js failed to load", e));
+    this._onScroll = () => {
+      const s = window.scrollY > 60;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) window.removeEventListener("scroll", this._onScroll);
+  }
+
+  renderVals() {
+    const L = this.state.lang;
+    const isVi = L === "vi";
+    const ui = UI[L];
+    const d = this.state.data;
+    const pick = (v) => (v && typeof v === "object" && "vi" in v ? v[L] : v);
+
+    const on = LANG_BTN + "background:#0EA5E9;color:#FFFFFF;";
+    const off = LANG_BTN + "background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.72);";
+    const sc = this.state.scrolled;
+
+    const cats = [
+      { key: "all", label: ui.catAll },
+      { key: "room", label: ui.catRoom },
+      { key: "pool", label: ui.catPool },
+      { key: "food", label: ui.catFood },
+      { key: "island", label: ui.catIsland }
+    ];
+    const filtered = SHOTS.filter((s) => this.state.cat === "all" || s[0] === this.state.cat);
+
+    const base = {
+      t: ui,
+      headerWrapStyle: "position:fixed;top:0;left:0;right:0;z-index:60",
+      topbarStyle: "background:#0F1729;color:rgba(255,255,255,0.7);overflow:hidden;transition:max-height 260ms ease,opacity 200ms ease;" + (sc ? "max-height:0;opacity:0;" : "max-height:44px;opacity:1;"),
+      headerStyle: "background:rgba(255,255,255,0.96);backdrop-filter:blur(14px);border-bottom:1px solid #E5E7EB;transition:box-shadow 240ms ease;" + (sc ? "box-shadow:0 4px 6px -1px rgba(15,23,41,0.08);" : ""),
+      logoTextStyle: "font-size:14.5px;font-weight:800;letter-spacing:0.02em;color:#0F1729",
+      logoSubStyle: "font-size:11px;color:#6B7280",
+      ctaStyle: "padding:10px 20px;border-radius:9999px;font-size:13.5px;font-weight:600;white-space:nowrap;flex-shrink:0;background:#0B6FB8;color:#FFFFFF;box-shadow:0 6px 14px rgba(11,111,184,0.28);transition:background 200ms ease",
+      viBtn: isVi ? on : off,
+      enBtn: isVi ? off : on,
+      setVi: () => this.setState({ lang: "vi" }),
+      setEn: () => this.setState({ lang: "en" }),
+      countLabel: filtered.length + " " + ui.countLabel,
+      cats: cats.map((c) => ({
+        label: c.label,
+        select: () => this.setState({ cat: c.key }),
+        style: CHIP + (this.state.cat === c.key ? "background:#0F1729;color:#FFFFFF;border-color:#0F1729;" : "background:#FFFFFF;color:#374151;")
+      })),
+      shots: filtered.map((s, i) => ({
+        id: "gal-" + s[0] + "-" + i,
+        hint: isVi ? s[1] : s[2],
+        wrapStyle: "position:relative;border-radius:14px;overflow:hidden;background:#F1F5F9;" +
+          (s[3] === "wide" ? "grid-column:span 2;" : s[3] === "tall" ? "grid-row:span 2;" : "")
+      }))
+    };
+    if (!d) return base;
+
+    const navStyle = "padding:8px 12px;border-radius:8px;font-size:13.5px;font-weight:500;white-space:nowrap;flex-shrink:0;color:#374151";
+    const navHrefs = {
+      "#top": "Home 01 - Nam Du Hill.dc.html",
+      "#rooms": "Rooms - Nam Du Hill.dc.html",
+      "#tours": "Tours - Nam Du Hill.dc.html",
+      "#gallery": "Gallery - Nam Du Hill.dc.html",
+      "#contact": "Contact - Nam Du Hill.dc.html"
+    };
+
+    return {
+      ...base,
+      address: pick(d.brand.address),
+      nav: d.nav.map((n) => ({ href: navHrefs[n.href] || ("Home 01 - Nam Du Hill.dc.html" + n.href), label: pick(n.label), style: navStyle }))
+    };
+  }
+}
+</script>
+</body>
+</html>

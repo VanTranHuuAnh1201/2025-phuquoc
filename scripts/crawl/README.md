@@ -20,9 +20,38 @@ copy vào sản phẩm thật thì không.
 ### Pipeline Node (khuyến nghị cho site đơn giản)
 
 ```bash
-npm run crawl:pages   # cào các trang trong SEED_PAGES -> output/pages.json
+npm run crawl:full    # BFS toàn site, tự discover  -> output/full-site.json
+npm run crawl:rooms   # cào chi tiết từng phòng     -> output/room-details.json
 npm run crawl:build   # -> output/seed-data.json + thenamduhill-com.seed.ts
 ```
+
+`crawl:full` bắt đầu từ trang chủ, đi theo mọi link cùng domain tới khi hết
+(mặc định trần 300 trang, đổi bằng `--limit`). Dùng cái này khi không biết
+trước sitemap. `crawl:pages` là bản cũ chạy theo danh sách `SEED_PAGES` cố
+định — vẫn giữ vì nhanh hơn khi đã biết chính xác cần trang nào.
+
+Script **không gọi** các route ghi dữ liệu của hệ thống đặt phòng
+(`bookingcart.add`, `checkout.submit`, ...) — đó là hành động lên hệ thống của
+họ chứ không phải nội dung để đọc.
+
+### Chi tiết phòng nằm sau modal AJAX
+
+Trang `/collections/rooms-suites` chỉ render danh sách. Nội dung khi bấm
+"Xem chi tiết" (mô tả dài, QUYỀN LỢI & TIỆN NGHI, HƯỚNG TẦM NHÌN, ĐIỀU KIỆN
+PHÒNG và gallery ~7 ảnh/phòng) được nạp bằng AJAX, nên crawl HTML tĩnh không
+thấy. Endpoint tìm được trong `application/assets/js/dcweb.js`:
+
+```
+index.php?route=booking/roomlist.popup&language=vi&product_id=<id>
+```
+
+`product_id` lấy từ thuộc tính `data-product-id` trên link "Xem chi tiết" ở
+trang danh sách. [crawl-room-details.mjs](crawl-room-details.mjs) ghép id này
+với số phòng (`#01`, `#03-04`) rồi gọi thẳng endpoint.
+
+Lưu ý khi đọc dữ liệu: mô tả chi tiết dùng **hai format khác nhau**. Đa số
+phòng có heading `QUYỀN LỢI & TIỆN NGHI`; riêng #10 và #12 liệt kê theo nhóm
+`Tiện nghi:` / `Trong phòng tắm riêng của bạn:`. Parser xử lý cả hai.
 
 Sửa mảng `SEED_PAGES` trong [crawl-pages.mjs](crawl-pages.mjs) để đổi site/trang
 cần cào. Hiện cấu hình 14 trang của thenamduhill.com (gồm 5 trang chính sách). Script tự đi theo link `/article/...` của các trang news, có delay 400ms

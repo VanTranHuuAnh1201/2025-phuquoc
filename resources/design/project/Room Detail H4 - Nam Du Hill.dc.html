@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap&subset=latin,latin-ext,vietnamese" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+  body { background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  a { color: #066168; text-decoration: none; }
+  a:hover { color: #044A50; }
+  ::selection { background: #85D200; color: #143F22; }
+  input, select, button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid #85D200; outline-offset: 2px; }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="font-family: Figtree, ui-sans-serif, system-ui, sans-serif; color: #443935; background: #FFFFFF; overflow-x: hidden">
+
+  <div style="{{ headerWrapStyle }}">
+    <div style="{{ topbarStyle }}">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 9px 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; font-weight: 600; font-style: italic; color: #066168">
+        <span>{{ t.topline }}</span>
+        <div style="display: flex; align-items: center; gap: 18px; font-style: normal; font-weight: 500">
+          <a href="mailto:booking@thenamduhill.com" style="color: #066168" style-hover="color: #5C7300">booking@thenamduhill.com</a>
+          <a href="tel:0909000000" style="color: #066168" style-hover="color: #5C7300">0909 000 000</a>
+        </div>
+      </div>
+    </div>
+    <header style="{{ headerStyle }}">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 8px 26px; min-height: 64px; display: flex; align-items: center; gap: 20px">
+        <a href="Home 04 - Nam Du Hill.dc.html" style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; white-space: nowrap">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 52px; height: 46px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 1px">
+            <span style="font-size: 14.5px; font-weight: 900; letter-spacing: 0.02em; color: #066168">THE NAM DU HILL</span>
+            <span style="font-size: 11px; color: #6C7873">Resort · Nam Du Island</span>
+          </span>
+        </a>
+        <nav style="display: flex; gap: 4px; margin-left: 30px; align-items: center; flex-wrap: wrap; min-width: 0; overflow: hidden">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="{{ item.style }}" style-hover="opacity: 0.62">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0">
+          <div style="display: flex; gap: 4px">
+            <button type="button" onClick="{{ setVi }}" style="{{ viBtn }}">VI</button>
+            <button type="button" onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+          </div>
+          <a href="Checkout H4 - Nam Du Hill.dc.html" style="{{ ctaStyle }}" style-hover="opacity: 0.88">{{ t.bookNow }}</a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <section style="position: relative; background: #F4F6F3; padding: 124px 26px 0; overflow: hidden">
+    <div style="position: absolute; left: -130px; top: 90px; width: 380px; height: 380px; border-radius: 9999px; background: rgba(133,210,0,0.1); pointer-events: none"></div>
+    <div style="position: relative; max-width: 1280px; margin: 0 auto">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6C7873; padding: 14px 0 18px">
+        <a href="Home 04 - Nam Du Hill.dc.html" style="color: #6C7873" style-hover="color: #5C7300">{{ t.home }}</a>
+        <span>/</span>
+        <a href="Rooms H4 - Nam Du Hill.dc.html" style="color: #6C7873" style-hover="color: #5C7300">{{ t.roomsPage }}</a>
+        <span>/</span>
+        <span style="color: #066168; font-weight: 700">{{ room.name }}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 34px; align-items: end; padding-bottom: 34px">
+        <div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px">
+            <sc-for list="{{ room.tags }}" as="tag" hint-placeholder-count="3">
+              <span style="padding: 5px 12px; border-radius: 6px; background: #85D200; color: #143F22; font-size: 11.5px; font-weight: 900">{{ tag }}</span>
+            </sc-for>
+          </div>
+          <h1 style="font-size: 44px; line-height: 1.08; font-weight: 900; color: #066168; margin: 0 0 12px; letter-spacing: -0.04em">{{ room.name }}</h1>
+          <p style="font-size: 16px; line-height: 1.68; color: #55635F; margin: 0 0 20px">{{ room.summary }}</p>
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-size: 32px; font-weight: 900; color: #066168; letter-spacing: -0.035em">{{ room.price }}</span>
+            <span style="font-size: 13.5px; color: #6C7873">/ {{ t.perNight }}</span>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); grid-template-rows: 130px 130px; gap: 12px">
+          <div style="position: relative; grid-row: span 2; border-radius: 50px; overflow: hidden; background: #E5EBE7"><image-slot id="{{ gallery.main }}" shape="rect" fit="cover" placeholder="Ảnh phòng — toàn cảnh"></image-slot></div>
+          <div style="position: relative; border-radius: 20px; overflow: hidden; background: #E5EBE7"><image-slot id="{{ gallery.b }}" shape="rect" fit="cover" placeholder="Ảnh ban công"></image-slot></div>
+          <div style="position: relative; border-radius: 20px; overflow: hidden; background: #E5EBE7"><image-slot id="{{ gallery.c }}" shape="rect" fit="cover" placeholder="Ảnh phòng tắm"></image-slot></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #FFFFFF; padding: 40px 26px 88px">
+    <div style="max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,370px); gap: 40px; align-items: start">
+
+      <div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: #EEF2F0; border-radius: 20px; overflow: hidden; margin-bottom: 34px">
+          <sc-for list="{{ specs }}" as="s" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; padding: 20px 22px">
+              <div style="font-size: 11.5px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: #5C7300; margin-bottom: 6px">{{ s.label }}</div>
+              <div style="font-size: 14.5px; font-weight: 800; color: #066168; line-height: 1.45">{{ s.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-size: 12.5px; font-weight: 900; color: #5C7300; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px">{{ t.descKicker }}</div>
+        <h2 style="font-size: 30px; font-weight: 900; color: #066168; margin: 0 0 16px; letter-spacing: -0.035em">{{ t.descTitle }}</h2>
+        <p style="font-size: 15.5px; line-height: 1.85; color: #55635F; margin: 0 0 14px; text-wrap: pretty">{{ room.long }}</p>
+        <p style="font-size: 15.5px; line-height: 1.85; color: #55635F; margin: 0 0 34px; text-wrap: pretty">{{ room.long2 }}</p>
+
+        <div style="font-size: 12.5px; font-weight: 900; color: #5C7300; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px">{{ t.amenitiesKicker }}</div>
+        <h2 style="font-size: 30px; font-weight: 900; color: #066168; margin: 0 0 18px; letter-spacing: -0.035em">{{ t.amenitiesTitle }}</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-bottom: 34px">
+          <sc-for list="{{ amenities }}" as="a" hint-placeholder-count="10">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 8px; background: #F4F6F3">
+              <span style="width: 8px; height: 8px; border-radius: 9999px; background: #85D200; flex-shrink: 0"></span>
+              <span style="font-size: 14px; font-weight: 700; color: #066168">{{ a }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; margin-bottom: 36px">
+          <div style="border-radius: 20px; background: #066168; padding: 26px 28px">
+            <h3 style="font-size: 17px; font-weight: 900; color: #85D200; margin: 0 0 12px; letter-spacing: -0.02em">{{ t.viewTitle }}</h3>
+            <p style="font-size: 14.5px; line-height: 1.68; color: rgba(255,255,255,0.88); margin: 0">{{ room.view }}</p>
+          </div>
+          <div style="border-radius: 20px; background: #85D200; padding: 26px 28px">
+            <h3 style="font-size: 17px; font-weight: 900; color: #143F22; margin: 0 0 12px; letter-spacing: -0.02em">{{ t.conditionsTitle }}</h3>
+            <div style="display: grid; gap: 8px">
+              <sc-for list="{{ conditions }}" as="c" hint-placeholder-count="4">
+                <div style="display: flex; gap: 10px; align-items: flex-start">
+                  <span style="width: 5px; height: 5px; border-radius: 9999px; background: #143F22; margin-top: 8px; flex-shrink: 0"></span>
+                  <span style="font-size: 13.5px; line-height: 1.6; color: #1E3A0A">{{ c }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="font-size: 26px; font-weight: 900; color: #066168; margin: 0 0 18px; letter-spacing: -0.035em">{{ t.otherRooms }}</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px">
+          <sc-for list="{{ others }}" as="o" hint-placeholder-count="3">
+            <a href="{{ o.href }}" style="display: block; border-radius: 20px; overflow: hidden; background: #FFFFFF; box-shadow: rgba(0,0,0,0.08) 0 1px 2px 0; color: inherit; transition: box-shadow 200ms ease, transform 200ms ease" style-hover="transform: translateY(-5px); box-shadow: 0 18px 40px rgba(6,97,104,0.14); color: inherit">
+              <div style="position: relative; height: 126px; background: #F4F6F3"><image-slot id="{{ o.id }}" shape="rect" fit="cover" placeholder="{{ o.name }}"></image-slot></div>
+              <div style="padding: 15px 17px 19px">
+                <div style="font-size: 14.5px; font-weight: 900; color: #066168; margin-bottom: 5px; line-height: 1.4">{{ o.name }}</div>
+                <div style="font-size: 13px; color: #6C7873">{{ o.area }} · {{ o.price }}</div>
+              </div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+
+      <aside style="position: sticky; top: 96px; display: grid; gap: 16px">
+        <div style="border-radius: 20px; background: #F4F6F3; padding: 26px 28px">
+          <div style="font-size: 12px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #5C7300; margin-bottom: 16px">{{ t.bookTitle }}</div>
+          <div style="display: grid; gap: 12px; margin-bottom: 18px">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px">
+              <div style="display: grid; gap: 6px">
+                <label for="h4rd-in" style="font-size: 12px; font-weight: 700; color: #066168">{{ t.checkIn }}</label>
+                <input id="h4rd-in" type="date" style="width: 100%; padding: 11px 13px; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 600; background: #FFFFFF; outline: none" />
+              </div>
+              <div style="display: grid; gap: 6px">
+                <label for="h4rd-out" style="font-size: 12px; font-weight: 700; color: #066168">{{ t.checkOut }}</label>
+                <input id="h4rd-out" type="date" style="width: 100%; padding: 11px 13px; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 600; background: #FFFFFF; outline: none" />
+              </div>
+            </div>
+            <div style="display: grid; gap: 6px">
+              <span style="font-size: 12px; font-weight: 700; color: #066168">{{ t.guests }}</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-radius: 8px; background: #FFFFFF">
+                <button type="button" onClick="{{ dec }}" style="width: 32px; height: 32px; border-radius: 6px; border: none; background: #F4F6F3; cursor: pointer; font-size: 16px; font-weight: 900; color: #066168">−</button>
+                <span style="font-size: 14.5px; font-weight: 900; color: #066168">{{ guestsLabel }}</span>
+                <button type="button" onClick="{{ inc }}" style="width: 32px; height: 32px; border-radius: 6px; border: none; background: #85D200; cursor: pointer; font-size: 16px; font-weight: 900; color: #143F22">+</button>
+              </div>
+              <sc-if value="{{ hasExtraBed }}">
+                <span style="font-size: 12px; font-weight: 800; color: #5C7300">{{ extraBedNote }}</span>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: 9px; padding: 16px 0; border-top: 1px solid #E1E9E6; border-bottom: 1px solid #E1E9E6; margin-bottom: 16px">
+            <sc-for list="{{ addons }}" as="a" hint-placeholder-count="6">
+              <label for="{{ a.id }}" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer">
+                <input id="{{ a.id }}" type="checkbox" checked="{{ a.on }}" onChange="{{ a.toggle }}" style="margin: 2px 0 0; width: 16px; height: 16px; accent-color: #85D200; flex-shrink: 0" />
+                <span style="flex: 1; font-size: 13.5px; color: #443935">{{ a.name }}</span>
+                <span style="font-size: 12.5px; color: #6C7873; white-space: nowrap">{{ a.priceLabel }}</span>
+              </label>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; gap: 8px; margin-bottom: 18px">
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6C7873">
+              <span>{{ t.roomPrice }}</span>
+              <span style="font-weight: 900; color: #443935">{{ room.price }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6C7873">
+              <span>{{ t.extraBedLabel }}</span>
+              <span style="font-weight: 900; color: #443935">{{ extraBedTotal }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: #6C7873">
+              <span>{{ t.addonsTotal }}</span>
+              <span style="font-weight: 900; color: #443935">{{ addonsSubtotal }}</span>
+            </div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 12px; border-top: 1px solid #E1E9E6">
+              <span style="font-size: 14.5px; font-weight: 900; color: #066168">{{ t.total }}</span>
+              <span style="font-size: 25px; font-weight: 900; color: #066168; letter-spacing: -0.03em">{{ total }}</span>
+            </div>
+          </div>
+
+          <a href="Checkout H4 - Nam Du Hill.dc.html" style="display: block; text-align: center; padding: 15px; border-radius: 9999px; background: #85D200; color: #143F22; font-size: 14.5px; font-weight: 900; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.goCheckout }}</a>
+          <a href="Rooms H4 - Nam Du Hill.dc.html" style="display: block; text-align: center; margin-top: 10px; padding: 13px; border-radius: 9999px; background: #FFFFFF; color: #066168; font-size: 13.5px; font-weight: 800; transition: background 200ms ease" style-hover="background: #066168; color: #FFFFFF">{{ t.backToRooms }}</a>
+        </div>
+
+        <div style="border-radius: 20px; background: #066168; padding: 24px 28px">
+          <div style="font-size: 12.5px; font-weight: 900; color: #85D200; margin-bottom: 10px; letter-spacing: 0.1em; text-transform: uppercase">{{ t.helpTitle }}</div>
+          <p style="font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.82); margin: 0 0 16px">{{ t.helpSub }}</p>
+          <a href="tel:0909000000" style="display: block; text-align: center; padding: 13px; border-radius: 9999px; background: rgba(255,255,255,0.15); color: #FFFFFF; font-size: 13.5px; font-weight: 900; transition: background 200ms ease" style-hover="background: #85D200; color: #143F22">Zalo · 0909 000 000</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer id="contact" style="background: #066168; padding: 46px 26px 28px">
+    <div style="max-width: 1280px; margin: 0 auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid rgba(255,255,255,0.16)">
+        <div style="display: flex; align-items: center; gap: 11px">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 46px; height: 42px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 2px">
+            <span style="font-size: 15px; font-weight: 900; color: #FFFFFF">THE NAM DU HILL</span>
+            <span style="font-size: 13px; color: rgba(255,255,255,0.76)">{{ address }}</span>
+          </span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">{{ item.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: rgba(255,255,255,0.76)">
+        <span>© 2026 The Nam Du Hill Resort · 0909 000 000</span>
+        <a href="Showcase Hub.dc.html" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">← {{ t.backHub }}</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const LANG_BTN = "padding:4px 9px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:800;transition:background 150ms ease,color 150ms ease;";
+
+const UI = {
+  vi: {
+    topline: "Hành trình tiếp theo đang chờ bạn — Nam Du mùa biển đẹp 2026",
+    home: "Trang chủ", roomsPage: "Hạng phòng", bookNow: "Đặt phòng",
+    descKicker: "Mô tả", descTitle: "Chi tiết phòng",
+    amenitiesKicker: "Quyền lợi", amenitiesTitle: "Tiện nghi trong phòng",
+    viewTitle: "Hướng tầm nhìn", conditionsTitle: "Điều kiện phòng", otherRooms: "Hạng phòng khác",
+    perNight: "đêm", bookTitle: "Đặt phòng này",
+    checkIn: "Nhận phòng", checkOut: "Trả phòng", guests: "Số khách",
+    roomPrice: "Tiền phòng", extraBedLabel: "Giường phụ", addonsTotal: "Tiện ích", total: "Tạm tính",
+    goCheckout: "Tiếp tục thanh toán", backToRooms: "Xem hạng phòng khác",
+    helpTitle: "Cần tư vấn?", helpSub: "Nhắn Zalo để được giữ phòng và vé tàu ngay trong hôm nay.",
+    backHub: "Về trang tổng", guestsWord: "khách",
+    specArea: "Diện tích", specGuests: "Số khách", specBed: "Giường", specView: "Tầm nhìn",
+    extraBedTpl: "Phụ thu giường phụ {p} / khách",
+    bedDefault: "01 giường đôi lớn", viewDefault: "Nhìn ra biển và sân vườn",
+    longDefault: "Phòng có ban công riêng, trang bị tủ áo, wifi miễn phí, điều hòa và két sắt an toàn. Phòng tắm, bàn lavabo và WC được bố trí chia khu riêng biệt, vòi tắm hoa sen kèm bộ tiện ích phòng tắm đa dạng.",
+    long2Default: "Nhiều khung cửa sổ lớn đón ánh sáng và gió biển tự nhiên. Từ trên đồi cao nhìn xuống là mảng xanh của thung lũng và đường bờ biển, mang lại cảm giác thư giãn và gần gũi với thiên nhiên.",
+    amenitiesDefault: ["Phòng không hút thuốc", "Đồ vệ sinh cá nhân miễn phí", "Hồ bơi và bida", "Máy điều hòa", "Két sắt an toàn", "Mini bar (có tính phí)", "Dép trong nhà", "Ấm đun nước", "Máy sấy tóc", "Áo choàng tắm"],
+    conditionsDefault: ["Không hút thuốc trong phòng", "Nhận phòng từ 14:00 · trả phòng trước 12:00", "Trẻ dưới 6 tuổi ngủ chung miễn phí", "Huỷ miễn phí trước 72 giờ"]
+  },
+  en: {
+    topline: "Your next escape is waiting — Nam Du's best season, 2026",
+    home: "Home", roomsPage: "Rooms", bookNow: "Book now",
+    descKicker: "Description", descTitle: "Room details",
+    amenitiesKicker: "Benefits", amenitiesTitle: "In-room amenities",
+    viewTitle: "View", conditionsTitle: "Room conditions", otherRooms: "Other room types",
+    perNight: "night", bookTitle: "Book this room",
+    checkIn: "Check in", checkOut: "Check out", guests: "Guests",
+    roomPrice: "Room", extraBedLabel: "Extra bed", addonsTotal: "Add-ons", total: "Subtotal",
+    goCheckout: "Continue to checkout", backToRooms: "See other rooms",
+    helpTitle: "Need advice?", helpSub: "Message us on Zalo and we'll hold the room and ferry seats today.",
+    backHub: "Back to showcase", guestsWord: "guests",
+    specArea: "Size", specGuests: "Occupancy", specBed: "Bed", specView: "View",
+    extraBedTpl: "Extra bed {p} per guest",
+    bedDefault: "One king bed", viewDefault: "Sea and garden view",
+    longDefault: "A private balcony, wardrobe, free wifi, air conditioning and an in-room safe. Bathroom, vanity and WC sit in separate zones, with a rain shower and a full set of bathroom amenities.",
+    long2Default: "Large windows bring in daylight and the sea breeze. From the hilltop you look down over the green valley and the coastline — restful and close to nature.",
+    amenitiesDefault: ["Non-smoking room", "Free toiletries", "Pool and billiards", "Air conditioning", "In-room safe", "Mini bar (chargeable)", "Indoor slippers", "Electric kettle", "Hair dryer", "Bathrobe"],
+    conditionsDefault: ["No smoking in the room", "Check in from 14:00 · check out before 12:00", "Children under 6 stay free when sharing", "Free cancellation up to 72 hours before"]
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: "vi", data: null, scrolled: false, roomId: null, guests: null, addons: {} };
+
+  componentDidMount() {
+    import("./namdu-data.js")
+      .then((m) => {
+        const hash = (window.location.hash || "").replace("#", "");
+        const d = m.default;
+        const found = d.rooms.some((r) => r.id === hash) ? hash : "room-family-seaview";
+        this.setState({ data: d, roomId: found });
+      })
+      .catch((e) => console.error("namdu-data.js failed to load", e));
+    this._onScroll = () => {
+      const s = window.scrollY > 100;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) window.removeEventListener("scroll", this._onScroll);
+  }
+
+  renderVals() {
+    const L = this.state.lang;
+    const isVi = L === "vi";
+    const ui = UI[L];
+    const d = this.state.data;
+    const pick = (v) => (v && typeof v === "object" && "vi" in v ? v[L] : v);
+    const money = (n) => (isVi ? n.toLocaleString("vi-VN") + "đ" : n.toLocaleString("en-US") + "₫");
+
+    const on = LANG_BTN + "background:#85D200;color:#143F22;";
+    const off = LANG_BTN + "background:#F4F6F3;color:#6C7873;";
+    const sc = this.state.scrolled;
+
+    const base = {
+      t: ui,
+      headerWrapStyle: "position:fixed;top:0;left:0;right:0;z-index:60",
+      topbarStyle: "overflow:hidden;background:rgba(255,255,255,0.94);backdrop-filter:blur(10px);transition:max-height 280ms ease,opacity 200ms ease;" + (sc ? "max-height:0;opacity:0;" : "max-height:46px;opacity:1;"),
+      headerStyle: "background:#FFFFFF;transition:box-shadow 260ms ease;" + (sc ? "box-shadow:0 6px 18px rgba(6,97,104,0.12);" : "box-shadow:rgba(0,0,0,0.06) 0 1px 0 0;"),
+      ctaStyle: "padding:11px 22px;border-radius:9999px;font-size:13.5px;font-weight:900;white-space:nowrap;flex-shrink:0;background:#85D200;color:#143F22;transition:background 200ms ease",
+      viBtn: isVi ? on : off,
+      enBtn: isVi ? off : on,
+      setVi: () => this.setState({ lang: "vi" }),
+      setEn: () => this.setState({ lang: "en" })
+    };
+    if (!d) return base;
+
+    const navStyle = "padding:8px 12px;border-radius:6px;font-size:13.5px;font-weight:700;white-space:nowrap;flex-shrink:0;color:#066168";
+    const navHrefs = {
+      "#top": "Home 04 - Nam Du Hill.dc.html",
+      "#rooms": "Rooms H4 - Nam Du Hill.dc.html"
+    };
+
+    const room = d.rooms.filter((r) => r.id === this.state.roomId)[0] || d.rooms[0];
+    const ex = (d.roomExtras || {})[room.id] || {};
+    const defaultGuests = ex.defaultGuests || room.guests;
+    const maxGuests = ex.maxGuests || room.guests;
+    const guests = this.state.guests == null ? defaultGuests : this.state.guests;
+    const extraGuests = Math.max(0, guests - defaultGuests);
+    const extraBedUnit = ex.extraBed || 0;
+    const extraBedSum = extraGuests * extraBedUnit;
+    const addonsSum = d.addons.reduce((s, a) => {
+      if (!this.state.addons[a.id] || !a.price) return s;
+      return s + a.price * (a.id === "addon-bike" ? 1 : guests);
+    }, 0);
+
+    return {
+      ...base,
+      address: pick(d.brand.address),
+      nav: d.nav.map((n) => ({ href: navHrefs[n.href] || ("Home 04 - Nam Du Hill.dc.html" + n.href), label: pick(n.label), style: navStyle })),
+      room: {
+        name: pick(room.name), summary: pick(room.desc), price: money(room.price),
+        tags: room.tags.map(pick),
+        view: ex.view ? pick(ex.view) : ui.viewDefault,
+        long: ex.long ? pick(ex.long) : ui.longDefault,
+        long2: ex.long2 ? pick(ex.long2) : ui.long2Default
+      },
+      gallery: { main: "h4rd-" + room.id + "-1", b: "h4rd-" + room.id + "-2", c: "h4rd-" + room.id + "-3" },
+      specs: [
+        { label: ui.specArea, value: room.area },
+        { label: ui.specGuests, value: defaultGuests + "–" + maxGuests + " " + ui.guestsWord },
+        { label: ui.specBed, value: ex.bed ? pick(ex.bed) : ui.bedDefault },
+        { label: ui.specView, value: ex.view ? pick(ex.view) : ui.viewDefault }
+      ],
+      amenities: ex.amenities ? ex.amenities.map(pick) : ui.amenitiesDefault,
+      conditions: ex.conditions ? ex.conditions.map(pick) : ui.conditionsDefault,
+      guestsLabel: guests + " " + ui.guestsWord,
+      inc: () => this.setState({ guests: Math.min(maxGuests, guests + 1) }),
+      dec: () => this.setState({ guests: Math.max(1, guests - 1) }),
+      hasExtraBed: extraGuests > 0 && extraBedUnit > 0,
+      extraBedNote: ui.extraBedTpl.replace("{p}", money(extraBedUnit)),
+      extraBedTotal: money(extraBedSum),
+      addonsSubtotal: money(addonsSum),
+      total: money(room.price + extraBedSum + addonsSum),
+      addons: d.addons.map((a) => ({
+        id: "h4rd-" + a.id, name: pick(a.name), on: !!this.state.addons[a.id],
+        priceLabel: a.price ? money(a.price) : pick(a.unit),
+        toggle: () => this.setState((s) => {
+          const next = Object.assign({}, s.addons);
+          next[a.id] = !next[a.id];
+          return { addons: next };
+        })
+      })),
+      others: d.rooms.filter((r) => r.id !== room.id).slice(0, 3).map((r) => ({
+        id: "h4rd-other-" + r.id, name: pick(r.name), area: r.area, price: money(r.price),
+        href: "Room Detail H4 - Nam Du Hill.dc.html#" + r.id
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

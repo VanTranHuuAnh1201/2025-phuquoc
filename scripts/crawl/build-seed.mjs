@@ -13,6 +13,7 @@ const OUT = path.join(process.cwd(), "scripts", "crawl", "output");
 const data = JSON.parse(await readFile(path.join(OUT, "pages.json"), "utf8"));
 const page = (s) => data.pages.find((p) => p.section === s && !p.parent);
 const children = (s) => data.pages.filter((p) => p.section === s && p.parent);
+const dedupe = (a) => [...new Set(a)];
 
 /* ---------- Phòng ---------- */
 
@@ -141,20 +142,59 @@ const slug = (s) =>
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
 
-const roomTypes = rooms.map((r) => ({
-    id: `${slug(r.name)}-${slug(r.roomNumber)}`,
-    name: r.name,
-    roomNumber: r.roomNumber,
-    description: r.description,
-    size: r.size,
-    capacity: r.capacity,
-    price: r.price,
-    extraBedFee: r.extraBedFee,
-    view: r.view,
-    hasBalcony: r.hasBalcony,
-    images: imgsByRoom[r.roomNumber] ?? [],
-    availability: true,
-}));
+/* ---------- Chi tiết phòng (từ modal AJAX) ---------- */
+
+let roomDetails = {};
+try {
+    const raw = JSON.parse(
+        await readFile(path.join(OUT, "room-details.json"), "utf8")
+    );
+    for (const d of raw.details) roomDetails[d.roomNumber] = d;
+} catch {
+    console.warn(
+        "Chưa có room-details.json — chạy `node scripts/crawl/crawl-room-details.mjs` để lấy chi tiết phòng."
+    );
+}
+
+const roomTypes = rooms.map((r) => {
+    const detail = roomDetails[r.roomNumber];
+    // Mô tả dài nằm trong descParts; lấy các đoạn văn thật (>80 ký tự).
+    const longDesc = (detail?.descParts ?? []).filter((p) => p.length > 80);
+
+    return {
+        id: `${slug(r.name)}-${slug(r.roomNumber)}`,
+        name: r.name,
+        roomNumber: r.roomNumber,
+        /** Tóm tắt ngắn hiển thị ở card danh sách. */
+        summary: r.description,
+        /** Mô tả dài từ trang chi tiết, mỗi phần tử là một đoạn. */
+        description: longDesc,
+        size: r.size,
+        /** Diện tích ghi trong mô tả chi tiết — chính xác hơn ở danh sách. */
+        detailSize: (longDesc.join(" ").match(/khoảng\s*(\d+)\s*m2/i) || [])[1]
+            ? `${(longDesc.join(" ").match(/khoảng\s*(\d+)\s*m2/i) || [])[1]}m²`
+            : "",
+        capacity: r.capacity,
+        price: r.price,
+        extraBedFee: r.extraBedFee,
+        view: r.view,
+        /** Hướng tầm nhìn ghi rõ trên trang chi tiết. */
+        viewDetail: detail?.views ?? [],
+        // Tóm tắt thường không nhắc ban công dù mô tả chi tiết có ("Phòng có
+        // ban công riêng") — xét cả hai nguồn.
+        hasBalcony: r.hasBalcony || /ban công/i.test(longDesc.join(" ")),
+        /** Quyền lợi & tiện nghi từ trang chi tiết. */
+        amenities: detail?.amenities ?? [],
+        /** Điều kiện phòng (vd "Không hút thuốc"). */
+        conditions: detail?.conditions ?? [],
+        /** Ảnh cover ở trang danh sách + gallery từ trang chi tiết. */
+        images: dedupe([
+            ...(imgsByRoom[r.roomNumber] ?? []),
+            ...(detail?.images ?? []),
+        ]),
+        availability: true,
+    };
+});
 
 /**
  * Lấy đoạn văn nội dung, bỏ breadcrumb, footer và tiêu đề bài viết liên quan

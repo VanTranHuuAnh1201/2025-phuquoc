@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap&subset=latin,latin-ext,vietnamese" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+  body { background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  a { color: #066168; text-decoration: none; }
+  a:hover { color: #044A50; }
+  ::selection { background: #85D200; color: #143F22; }
+  input, select, button, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid #85D200; outline-offset: 2px; }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<div style="font-family: Figtree, ui-sans-serif, system-ui, sans-serif; color: #443935; background: #FFFFFF; overflow-x: hidden">
+
+  <div style="{{ headerWrapStyle }}">
+    <div style="{{ topbarStyle }}">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 9px 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; font-weight: 600; font-style: italic; color: #066168">
+        <span>{{ t.topline }}</span>
+        <div style="display: flex; align-items: center; gap: 18px; font-style: normal; font-weight: 500">
+          <a href="mailto:booking@thenamduhill.com" style="color: #066168" style-hover="color: #5C7300">booking@thenamduhill.com</a>
+          <a href="tel:0909000000" style="color: #066168" style-hover="color: #5C7300">0909 000 000</a>
+        </div>
+      </div>
+    </div>
+    <header style="{{ headerStyle }}">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 8px 26px; min-height: 64px; display: flex; align-items: center; gap: 20px">
+        <a href="Home 04 - Nam Du Hill.dc.html" style="flex-shrink: 0; display: flex; align-items: center; gap: 11px; white-space: nowrap">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 52px; height: 46px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 1px">
+            <span style="font-size: 14.5px; font-weight: 900; letter-spacing: 0.02em; color: #066168">THE NAM DU HILL</span>
+            <span style="font-size: 11px; color: #6C7873">Resort · Nam Du Island</span>
+          </span>
+        </a>
+        <nav style="display: flex; gap: 4px; margin-left: 30px; align-items: center; flex-wrap: wrap; min-width: 0; overflow: hidden">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="{{ item.style }}" style-hover="opacity: 0.62">{{ item.label }}</a>
+          </sc-for>
+        </nav>
+        <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0">
+          <div style="display: flex; gap: 4px">
+            <button type="button" onClick="{{ setVi }}" style="{{ viBtn }}">VI</button>
+            <button type="button" onClick="{{ setEn }}" style="{{ enBtn }}">EN</button>
+          </div>
+          <a href="tel:0909000000" style="{{ ctaStyle }}" style-hover="opacity: 0.88">{{ t.needHelp }}</a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <section style="position: relative; background: #066168; padding: 122px 26px 40px; overflow: hidden">
+    <div style="position: absolute; right: -100px; top: -80px; width: 360px; height: 360px; border-radius: 9999px; background: rgba(133,210,0,0.16); pointer-events: none"></div>
+    <div style="position: relative; max-width: 1280px; margin: 0 auto">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.76); margin-bottom: 14px">
+        <a href="Home 04 - Nam Du Hill.dc.html" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">{{ t.home }}</a>
+        <span>/</span>
+        <a href="Rooms H4 - Nam Du Hill.dc.html" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">{{ t.roomsPage }}</a>
+        <span>/</span>
+        <span style="color: #FFFFFF; font-weight: 700">{{ t.pageTitle }}</span>
+      </div>
+      <h1 style="font-size: 40px; line-height: 1.1; font-weight: 900; color: #FFFFFF; margin: 0 0 10px; letter-spacing: -0.04em">{{ t.pageTitle }}</h1>
+      <p style="font-size: 15.5px; color: rgba(255,255,255,0.8); margin: 0 0 24px; max-width: 560px">{{ t.pageSub }}</p>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <div style="{{ s.style }}">
+            <span style="{{ s.numStyle }}">{{ s.n }}</span>
+            <span>{{ s.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #FFFFFF; padding: 36px 26px 88px">
+    <div style="max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,400px); gap: 34px; align-items: start">
+
+      <div style="display: grid; gap: 18px">
+        <div style="border-radius: 20px; background: #F4F6F3; padding: 28px 30px">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px">
+            <span style="width: 30px; height: 30px; border-radius: 8px; background: #85D200; color: #143F22; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0">1</span>
+            <h2 style="font-size: 20px; font-weight: 900; color: #066168; margin: 0; letter-spacing: -0.03em">{{ t.step1 }}</h2>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px">
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-name" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fName }}</label>
+              <input id="h4co-name" type="text" placeholder="{{ t.phName }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-phone" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fPhone }}</label>
+              <input id="h4co-phone" type="tel" placeholder="09xx xxx xxx" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-email" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fEmail }}</label>
+              <input id="h4co-email" type="email" placeholder="ban@email.com" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-id" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fId }}</label>
+              <input id="h4co-id" type="text" placeholder="{{ t.phId }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-in" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.checkIn }}</label>
+              <input id="h4co-in" type="date" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+            <div style="display: grid; gap: 6px">
+              <label for="h4co-out" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.checkOut }}</label>
+              <input id="h4co-out" type="date" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none" />
+            </div>
+          </div>
+          <div style="display: grid; gap: 6px; margin-top: 16px">
+            <label for="h4co-note" style="font-size: 12.5px; font-weight: 700; color: #066168">{{ t.fNote }}</label>
+            <textarea id="h4co-note" rows="3" placeholder="{{ t.phNote }}" style="width: 100%; padding: 13px 15px; border: none; border-radius: 8px; font-size: 14px; background: #FFFFFF; outline: none; resize: vertical"></textarea>
+          </div>
+        </div>
+
+        <div style="border-radius: 20px; background: #F4F6F3; padding: 28px 30px">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px">
+            <span style="width: 30px; height: 30px; border-radius: 8px; background: #85D200; color: #143F22; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0">2</span>
+            <h2 style="font-size: 20px; font-weight: 900; color: #066168; margin: 0; letter-spacing: -0.03em">{{ t.step2 }}</h2>
+          </div>
+          <p style="font-size: 13.5px; color: #6C7873; margin: 0 0 18px; padding-left: 42px">{{ t.step2Sub }}</p>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px">
+            <sc-for list="{{ payments }}" as="p" hint-placeholder-count="4">
+              <button type="button" onClick="{{ p.select }}" style="{{ p.style }}">
+                <span style="{{ p.dotStyle }}"></span>
+                <span style="display: grid; gap: 3px; text-align: left; flex: 1">
+                  <span style="font-size: 14.5px; font-weight: 900; color: #066168">{{ p.name }}</span>
+                  <span style="font-size: 12px; line-height: 1.5; color: #6C7873">{{ p.note }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="border-radius: 20px; background: #F4F6F3; padding: 28px 30px">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px">
+            <span style="width: 30px; height: 30px; border-radius: 8px; background: #85D200; color: #143F22; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; flex-shrink: 0">3</span>
+            <h2 style="font-size: 20px; font-weight: 900; color: #066168; margin: 0; letter-spacing: -0.03em">{{ t.step3 }}</h2>
+          </div>
+          <div style="display: grid; gap: 10px; margin-bottom: 20px">
+            <sc-for list="{{ policies }}" as="x" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; align-items: flex-start; background: #FFFFFF; border-radius: 8px; padding: 14px 16px">
+                <span style="width: 8px; height: 8px; border-radius: 9999px; background: #85D200; flex-shrink: 0; margin-top: 6px"></span>
+                <span style="font-size: 14px; line-height: 1.6; color: #55635F">{{ x }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <label for="h4co-agree" style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; background: #FFFFFF; border-radius: 8px; padding: 16px 18px">
+            <input id="h4co-agree" type="checkbox" checked="{{ agreed }}" onChange="{{ toggleAgree }}" style="margin: 2px 0 0; width: 17px; height: 17px; accent-color: #85D200; flex-shrink: 0" />
+            <span style="font-size: 13.5px; line-height: 1.6; color: #443935">{{ t.agree }}</span>
+          </label>
+        </div>
+      </div>
+
+      <aside style="position: sticky; top: 96px; display: grid; gap: 16px">
+        <div style="border-radius: 20px; background: #066168; padding: 26px 28px">
+          <div style="font-size: 12px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #85D200; margin-bottom: 4px">{{ t.orderTitle }}</div>
+          <div style="font-size: 13px; color: rgba(255,255,255,0.76); margin-bottom: 18px">{{ t.orderSub }}</div>
+
+          <div style="display: flex; gap: 14px; background: rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 16px">
+            <div style="position: relative; width: 86px; height: 66px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.12); flex-shrink: 0; color: rgba(255,255,255,0.8)"><image-slot id="h4co-room" shape="rect" fit="cover" placeholder="{{ room.name }}"></image-slot></div>
+            <div style="flex: 1; min-width: 0">
+              <div style="font-size: 14px; font-weight: 900; color: #FFFFFF; line-height: 1.4; margin-bottom: 4px">{{ room.name }}</div>
+              <div style="font-size: 12.5px; color: rgba(255,255,255,0.76)">{{ room.area }} · {{ room.guestsLabel }}</div>
+              <div style="font-size: 13px; font-weight: 900; color: #85D200; margin-top: 4px">{{ room.price }}</div>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: 6px; margin-bottom: 16px">
+            <span style="font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.82)">{{ t.nights }}</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-radius: 8px; background: rgba(255,255,255,0.1)">
+              <button type="button" onClick="{{ decNights }}" style="width: 32px; height: 32px; border-radius: 6px; border: none; background: rgba(255,255,255,0.18); cursor: pointer; font-size: 16px; font-weight: 900; color: #FFFFFF">−</button>
+              <span style="font-size: 14.5px; font-weight: 900; color: #FFFFFF">{{ nightsLabel }}</span>
+              <button type="button" onClick="{{ incNights }}" style="width: 32px; height: 32px; border-radius: 6px; border: none; background: #85D200; cursor: pointer; font-size: 16px; font-weight: 900; color: #143F22">+</button>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: 9px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.18); border-bottom: 1px solid rgba(255,255,255,0.18); margin-bottom: 16px">
+            <sc-for list="{{ addons }}" as="a" hint-placeholder-count="6">
+              <label for="{{ a.id }}" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer">
+                <input id="{{ a.id }}" type="checkbox" checked="{{ a.on }}" onChange="{{ a.toggle }}" style="margin: 2px 0 0; width: 16px; height: 16px; accent-color: #85D200; flex-shrink: 0" />
+                <span style="flex: 1; font-size: 13.5px; color: #FFFFFF">{{ a.name }}</span>
+                <span style="font-size: 12.5px; color: rgba(255,255,255,0.76); white-space: nowrap">{{ a.priceLabel }}</span>
+              </label>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; gap: 8px">
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: rgba(255,255,255,0.8)">
+              <span>{{ t.roomsTotal }}</span>
+              <span style="font-weight: 900; color: #FFFFFF">{{ roomsSubtotal }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: rgba(255,255,255,0.8)">
+              <span>{{ t.addonsTotal }}</span>
+              <span style="font-weight: 900; color: #FFFFFF">{{ addonsSubtotal }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; color: rgba(255,255,255,0.8)">
+              <span>{{ t.vat }}</span>
+              <span style="font-weight: 900; color: #FFFFFF">{{ vat }}</span>
+            </div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.18)">
+              <span style="font-size: 14.5px; font-weight: 900; color: #FFFFFF">{{ t.total }}</span>
+              <span style="font-size: 26px; font-weight: 900; color: #85D200; letter-spacing: -0.03em">{{ total }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.8)">
+              <span>{{ t.deposit }}</span>
+              <span style="font-weight: 900; color: #FFFFFF">{{ deposit }}</span>
+            </div>
+          </div>
+
+          <button type="button" style="{{ payBtnStyle }}">{{ payLabel }}</button>
+          <div style="font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.76); text-align: center; margin-top: 12px">{{ t.secureNote }}</div>
+        </div>
+
+        <div style="border-radius: 20px; background: #85D200; padding: 22px 26px">
+          <div style="font-size: 12.5px; font-weight: 900; color: #274B06; margin-bottom: 8px; letter-spacing: 0.1em; text-transform: uppercase">{{ t.helpTitle }}</div>
+          <p style="font-size: 13px; line-height: 1.65; color: #1E3A0A; margin: 0 0 14px">{{ t.helpSub }}</p>
+          <a href="tel:0909000000" style="display: block; text-align: center; padding: 13px; border-radius: 9999px; background: #066168; color: #FFFFFF; font-size: 13.5px; font-weight: 900; transition: background 200ms ease" style-hover="background: #044A50; color: #FFFFFF">Zalo · 0909 000 000</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer id="contact" style="background: #066168; padding: 46px 26px 28px">
+    <div style="max-width: 1280px; margin: 0 auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid rgba(255,255,255,0.16)">
+        <div style="display: flex; align-items: center; gap: 11px">
+          <img src="uploads/OP5.png" alt="The Nam Du Hill" style="width: 46px; height: 42px; object-fit: cover; object-position: center 34%; flex-shrink: 0" />
+          <span style="display: grid; gap: 2px">
+            <span style="font-size: 15px; font-weight: 900; color: #FFFFFF">THE NAM DU HILL</span>
+            <span style="font-size: 13px; color: rgba(255,255,255,0.76)">{{ address }}</span>
+          </span>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px">
+          <sc-for list="{{ nav }}" as="item" hint-placeholder-count="7">
+            <a href="{{ item.href }}" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">{{ item.label }}</a>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: rgba(255,255,255,0.76)">
+        <span>© 2026 The Nam Du Hill Resort · 0909 000 000</span>
+        <a href="Showcase Hub.dc.html" style="color: rgba(255,255,255,0.76)" style-hover="color: #85D200">← {{ t.backHub }}</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const LANG_BTN = "padding:4px 9px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:800;transition:background 150ms ease,color 150ms ease;";
+const PAY = "display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:8px;cursor:pointer;text-align:left;background:#FFFFFF;transition:box-shadow 200ms ease;";
+
+const UI = {
+  vi: {
+    topline: "Hành trình tiếp theo đang chờ bạn — Nam Du mùa biển đẹp 2026",
+    home: "Trang chủ", roomsPage: "Hạng phòng", needHelp: "Cần hỗ trợ?",
+    pageTitle: "Thanh toán & xác nhận",
+    pageSub: "Điền một lần, xem tổng tiền ngay bên phải. Chúng tôi xác nhận trong 15 phút.",
+    stepGuest: "Thông tin khách", stepPay: "Thanh toán", stepDone: "Xác nhận",
+    step1: "Thông tin người đặt", step2: "Phương thức thanh toán",
+    step2Sub: "Cọc 30% khi đặt, phần còn lại thanh toán khi nhận phòng.",
+    step3: "Chính sách & điều kiện",
+    fName: "Họ và tên", phName: "Nguyễn Văn A", fPhone: "Số điện thoại / Zalo",
+    fEmail: "Email", fId: "CCCD / Hộ chiếu", phId: "Số giấy tờ dùng để lên tàu",
+    checkIn: "Ngày nhận phòng", checkOut: "Ngày trả phòng",
+    fNote: "Ghi chú thêm", phNote: "Giờ đến dự kiến, yêu cầu giường phụ, dị ứng thực phẩm…",
+    orderTitle: "Đơn của bạn", orderSub: "Giữ chỗ trong 30 phút",
+    nights: "Số đêm", nightsWord: "đêm",
+    roomsTotal: "Tiền phòng", addonsTotal: "Tiện ích", vat: "Thuế & phí dịch vụ", total: "Tổng cộng",
+    deposit: "Cọc 30% khi đặt", payNow: "Thanh toán", payDisabled: "Vui lòng đồng ý điều kiện",
+    secureNote: "Giao dịch mã hoá. Chúng tôi xác nhận qua Zalo và email trong 15 phút.",
+    helpTitle: "Cần người tư vấn?", helpSub: "Nhắn Zalo để được giữ phòng và vé tàu ngay, không cần chờ.",
+    agree: "Tôi đã đọc và đồng ý với chính sách huỷ, đổi lịch và điều kiện lưu trú của resort.",
+    backHub: "Về trang tổng", guestsWord: "khách",
+    payments: [
+      ["VNPay QR", "Quét mã bằng app ngân hàng, xác nhận tức thì"],
+      ["MoMo", "Ví MoMo, hoàn tiền vào ví nếu huỷ đúng hạn"],
+      ["Thẻ quốc tế", "Visa · Mastercard · JCB, thanh toán 3D Secure"],
+      ["Chuyển khoản ngân hàng", "Chuyển cọc, gửi biên lai qua Zalo"]
+    ],
+    policies: [
+      "Huỷ miễn phí trước 72 giờ so với ngày nhận phòng.",
+      "Đổi lịch miễn phí nếu tàu cao tốc ngừng chạy do biển động.",
+      "Nhận phòng từ 14:00, trả phòng trước 12:00.",
+      "Vui lòng mang CCCD hoặc hộ chiếu để làm thủ tục lên tàu."
+    ]
+  },
+  en: {
+    topline: "Your next escape is waiting — Nam Du's best season, 2026",
+    home: "Home", roomsPage: "Rooms", needHelp: "Need help?",
+    pageTitle: "Checkout & confirmation",
+    pageSub: "Fill it in once and watch the total on the right. We confirm within 15 minutes.",
+    stepGuest: "Guest details", stepPay: "Payment", stepDone: "Confirm",
+    step1: "Who's booking", step2: "Payment method",
+    step2Sub: "30% deposit now, the balance is due at check-in.",
+    step3: "Policies & conditions",
+    fName: "Full name", phName: "Jane Doe", fPhone: "Phone / Zalo",
+    fEmail: "Email", fId: "ID / Passport", phId: "The document you'll board with",
+    checkIn: "Check in", checkOut: "Check out",
+    fNote: "Notes", phNote: "Arrival time, extra bed request, food allergies…",
+    orderTitle: "Your order", orderSub: "Held for 30 minutes",
+    nights: "Nights", nightsWord: "nights",
+    roomsTotal: "Room", addonsTotal: "Add-ons", vat: "Tax & service", total: "Total",
+    deposit: "30% deposit now", payNow: "Pay now", payDisabled: "Please accept the conditions",
+    secureNote: "Encrypted payment. We confirm by Zalo and email within 15 minutes.",
+    helpTitle: "Want to talk first?", helpSub: "Message us on Zalo and we'll hold the room and ferry seats right away.",
+    agree: "I have read and accept the cancellation, rescheduling and stay conditions.",
+    backHub: "Back to showcase", guestsWord: "guests",
+    payments: [
+      ["VNPay QR", "Scan with your banking app, confirmed instantly"],
+      ["MoMo", "MoMo wallet, refunded to wallet on timely cancellation"],
+      ["International card", "Visa · Mastercard · JCB with 3D Secure"],
+      ["Bank transfer", "Transfer the deposit and send the receipt on Zalo"]
+    ],
+    policies: [
+      "Free cancellation up to 72 hours before check-in.",
+      "Free rescheduling if the speedboat is cancelled due to rough seas.",
+      "Check in from 14:00, check out before 12:00.",
+      "Bring your ID or passport for ferry boarding."
+    ]
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: "vi", data: null, scrolled: false, nights: 1, addons: { "addon-ferry": true }, pay: 0, agreed: false };
+
+  componentDidMount() {
+    import("./namdu-data.js")
+      .then((m) => this.setState({ data: m.default }))
+      .catch((e) => console.error("namdu-data.js failed to load", e));
+    this._onScroll = () => {
+      const s = window.scrollY > 100;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) window.removeEventListener("scroll", this._onScroll);
+  }
+
+  renderVals() {
+    const L = this.state.lang;
+    const isVi = L === "vi";
+    const ui = UI[L];
+    const d = this.state.data;
+    const pick = (v) => (v && typeof v === "object" && "vi" in v ? v[L] : v);
+    const money = (n) => (isVi ? Math.round(n).toLocaleString("vi-VN") + "đ" : Math.round(n).toLocaleString("en-US") + "₫");
+
+    const on = LANG_BTN + "background:#85D200;color:#143F22;";
+    const off = LANG_BTN + "background:#F4F6F3;color:#6C7873;";
+    const sc = this.state.scrolled;
+
+    const base = {
+      t: ui,
+      headerWrapStyle: "position:fixed;top:0;left:0;right:0;z-index:60",
+      topbarStyle: "overflow:hidden;background:rgba(255,255,255,0.94);backdrop-filter:blur(10px);transition:max-height 280ms ease,opacity 200ms ease;" + (sc ? "max-height:0;opacity:0;" : "max-height:46px;opacity:1;"),
+      headerStyle: "background:#FFFFFF;transition:box-shadow 260ms ease;" + (sc ? "box-shadow:0 6px 18px rgba(6,97,104,0.12);" : "box-shadow:rgba(0,0,0,0.06) 0 1px 0 0;"),
+      ctaStyle: "padding:11px 22px;border-radius:9999px;font-size:13.5px;font-weight:900;white-space:nowrap;flex-shrink:0;background:#85D200;color:#143F22;transition:background 200ms ease",
+      viBtn: isVi ? on : off,
+      enBtn: isVi ? off : on,
+      setVi: () => this.setState({ lang: "vi" }),
+      setEn: () => this.setState({ lang: "en" }),
+      agreed: this.state.agreed,
+      toggleAgree: () => this.setState((s) => ({ agreed: !s.agreed })),
+      steps: [ui.stepGuest, ui.stepPay, ui.stepDone].map((label, i) => ({
+        n: i + 1, label,
+        style: "display:flex;align-items:center;gap:10px;padding:11px 18px;border-radius:8px;font-size:13.5px;font-weight:900;" +
+          (i === 0 ? "background:#85D200;color:#143F22;" : "background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.84);"),
+        numStyle: "width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;" +
+          (i === 0 ? "background:#066168;color:#FFFFFF;" : "background:rgba(255,255,255,0.2);color:#FFFFFF;")
+      })),
+      payments: ui.payments.map(([name, note], i) => {
+        const active = this.state.pay === i;
+        return {
+          name, note,
+          select: () => this.setState({ pay: i }),
+          style: PAY + (active ? "box-shadow:0 0 0 2px #85D200;" : ""),
+          dotStyle: "width:18px;height:18px;border-radius:9999px;flex-shrink:0;margin-top:2px;" +
+            (active ? "border:5px solid #85D200;background:#FFFFFF;" : "border:2px solid #E1E9E6;background:#FFFFFF;")
+        };
+      }),
+      policies: ui.policies
+    };
+    if (!d) return base;
+
+    const navStyle = "padding:8px 12px;border-radius:6px;font-size:13.5px;font-weight:700;white-space:nowrap;flex-shrink:0;color:#066168";
+    const navHrefs = {
+      "#top": "Home 04 - Nam Du Hill.dc.html",
+      "#rooms": "Rooms H4 - Nam Du Hill.dc.html"
+    };
+
+    const room = d.rooms[0];
+    const nights = this.state.nights;
+    const guests = room.guests;
+    const roomsSum = room.price * nights;
+    const addonsSum = d.addons.reduce((s, a) => {
+      if (!this.state.addons[a.id] || !a.price) return s;
+      return s + a.price * (a.id === "addon-bike" ? nights : guests);
+    }, 0);
+    const vat = (roomsSum + addonsSum) * 0.08;
+    const total = roomsSum + addonsSum + vat;
+
+    return {
+      ...base,
+      address: pick(d.brand.address),
+      nav: d.nav.map((n) => ({ href: navHrefs[n.href] || ("Home 04 - Nam Du Hill.dc.html" + n.href), label: pick(n.label), style: navStyle })),
+      room: { name: pick(room.name), area: room.area, guestsLabel: room.guests + " " + ui.guestsWord, price: money(room.price) },
+      nightsLabel: nights + " " + ui.nightsWord,
+      incNights: () => this.setState({ nights: Math.min(14, nights + 1) }),
+      decNights: () => this.setState({ nights: Math.max(1, nights - 1) }),
+      addons: d.addons.map((a) => ({
+        id: "h4co-" + a.id, name: pick(a.name), on: !!this.state.addons[a.id],
+        priceLabel: a.price ? money(a.price) : pick(a.unit),
+        toggle: () => this.setState((s) => {
+          const next = Object.assign({}, s.addons);
+          next[a.id] = !next[a.id];
+          return { addons: next };
+        })
+      })),
+      roomsSubtotal: money(roomsSum),
+      addonsSubtotal: money(addonsSum),
+      vat: money(vat),
+      total: money(total),
+      deposit: money(total * 0.3),
+      payLabel: this.state.agreed ? ui.payNow + " · " + money(total * 0.3) : ui.payDisabled,
+      payBtnStyle: "width:100%;margin-top:18px;padding:15px;border-radius:9999px;border:none;font-size:14.5px;font-weight:900;transition:background 200ms ease;" +
+        (this.state.agreed ? "background:#85D200;color:#143F22;cursor:pointer;" : "background:rgba(255,255,255,0.16);color:rgba(255,255,255,0.7);cursor:not-allowed;")
+    };
+  }
+}
+</script>
+</body>
+</html>
