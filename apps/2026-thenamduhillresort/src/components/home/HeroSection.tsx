@@ -265,6 +265,11 @@ export function HeroSection() {
       />
 
       <style jsx global>{`
+        #top {
+          height: 70vh;
+          min-height: 70vh;
+        }
+
         /* Fluid Compact Booking Pill Bar */
         .booking-search-widget {
           background: rgba(255,255,255,0.98);
