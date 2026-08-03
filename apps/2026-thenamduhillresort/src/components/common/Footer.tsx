@@ -2,10 +2,16 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
 
 export function Footer() {
   const { t } = useLanguage()
+  const pathname = usePathname()
+
+  if (pathname?.startsWith('/checkout')) {
+    return null
+  }
 
   return (
     <footer style={{ background: '#075985', color: '#ffffff', marginTop: '96px' }}>

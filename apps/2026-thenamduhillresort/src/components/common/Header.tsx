@@ -211,32 +211,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
           </Link>
         </nav>
 
-        {/* Mobile Hamburger Toggle Button */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Mở menu"
-          className="mobile-menu-btn"
-          style={{
-            display: 'none',
-            marginLeft: 'auto',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '40px',
-            height: '40px',
-            borderRadius: '12px',
-            border: isSolid ? '1px solid #dbe7ef' : '1px solid rgba(255,255,255,0.28)',
-            background: isSolid ? '#ffffff' : 'rgba(255,255,255,0.14)',
-            color: isSolid ? '#0b1b26' : '#ffffff',
-            fontSize: '17px',
-            cursor: 'pointer',
-            flexShrink: 0,
-          }}
-        >
-          {menuOpen ? '✕' : '☰'}
-        </button>
-
-        {/* Language Switcher & Book Now CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+        {/* Desktop Header Actions (Language & Book Now) */}
+        <div className="desktop-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
           {favCount > 0 && (
             <Link
               href="/rooms"
@@ -321,94 +297,242 @@ export function Header({ forceSolid = false }: HeaderProps) {
             {t('Đặt phòng', 'Book a room')}
           </Link>
         </div>
+
+        {/* Mobile Icon Bar Button (Menu Toggle) */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Mở menu"
+          className="mobile-menu-btn"
+          style={{
+            display: 'none',
+            marginLeft: 'auto',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '42px',
+            height: '42px',
+            borderRadius: '12px',
+            border: isSolid ? '1px solid #dbe7ef' : '1px solid rgba(255,255,255,0.28)',
+            background: isSolid ? '#ffffff' : 'rgba(255,255,255,0.14)',
+            color: isSolid ? '#0b1b26' : '#ffffff',
+            fontSize: '19px',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu (Consolidated Icon Bar Details: VI/EN, Profile, Nav Links) */}
       {menuOpen && (
         <div
           style={{
-            borderTop: '1px solid rgba(2,132,199,0.10)',
+            borderTop: '1px solid #e2e8f0',
             background: '#ffffff',
-            padding: '12px 32px 18px',
+            padding: '16px 20px 24px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.12)',
+            maxHeight: '85vh',
+            overflowY: 'auto',
           }}
         >
-          <div
-            style={{
-              maxWidth: '1320px',
-              margin: '0 auto',
-              display: 'grid',
-              gap: '2px',
-            }}
-          >
-            <Link
-              href="/rooms"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#0b1b26',
-                padding: '12px 0',
-                borderBottom: '1px solid #eef4f8',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Phòng nghỉ', 'Rooms')}
-            </Link>
-            <Link
-              href="/dining"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#0b1b26',
-                padding: '12px 0',
-                borderBottom: '1px solid #eef4f8',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Ẩm thực', 'Dining')}
-            </Link>
-            <Link
-              href="/explore"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#0b1b26',
-                padding: '12px 0',
-                borderBottom: '1px solid #eef4f8',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Khám phá Nam Du', 'Explore Nam Du')}
-            </Link>
-            <Link
-              href="/blog"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#0b1b26',
-                padding: '12px 0',
-                borderBottom: '1px solid #eef4f8',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Cẩm nang', 'Journal')}
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#0b1b26',
-                padding: '12px 0',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Liên hệ', 'Contact')}
-            </Link>
+          <div style={{ maxWidth: '1320px', margin: '0 auto', display: 'grid', gap: '14px' }}>
+            <div style={{ paddingBottom: '10px', borderBottom: '1px solid #f1f5f9' }}>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#0b1b26' }}>
+                {t('Menu điều hướng', 'Navigation Menu')}
+              </div>
+              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
+                {t('The Nam Du Hill Resort · Khám phá Nam Du', 'The Nam Du Hill Resort · Explore Nam Du')}
+              </div>
+            </div>
+
+            {/* Navigation Links */}
+            <div style={{ display: 'grid', gap: '4px' }}>
+              <Link
+                href="/rooms"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: '#0b1b26',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>🏨</span>
+                <span style={{ flex: 1 }}>{t('Phòng nghỉ', 'Rooms')}</span>
+                <span style={{ fontSize: '11px', color: '#0284c7', fontWeight: 800, background: '#e0f2fe', padding: '2px 8px', borderRadius: '999px' }}>20 hạng phòng</span>
+              </Link>
+
+              <Link
+                href="/dining"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: '#0b1b26',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>🍽️</span>
+                <span>{t('Ẩm thực', 'Dining')}</span>
+              </Link>
+
+              <Link
+                href="/explore"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: '#0b1b26',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>🏝️</span>
+                <span>{t('Khám phá Nam Du', 'Explore Nam Du')}</span>
+              </Link>
+
+              <Link
+                href="/blog"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: '#0b1b26',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>📝</span>
+                <span>{t('Cẩm nang', 'Journal')}</span>
+              </Link>
+
+              <Link
+                href="/contact"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  color: '#0b1b26',
+                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>📞</span>
+                <span>{t('Liên hệ', 'Contact')}</span>
+              </Link>
+            </div>
+
+            {/* Profile & Language Toggle inside Mobile Icon Bar Menu */}
+            <div style={{ paddingTop: '10px', borderTop: '1px solid #f1f5f9', display: 'grid', gap: '10px' }}>
+              {/* Profile / Account link */}
+              <Link
+                href="/checkout"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#334155',
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  border: '1px solid #e2e8f0',
+                  textDecoration: 'none',
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>👤</span>
+                <span>{t('Tài khoản & Đặt phòng của tôi', 'My Bookings & Profile')}</span>
+              </Link>
+
+              {/* Language Switcher */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: '#f1f5f9', borderRadius: '10px' }}>
+                <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🌐</span>
+                  <span>{t('Ngôn ngữ', 'Language')}</span>
+                </span>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <button
+                    onClick={() => setLanguage('vi')}
+                    style={{
+                      border: 'none',
+                      background: language === 'vi' ? '#0284c7' : '#ffffff',
+                      color: language === 'vi' ? '#ffffff' : '#475569',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      padding: '6px 14px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    🇻🇳 TIẾNG VIỆT
+                  </button>
+                  <button
+                    onClick={() => setLanguage('en')}
+                    style={{
+                      border: 'none',
+                      background: language === 'en' ? '#0284c7' : '#ffffff',
+                      color: language === 'en' ? '#ffffff' : '#475569',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      padding: '6px 14px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    🇺🇸 ENGLISH
+                  </button>
+                </div>
+              </div>
+
+              {/* Book Now Button inside Drawer */}
+              <Link
+                href="/rooms"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                  background: '#0284c7',
+                  color: '#ffffff',
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  padding: '13px 0',
+                  borderRadius: '12px',
+                  boxShadow: '0 6px 18px rgba(2,132,199,0.30)',
+                  textDecoration: 'none',
+                  marginTop: '4px',
+                }}
+              >
+                {t('Đặt phòng ngay', 'Book a room now')}
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -416,6 +540,9 @@ export function Header({ forceSolid = false }: HeaderProps) {
       <style jsx global>{`
         @media (max-width: 900px) {
           .desktop-nav {
+            display: none !important;
+          }
+          .desktop-header-actions {
             display: none !important;
           }
           .mobile-menu-btn {
