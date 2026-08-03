@@ -3,8 +3,10 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
-import { BLOG_POSTS, BlogPost } from '../../data/blog'
+import { BLOG_POSTS } from '../../data/blog'
 import { ImageSlot } from '../../components/common/ImageSlot'
+import { Button } from '../../components/common/Button'
+import { BookOpen, Clock, ArrowRight, Sparkles, ChevronRight } from 'lucide-react'
 
 export default function BlogPage() {
   const { t, language } = useLanguage()
@@ -27,207 +29,160 @@ export default function BlogPage() {
   const heroPost = BLOG_POSTS[0]
 
   return (
-    <main className="nd-page-main" style={{ paddingTop: '90px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
-      {/* Breadcrumb & Header */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '24px 32px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12.5px', fontWeight: 600, color: '#8fa5b3', marginBottom: '24px' }}>
-          <Link href="/" style={{ color: '#8fa5b3', textDecoration: 'none' }}>
-            {t('Trang chủ', 'Home')}
-          </Link>
-          <span>›</span>
-          <span style={{ color: '#0b1b26' }}>{t('Cẩm nang Nam Du', 'Nam Du Journal')}</span>
-        </div>
+    <main className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] pt-20 pb-20">
+      
+      {/* Header Section */}
+      <section className="bg-white border-b border-[#ECECEC] py-10 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto space-y-3">
+          <div className="flex items-center gap-2 text-xs font-medium text-[#6B7280]">
+            <Link href="/" className="hover:text-[#1D4E89] transition">
+              {t('Trang chủ', 'Home')}
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB]" />
+            <span className="text-[#0F2D52] font-semibold">{t('Cẩm nang Nam Du', 'Nam Du Journal')}</span>
+          </div>
 
-        <div style={{ maxWidth: '800px', marginBottom: '40px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#0284c7', display: 'block', marginBottom: '10px' }}>
-            {t('Ghi chép từ hilltop resort', 'Notes from the hilltop resort')}
-          </span>
-          <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 16px', textWrap: 'balance' }}>
-            {t('Cẩm nang du lịch & câu chuyện từ Nam Du', 'Travel guide & stories from Nam Du')}
-          </h1>
-          <p style={{ fontSize: '17px', lineHeight: 1.6, color: '#566e7d', margin: 0 }}>
-            {t(
-              'Những kinh nghiệm đúc kết sau 7 năm đón khách lên đồi: từ vé tàu, món ngon theo mùa đến cách đi biển mà không bị say sóng.',
-              'Insights gathered over 7 years of receiving guests on the hill: boat tickets, seasonal dishes, and navigating the sea without motion sickness.'
-            )}
-          </p>
-        </div>
+          <div className="space-y-2 max-w-3xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-xs font-semibold">
+              <BookOpen className="w-3.5 h-3.5 text-[#1D4E89]" />
+              <span>{t('Ghi chép từ The Nam Du Hill Resort', 'Notes from The Nam Du Hill Resort')}</span>
+            </div>
 
-        {/* Featured Hero Article */}
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F2D52] tracking-tight">
+              {t('Cẩm nang du lịch & Câu chuyện Nam Du', 'Travel Guide & Island Stories')}
+            </h1>
+
+            <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed">
+              {t(
+                'Những kinh nghiệm đúc kết từ resort: từ kinh nghiệm mua vé tàu khứ hồi, món ngon hải sản địa phương đến bí quyết lặn biển ngắm san hô.',
+                'Insights gathered over years of hosting guests: boat tickets, local seafood delicacies, and coral reef snorkeling tips.'
+              )}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content Area */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        {/* Featured Hero Article Card */}
         {heroPost && (
-          <div
-            style={{
-              borderRadius: '28px',
-              overflow: 'hidden',
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '0',
-              marginBottom: '56px',
-              boxShadow: '0 12px 32px rgba(6,40,58,0.06)',
-            }}
-          >
-            <div style={{ position: 'relative', minHeight: '340px', background: '#eef4f8' }}>
-              <Link href={`/blog/${heroPost.id}`} style={{ display: 'block', position: 'absolute', inset: 0 }}>
+          <div className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-md transition grid grid-cols-1 lg:grid-cols-12">
+            <div className="lg:col-span-7 relative min-h-[280px] sm:min-h-[340px] bg-[#F5F7FA]">
+              <Link href={`/blog/${heroPost.id}`} className="block absolute inset-0">
                 <ImageSlot id={heroPost.heroSlot} placeholder={isEn ? heroPost.titleEn : heroPost.titleVi} style={{ position: 'absolute', inset: 0 }} />
               </Link>
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '20px',
-                  left: '20px',
-                  background: '#0284c7',
-                  color: '#ffffff',
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  padding: '6px 14px',
-                  borderRadius: '999px',
-                }}
-              >
-                {t('Nổi bật', 'Featured')}
+              <span className="absolute top-4 left-4 bg-[#C6A86A] text-[#0F2D52] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                <span>{t('Nổi bật', 'Featured')}</span>
               </span>
             </div>
 
-            <div style={{ padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div style={{ fontSize: '11.5px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0284c7', marginBottom: '10px' }}>
-                {isEn ? heroPost.categoryEn : heroPost.categoryVi}
-              </div>
-              <h2 style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.2, margin: '0 0 14px' }}>
-                <Link href={`/blog/${heroPost.id}`} style={{ color: '#0b1b26', textDecoration: 'none' }}>
-                  {isEn ? heroPost.titleEn : heroPost.titleVi}
-                </Link>
-              </h2>
-              <p style={{ fontSize: '15px', lineHeight: 1.65, color: '#566e7d', margin: '0 0 24px' }}>
-                {isEn ? heroPost.ledeEn : heroPost.ledeVi}
-              </p>
+            <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <span className="text-[11px] font-bold text-[#1D4E89] uppercase tracking-wider block">
+                  {isEn ? heroPost.categoryEn : heroPost.categoryVi}
+                </span>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginTop: 'auto' }}>
-                <div style={{ fontSize: '12.5px', fontWeight: 600, color: '#8fa5b3' }}>
-                  {isEn ? heroPost.authorEn : heroPost.authorVi} · {isEn ? heroPost.dateEn : heroPost.dateVi} · {heroPost.readMin} {t('phút đọc', 'min read')}
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0F2D52] hover:text-[#1D4E89] transition leading-snug">
+                  <Link href={`/blog/${heroPost.id}`}>
+                    {isEn ? heroPost.titleEn : heroPost.titleVi}
+                  </Link>
+                </h2>
+
+                <p className="text-xs text-[#4B5563] leading-relaxed line-clamp-3">
+                  {isEn ? heroPost.ledeEn : heroPost.ledeVi}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#ECECEC] flex items-center justify-between gap-3 text-xs">
+                <div className="text-[#6B7280] text-[11px]">
+                  <span>{isEn ? heroPost.dateEn : heroPost.dateVi}</span>
+                  <span className="mx-1">•</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-[#1D4E89]" />
+                    {heroPost.readMin} {t('phút', 'min')}
+                  </span>
                 </div>
-                <Link
-                  href={`/blog/${heroPost.id}`}
-                  style={{
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    fontSize: '13.5px',
-                    fontWeight: 700,
-                    padding: '10px 20px',
-                    borderRadius: '999px',
-                    textDecoration: 'none',
-                  }}
-                >
-                  {t('Đọc bài viết →', 'Read article →')}
+
+                <Link href={`/blog/${heroPost.id}`}>
+                  <Button variant="primary" size="sm" radius="6px">
+                    {t('Đọc bài viết', 'Read Article')}
+                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  </Button>
                 </Link>
               </div>
             </div>
           </div>
         )}
-      </section>
 
-      {/* Filter Categories Bar */}
-      <div style={{ background: '#f8fafc', borderTop: '1px solid #eef4f8', borderBottom: '1px solid #eef4f8', padding: '16px 0', marginBottom: '48px' }}>
-        <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 32px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
+        {/* Category Filters Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {categories.map((c) => {
             const active = activeCategory === c.key || activeCategory === c.enKey
             return (
               <button
                 key={c.key}
                 onClick={() => setActiveCategory(c.key)}
-                style={{
-                  border: `1px solid ${active ? '#0284c7' : '#dbe7ef'}`,
-                  background: active ? '#0284c7' : '#ffffff',
-                  color: active ? '#ffffff' : '#3d5462',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  padding: '9px 18px',
-                  borderRadius: '999px',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 150ms ease',
-                }}
+                className={`px-4 py-2 text-xs font-bold rounded-[6px] transition whitespace-nowrap ${
+                  active
+                    ? 'bg-[#1D4E89] text-white shadow-xs'
+                    : 'bg-white border border-[#ECECEC] text-[#4B5563] hover:border-[#1D4E89] hover:text-[#1D4E89]'
+                }`}
               >
                 {isEn ? c.en : c.vi}
               </button>
             )
           })}
         </div>
-      </div>
 
-      {/* Grid of Articles */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 32px 80px' }}>
-        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '28px' }}>
+        {/* Grid of Articles */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPosts.map((post) => (
             <article
               key={post.id}
-              className="nd-card nd-card-img-zoom"
-              style={{
-                borderRadius: '24px',
-                overflow: 'hidden',
-                background: '#ffffff',
-                border: '1px solid #e6eef4',
-                display: 'flex',
-                flexDirection: 'column',
-                cursor: 'pointer',
-              }}
+              className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-md transition flex flex-col group"
             >
-              <div style={{ position: 'relative', height: '220px', background: '#eef4f8' }}>
-                <Link href={`/blog/${post.id}`} style={{ display: 'block', position: 'absolute', inset: 0 }}>
+              <div className="relative h-48 bg-[#F5F7FA] overflow-hidden">
+                <Link href={`/blog/${post.id}`} className="block absolute inset-0">
                   <ImageSlot id={post.heroSlot} placeholder={isEn ? post.titleEn : post.titleVi} style={{ position: 'absolute', inset: 0 }} />
                 </Link>
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '14px',
-                    left: '14px',
-                    background: 'rgba(6,40,58,0.85)',
-                    backdropFilter: 'blur(8px)',
-                    color: '#ffffff',
-                    fontSize: '10.5px',
-                    fontWeight: 800,
-                    letterSpacing: '0.06em',
-                    padding: '5px 11px',
-                    borderRadius: '999px',
-                  }}
-                >
+                <span className="absolute top-3 left-3 bg-[#0F2D52]/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
                   {isEn ? post.categoryEn : post.categoryVi}
                 </span>
               </div>
 
-              <div style={{ padding: '22px 24px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3, margin: '0 0 10px' }}>
-                  <Link href={`/blog/${post.id}`} style={{ color: '#0b1b26', textDecoration: 'none' }}>
-                    {isEn ? post.titleEn : post.titleVi}
-                  </Link>
-                </h3>
-                <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#566e7d', margin: '0 0 18px', flex: 1 }}>
-                  {isEn ? post.ledeEn : post.ledeVi}
-                </p>
+              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div className="space-y-2">
+                  <h3 className="font-serif text-base font-bold text-[#0F2D52] group-hover:text-[#1D4E89] transition line-clamp-2 leading-snug">
+                    <Link href={`/blog/${post.id}`}>
+                      {isEn ? post.titleEn : post.titleVi}
+                    </Link>
+                  </h3>
+                  <p className="text-xs text-[#4B5563] line-clamp-3 leading-relaxed">
+                    {isEn ? post.ledeEn : post.ledeVi}
+                  </p>
+                </div>
 
-                <div style={{ paddingTop: '16px', borderTop: '1px solid #eef4f8', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#8fa5b3' }}>
-                    {isEn ? post.dateEn : post.dateVi} · {post.readMin} {t('phút', 'min')}
+                <div className="pt-3 border-t border-[#ECECEC] flex items-center justify-between text-[11px] text-[#6B7280]">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3 h-3 text-[#1D4E89]" />
+                    <span>{post.readMin} {t('phút đọc', 'min read')}</span>
                   </div>
                   <Link
                     href={`/blog/${post.id}`}
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      color: '#0284c7',
-                      textDecoration: 'none',
-                    }}
+                    className="font-semibold text-[#1D4E89] hover:underline flex items-center gap-1"
                   >
-                    {t('Chi tiết →', 'Read →')}
+                    <span>{t('Chi tiết', 'Read')}</span>
+                    <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
               </div>
             </article>
           ))}
         </div>
-      </section>
+
+      </div>
     </main>
   )
 }

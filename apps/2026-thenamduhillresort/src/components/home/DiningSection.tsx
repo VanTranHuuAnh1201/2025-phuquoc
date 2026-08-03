@@ -3,200 +3,133 @@
 import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
-import { ImageSlot } from '../common/ImageSlot'
+import { Button } from '../common/Button'
+import { Star } from 'lucide-react'
 
 export function DiningSection() {
   const { t } = useLanguage()
 
+  const reviews = [
+    {
+      name: 'Nguyễn Minh Tuấn',
+      date: '12/06/2025',
+      rating: 5,
+      comment: t(
+        'View đẹp, phòng sạch sẽ, nhân viên nhiệt tình. Sẽ quay lại lần sau!',
+        'Stunning view, clean rooms, extremely friendly staff. Will definitely come back!'
+      ),
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+    },
+    {
+      name: 'Trần Hồng Anh',
+      date: '05/06/2025',
+      rating: 5,
+      comment: t(
+        'Không gian yên tĩnh, phù hợp nghỉ dưỡng cùng gia đình. Rất hài lòng.',
+        'Peaceful ambience, perfect for family vacations. Extremely satisfied.'
+      ),
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    },
+    {
+      name: 'Lê Quốc Bảo',
+      date: '01/06/2025',
+      rating: 5,
+      comment: t(
+        'Đồ ăn ngon, hải sản tươi, bể bơi view biển cực chill!',
+        'Delicious food, fresh seafood, the infinity ocean view pool is super relaxing!'
+      ),
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+    },
+  ]
+
   return (
-    <section id="dining" className="nd-section-container">
-      <div
-        className="dining-section-header"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px',
-          alignItems: 'end',
-          marginBottom: '24px',
-        }}
-      >
-        <div>
-          <span className="nd-section-subtitle">
-            {t('Ẩm thực', 'Dining')}
-          </span>
-          <h2 className="nd-h2">
-            {t('Mua ở bến sáng nay. Lên bàn bạn tối nay.', 'Bought at the pier in the morning. On your table by evening.')}
-          </h2>
-        </div>
-        <div style={{ margin: '0 0 2px' }}>
-          <p className="nd-lead-p" style={{ marginBottom: '8px' }}>
-            {t(
-              'Không hàng đông lạnh, không nhà cung cấp từ đất liền. Bếp mua trực tiếp từ những chiếc thuyền cập bến dưới chân đồi.',
-              'No frozen stock, no mainland supplier. The kitchen buys from the boats that dock below the hill.'
-            )}
-          </p>
-          <Link href="/dining" className="nd-link-action">
-            {t('Xem menu đầy đủ — cà phê, trà & BBQ →', 'Full menu — coffee, tea & BBQ →')}
+    <section className="py-5 sm:py-7 bg-[#FAFAF8] border-b border-[#ECECEC]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Standardized Section Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
+              {t('Khách hàng nói gì về chúng tôi', 'What Our Guests Say')}
+            </h2>
+            <p className="text-xs sm:text-sm font-normal text-[#6B7280] mt-0.5">
+              {t('Bạn được đón tận bến. Phần còn lại đã có người lo.', 'You are picked up at the pier. We take care of everything else.')}
+            </p>
+          </div>
+          <Link href="/contact">
+            <Button variant="secondary" size="sm" radius="6px">
+              {t('Xem tất cả', 'View all')}
+            </Button>
           </Link>
         </div>
-      </div>
 
-      <div
-        className="dining-grid"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gridAutoRows: '220px',
-          gap: '14px',
-        }}
-      >
-        {/* Large Feature Card: BBQ */}
-        <div
-          className="nd-card nd-card-img-zoom dining-card-large"
-          style={{
-            gridColumn: 'span 2',
-            gridRow: 'span 2',
-            borderRadius: '22px',
-            overflow: 'hidden',
-            position: 'relative',
-            background: '#f6ede4',
-            cursor: 'pointer',
-          }}
-        >
-          <ImageSlot id="ndh-bbq" placeholder="BBQ hải sản ngoài trời buổi tối" style={{ position: 'absolute', inset: 0 }} />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(38,16,4,0.84) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-          <div style={{ position: 'absolute', left: '24px', right: '24px', bottom: '24px', pointerEvents: 'none' }}>
-            <h3
-              className="nd-card-title"
-              style={{
-                margin: '0 0 4px',
-                fontSize: 'clamp(16px, 1.8vw, 22px)',
-                color: '#ffffff',
-              }}
-            >
-              {t('BBQ hải sản ngoài trời dưới trời sao', 'Outdoor seafood BBQ under the stars')}
-            </h3>
-            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.80)' }}>
-              {t('Mỗi tối từ 18:30 · đặt tại lễ tân trong ngày', 'Every evening from 18:30 · booked at reception the same day')}
-            </p>
-          </div>
-        </div>
-
-        {/* Gỏi cá trích */}
-        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '22px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
-          <ImageSlot id="ndh-goica" placeholder="Gỏi cá trích" style={{ position: 'absolute', inset: 0 }} />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 'auto 0 0 0',
-              padding: '14px',
-              background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(11,27,38,0.82) 100%)',
-              pointerEvents: 'none',
-            }}
-          >
-            <div className="nd-card-title" style={{ color: '#ffffff' }}>Gỏi cá trích</div>
-            <div className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.74)' }}>
-              {t('Cá trích, dừa nạo & rau rừng', 'Herring salad, coconut & wild herbs')}
+        {/* Content Layout: Score Card + Review Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          
+          {/* Overall Rating Box (Primary Navy #0F2D52, Card Radius 12px) */}
+          <div className="bg-[#0F2D52] text-white rounded-[12px] p-6 flex flex-col justify-center items-center text-center shadow-sm">
+            <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+              4.9<span className="text-lg font-normal text-white/60">/5</span>
+            </span>
+            <div className="flex items-center gap-1 text-[#C6A86A] my-2">
+              <Star className="w-4 h-4 fill-[#C6A86A]" />
+              <Star className="w-4 h-4 fill-[#C6A86A]" />
+              <Star className="w-4 h-4 fill-[#C6A86A]" />
+              <Star className="w-4 h-4 fill-[#C6A86A]" />
+              <Star className="w-4 h-4 fill-[#C6A86A]" />
             </div>
+            <span className="font-bold text-sm text-white">
+              {t('Tuyệt vời', 'Outstanding')}
+            </span>
+            <span className="text-xs text-white/70 mt-0.5">
+              {t('Dựa trên 83 đánh giá', 'Based on 83 verified reviews')}
+            </span>
           </div>
-        </div>
 
-        {/* Sunset Café & Bar */}
-        <div
-          className="nd-card"
-          style={{
-            borderRadius: '22px',
-            padding: '20px',
-            background: '#0b1b26',
-            position: 'relative',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            cursor: 'pointer',
-          }}
-        >
-          <span style={{ fontSize: '24px', fontWeight: 700, color: '#00c46a', letterSpacing: '-0.02em', lineHeight: 1 }}>
-            06:00
-          </span>
-          <div>
-            <h3 className="nd-card-title" style={{ color: '#ffffff' }}>
-              Sunset Café & Bar
-            </h3>
-            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.62)' }}>
-              {t('Cà phê từ 6h, cocktail đến khuya — trên boong cao nhất.', 'Coffee from six, cocktails until late — on the highest deck.')}
-            </p>
-          </div>
-        </div>
+          {/* User Review Cards (3 Columns, Card Radius 12px) */}
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {reviews.map((rev, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-[12px] p-4 border border-[#ECECEC] shadow-sm flex flex-col justify-between hover:shadow-md transition"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={rev.avatar}
+                        alt={rev.name}
+                        className="w-8 h-8 rounded-full object-cover border border-[#ECECEC]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-[#1A1A1A] leading-tight">
+                          {rev.name}
+                        </span>
+                        <span className="text-[10px] text-[#6B7280]">
+                          {rev.date}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex text-[#C6A86A] gap-0.5">
+                      {Array.from({ length: rev.rating }).map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-[#C6A86A]" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#4B5563] leading-relaxed italic">
+                    "{rev.comment}"
+                  </p>
+                </div>
 
-        {/* Lẩu hải sản */}
-        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '22px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
-          <ImageSlot id="ndh-lau" placeholder="Lẩu hải sản chua cay" style={{ position: 'absolute', inset: 0 }} />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 'auto 0 0 0',
-              padding: '14px',
-              background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(11,27,38,0.82) 100%)',
-              pointerEvents: 'none',
-            }}
-          >
-            <div className="nd-card-title" style={{ color: '#ffffff' }}>Lẩu hải sản chua cay</div>
-            <div className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.74)' }}>
-              {t('Nồi cho 2–4 người', 'Hot & sour seafood pot, for 2–4')}
-            </div>
-          </div>
-        </div>
-
-        {/* Mực nướng sa tế */}
-        <div className="nd-card nd-card-img-zoom" style={{ borderRadius: '22px', overflow: 'hidden', position: 'relative', background: '#eef4f8', cursor: 'pointer' }}>
-          <ImageSlot id="ndh-muc" placeholder="Mực nướng sa tế" style={{ position: 'absolute', inset: 0 }} />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 'auto 0 0 0',
-              padding: '14px',
-              background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(11,27,38,0.82) 100%)',
-              pointerEvents: 'none',
-            }}
-          >
-            <div className="nd-card-title" style={{ color: '#ffffff' }}>Mực nướng sa tế</div>
-            <div className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.74)' }}>
-              {t('Nướng than hoa', 'Satay grilled squid, charcoal')}
-            </div>
+                <div className="mt-3 pt-2 border-t border-[#ECECEC] flex items-center gap-1 text-[10px] text-emerald-600 font-semibold">
+                  <span>✓</span>
+                  <span>{t('Đã xác minh lưu trú', 'Verified Stay')}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .dining-section-header {
-            gap: 10px !important;
-            margin-bottom: 16px !important;
-          }
-          .dining-grid {
-            grid-template-columns: 1fr !important;
-            grid-auto-rows: auto !important;
-            gap: 10px !important;
-          }
-          .dining-card-large {
-            grid-column: span 1 !important;
-            grid-row: span 1 !important;
-            height: 180px !important;
-          }
-          .dining-grid > div {
-            border-radius: 16px !important;
-            min-height: 125px !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

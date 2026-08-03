@@ -1,10 +1,11 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
-import { VideoModal } from '../modals/VideoModal'
 import { BookingCalendarModal } from '../modals/BookingCalendarModal'
+import { Button } from '../common/Button'
+import { Calendar, Users, MapPin, ChevronRight, Star } from 'lucide-react'
 
 const SLIDES = [
   { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
@@ -17,397 +18,139 @@ export function HeroSection() {
   const { t } = useLanguage()
   const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
-  // Default dates: Today & Tomorrow
-  const [checkIn, setCheckIn] = useState('2026-08-03')
-  const [checkOut, setCheckOut] = useState('2026-08-04')
-  const [guests, setGuests] = useState('2 khách')
-  const [roomType, setRoomType] = useState('Tất cả 20 hạng phòng')
+  const [checkIn, setCheckIn] = useState('15/08/2025')
+  const [checkOut, setCheckOut] = useState('17/08/2025')
+  const [guests, setGuests] = useState('2 người lớn')
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
-    }, 30000)
+    }, 8000)
     return () => clearInterval(timer)
   }, [])
 
-  const handleCheckAvailability = (e?: React.MouseEvent) => {
+  const handleSearch = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
     const params = new URLSearchParams()
     if (checkIn) params.set('checkIn', checkIn)
     if (checkOut) params.set('checkOut', checkOut)
     if (guests) params.set('guests', guests)
-    if (roomType && roomType !== 'Tất cả 20 hạng phòng') params.set('roomType', roomType)
-
     router.push(`/rooms?${params.toString()}`)
   }
 
   return (
-    <section
-      id="top"
-      style={{
-        position: 'relative',
-        height: '70vh',
-        minHeight: '70vh',
-        display: 'flex',
-        alignItems: 'flex-end',
-        overflow: 'hidden',
-        background: '#06283a',
-      }}
-    >
-      {/* Background Slides */}
-      <div style={{ position: 'absolute', inset: 0 }}>
+    <section className="relative w-full bg-[#FAFAF8]">
+      
+      {/* Hero Visual Banner */}
+      <div className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] rounded-b-[20px] sm:rounded-b-[28px] overflow-hidden">
+        
+        {/* Background Images Slider */}
         {SLIDES.map((slide, idx) => (
           <img
             key={idx}
             src={slide.src}
             alt={slide.alt}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              opacity: currentSlide === idx ? 1 : 0,
-              transition: 'opacity 2500ms ease-in-out, transform 3000ms ease-out',
-              transform: currentSlide === idx ? 'scale(1.03)' : 'scale(1)',
-            }}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              currentSlide === idx ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
+            } transition-transform duration-10000`}
           />
         ))}
-      </div>
 
-      {/* Cloud Layer (Tạm thời dừng animation đám mây theo yêu cầu) */}
-      <div
-        style={{
-          display: 'none', // Tạm thời dừng animation đám mây
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          zIndex: 2,
-          opacity: currentSlide === 0 ? 0.95 : 0,
-          transition: 'opacity 800ms ease',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Cloud 1: Top 100px */}
-        <img
-          src="/uploads/cloud-1.png"
-          alt="Cloud 1"
-          style={{
-            position: 'absolute',
-            top: '100px',
-            left: 0,
-            width: '340px',
-            maxHeight: '170px',
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.18))',
-            animation: 'floatCloudRight1 70s linear infinite',
-          }}
-        />
-        {/* Cloud 2: Top 160px */}
-        <img
-          src="/uploads/cloud-2.png"
-          alt="Cloud 2"
-          style={{
-            position: 'absolute',
-            top: '160px',
-            left: 0,
-            width: '290px',
-            maxHeight: '145px',
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.15))',
-            animation: 'floatCloudRight2 90s linear infinite 6s',
-          }}
-        />
-      </div>
+        {/* Gradient Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#101828]/90 via-[#101828]/35 to-[#101828]/40" />
 
-      {/* Dark Overlay Gradient */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 3,
-          background:
-            'linear-gradient(180deg, rgba(3,20,32,0.66) 0%, rgba(3,20,32,0.30) 32%, rgba(3,20,32,0.52) 66%, rgba(3,20,32,0.86) 100%)',
-        }}
-      />
+        {/* Hero Overlay Content */}
+        <div className="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-20 sm:pb-24 text-white">
+          
+          {/* Main Title (Playfair Display, 700 Bold) */}
+          <h1 className="font-serif text-[30px] sm:text-[40px] md:text-[56px] font-bold tracking-tight drop-shadow-md text-white leading-[1.2]">
+            The Nam Du Hill Resort
+          </h1>
 
-      {/* Single Unified Fluid Hero Content Container */}
-      <div
-        className="hero-container nd-section-container"
-        style={{
-          position: 'relative',
-          zIndex: 4,
-          width: '100%',
-          maxWidth: '1320px',
-          margin: '0 auto',
-          padding: '120px 32px 36px',
-        }}
-      >
-        {/* Top Rating & Badge Bar */}
-        <div className="hero-badge-bar" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: '#0284c7',
-              color: '#ffffff',
-              fontSize: '11px',
-              fontWeight: 800,
-              padding: '3px 9px',
-              borderRadius: '999px',
-            }}
-          >
-            <span>⭐ 8.5/10</span>
-            <span>·</span>
-            <span>{t('300+ đánh giá', '300+ reviews')}</span>
-          </span>
-
-          <span className="nd-section-subtitle" style={{ color: 'rgba(255,255,255,0.82)' }}>
-            {t('Hilltop resort · Nam Du', 'Hilltop resort · Nam Du')}
-          </span>
-        </div>
-
-        {/* Fluid Responsive Headline */}
-        <h1 className="hero-headline nd-h1" style={{ color: '#ffffff', maxWidth: '22ch', margin: '0 0 10px' }}>
-          {t('Bình minh và hoàng hôn từ cùng một sân hiên.', 'Sunrise and sunset, from the very same terrace.')}
-        </h1>
-
-        {/* Sub-headline (Fluid text density) */}
-        <p className="hero-subheadline nd-lead-p" style={{ color: 'rgba(255,255,255,0.85)', maxWidth: '56ch', margin: '0 0 16px' }}>
-          {t(
-            'Trên ngọn đồi cao nhất Ấp Củ Tron, thung lũng mở ra ôm trọn vịnh Hòn Lớn — và về đêm, ánh đèn chợ đêm Nam Du nằm ngay dưới chân bạn.',
-            'On the highest hill of Cu Tron, the valley opens onto Hon Lon bay — and at night, the lights of the Nam Du night market sit right below you.'
-          )}
-        </p>
-
-        {/* Floating Booking Search Bar (Super Simplified Compact Booking.com Pill) */}
-        <div
-          id="booking"
-          onClick={() => setIsCalendarModalOpen(true)}
-          className="booking-search-widget"
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="booking-pill-info">
-            <span className="booking-pill-icon">🔍</span>
-            <div className="booking-pill-text">
-              <div className="booking-pill-title">The Nam Du Hill · {checkIn} — {checkOut}</div>
-              <div className="booking-pill-sub">{guests} · {roomType}</div>
+          {/* Subtitle & Rating Row */}
+          <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
+            
+            {/* Location Tag */}
+            <div className="flex items-center gap-1 text-xs sm:text-sm font-medium text-white/90">
+              <MapPin className="w-4 h-4 text-white stroke-[1.75]" />
+              <span>Nam Du, Kiên Giang</span>
             </div>
+
+            {/* PA3 Luxury Gold Rating Badge (#C6A86A) */}
+            {/* <div className="inline-flex items-center gap-1.5 bg-[#C6A86A] text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+              <div className="flex text-amber-100 gap-0.5">
+                <Star className="w-3.5 h-3.5 fill-amber-100 stroke-[1.75]" />
+                <Star className="w-3.5 h-3.5 fill-amber-100 stroke-[1.75]" />
+                <Star className="w-3.5 h-3.5 fill-amber-100 stroke-[1.75]" />
+              </div>
+              <span>8.9</span>
+            </div> */}
+          </div>
+        </div>
+      </div>
+
+      {/* FLOATING BOOKING CARD (Responsive width max-w-lg, Card Radius 12px, Shadow Medium 0 8px 24px rgba(0,0,0,.08), Border 1px #ECECEC) */}
+      <div className="w-full max-w-lg mx-auto px-4 relative z-20 -mt-14 sm:-mt-16 pb-6">
+        <div
+          onClick={() => setIsCalendarModalOpen(true)}
+          className="bg-white rounded-[12px] p-4 sm:p-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#ECECEC] space-y-3 cursor-pointer hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition-all"
+        >
+          {/* Row 1: Check-in / Check-out (Input Height 48px, Radius 8px, Border #E5E7EB) */}
+          <div className="h-[48px] bg-[#F5F7FA] border border-[#E5E7EB] rounded-[8px] px-3.5 flex items-center justify-between hover:bg-[#E5E7EB]/60 transition">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] font-normal text-[#6B7280] leading-none">
+                {t('Nhận phòng - Trả phòng', 'Check-in - Check-out')}
+              </span>
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#1A1A1A]">
+                <Calendar className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
+                <span>15 Th8 - 17 Th8</span>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
           </div>
 
-          <button
-            onClick={handleCheckAvailability}
-            className="booking-submit-btn"
+          {/* Row 2: Guests (Input Height 48px, Radius 8px, Border #E5E7EB) */}
+          <div className="h-[48px] bg-[#F5F7FA] border border-[#E5E7EB] rounded-[8px] px-3.5 flex items-center justify-between hover:bg-[#E5E7EB]/60 transition">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] font-normal text-[#6B7280] leading-none">
+                {t('Số khách', 'Guests')}
+              </span>
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#1A1A1A]">
+                <Users className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
+                <span>{guests}</span>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
+          </div>
+
+          {/* Reusable Common Button Component (Size lg 46px, Radius 6px) */}
+          <Button
+            size="lg"
+            fullWidth
+            radius="6px"
+            onClick={handleSearch}
+            className="mt-1"
           >
             {t('Tìm phòng', 'Search')}
-          </button>
-        </div>
-
-        {/* Perks Bar & Slide Dots */}
-        <div
-          style={{
-            marginTop: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <div className="hero-perks-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.14)', padding: '3px 8px', borderRadius: '999px' }}>
-              ✓ Free bữa sáng
-            </span>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.14)', padding: '3px 8px', borderRadius: '999px' }}>
-              ✓ Đưa đón bến tàu
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                aria-label={`Slide ${i + 1}`}
-                style={{
-                  width: '24px',
-                  height: '4px',
-                  borderRadius: '2px',
-                  border: 'none',
-                  background: currentSlide === i ? '#ffffff' : 'rgba(255,255,255,0.36)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'background 200ms ease',
-                }}
-              />
-            ))}
-          </div>
+          </Button>
         </div>
       </div>
 
-      <VideoModal isOpen={isVideoModalOpen} onClose={() => setIsVideoModalOpen(false)} />
       <BookingCalendarModal
         isOpen={isCalendarModalOpen}
         onClose={() => setIsCalendarModalOpen(false)}
         checkIn={checkIn}
         checkOut={checkOut}
         guests={guests}
-        roomType={roomType}
-        onSave={(cIn, cOut, g, r) => {
+        roomType="Tất cả 20 hạng phòng"
+        onSave={(cIn, cOut, g) => {
           setCheckIn(cIn)
           setCheckOut(cOut)
           setGuests(g)
-          setRoomType(r)
         }}
       />
-
-      <style jsx global>{`
-        @media (min-width: 641px) {
-          #top {
-            height: 70vh !important;
-            min-height: 70vh !important;
-          }
-        }
-
-        /* Fluid Compact Booking Pill Bar */
-        .booking-search-widget {
-          background: rgba(255,255,255,0.98);
-          backdrop-filter: blur(18px);
-          border-radius: 999px;
-          box-shadow: 0 16px 40px rgba(3,20,32,0.30);
-          padding: 8px 10px 8px 18px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          border: 2px solid transparent;
-          max-width: 680px;
-          transition: transform 150ms ease, box-shadow 150ms ease, border-color 200ms ease;
-        }
-        .booking-search-widget:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 22px 50px rgba(3,20,32,0.36);
-          border-color: rgba(0,108,228,0.35);
-        }
-        .booking-pill-info {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          flex: 1;
-          min-width: 0;
-        }
-        .booking-pill-icon {
-          font-size: 20px;
-          flex-shrink: 0;
-        }
-        .booking-pill-text {
-          display: flex;
-          flex-direction: column;
-          gap: 1px;
-          min-width: 0;
-        }
-        .booking-pill-title {
-          font-size: 14px;
-          font-weight: 800;
-          color: #0b1b26;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .booking-pill-sub {
-          font-size: 11.5px;
-          font-weight: 600;
-          color: #64748b;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .booking-submit-btn {
-          background: #006ce4;
-          color: #ffffff;
-          border: none;
-          font-size: 14px;
-          font-weight: 800;
-          padding: 12px 24px;
-          border-radius: 999px;
-          cursor: pointer;
-          white-space: nowrap;
-          box-shadow: 0 4px 14px rgba(0,108,228,0.30);
-          flex-shrink: 0;
-          transition: background 150ms ease, transform 150ms ease;
-        }
-        .booking-submit-btn:hover {
-          background: #0056b3;
-          transform: scale(1.02);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-          .hero-container {
-            padding-top: calc(85px + max(14px, env(safe-area-inset-top, 14px))) !important;
-            padding-bottom: 28px !important;
-          }
-        }
-
-        @media (max-width: 640px) {
-          #top {
-            min-height: 45vh !important;
-            height: 45vh !important;
-          }
-          .hero-container {
-            padding-top: calc(54px + max(14px, env(safe-area-inset-top, 14px))) !important;
-            padding-left: 14px !important;
-            padding-right: 14px !important;
-            padding-bottom: 12px !important;
-          }
-          .hero-badge-bar {
-            display: none !important;
-          }
-          .hero-headline {
-            font-size: 16px !important;
-            font-weight: 500 !important;
-            margin-bottom: 4px !important;
-            line-height: 1.25 !important;
-            letter-spacing: 0 !important;
-          }
-          .hero-subheadline {
-            display: block !important;
-            font-size: 12.5px !important;
-            font-weight: 400 !important;
-            color: rgba(255,255,255,0.88) !important;
-            margin-bottom: 8px !important;
-            line-height: 1.45 !important;
-            overflow: visible !important;
-          }
-          .hero-perks-bar {
-            display: none !important;
-          }
-          .booking-search-widget {
-            border: 2px solid #ffb700;
-            border-radius: 999px;
-            padding: 5px 6px 5px 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            margin-top: 4px;
-          }
-          .booking-pill-title {
-            font-size: 12px;
-            font-weight: 500;
-          }
-          .booking-pill-sub {
-            font-size: 10px;
-            font-weight: 400;
-          }
-          .booking-submit-btn {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 8px 14px;
-          }
-        }
-      `}</style>
     </section>
   )
 }

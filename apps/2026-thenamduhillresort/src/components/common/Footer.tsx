@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
+import { MapPin, Mail, Phone, CheckCircle } from 'lucide-react'
 
 export function Footer() {
   const { t } = useLanguage()
@@ -14,275 +15,126 @@ export function Footer() {
   }
 
   return (
-    <footer style={{ background: '#075985', color: '#ffffff', marginTop: '96px' }}>
-      <div
-        style={{
-          maxWidth: '1320px',
-          margin: '0 auto',
-          padding: '56px 32px 40px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '44px',
-        }}
-      >
-        {/* Column 1: Brand & Info */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '11px', marginBottom: '20px' }}>
+    <footer className="bg-[#0F2D52] text-white mt-12 md:mt-20 pb-16 md:pb-0">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        {/* Column 1: Brand & Contact Info */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2.5">
             <img
               src="/uploads/OP5-b8f91eaa.png"
-              alt="The Nam Du Hill"
-              style={{
-                width: '44px',
-                height: '44px',
-                objectFit: 'contain',
-                background: '#ffffff',
-                borderRadius: '12px',
-                padding: '3px',
-              }}
+              alt="The Nam Du Hill Resort Logo"
+              className="w-10 h-10 object-contain rounded-full bg-white p-1 shadow-sm"
             />
-            <span style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.01em', color: '#ffffff' }}>
-              THE NAM DU HILL
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="font-serif font-bold text-sm tracking-tight uppercase text-white">
+                THE NAM DU HILL
+              </span>
+              <span className="text-[10px] text-white/70 font-medium tracking-widest uppercase">
+                Resort
+              </span>
+            </div>
           </div>
 
-          <div
-            style={{
-              fontSize: '12.5px',
-              lineHeight: 1.65,
-              color: 'rgba(255,255,255,0.72)',
-              marginBottom: '18px',
-            }}
-          >
+          <p className="text-xs text-white/70 leading-relaxed">
             {t(
               'Hộ kinh doanh THE NAM DU HILL · Đăng ký lần đầu 18/10/2021 · MST 1702244746',
               'THE NAM DU HILL business household · Registered 18/10/2021 · Tax ID 1702244746'
             )}
-          </div>
+          </p>
 
-          <div style={{ display: 'grid', gap: '11px' }}>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-              <span style={{ color: '#7dd3fc', fontSize: '13px', lineHeight: 1.5 }}>◆</span>
-              <span style={{ fontSize: '13.5px', lineHeight: 1.55, color: 'rgba(255,255,255,0.92)' }}>
-                {t(
-                  'Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam',
-                  'Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam'
-                )}
+          <div className="space-y-2 text-xs text-white/90">
+            <div className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-[#C6A86A] flex-shrink-0 mt-0.5 stroke-[1.75]" />
+              <span>
+                {t('Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Kiên Giang', 'Cu Tron village, Nam Du Island, Kien Giang')}
               </span>
             </div>
-            <a
-              href="mailto:thenamduhill@gmail.com"
-              style={{
-                fontSize: '13.5px',
-                fontWeight: 600,
-                color: 'rgba(255,255,255,0.92)',
-                textDecoration: 'none',
-              }}
-            >
-              thenamduhill@gmail.com
-            </a>
-            <a
-              href="tel:0985000650"
-              style={{
-                fontSize: '19px',
-                fontWeight: 800,
-                letterSpacing: '-0.01em',
-                color: '#ffffff',
-                textDecoration: 'none',
-              }}
-            >
-              0985 000 650
-            </a>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
+              <a href="mailto:thenamduhill@gmail.com" className="hover:underline">
+                thenamduhill@gmail.com
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
+              <a href="tel:0985000650" className="text-base font-bold text-white hover:text-[#C6A86A] transition">
+                0985 000 650
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Column 2: Information */}
-        <div>
-          <div
-            style={{
-              fontSize: '12px',
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              color: '#ffffff',
-              marginBottom: '8px',
-            }}
-          >
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
             {t('THÔNG TIN', 'INFORMATION')}
-          </div>
-          <div style={{ width: '26px', height: '3px', background: '#fbbf24', borderRadius: '2px', marginBottom: '18px' }} />
-          <div style={{ display: 'grid', gap: '11px' }}>
-            <a href="#" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Chính sách bảo mật', 'Privacy policy')}
-            </a>
-            <a href="#" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Quy định chung', 'General terms')}
-            </a>
-            <a href="#" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Hướng dẫn đặt phòng', 'How to book')}
-            </a>
-            <a href="#" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Hướng dẫn nhận & huỷ phòng', 'Check-in & cancellation')}
-            </a>
-            <a href="#" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Hướng dẫn thanh toán', 'Payment guide')}
-            </a>
-          </div>
+          </h3>
+          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
+          <ul className="space-y-2 text-xs text-white/80">
+            <li><a href="#" className="hover:text-white transition">{t('Chính sách bảo mật', 'Privacy Policy')}</a></li>
+            <li><a href="#" className="hover:text-white transition">{t('Quy định chung', 'General Terms')}</a></li>
+            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn đặt phòng', 'Booking Guide')}</a></li>
+            <li><a href="#" className="hover:text-white transition">{t('Chính sách hoàn hủy', 'Cancellation Policy')}</a></li>
+            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn thanh toán', 'Payment Options')}</a></li>
+          </ul>
         </div>
 
-        {/* Column 3: Navigation Links */}
-        <div>
-          <div
-            style={{
-              fontSize: '12px',
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              color: '#ffffff',
-              marginBottom: '8px',
-            }}
-          >
+        {/* Column 3: Explore */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
             {t('KHÁM PHÁ', 'EXPLORE')}
-          </div>
-          <div style={{ width: '26px', height: '3px', background: '#fbbf24', borderRadius: '2px', marginBottom: '18px' }} />
-          <div style={{ display: 'grid', gap: '11px' }}>
-            <Link href="/rooms" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('20 hạng phòng', '20 room types')}
-            </Link>
-            <Link href="/contact" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Liên hệ & bản đồ', 'Contact & map')}
-            </Link>
-            <Link href="/dining" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Ẩm thực & BBQ', 'Dining & BBQ')}
-            </Link>
-            <Link href="/explore" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Khám phá Nam Du', 'Explore Nam Du')}
-            </Link>
-            <Link href="/blog" style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.78)', textDecoration: 'none' }}>
-              {t('Cẩm nang kinh nghiệm', 'Resort Journal')}
-            </Link>
-          </div>
+          </h3>
+          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
+          <ul className="space-y-2 text-xs text-white/80">
+            <li><Link href="/rooms" className="hover:text-white transition">{t('Danh sách phòng', 'Room List')}</Link></li>
+            <li><Link href="/dining" className="hover:text-white transition">{t('Nhà hàng & BBQ', 'Dining & BBQ')}</Link></li>
+            <li><Link href="/explore" className="hover:text-white transition">{t('Khám phá Nam Du', 'Explore Nam Du')}</Link></li>
+            <li><Link href="/blog" className="hover:text-white transition">{t('Cẩm nang du lịch', 'Travel Journal')}</Link></li>
+            <li><Link href="/contact" className="hover:text-white transition">{t('Liên hệ', 'Contact Us')}</Link></li>
+          </ul>
         </div>
 
-        {/* Column 4: Follow & Social */}
-        <div>
-          <div
-            style={{
-              fontSize: '12px',
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              color: '#ffffff',
-              marginBottom: '8px',
-            }}
-          >
-            {t('KẾT NỐI', 'FOLLOW')}
-          </div>
-          <div style={{ width: '26px', height: '3px', background: '#fbbf24', borderRadius: '2px', marginBottom: '18px' }} />
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+        {/* Column 4: Social & Verification */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
+            {t('KẾT NỐI', 'CONNECT')}
+          </h3>
+          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
+          
+          <div className="flex gap-2">
             <a
               href="https://facebook.com/thenamduhill"
               target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '14px',
-                fontWeight: 800,
-                color: '#ffffff',
-                textDecoration: 'none',
-              }}
+              rel="noreferrer"
+              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-sm hover:bg-white/20 transition"
             >
               f
             </a>
             <a
               href="https://zalo.me/0985000650"
               target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Zalo"
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '11px',
-                fontWeight: 800,
-                color: '#ffffff',
-                textDecoration: 'none',
-              }}
+              rel="noreferrer"
+              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs hover:bg-white/20 transition"
             >
               Za
             </a>
-            <a
-              href="https://thenamduhill.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Website"
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '13px',
-                fontWeight: 800,
-                color: '#ffffff',
-                textDecoration: 'none',
-              }}
-            >
-              ◍
-            </a>
           </div>
 
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(255,255,255,0.10)',
-              border: '1px solid rgba(255,255,255,0.16)',
-              borderRadius: '10px',
-              padding: '9px 12px',
-            }}
-          >
-            <span style={{ fontSize: '15px', color: '#38bdf8' }}>✓</span>
-            <span style={{ fontSize: '10.5px', fontWeight: 700, lineHeight: 1.35, color: 'rgba(255,255,255,0.86)' }}>
-              {t('ĐÃ THÔNG BÁO\nBỘ CÔNG THƯƠNG', 'Registered with the\nMinistry of Industry & Trade')}
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl p-3">
+            <CheckCircle className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
+            <span className="text-[10px] font-semibold text-white/90 leading-tight">
+              {t('ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG', 'REGISTERED WITH MINISTRY OF COMMERCE')}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
-        <div
-          style={{
-            maxWidth: '1320px',
-            margin: '0 auto',
-            padding: '20px 32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '24px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.60)' }}>
-            © 2026 The Nam Du Hill · thenamduhill.com
-          </span>
-          <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.60)' }}>
-            {t(
-              'Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí · Huỷ miễn phí trước 7 ngày',
-              'Best rate when you book direct · Free pier transfer · Free cancellation up to 7 days'
-            )}
-          </span>
+      {/* Bottom Legal Line */}
+      <div className="border-t border-white/10 py-4">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/60">
+          <span>© 2026 The Nam Du Hill Resort · thenamduhill.com</span>
+          <span>{t('Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí', 'Best rates when booking direct')}</span>
         </div>
       </div>
     </footer>

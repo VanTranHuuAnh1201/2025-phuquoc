@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../../components/common/ImageSlot'
 import { SPOTS, SATELLITE_ISLANDS, TRIPS } from '../../data/explore'
+import { Button } from '../../components/common/Button'
+import { Compass, MapPin, Anchor, Calendar, ShieldCheck, Sun, ArrowRight, MessageCircle } from 'lucide-react'
 
 export default function ExplorePage() {
   const { t, language } = useLanguage()
@@ -14,238 +16,140 @@ export default function ExplorePage() {
   const currentTrip = TRIPS[activeTripKey]
 
   return (
-    <main style={{ minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
+    <main className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] pt-14 pb-20">
+      
       {/* Hero Section */}
-      <section
-        style={{
-          position: 'relative',
-          minHeight: '66vh',
-          display: 'flex',
-          alignItems: 'flex-end',
-          overflow: 'hidden',
-          background: '#06283a',
-          paddingTop: '80px',
-        }}
-      >
+      <section className="relative min-h-[50vh] sm:min-h-[60vh] flex items-end overflow-hidden bg-[#0F2D52] pt-20">
         <ImageSlot
           id="ndh-explore-hero"
           placeholder="Vịnh Nam Du"
           style={{ position: 'absolute', inset: 0 }}
         />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(180deg, rgba(3,20,32,0.62) 0%, rgba(3,20,32,0.20) 38%, rgba(3,20,32,0.90) 100%)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          className="hero-container nd-section-container"
-          style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: '1320px',
-            margin: '0 auto',
-            padding: '140px 32px 50px',
-            pointerEvents: 'none',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
-            <span
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.86)',
-              }}
-            >
-              {t('21 hòn đảo · 9,12 km² · Vịnh Thái Lan', '21 islands · 9.12 km² · Gulf of Thailand')}
-            </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-[#0F2D52]/60 to-black/40 pointer-events-none" />
+        
+        <div className="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-24 space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-[#C6A86A]" />
+            <span>{t('21 hòn đảo · 9,12 km² · Vịnh Thái Lan', '21 Islands · 9.12 km² · Gulf of Thailand')}</span>
           </div>
-          <h1
-            style={{
-              margin: '0 0 18px',
-              fontSize: 'clamp(34px, 4.6vw, 62px)',
-              lineHeight: 1.03,
-              fontWeight: 800,
-              letterSpacing: '-0.036em',
-              color: '#ffffff',
-              maxWidth: '19ch',
-              textWrap: 'balance',
-            }}
-          >
+
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight max-w-3xl leading-tight">
             {t(
-              'Hai mươi mốt hòn đảo. Bốn ngày không đủ — đây là cách đi trong hai hoặc ba.',
-              'Twenty-one islands. Four days is not enough — here is how to spend two or three.'
+              'Khám phá Nam Du — Lịch trình 2 & 3 ngày trọn vẹn nhất',
+              'Explore Nam Du — Complete 2 & 3 Day Curated Itineraries'
             )}
           </h1>
-          <p
-            style={{
-              margin: 0,
-              fontSize: 'clamp(15px, 1.3vw, 17.5px)',
-              lineHeight: 1.6,
-              color: 'rgba(255,255,255,0.84)',
-              maxWidth: '60ch',
-            }}
-          >
+
+          <p className="text-sm sm:text-base text-white/80 max-w-2xl leading-relaxed">
             {t(
-              'Toàn bộ nội dung dưới đây là những gì khách của chúng tôi thật sự làm. Báo lễ tân, chúng tôi lo tàu, xe và bàn ăn.',
-              'Everything below is what our guests actually do. Ask reception and we will arrange the boat, the bike and the table.'
+              'Những trải nghiệm thực tế được tổng hợp từ khách hàng resort. Hỗ trợ trọn gói xe máy, tàu gỗ thăm đảo và tiệc hải sản BBQ.',
+              'Curated experiences tried and loved by our resort guests. Complete assistance with island boats, scooters, and seafood BBQs.'
             )}
           </p>
         </div>
       </section>
 
       {/* Floating Quick Stats Bar */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '0 32px' }}>
-        <div
-          style={{
-            marginTop: '-40px',
-            position: 'relative',
-            zIndex: 10,
-            background: '#ffffff',
-            borderRadius: '24px',
-            boxShadow: '0 18px 48px rgba(6,40,58,0.16)',
-            border: '1px solid rgba(2,132,199,0.10)',
-            padding: '26px 30px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '28px',
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '8px' }}>
-              {t('Mùa đẹp nhất', 'Best season')}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+        <div className="bg-white border border-[#ECECEC] rounded-[12px] p-5 sm:p-6 shadow-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+              {t('Mùa đẹp nhất', 'Best Season')}
+            </span>
+            <div className="font-serif text-base font-bold text-[#0F2D52]">
+              {t('Tháng 12 – Tháng 3', 'December – March')}
             </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
-              {t('Tháng 12 – tháng 3', 'December – March')}
-            </div>
-            <div style={{ fontSize: '12.5px', color: '#8fa5b3', marginTop: '5px' }}>
-              {t('Biển êm, nước trong, ít say sóng', 'Calm sea, clear water, no seasickness')}
+            <div className="text-[#6B7280]">
+              {t('Biển êm, nước trong xanh, nắng nhẹ', 'Calm turquoise sea & mild weather')}
             </div>
           </div>
 
-          <div>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '8px' }}>
-              {t('Đỉnh cao nhất', 'Highest point')}
+          <div className="space-y-1 sm:border-l sm:border-[#ECECEC] sm:pl-6">
+            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+              {t('Đỉnh cao nhất', 'Highest Peak')}
+            </span>
+            <div className="font-serif text-base font-bold text-[#0F2D52]">
+              309 m {t('(Hải đăng Nam Du)', '(Lighthouse)')}
             </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
-              309 m
-            </div>
-            <div style={{ fontSize: '12.5px', color: '#8fa5b3', marginTop: '5px' }}>
-              {t('Hải đăng Nam Du, trên Hòn Lớn', 'Nam Du lighthouse, on Hon Lon')}
-            </div>
-          </div>
-
-          <div>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '8px' }}>
-              {t('Cách ra đảo', 'Getting here')}
-            </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
-              {t('Rạch Giá → 2–3 giờ tàu', 'Rach Gia → 2–3 h by speedboat')}
-            </div>
-            <div style={{ fontSize: '12.5px', color: '#8fa5b3', marginTop: '5px' }}>
-              {t('Chúng tôi đón tại bến Củ Tron, miễn phí', 'We meet you at Cu Tron pier, free')}
+            <div className="text-[#6B7280]">
+              {t('Toạ độ ngắm toàn cảnh các hòn đảo', 'Panoramic viewpoint on Hon Lon')}
             </div>
           </div>
 
-          <div>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '8px' }}>
-              {t('Nhớ mang theo', 'Bring with you')}
+          <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
+            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+              {t('Cách di chuyển', 'Getting Here')}
+            </span>
+            <div className="font-serif text-base font-bold text-[#0F2D52]">
+              {t('Rạch Giá → 2.5 giờ tàu', 'Rach Gia → 2.5h Speedboat')}
             </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
-              {t('CCCD & tiền mặt', 'ID card & cash')}
+            <div className="text-[#6B7280]">
+              {t('Đón bến tàu Củ Tron miễn phí', 'Free pier pickup at Cu Tron')}
             </div>
-            <div style={{ fontSize: '12.5px', color: '#8fa5b3', marginTop: '5px' }}>
-              {t('Kiểm soát vùng biên; ATM rất ít', 'Border-zone checks; ATMs are scarce')}
+          </div>
+
+          <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
+            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+              {t('Cần chuẩn bị', 'Must Bring')}
+            </span>
+            <div className="font-serif text-base font-bold text-[#0F2D52]">
+              {t('CCCD & Tiền mặt', 'ID Card & Cash')}
+            </div>
+            <div className="text-[#6B7280]">
+              {t('Kiểm tra vùng biên giới & cây ATM rất ít', 'Border check & limited ATMs')}
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6 Spots on Hon Lon ("Trên Hòn Lớn, đảo chính") */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '80px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '60px', alignItems: 'end', marginBottom: '30px' }}>
-          <div>
-            <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#00a85c' }}>
-              {t('Trên Hòn Lớn, đảo chính', 'On Hon Lon, the main island')}
-            </span>
-            <h2
-              style={{
-                margin: '14px 0 0',
-                fontSize: 'clamp(28px, 3.2vw, 42px)',
-                lineHeight: 1.08,
-                fontWeight: 800,
-                letterSpacing: '-0.032em',
-                color: '#0b1b26',
-                textWrap: 'balance',
-              }}
-            >
-              {t('Mười một cây số đường ven biển, và mọi chỗ đáng dừng lại.', 'Eleven kilometres of coast road, and everything worth stopping for.')}
+      {/* 6 Spots on Hon Lon ("Trên Hòn Lớn") */}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1D4E89]">
+              <Compass className="w-4 h-4 text-[#1D4E89]" />
+              <span>{t('Trên Hòn Lớn (Đảo Chính)', 'Hon Lon Main Island')}</span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F2D52]">
+              {t('Cung đường ven biển 11km & Các điểm dừng chân', '11km Coastal Loop & Highlights')}
             </h2>
           </div>
-          <p style={{ margin: '0 0 6px', fontSize: '16px', lineHeight: 1.65, color: '#566e7d' }}>
+          <p className="text-xs text-[#6B7280] max-w-md">
             {t(
-              'Thuê xe máy 120.000–150.000₫/ngày. Chạy hết vòng mất một buổi sáng nếu dừng nhiều — và bạn sẽ dừng nhiều.',
-              'A rented scooter costs 120,000–150,000 VND a day. The whole loop takes a morning if you stop often — and you will.'
+              'Thuê xe máy 120.000–150.000đ/ngày. Chạy hết vòng mất một buổi sáng nếu dừng thăm thú chụp ảnh.',
+              'Scooter rental 120,000–150,000 VND/day. Takes a morning to loop with scenic stops.'
             )}
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {SPOTS.map((s) => (
             <article
               key={s.id}
-              className="nd-card"
-              style={{
-                borderRadius: '24px',
-                overflow: 'hidden',
-                background: '#ffffff',
-                border: '1px solid #e6eef4',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'box-shadow 200ms ease, transform 200ms ease',
-              }}
+              className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-md transition group flex flex-col"
             >
-              <div style={{ position: 'relative', height: '196px', background: '#eef4f8' }}>
+              <div className="relative h-48 bg-[#F5F7FA] overflow-hidden">
                 <ImageSlot
                   id={`ndh-spot-${s.id}`}
                   placeholder={isEn ? s.nameEn : s.nameVi}
                   style={{ position: 'absolute', inset: 0 }}
                 />
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '12px',
-                    left: '12px',
-                    display: 'inline-block',
-                    whiteSpace: 'nowrap',
-                    background: 'rgba(255,255,255,0.94)',
-                    backdropFilter: 'blur(8px)',
-                    color: '#0b1b26',
-                    fontSize: '11px',
-                    fontWeight: 800,
-                    letterSpacing: '0.05em',
-                    padding: '6px 11px',
-                    borderRadius: '999px',
-                  }}
-                >
+                <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md border border-[#ECECEC] text-[#0F2D52] text-[11px] font-bold px-2.5 py-1 rounded-full shadow-xs">
                   {isEn ? s.distEn : s.distVi}
                 </span>
               </div>
-              <div style={{ padding: '20px 22px 22px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26', lineHeight: 1.24 }}>
-                  {isEn ? s.nameEn : s.nameVi}
-                </h3>
-                <p style={{ margin: '0 0 14px', fontSize: '14px', lineHeight: 1.55, color: '#566e7d' }}>
-                  {isEn ? s.textEn : s.textVi}
-                </p>
-                <div style={{ marginTop: 'auto', fontSize: '12.5px', fontWeight: 700, color: '#0284c7' }}>
-                  {isEn ? s.tipEn : s.tipVi}
+
+              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div className="space-y-1.5">
+                  <h3 className="font-serif text-base font-bold text-[#0F2D52] group-hover:text-[#1D4E89] transition">
+                    {isEn ? s.nameEn : s.nameVi}
+                  </h3>
+                  <p className="text-xs text-[#4B5563] leading-relaxed">
+                    {isEn ? s.textEn : s.textVi}
+                  </p>
+                </div>
+                <div className="text-[11px] font-semibold text-[#1D4E89] pt-2 border-t border-[#ECECEC] flex items-center justify-between">
+                  <span>💡 {isEn ? s.tipEn : s.tipVi}</span>
                 </div>
               </div>
             </article>
@@ -254,71 +158,46 @@ export default function ExplorePage() {
       </section>
 
       {/* 4 Satellite Islands Section ("Cụm đảo vệ tinh") */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '80px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '60px', alignItems: 'end', marginBottom: '30px' }}>
-          <div>
-            <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#00a85c' }}>
-              {t('Cụm đảo vệ tinh', 'The satellite islands')}
-            </span>
-            <h2
-              style={{
-                margin: '14px 0 0',
-                fontSize: 'clamp(28px, 3.2vw, 42px)',
-                lineHeight: 1.08,
-                fontWeight: 800,
-                letterSpacing: '-0.032em',
-                color: '#0b1b26',
-                textWrap: 'balance',
-              }}
-            >
-              {t('Một chiếc tàu gỗ, bốn hòn đảo, một ngày dài.', 'A wooden boat, four islands, one long day.')}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1D4E89]">
+              <Anchor className="w-4 h-4 text-[#1D4E89]" />
+              <span>{t('Cụm Đảo Vệ Tinh Hoang Sơ', 'Satellite Islands')}</span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F2D52]">
+              {t('Tàu gỗ lặn ngắm san hô & Thăm 4 hòn đảo', 'Wooden Boat Tour & Coral Snorkeling')}
             </h2>
           </div>
-          <p style={{ margin: '0 0 6px', fontSize: '16px', lineHeight: 1.65, color: '#566e7d' }}>
+          <p className="text-xs text-[#6B7280] max-w-md">
             {t(
-              '200.000–400.000₫/người nếu ghép đoàn, hoặc thuê trọn tàu. Lễ tân đặt giúp từ tối hôm trước.',
-              '200,000–400,000 VND per person shared, or charter the whole boat. Reception books it the evening before.'
+              '200.000–400.000đ/người tour ghép hoặc thuê trọn chuyến tàu riêng. Đặt trước qua lễ tân resort.',
+              '200,000–400,000 VND per person for island boat tours booked via reception.'
             )}
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SATELLITE_ISLANDS.map((i) => (
             <article
               key={i.id}
-              className="nd-card"
-              style={{
-                borderRadius: '24px',
-                overflow: 'hidden',
-                position: 'relative',
-                minHeight: '340px',
-                background: '#0a3b4d',
-                display: 'flex',
-                alignItems: 'flex-end',
-                transition: 'transform 200ms ease',
-              }}
+              className="relative min-h-[320px] rounded-[12px] overflow-hidden bg-[#0F2D52] flex items-end p-5 shadow-xs group"
             >
               <ImageSlot
                 id={`ndh-island-${i.id}`}
                 placeholder={isEn ? i.nameEn : i.nameVi}
                 style={{ position: 'absolute', inset: 0 }}
               />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(3,20,32,0.90) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <div style={{ position: 'relative', padding: '22px 22px 24px', pointerEvents: 'none' }}>
-                <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', color: '#00e07a', marginBottom: '8px' }}>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-[#0F2D52]/40 to-transparent pointer-events-none" />
+              
+              <div className="relative z-10 space-y-1.5 text-white">
+                <span className="inline-block text-[10px] font-bold text-[#C6A86A] bg-[#0F2D52]/80 backdrop-blur-xs px-2 py-0.5 rounded-full border border-[#C6A86A]/30">
                   {isEn ? i.badgeEn : i.badgeVi}
-                </div>
-                <h3 style={{ margin: '0 0 8px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.024em', color: '#ffffff', lineHeight: 1.16 }}>
+                </span>
+                <h3 className="font-serif text-lg font-bold text-white group-hover:text-[#C6A86A] transition">
                   {isEn ? i.nameEn : i.nameVi}
                 </h3>
-                <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.52, color: 'rgba(255,255,255,0.78)' }}>
+                <p className="text-xs text-white/80 leading-relaxed">
                   {isEn ? i.textEn : i.textVi}
                 </p>
               </div>
@@ -328,206 +207,149 @@ export default function ExplorePage() {
       </section>
 
       {/* Suggested Itineraries & Cost Estimator Section */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '80px 32px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', gap: '40px', flexWrap: 'wrap', marginBottom: '26px' }}>
-          <div style={{ maxWidth: '640px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#00a85c' }}>
-              {t('Lịch trình gợi ý', 'Suggested itineraries')}
-            </span>
-            <h2
-              style={{
-                margin: '14px 0 0',
-                fontSize: 'clamp(28px, 3.2vw, 42px)',
-                lineHeight: 1.08,
-                fontWeight: 800,
-                letterSpacing: '-0.032em',
-                color: '#0b1b26',
-                textWrap: 'balance',
-              }}
-            >
-              {t('Hai đêm hay ba đêm. Cả hai đều bắt đầu bằng chuyến xe đêm.', 'Two nights or three. Both start with the overnight coach.')}
-            </h2>
-          </div>
-
-          <div style={{ display: 'flex', gap: '7px' }}>
-            {(['d2', 'd3'] as const).map((k) => {
-              const active = activeTripKey === k
-              const plan = TRIPS[k]
-              return (
-                <button
-                  key={k}
-                  onClick={() => setActiveTripKey(k)}
-                  style={{
-                    border: `1px solid ${active ? '#0284c7' : '#dbe7ef'}`,
-                    background: active ? '#0284c7' : '#ffffff',
-                    color: active ? '#ffffff' : '#3d5462',
-                    fontSize: '13.5px',
-                    fontWeight: 700,
-                    padding: '12px 22px',
-                    borderRadius: '999px',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    transition: 'all 150ms ease',
-                  }}
-                >
-                  {isEn ? plan?.nameEn : plan?.nameVi}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '26px', alignItems: 'start' }}>
-          {/* Itinerary Timeline */}
-          <div style={{ border: '1px solid #e6eef4', borderRadius: '26px', overflow: 'hidden' }}>
-            {currentTrip?.legs.map((l, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '20px',
-                  padding: '22px 26px',
-                  borderBottom: i < (currentTrip?.legs.length ?? 0) - 1 ? '1px solid #eef4f8' : 'none',
-                }}
-              >
-                <div style={{ width: '128px', flexShrink: 0 }}>
-                  <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.1em', color: '#0284c7', marginBottom: '4px' }}>
-                    {isEn ? l.dayEn : l.dayVi}
-                  </div>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#0b1b26' }}>{l.time}</div>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '15px', fontWeight: 700, color: '#0b1b26', lineHeight: 1.4, marginBottom: '5px' }}>
-                    {isEn ? l.titleEn : l.titleVi}
-                  </div>
-                  <div style={{ fontSize: '13.5px', lineHeight: 1.6, color: '#566e7d' }}>
-                    {isEn ? l.textEn : l.textVi}
-                  </div>
-                </div>
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="bg-white border border-[#ECECEC] rounded-[12px] p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1D4E89]">
+                <Calendar className="w-4 h-4 text-[#1D4E89]" />
+                <span>{t('Gợi Ý Lịch Trình', 'Suggested Itineraries')}</span>
               </div>
-            ))}
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0F2D52]">
+                {t('Lịch trình chi tiết 2 ngày 1 đêm & 3 ngày 2 đêm', 'Detailed 2D1N & 3D2N Itinerary')}
+              </h2>
+            </div>
+
+            {/* Tab Selector */}
+            <div className="inline-flex p-1 rounded-[8px] bg-[#F8F9FA] border border-[#ECECEC]">
+              {(['d2', 'd3'] as const).map((k) => {
+                const active = activeTripKey === k
+                const plan = TRIPS[k]
+                return (
+                  <button
+                    key={k}
+                    onClick={() => setActiveTripKey(k)}
+                    className={`px-4 py-2 text-xs font-bold rounded-[6px] transition ${
+                      active
+                        ? 'bg-[#1D4E89] text-white shadow-xs'
+                        : 'text-[#6B7280] hover:text-[#1A1A1A]'
+                    }`}
+                  >
+                    {isEn ? plan?.nameEn : plan?.nameVi}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
-          {/* Sticky Sidebar */}
-          <aside style={{ display: 'grid', gap: '14px' }}>
-            <div style={{ border: '1px solid #e6eef4', borderRadius: '24px', boxShadow: '0 14px 40px rgba(6,40,58,0.09)', padding: '24px', background: '#ffffff' }}>
-              <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '14px' }}>
-                {t('Dự toán chi phí mỗi khách', 'Estimated cost per person')}
-              </div>
-              {currentTrip?.costs.map((c, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '14px', padding: '8px 0', fontSize: '13.5px', fontWeight: 600, color: '#566e7d' }}>
-                  <span>{isEn ? c.labelEn : c.labelVi}</span>
-                  <span style={{ color: '#0b1b26', fontWeight: 700, whiteSpace: 'nowrap' }}>{c.val}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Timeline (7 cols) */}
+            <div className="lg:col-span-7 space-y-4">
+              {currentTrip?.legs.map((l, i) => (
+                <div key={i} className="flex items-start gap-4 p-3.5 rounded-[8px] bg-[#F8F9FA] border border-[#ECECEC] text-xs">
+                  <div className="w-24 shrink-0 space-y-0.5 border-r border-[#ECECEC] pr-3">
+                    <span className="text-[10px] font-bold text-[#1D4E89] block">{isEn ? l.dayEn : l.dayVi}</span>
+                    <span className="font-mono font-bold text-[#0F2D52] block">{l.time}</span>
+                  </div>
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <h4 className="font-bold text-[#0F2D52] text-xs">{isEn ? l.titleEn : l.titleVi}</h4>
+                    <p className="text-[#4B5563] text-[11px] leading-relaxed">{isEn ? l.textEn : l.textVi}</p>
+                  </div>
                 </div>
               ))}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', padding: '13px 0 2px', marginTop: '6px', borderTop: '1px solid #e6eef4', fontSize: '14.5px', fontWeight: 800, color: '#0b1b26' }}>
-                <span>{t('Tổng dự toán', 'Estimated total')}</span>
-                <span style={{ color: '#0284c7', fontWeight: 800, whiteSpace: 'nowrap' }}>{currentTrip?.total}</span>
-              </div>
-              <div style={{ marginTop: '14px', fontSize: '11.5px', lineHeight: 1.5, color: '#8fa5b3' }}>
-                {t('Chưa gồm mua sắm cá nhân. Ở Nam Du Hill thì thay vào dòng lưu trú.', 'Excludes personal shopping. Staying at Nam Du Hill replaces the accommodation line.')}
-              </div>
             </div>
 
-            <div
-              style={{
-                borderRadius: '24px',
-                background: 'linear-gradient(150deg, #0284c7 0%, #075985 100%)',
-                position: 'relative',
-                overflow: 'hidden',
-                padding: '26px',
-                color: '#ffffff',
-              }}
-            >
-              <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.62)', marginBottom: '10px' }}>
-                {t('Chúng tôi lo hết phần này', 'We arrange all of it')}
+            {/* Cost Estimator & Zalo Action Card (5 cols) */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="border border-[#ECECEC] rounded-[10px] p-5 space-y-3 text-xs bg-white">
+                <h3 className="font-serif font-bold text-[#0F2D52] border-b border-[#ECECEC] pb-2 text-sm">
+                  {t('Dự toán chi phí / khách', 'Estimated Cost per Guest')}
+                </h3>
+                {currentTrip?.costs.map((c, idx) => (
+                  <div key={idx} className="flex justify-between text-[#4B5563]">
+                    <span>{isEn ? c.labelEn : c.labelVi}</span>
+                    <span className="font-semibold text-[#1A1A1A]">{c.val}</span>
+                  </div>
+                ))}
+                <div className="border-t border-[#ECECEC] pt-2 flex justify-between font-bold text-[#0F2D52] text-sm">
+                  <span>{t('Tổng dự toán:', 'Total Estimate:')}</span>
+                  <span className="text-[#1D4E89]">{currentTrip?.total}</span>
+                </div>
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 700, lineHeight: 1.5, marginBottom: '18px' }}>
-                {t(
-                  'Vé tàu cao tốc, đón bến, xe máy, tàu đi đảo và bàn BBQ — báo lễ tân trước một ngày.',
-                  'Speedboat tickets, pier pickup, scooter, the island boat and the BBQ table — tell reception the day before.'
-                )}
+
+              {/* Zalo Action */}
+              <div className="bg-[#0F2D52] text-white rounded-[10px] p-5 space-y-3">
+                <h4 className="font-serif text-base font-bold text-white">
+                  {t('Chúng tôi hỗ trợ trọn gói', 'We Arrange Everything')}
+                </h4>
+                <p className="text-xs text-white/80 leading-relaxed">
+                  {t(
+                    'Đặt trước tàu gỗ đi đảo, vé tàu cao tốc khứ hồi, thuê xe máy và đặt tiệc nướng BBQ ngay tại resort.',
+                    'Book island boats, speedboat tickets, scooters, and seafood BBQs directly with reception.'
+                  )}
+                </p>
+                <div className="pt-1 flex flex-col gap-2">
+                  <a href="https://zalo.me/0985000650" target="_blank" rel="noopener noreferrer">
+                    <Button variant="primary" size="md" radius="6px" className="w-full bg-[#0068FF] hover:bg-[#0052cc]">
+                      <MessageCircle className="w-4 h-4 mr-1.5" />
+                      {t('Tư vấn lịch trình qua Zalo', 'Consult on Zalo')}
+                    </Button>
+                  </a>
+                  <Link href="/rooms">
+                    <Button variant="outline" size="md" radius="6px" className="w-full border-white/30 text-white hover:bg-white/10">
+                      {t('Đặt phòng trước', 'Pick a Room First')}
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <a
-                href="https://zalo.me/0985000650"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  background: '#00c46a',
-                  color: '#04241a',
-                  fontSize: '14px',
-                  fontWeight: 800,
-                  padding: '14px 20px',
-                  borderRadius: '14px',
-                  textDecoration: 'none',
-                }}
-              >
-                {t('Nhờ tư vấn qua Zalo', 'Plan my trip on Zalo')}
-              </a>
-              <Link
-                href="/rooms"
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  marginTop: '8px',
-                  border: '1px solid rgba(255,255,255,0.34)',
-                  color: '#ffffff',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  padding: '14px 20px',
-                  borderRadius: '14px',
-                  textDecoration: 'none',
-                }}
-              >
-                {t('Chọn phòng trước', 'Pick a room first')}
-              </Link>
             </div>
-          </aside>
+          </div>
         </div>
       </section>
 
-      {/* 3 Travel Advice Cards ("Trước khi bạn đặt vé tàu") */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '80px 32px 96px' }}>
-        <div style={{ borderRadius: '28px', background: '#f2f8fc', border: '1px solid rgba(2,132,199,0.10)', padding: '40px 44px' }}>
-          <h2 style={{ margin: '0 0 24px', fontSize: '26px', fontWeight: 800, letterSpacing: '-0.026em', color: '#0b1b26' }}>
-            {t('Trước khi bạn đặt vé tàu', 'Before you book the boat')}
+      {/* Travel Advice Section */}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="bg-white border border-[#ECECEC] rounded-[12px] p-6 sm:p-8 space-y-4 shadow-xs">
+          <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0F2D52] border-b border-[#ECECEC] pb-3">
+            {t('Kinh nghiệm lưu ý khi du lịch Nam Du', 'Essential Tips Before Visiting Nam Du')}
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '28px' }}>
-            <div>
-              <div style={{ fontSize: '15.5px', fontWeight: 800, color: '#0b1b26', marginBottom: '8px' }}>
-                {t('Đặt trước 2–4 tuần vào cao điểm', 'Book 2–4 weeks ahead in high season')}
-              </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: '#566e7d' }}>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-[#0F2D52] text-sm flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#1D4E89]" />
+                <span>{t('Đặt vé tàu trước 2–4 tuần', 'Book Speedboat Early')}</span>
+              </h3>
+              <p className="text-[#4B5563] leading-relaxed">
                 {t(
-                  'Từ tháng 12 đến tháng 3 tàu thường hết chỗ. Cả phòng lẫn vé khứ hồi đều nên đặt sớm.',
-                  'From December to March boat capacity runs out. Rooms and return tickets both need booking early.'
+                  'Vào mùa cao điểm (tháng 12 đến tháng 3), vé tàu cao tốc khứ hồi Rạch Giá - Nam Du thường hết sớm.',
+                  'During peak season (Dec to Mar), return tickets sell out fast. Book both room & boat early.'
                 )}
               </p>
             </div>
 
-            <div>
-              <div style={{ fontSize: '15.5px', fontWeight: 800, color: '#0b1b26', marginBottom: '8px' }}>
-                {t('Xem gió, không phải xem mưa', 'Watch the wind, not the rain')}
-              </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: '#566e7d' }}>
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-[#0F2D52] text-sm flex items-center gap-1.5">
+                <Sun className="w-4 h-4 text-[#1D4E89]" />
+                <span>{t('Theo dõi thời tiết & Gió biển', 'Check Sea Weather')}</span>
+              </h3>
+              <p className="text-[#4B5563] leading-relaxed">
                 {t(
-                  'Gió trên cấp 6 là tàu ngừng chạy. Xem dự báo trước 3 ngày — và yên tâm, biển động thì chúng tôi luôn hoàn cọc.',
-                  'Speedboats stop running above force 6. Check the forecast three days out — and note that we always refund deposits when the sea closes.'
+                  'Khi gió trên cấp 6 tàu cao tốc sẽ ngừng chạy. Resort cam kết hoàn 100% cọc nếu tàu hoãn do thời tiết.',
+                  'Speedboats stop when wind exceeds force 6. We offer 100% deposit refunds for weather cancellations.'
                 )}
               </p>
             </div>
 
-            <div>
-              <div style={{ fontSize: '15.5px', fontWeight: 800, color: '#0b1b26', marginBottom: '8px' }}>
-                {t('Để san hô lại chỗ của nó', 'Leave the coral where it is')}
-              </div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: '#566e7d' }}>
+            <div className="space-y-1.5">
+              <h3 className="font-bold text-[#0F2D52] text-sm flex items-center gap-1.5">
+                <Anchor className="w-4 h-4 text-[#1D4E89]" />
+                <span>{t('Bảo vệ môi trường san hô', 'Protect Coral Reefs')}</span>
+              </h3>
+              <p className="text-[#4B5563] leading-relaxed">
                 {t(
-                  'Nước ngọt và xử lý rác ngoài đảo còn hạn chế. Mang rác về, và tuyệt đối không bẻ hay giẫm lên san hô.',
-                  'Fresh water and waste handling are limited out here. Take your rubbish back, and never break or stand on coral.'
+                  'Tuyệt đối không bẻ hoặc giẫm đạp lên rạn san hô khi lặn biển. Mang theo rác về đất liền.',
+                  'Never break or stand on coral reefs while snorkeling. Keep Nam Du clean and pristine.'
                 )}
               </p>
             </div>

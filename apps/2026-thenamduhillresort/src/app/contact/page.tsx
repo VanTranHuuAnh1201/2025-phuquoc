@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
+import { Button } from '../../components/common/Button'
+import { Phone, MapPin, Mail, Clock, Send, MessageCircle, Navigation, CheckCircle, ShieldCheck } from 'lucide-react'
 
 export default function ContactPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  const isEn = language === 'en'
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -13,537 +16,303 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="nd-page-main" style={{ minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
-      {/* Header section */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '110px 32px 0' }}>
-        <div style={{ padding: '20px 0 28px', maxWidth: '720px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
-            <span
-              style={{
-                fontSize: '12px',
-                fontWeight: 800,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: '#0284c7',
-              }}
-            >
-              {t('Luôn có người nghe máy', 'Someone answers, any hour')}
-            </span>
+    <main className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] pt-20 pb-20">
+      {/* Hero / Header Section */}
+      <section className="bg-white border-b border-[#ECECEC] py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-xs font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{t('Hỗ trợ tư vấn 24/7', '24/7 Reception Support')}</span>
           </div>
-          <h1
-            style={{
-              margin: '0 0 14px',
-              fontSize: 'clamp(28px, 4vw, 52px)',
-              lineHeight: 1.08,
-              fontWeight: 800,
-              letterSpacing: '-0.036em',
-              color: '#0b1b26',
-              textWrap: 'balance',
-            }}
-          >
-            {t('Liên hệ & đặt phòng', 'Contact & booking')}
+
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F2D52] tracking-tight">
+            {t('Liên hệ & Đặt phòng', 'Contact & Reservations')}
           </h1>
-          <p style={{ margin: 0, fontSize: '16px', lineHeight: 1.6, color: '#566e7d' }}>
+
+          <p className="text-sm sm:text-base text-[#4B5563] max-w-2xl leading-relaxed">
             {t(
-              'Gửi form và chúng tôi trả lời qua Zalo trong vòng một tiếng — thường là nhanh hơn nhiều. Đặt trực tiếp luôn rẻ hơn giá trên OTA.',
-              'Send the form and we reply on Zalo within the hour — usually much sooner. Booking direct always beats the OTA rate.'
+              'Gửi yêu cầu hoặc nhắn Zalo trực tiếp để nhận báo giá ưu đãi tốt nhất. Đặt phòng trực tiếp luôn cam kết đưa đón bến tàu miễn phí.',
+              'Send a request or message on Zalo for the best rates. Direct bookings include free pier transfers.'
             )}
           </p>
         </div>
+      </section>
 
-        {/* Main Grid: Form Left, Contact Info Right */}
-        <div
-          className="nd-grid-responsive"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.25fr) minmax(0, 1fr)',
-            gap: '24px',
-            alignItems: 'start',
-          }}
-        >
-          {/* Form */}
-          <form
-            className="nd-card-padding"
-            onSubmit={handleSubmit}
-            style={{
-              background: '#ffffff',
-              border: '1px solid #e6eef4',
-              borderRadius: '26px',
-              padding: '28px 28px',
-              boxShadow: '0 14px 40px rgba(6,40,58,0.07)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 4px', fontSize: '21px', fontWeight: 800, letterSpacing: '-0.024em', color: '#0b1b26' }}>
-              {t('Đặt phòng nhanh', 'Quick booking request')}
-            </h2>
-            <p style={{ margin: '0 0 24px', fontSize: '13.5px', color: '#8fa5b3' }}>
-              {t('Liên hệ ngay để nhận ưu đãi tốt nhất.', 'Get in touch for the best available rate.')}
-            </p>
+      {/* Main Content Grid */}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column: Quick Booking Contact Form (7 cols) */}
+          <div className="lg:col-span-7 bg-white border border-[#ECECEC] rounded-[12px] p-6 sm:p-8 shadow-xs space-y-6">
+            <div>
+              <h2 className="font-serif text-xl font-bold text-[#0F2D52]">
+                {t('Gửi yêu cầu đặt phòng nhanh', 'Quick Reservation Request')}
+              </h2>
+              <p className="text-xs text-[#6B7280] mt-1">
+                {t('Lễ tân resort sẽ liên hệ xác nhận trong vòng 15-30 phút.', 'Our receptionist will confirm your inquiry within 15-30 minutes.')}
+              </p>
+            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Họ và tên *', 'Full name *')}
-                </span>
-                <input
-                  required
-                  type="text"
-                  placeholder={t('Nhập họ và tên', 'Enter full name')}
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                  }}
-                />
-              </label>
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Họ và tên *', 'Full Name *')}
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    placeholder={t('Nhập họ và tên', 'Enter full name')}
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Số điện thoại *', 'Phone number *')}
-                </span>
-                <input
-                  required
-                  type="tel"
-                  placeholder="0123 456 789"
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                  }}
-                />
-              </label>
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Số điện thoại (Zalo) *', 'Phone / Zalo Number *')}
+                  </label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="0985 000 650"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
+              </div>
 
-              <label style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Email', 'Email')}
-                </span>
+              <div className="space-y-1">
+                <label className="block font-semibold text-[#1A1A1A]">
+                  Email
+                </label>
                 <input
                   type="email"
                   placeholder="email@example.com"
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                  }}
+                  className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
                 />
-              </label>
+              </div>
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Ngày nhận phòng', 'Check in')}
-                </span>
-                <input
-                  type="date"
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                  }}
-                />
-              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Ngày nhận phòng', 'Check-in Date')}
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Ngày trả phòng', 'Check out')}
-                </span>
-                <input
-                  type="date"
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                  }}
-                />
-              </label>
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Ngày trả phòng', 'Check-out Date')}
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
+              </div>
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Số khách', 'Guests')}
-                </span>
-                <select
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option>{t('2 khách', '2 guests')}</option>
-                  <option>{t('3 khách', '3 guests')}</option>
-                  <option>{t('4 khách', '4 guests')}</option>
-                  <option>{t('6 khách', '6 guests')}</option>
-                  <option>{t('8 khách', '8 guests')}</option>
-                </select>
-              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Số lượng khách', 'Number of Guests')}
+                  </label>
+                  <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]">
+                    <option>{t('2 khách', '2 guests')}</option>
+                    <option>{t('3 khách', '3 guests')}</option>
+                    <option>{t('4 khách', '4 guests')}</option>
+                    <option>{t('6 khách', '6 guests')}</option>
+                    <option>{t('8 khách trở lên', '8+ guests')}</option>
+                  </select>
+                </div>
 
-              <label style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Hạng phòng', 'Room type')}
-                </span>
-                <select
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option>{t('Chưa quyết — tư vấn giúp', 'Not decided — please advise')}</option>
-                  <option>#14 Rock Deluxe · 1.776.000₫</option>
-                  <option>#05 Lục Giác Kính · 1.546.000₫</option>
-                  <option>#07 Superior King · 2.971.000₫</option>
-                  <option>#08-09 Suite 8 khách · 5.662.000₫</option>
-                </select>
-              </label>
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Hạng phòng quan tâm', 'Preferred Room')}
+                  </label>
+                  <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]">
+                    <option>{t('Chưa quyết — cần tư vấn', 'Need recommendation')}</option>
+                    <option>Deluxe Sea View</option>
+                    <option>Rock Deluxe Sunset</option>
+                    <option>Superior King Sea View</option>
+                    <option>Family Suite 8 Guests</option>
+                  </select>
+                </div>
+              </div>
 
-              <label style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#3d5462' }}>
-                  {t('Tin nhắn', 'Message')}
-                </span>
+              <div className="space-y-1">
+                <label className="block font-semibold text-[#1A1A1A]">
+                  {t('Ghi chú hoặc yêu cầu đặc biệt', 'Message or Special Requests')}
+                </label>
                 <textarea
-                  rows={4}
-                  placeholder={t('Yêu cầu đặc biệt, loại phòng mong muốn...', 'Special requests, preferred room...')}
-                  style={{
-                    border: '1px solid #dbe7ef',
-                    borderRadius: '13px',
-                    padding: '14px 16px',
-                    fontSize: '15px',
-                    fontWeight: 500,
-                    color: '#0b1b26',
-                    background: '#ffffff',
-                    width: '100%',
-                    resize: 'vertical',
-                  }}
+                  rows={3}
+                  placeholder={t('Ví dụ: Cần xe đón bến tàu lúc 10h, ăn chay...', 'e.g. Need pier pick-up at 10am, vegetarian...')}
+                  className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89] resize-none"
                 />
-              </label>
-            </div>
-
-            {submitted && (
-              <div
-                style={{
-                  marginTop: '16px',
-                  padding: '14px 18px',
-                  borderRadius: '14px',
-                  background: '#e8f9f0',
-                  border: '1px solid rgba(0,196,106,0.30)',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#04684a',
-                }}
-              >
-                {t(
-                  'Đã gửi yêu cầu. Chúng tôi sẽ trả lời qua Zalo trong vòng một tiếng.',
-                  'Request sent. We will reply on Zalo within the hour.'
-                )}
               </div>
-            )}
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '22px' }}>
-              <button
-                type="submit"
-                style={{
-                  background: '#0284c7',
-                  color: '#ffffff',
-                  border: 'none',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  padding: '16px 32px',
-                  borderRadius: '15px',
-                  cursor: 'pointer',
-                  boxShadow: '0 8px 22px rgba(2,132,199,0.28)',
-                  transition: 'background 150ms ease',
-                }}
-              >
-                {t('Gửi yêu cầu', 'Send request')}
-              </button>
-              <a
-                href="https://zalo.me/0985000650"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  border: '1px solid #dbe7ef',
-                  color: '#0b1b26',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  padding: '16px 26px',
-                  borderRadius: '15px',
-                  textDecoration: 'none',
-                  transition: 'background 150ms ease',
-                }}
-              >
-                {t('Hoặc nhắn Zalo ngay', 'Or message us on Zalo')}
-              </a>
-            </div>
-
-            <p style={{ margin: '16px 0 0', fontSize: '12.5px', lineHeight: 1.55, color: '#8fa5b3' }}>
-              {t(
-                'Đặt trực tiếp: cam kết giá tốt nhất, đưa đón bến tàu miễn phí, huỷ miễn phí trước 7 ngày.',
-                'Booking direct: best rate guaranteed, free pier transfer, free cancellation up to 7 days before arrival.'
+              {submitted && (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-[8px] p-3 flex items-center gap-2 text-xs text-emerald-800 font-medium">
+                  <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{t('Yêu cầu đã được gửi! Lễ tân sẽ nhắn Zalo cho bạn ngay.', 'Request sent! Receptionist will message you on Zalo shortly.')}</span>
+                </div>
               )}
-            </p>
-          </form>
 
-          {/* Contact Details & Getting Here Sidebar */}
-          <aside style={{ display: 'grid', gap: '14px' }}>
-            <div style={{ background: '#0b1b26', borderRadius: '26px', padding: '30px 32px', color: '#ffffff' }}>
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.44)',
-                  marginBottom: '14px',
-                }}
-              >
-                {t('Đặt phòng', 'Reservations')}
-              </div>
-              <a
-                href="tel:0985000650"
-                style={{
-                  display: 'block',
-                  fontSize: '30px',
-                  fontWeight: 900,
-                  letterSpacing: '-0.035em',
-                  color: '#ffffff',
-                  marginBottom: '6px',
-                  textDecoration: 'none',
-                }}
-              >
-                0985 000 650
-              </a>
-              <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.62)', marginBottom: '24px' }}>
-                {t('Zalo cùng số · 24/7', 'Zalo on the same number · 24/7')}
-              </div>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  radius="6px"
+                  className="flex-1 py-3"
+                >
+                  <Send className="w-4 h-4 mr-1.5" />
+                  {t('Gửi yêu cầu tư vấn', 'Submit Request')}
+                </Button>
 
-              <div style={{ display: 'grid', gap: '18px', paddingTop: '22px', borderTop: '1px solid rgba(255,255,255,0.14)' }}>
-                <div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      letterSpacing: '0.13em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.44)',
-                      marginBottom: '7px',
-                    }}
+                <a
+                  href="https://zalo.me/0985000650"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1"
+                >
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="md"
+                    radius="6px"
+                    className="w-full py-3 border-[#0068FF] text-[#0068FF] hover:bg-[#0068FF]/5"
                   >
-                    {t('Địa chỉ', 'Address')}
-                  </div>
-                  <div style={{ fontSize: '14.5px', fontWeight: 600, lineHeight: 1.5, color: '#ffffff' }}>
-                    {t('Tổ 6, Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam', 'Group 6, Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam')}
+                    <MessageCircle className="w-4 h-4 mr-1.5 text-[#0068FF]" />
+                    {t('Nhắn Zalo ngay', 'Message on Zalo')}
+                  </Button>
+                </a>
+              </div>
+            </form>
+          </div>
+
+          {/* Right Column: Resort Contact Info & Direct Transfer Guide (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            
+            {/* Direct Contact Card */}
+            <div className="bg-[#0F2D52] text-white rounded-[12px] p-6 space-y-5 shadow-xs">
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-[#C6A86A] uppercase tracking-wider">
+                  {t('Hotline Đặt phòng', 'Reservation Hotline')}
+                </span>
+                <a
+                  href="tel:0985000650"
+                  className="block font-serif text-3xl font-bold text-white hover:text-[#C6A86A] transition tracking-tight"
+                >
+                  0985 000 650
+                </a>
+                <p className="text-xs text-white/70">
+                  {t('Zalo / WhatsApp cùng số · Hỗ trợ 24/7', 'Zalo / WhatsApp available · 24/7 Service')}
+                </p>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-white/10 text-xs">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-[#C6A86A] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold block text-white">{t('Địa chỉ Resort:', 'Resort Address:')}</span>
+                    <span className="text-white/80 leading-relaxed">
+                      {t('Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam', 'Cu Tron Hamlet, Kien Hai Special Zone, An Giang Province, Vietnam')}
+                    </span>
                   </div>
                 </div>
 
-                <div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      letterSpacing: '0.13em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.44)',
-                      marginBottom: '7px',
-                    }}
-                  >
-                    Email
+                <div className="flex items-start gap-3">
+                  <Mail className="w-4 h-4 text-[#C6A86A] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold block text-white">Email:</span>
+                    <a href="mailto:thenamduhill@gmail.com" className="text-white/80 hover:text-white transition">
+                      thenamduhill@gmail.com
+                    </a>
                   </div>
-                  <a href="mailto:thenamduhill@gmail.com" style={{ fontSize: '14.5px', fontWeight: 600, color: '#ffffff', textDecoration: 'none' }}>
-                    thenamduhill@gmail.com
-                  </a>
                 </div>
 
-                <div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      letterSpacing: '0.13em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.44)',
-                      marginBottom: '7px',
-                    }}
-                  >
-                    {t('Giờ lễ tân', 'Reception hours')}
-                  </div>
-                  <div style={{ fontSize: '14.5px', fontWeight: 600, lineHeight: 1.5, color: '#ffffff' }}>
-                    {t(
-                      'Nhận phòng từ 14:00 · trả phòng trước 12:00 · trực 24/7',
-                      'Check in from 14:00 · check out by 12:00 · desk staffed 24/7'
-                    )}
+                <div className="flex items-start gap-3">
+                  <Clock className="w-4 h-4 text-[#C6A86A] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold block text-white">{t('Giờ đón khách:', 'Reception Hours:')}</span>
+                    <span className="text-white/80">
+                      {t('Check-in 14:00 · Check-out 12:00 (Lễ tân 24/7)', 'Check-in 14:00 · Check-out 12:00 (24/7 Desk)')}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', border: '1px solid #e6eef4', borderRadius: '26px', padding: '26px 28px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '16px' }}>
-                {t('Cách di chuyển', 'Getting here')}
-              </div>
-              <div style={{ display: 'grid', gap: '16px' }}>
-                <div style={{ display: 'flex', gap: '13px', alignItems: 'flex-start' }}>
-                  <span
-                    style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '50%',
-                      background: '#eef6fb',
-                      color: '#0284c7',
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
+            {/* Travel Guide Card */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-5 space-y-3 shadow-xs">
+              <h3 className="font-serif text-sm font-bold text-[#0F2D52] flex items-center gap-1.5">
+                <Navigation className="w-4 h-4 text-[#1D4E89]" />
+                <span>{t('Hướng dẫn di chuyển đến Nam Du', 'Getting to Nam Du Island')}</span>
+              </h3>
+
+              <div className="space-y-3 text-xs">
+                <div className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-[10px] font-bold flex items-center justify-center shrink-0">
                     1
                   </span>
                   <div>
-                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0b1b26' }}>
-                      {t('TP.HCM → Rạch Giá', 'HCMC → Rach Gia')}
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#8fa5b3', marginTop: '2px' }}>
-                      {t('Xe giường nằm đêm, 7 tiếng, 210–250k', 'Overnight sleeper coach, 7 h, 210–250k')}
-                    </div>
+                    <span className="font-bold text-[#1A1A1A] block">{t('TP.HCM → Rạch Giá', 'HCMC → Rach Gia')}</span>
+                    <span className="text-[#6B7280]">{t('Xe giường nằm đêm, khoảng 7 tiếng (210k–250k).', 'Overnight sleeper coach, approx. 7 hours.')}</span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '13px', alignItems: 'flex-start' }}>
-                  <span
-                    style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '50%',
-                      background: '#eef6fb',
-                      color: '#0284c7',
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
+                <div className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-[10px] font-bold flex items-center justify-center shrink-0">
                     2
                   </span>
                   <div>
-                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0b1b26' }}>
-                      {t('Rạch Giá → bến Củ Tron', 'Rach Gia → Cu Tron pier')}
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#8fa5b3', marginTop: '2px' }}>
-                      {t(
-                        'Tàu cao tốc, 2–3 tiếng, ~226k. Superdong, Phú Quốc Express, Ngọc Thành.',
-                        'Speedboat, 2–3 h, ~226k. Superdong, Phu Quoc Express, Ngoc Thanh.'
-                      )}
-                    </div>
+                    <span className="font-bold text-[#1A1A1A] block">{t('Rạch Giá → Bến Củ Tron', 'Rach Gia → Cu Tron Pier')}</span>
+                    <span className="text-[#6B7280]">{t('Tàu cao tốc (Superdong, Phú Quốc Express), 2.5 tiếng.', 'Speedboat (Superdong, Phu Quoc Express), 2.5 hours.')}</span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '13px', alignItems: 'flex-start' }}>
-                  <span
-                    style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '50%',
-                      background: '#e8f9f0',
-                      color: '#00a85c',
-                      fontSize: '11px',
-                      fontWeight: 800,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
+                <div className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold flex items-center justify-center shrink-0">
                     3
                   </span>
                   <div>
-                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0b1b26' }}>
-                      {t('Bến tàu → lên đồi', 'Pier → the hill')}
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#00a85c', fontWeight: 600, marginTop: '2px' }}>
-                      {t('Xe riêng của resort đón tận tàu. Miễn phí, hai chiều.', 'Our private car meets your boat. Free, both ways.')}
-                    </div>
+                    <span className="font-bold text-emerald-800 block">{t('Bến tàu → The Nam Du Hill', 'Pier → The Nam Du Hill')}</span>
+                    <span className="text-emerald-700 font-medium">{t('Xe riêng resort đón tận bến tàu (Miễn phí 2 chiều).', 'Resort car picks you up at pier (Free 2-way).')}</span>
                   </div>
                 </div>
               </div>
             </div>
-          </aside>
+
+          </div>
         </div>
       </section>
 
-      {/* OpenStreetMap Section */}
-      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '40px 32px 88px' }}>
-        <div style={{ borderRadius: '26px', overflow: 'hidden', border: '1px solid #e6eef4', position: 'relative', height: '420px', background: '#eef4f8' }}>
-          <iframe
-            title="Bản đồ The Nam Du Hill"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=104.28%2C9.64%2C104.42%2C9.72&amp;layer=mapnik&amp;marker=9.6835%2C104.3595"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
-            loading="lazy"
-          />
-          <div
-            style={{
-              position: 'absolute',
-              left: '24px',
-              bottom: '24px',
-              background: '#ffffff',
-              borderRadius: '18px',
-              padding: '20px 24px',
-              boxShadow: '0 12px 32px rgba(3,20,32,0.20)',
-              maxWidth: '330px',
-            }}
-          >
-            <div style={{ fontSize: '15px', fontWeight: 800, color: '#0b1b26', marginBottom: '6px' }}>
-              THE NAM DU HILL
+      {/* Map Section */}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs relative">
+          <div className="h-[360px] w-full bg-[#E5E7EB] relative">
+            <iframe
+              title="Bản đồ The Nam Du Hill"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=104.28%2C9.64%2C104.42%2C9.72&amp;layer=mapnik&amp;marker=9.6835%2C104.3595"
+              className="w-full h-full border-0"
+              loading="lazy"
+            />
+            
+            {/* Floating Location Card */}
+            <div className="absolute left-4 bottom-4 bg-white/95 backdrop-blur-md border border-[#ECECEC] rounded-[10px] p-4 shadow-lg max-w-[300px] text-xs space-y-1.5">
+              <h4 className="font-serif font-bold text-[#0F2D52] text-sm">THE NAM DU HILL RESORT</h4>
+              <p className="text-[#6B7280]">{t('Ấp Củ Tron, Kiên Hải, Kiên Giang', 'Cu Tron Hamlet, Kien Hai, Kien Giang')}</p>
+              <a
+                href="https://www.google.com/maps/search/?api=1&amp;query=THE+NAM+DU+HILL+resort+Nam+Du"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-[#1D4E89] font-semibold hover:underline pt-1"
+              >
+                {t('Xem trên Google Maps →', 'Open in Google Maps →')}
+              </a>
             </div>
-            <div style={{ fontSize: '13px', lineHeight: 1.5, color: '#566e7d', marginBottom: '12px' }}>
-              {t('Tổ 6, Ấp Củ Tron, tỉnh An Giang', 'Group 6, Cu Tron hamlet, An Giang')}
-            </div>
-            <a
-              href="https://www.google.com/maps/search/?api=1&amp;query=THE+NAM+DU+HILL+resort+Nam+Du"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontSize: '13px', fontWeight: 700, color: '#0284c7', textDecoration: 'none' }}
-            >
-              {t('Mở trong Google Maps →', 'Open in Google Maps →')}
-            </a>
           </div>
         </div>
       </section>

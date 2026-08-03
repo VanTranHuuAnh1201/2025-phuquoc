@@ -1,154 +1,148 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
+import { Button } from '../common/Button'
+import { MapPin, Sparkles, Send, ExternalLink } from 'lucide-react'
 
 export function ContactCtaSection() {
   const { t } = useLanguage()
+  const [email, setEmail] = useState('')
+  const [subscribed, setSubscribed] = useState(false)
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email.trim()) {
+      setSubscribed(true)
+      setEmail('')
+    }
+  }
 
   return (
-    <section id="contact" className="nd-section-container">
-      <div
-        className="contact-cta-wrapper"
-        style={{
-          borderRadius: '30px',
-          overflow: 'hidden',
-          position: 'relative',
-          background: '#0b1b26',
-          padding: '48px 40px',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            right: '-120px',
-            top: '-120px',
-            width: '460px',
-            height: '460px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(2,132,199,0.45) 0%, rgba(2,132,199,0) 68%)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div
-          className="contact-cta-grid"
-          style={{
-            position: 'relative',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '36px',
-            alignItems: 'center',
-          }}
-        >
-          <div>
-            <h2 className="nd-h2" style={{ color: '#ffffff', marginBottom: '8px' }}>
-              {t('Đặt phòng trực tiếp với chính chủ nhà.', 'Book direct with the people who run the hill.')}
-            </h2>
-
-            <p className="nd-lead-p" style={{ color: 'rgba(255,255,255,0.76)', marginBottom: '20px', maxWidth: '520px' }}>
-              {t(
-                'Cam kết giá tốt nhất, đón tiễn miễn phí, huỷ miễn phí trước 7 ngày, và luôn có người thật nghe máy.',
-                'Best rate guaranteed, free pier transfer, free cancellation up to 7 days before arrival, and a real person on the phone.'
-              )}
-            </p>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <Link
-                href="/rooms"
-                style={{
-                  background: '#00c46a',
-                  color: '#04241a',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  padding: '10px 20px',
-                  borderRadius: '999px',
-                  textDecoration: 'none',
-                }}
-              >
-                {t('Xem phòng & giá', 'See rooms & prices')}
-              </Link>
-              <a
-                href="tel:0985000650"
-                className="nd-interactive-pill"
-                style={{
-                  border: '1px solid rgba(255,255,255,0.28)',
-                  color: '#ffffff',
-                  fontSize: '12.5px',
-                  fontWeight: 600,
-                  padding: '10px 20px',
-                  borderRadius: '999px',
-                  textDecoration: 'none',
-                  display: 'inline-block',
-                }}
-              >
-                📞 0985 000 650
-              </a>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gap: '10px' }}>
-            <div
-              className="nd-card contact-info-card"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '18px',
-                padding: '18px 20px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div className="nd-card-tag" style={{ color: 'rgba(255,255,255,0.50)', marginBottom: '4px' }}>
-                {t('ĐỊA CHỈ', 'ADDRESS')}
+    <section className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-7 sm:space-y-10">
+        
+        {/* 1. Special Offer Promo Banner */}
+        <div>
+          <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
+            {t('Ưu đãi đặc biệt', 'Special Offers')}
+          </h2>
+          <div className="relative overflow-hidden rounded-[12px] bg-gradient-to-r from-[#0F2D52] via-[#163B6C] to-[#1D4E89] text-white p-6 sm:p-8 shadow-md">
+            {/* Background Decorative Graphic */}
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white via-blue-400 to-transparent" />
+            
+            <div className="relative z-10 max-w-xl space-y-3">
+              <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[#C6A86A]">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{t('ƯU ĐÃI MÙA HÈ', 'SUMMER SPECIAL')}</span>
               </div>
-              <div className="nd-card-desc" style={{ color: '#ffffff', lineHeight: 1.45 }}>
-                {t(
-                  'Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam',
-                  'Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam'
-                )}
-              </div>
-            </div>
-
-            <div
-              className="nd-card contact-info-card"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '18px',
-                padding: '18px 20px',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <div className="nd-card-tag" style={{ color: 'rgba(255,255,255,0.50)', marginBottom: '4px' }}>
-                {t('CÁCH ĐẾN', 'GETTING HERE')}
-              </div>
-              <div className="nd-card-desc" style={{ color: '#ffffff', lineHeight: 1.45 }}>
-                {t(
-                  'Rạch Giá → bến Củ Tron bằng tàu cao tốc (2h15). Chúng tôi đón bạn tại bến.',
-                  'Rach Gia → Cu Tron pier by speedboat (2h15). We meet you there.'
-                )}
+              <h3 className="font-serif text-xl sm:text-3xl font-bold leading-tight">
+                {t('Giảm đến 20% cho đặt phòng sớm', 'Get up to 20% off early bookings')}
+              </h3>
+              <p className="text-xs sm:text-sm text-white/90 font-normal">
+                {t('Đặt phòng trước 14 ngày để nhận ưu đãi đặc biệt cùng xe đưa đón bến tàu miễn phí.', 'Book 14 days in advance to enjoy exclusive discounts and free pier transfer.')}
+              </p>
+              <div className="pt-2">
+                <Link href="/rooms">
+                  <Button variant="secondary" size="md" radius="6px">
+                    {t('Xem chi tiết', 'View details')}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .contact-cta-wrapper {
-            border-radius: 18px !important;
-            padding: 20px 14px !important;
-          }
-          .contact-cta-grid {
-            gap: 18px !important;
-          }
-          .contact-info-card {
-            border-radius: 14px !important;
-            padding: 14px !important;
-          }
-        }
-      `}</style>
+        {/* 2. Resort Location Map Box */}
+        <div>
+          <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
+            {t('Vị trí của chúng tôi', 'Our Location')}
+          </h2>
+          <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-sm grid grid-cols-1 md:grid-cols-3">
+            {/* Map Preview Visual */}
+            <div className="relative md:col-span-2 h-48 sm:h-64 bg-[#E5E7EB] overflow-hidden">
+              <img
+                src="/uploads/hero-2.jpg"
+                alt="Bản đồ Nam Du"
+                className="w-full h-full object-cover opacity-85"
+              />
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                <div className="bg-white p-3 rounded-full shadow-2xl animate-bounce">
+                  <MapPin className="w-6 h-6 text-[#1D4E89]" />
+                </div>
+              </div>
+            </div>
+
+            {/* Location Info Box */}
+            <div className="p-5 sm:p-6 flex flex-col justify-between gap-4 bg-white">
+              <div>
+                <div className="flex items-center gap-2 text-[#0F2D52] font-serif font-bold text-base">
+                  <MapPin className="w-4 h-4 text-[#1D4E89]" />
+                  <span>The Nam Du Hill Resort</span>
+                </div>
+                <p className="text-xs text-[#4B5563] mt-2 leading-relaxed font-normal">
+                  {t(
+                    'Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Tỉnh Kiên Giang, Việt Nam',
+                    'Cu Tron Village, Nam Du Island, Kien Hai District, Kien Giang Province, Vietnam'
+                  )}
+                </p>
+              </div>
+
+              <a
+                href="https://maps.google.com/?q=The+Nam+Du+Hill+Resort"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button variant="outline" size="md" fullWidth radius="6px">
+                  <span className="flex items-center justify-center gap-1.5">
+                    {t('Xem trên bản đồ', 'View on Google Maps')}
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </span>
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Newsletter Subscription Box */}
+        <div>
+          <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
+            {t('Tham gia nhận ưu đãi', 'Join for Exclusive Offers')}
+          </h2>
+          <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 sm:p-7 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#4B5563] mb-4 font-normal">
+              {t(
+                'Nhận thông tin ưu đãi mới nhất và bí kíp du lịch Nam Du trực tiếp qua email của bạn.',
+                'Get the latest resort promotions and travel tips directly in your email inbox.'
+              )}
+            </p>
+
+            {subscribed ? (
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-[8px] text-emerald-700 text-xs font-semibold">
+                ✓ {t('Cảm ơn bạn đã đăng ký! Chúng tôi sẽ gửi thông tin ưu đãi sớm nhất.', 'Thank you for subscribing!')}
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder={t('Email của bạn', 'Your email address')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 h-[42px] bg-white border border-[#E5E7EB] rounded-[8px] px-3.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89] shadow-sm"
+                />
+                <Button type="submit" variant="primary" size="md" radius="6px">
+                  <span className="flex items-center justify-center gap-1.5">
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{t('Đăng ký', 'Subscribe')}</span>
+                  </span>
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
     </section>
   )
 }

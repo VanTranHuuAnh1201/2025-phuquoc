@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
-import { ImageSlot } from '../../components/common/ImageSlot'
 import { ROOMS, formatVND, roomSlug, Room } from '../../data/rooms'
+import { Button } from '../../components/common/Button'
+import { ArrowLeft, Calendar, Users, CheckCircle, Copy, ChevronRight, ShieldCheck, CreditCard, MessageCircle, Phone } from 'lucide-react'
 
 const BIKE_RATE = 150000
 
@@ -13,34 +14,32 @@ function CheckoutContent() {
   const { t, language } = useLanguage()
   const isEn = language === 'en'
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   const [step, setStep] = useState<1 | 2 | 3>(1)
-  const [ci, setCi] = useState('')
-  const [co, setCo] = useState('')
+  
+  // Auto-filled default values matching design mockups (15 Aug - 17 Aug, 2 Guests)
+  const [ci, setCi] = useState('2025-08-15')
+  const [co, setCo] = useState('2025-08-17')
   const [guests, setGuests] = useState(2)
   const [bikes, setBikes] = useState(0)
   const [method, setMethod] = useState<'qr' | 'momo' | 'cash'>('qr')
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
+  const [name, setName] = useState('Nguyễn Văn A')
+  const [phone, setPhone] = useState('0901234567')
+  const [email, setEmail] = useState('nguyenvana@gmail.com')
   const [notes, setNotes] = useState('')
   const [boat, setBoat] = useState('')
-  const [room, setRoom] = useState<Room>(ROOMS[12]!)
+  const [room, setRoom] = useState<Room>(ROOMS[0]!) // Default Deluxe Sea View
 
-  useEffect(() => {
-    const handleNextStep = () => {
-      setStep((prev) => (prev < 3 ? ((prev + 1) as 1 | 2 | 3) : 3))
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('ndh:checkout-next', handleNextStep)
-    return () => window.removeEventListener('ndh:checkout-next', handleNextStep)
-  }, [])
-
+  // Handle URL query parameters or stored selections
   useEffect(() => {
     const rCode = searchParams.get('room')
     if (rCode) {
-      const want = '#' + rCode.replace(/^#/, '')
-      const found = ROOMS.find((r) => r.code === want)
+      const searchId = decodeURIComponent(rCode).toLowerCase().replace('#', '')
+      const found = ROOMS.find((r) => {
+        const cleanCode = r.code.replace('#', '').toLowerCase()
+        return cleanCode === searchId || r.code.toLowerCase() === searchId || roomSlug(r.code).toLowerCase() === searchId
+      })
       if (found) {
         setRoom(found)
         return
@@ -49,630 +48,509 @@ function CheckoutContent() {
     try {
       const saved = localStorage.getItem('ndh:last-room')
       if (saved) {
-        const want = '#' + saved.replace(/^#/, '')
-        const found = ROOMS.find((r) => r.code === want)
+        const searchId = saved.toLowerCase().replace('#', '')
+        const found = ROOMS.find((r) => r.code.toLowerCase().replace('#', '') === searchId)
         if (found) setRoom(found)
       }
     } catch {}
   }, [searchParams])
 
   const calculateNights = () => {
-    if (!ci || !co) return 1
+    if (!ci || !co) return 2
     const d = (new Date(co).getTime() - new Date(ci).getTime()) / (1000 * 3600 * 24)
-    return d > 0 ? Math.round(d) : 1
+    return d > 0 ? Math.round(d) : 2
   }
 
   const nights = calculateNights()
   const totalAmount = room.price * nights + bikes * BIKE_RATE * nights
   const depositAmount = Math.round(totalAmount / 2)
+  const bookingCode = '#NDH123456'
 
   const phoneLast4 = phone.replace(/\D/g, '').slice(-4)
   const refCode = `NAMDU ${room.code.replace('#', '')} ${nights}D${phoneLast4 ? ' ' + phoneLast4 : ''}`
 
   const qrSrc = `https://img.vietqr.io/image/970436-0985000650-compact.png?amount=${depositAmount}&addInfo=${encodeURIComponent(refCode)}&accountName=${encodeURIComponent('THE NAM DU HILL')}`
 
-  const formatDate = (d: string) => {
-    if (!d) return isEn ? 'Not set' : 'Chưa chọn'
-    const [y, m, dd] = d.split('-')
-    return `${dd}/${m}/${y}`
+  const formatDateLabel = (ciStr: string, coStr: string) => {
+    if (!ciStr || !coStr) return '15 Th8 - 17 Th8 (2 đêm)'
+    const ciD = new Date(ciStr)
+    const coD = new Date(coStr)
+    const d1 = ciD.getDate()
+    const m1 = ciD.getMonth() + 1
+    const d2 = coD.getDate()
+    const m2 = coD.getMonth() + 1
+    return `${d1} Th${m1} - ${d2} Th${m2} (${nights} đêm)`
   }
 
-  const methodsList = [
-    {
-      k: 'qr',
-      titleVi: 'VietQR — chuyển khoản ngân hàng',
-      titleEn: 'VietQR — bank transfer',
-      subVi: 'Quét mã, tiền vào ngay, không phí',
-      subEn: 'Scan, instant, no fee',
-      tagVi: 'PHỔ BIẾN NHẤT',
-      tagEn: 'MOST USED',
-    },
-    {
-      k: 'momo',
-      titleVi: 'Ví MoMo',
-      titleEn: 'MoMo wallet',
-      subVi: 'Chuyển tới 0985 000 650',
-      subEn: 'Send to 0985 000 650',
-      tagVi: '',
-      tagEn: '',
-    },
-    {
-      k: 'cash',
-      titleVi: 'Trả toàn bộ khi nhận phòng',
-      titleEn: 'Pay in full on arrival',
-      subVi: 'Chỉ áp dụng ngoài mùa cao điểm, cần xác nhận qua Zalo',
-      subEn: 'Off-peak only, needs Zalo confirmation',
-      tagVi: '',
-      tagEn: '',
-    },
-  ]
+  // Handle saving booking to localStorage for "Đơn đặt của tôi"
+  const handleCompleteBooking = () => {
+    try {
+      const newBooking = {
+        id: bookingCode,
+        roomName: room.name,
+        roomCode: room.code,
+        roomImage: room.images && room.images.length > 0 ? room.images[0] : 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg',
+        dates: formatDateLabel(ci, co),
+        guests: `${guests} người lớn, 1 phòng`,
+        contactName: name,
+        contactPhone: phone,
+        contactEmail: email,
+        notes: notes || 'Không có',
+        totalPrice: totalAmount,
+        depositPrice: depositAmount,
+        status: 'Sắp tới',
+        createdAt: new Date().toLocaleDateString('vi-VN'),
+        paymentMethod: method === 'qr' ? 'Thanh toán chuyển khoản' : method === 'momo' ? 'Ví MoMo' : 'Thanh toán khi nhận phòng',
+      }
+      const existing = JSON.parse(localStorage.getItem('ndh:my-bookings') || '[]')
+      localStorage.setItem('ndh:my-bookings', JSON.stringify([newBooking, ...existing]))
+    } catch (e) {
+      console.error(e)
+    }
+    setStep(3)
+    window.scrollTo(0, 0)
+  }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f7fbfd', color: '#0b1b26' }}>
-      {/* Main Container */}
-      <main className="nd-page-main checkout-main-container" style={{ maxWidth: '1240px', margin: '0 auto', padding: '72px 24px 48px' }}>
-        <div className="checkout-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(0, 1fr)', gap: '24px', alignItems: 'start' }}>
-          
-          {/* Main Form Columns */}
-          <div style={{ display: 'grid', gap: '16px' }}>
-            {/* Step 1: Your Details */}
-            {step === 1 && (
-              <div style={{ display: 'grid', gap: '16px' }}>
-                <section className="checkout-card-section" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', padding: '20px 22px' }}>
-                  <h2 style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, letterSpacing: '-0.015em', color: '#0b1b26' }}>
-                    {t('Thông tin người đặt phòng', 'Who is staying')}
-                  </h2>
-                  <p style={{ margin: '0 0 16px', fontSize: '12px', color: '#566e7d' }}>
-                    {t('Chúng tôi chỉ xin các thông tin cần thiết để phục vụ đón bến tàu.', 'We only ask for details needed to arrange your pier transfer.')}
-                  </p>
+    <main className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] pt-14 pb-28">
+      {/* Step Progress Header */}
+      <div className="bg-white border-b border-[#ECECEC] sticky top-12 z-30 px-4 py-3">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-between">
+          <button
+            onClick={() => {
+              if (step > 1) setStep((prev) => (prev - 1) as 1 | 2 | 3)
+              else router.back()
+            }}
+            className="flex items-center gap-1.5 text-xs text-[#4B5563] hover:text-[#0F2D52] transition font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>{t('Quay lại', 'Back')}</span>
+          </button>
 
-                  <div className="checkout-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px' }}>
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Họ và tên *', 'Full name *')}</span>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Nguyễn Văn A"
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#0F2D52]">
+            <span className={step === 1 ? 'text-[#1D4E89]' : 'text-[#6B7280]'}>
+              1. {t('Thông tin', 'Details')}
+            </span>
+            <span className="text-[#D1D5DB]">•</span>
+            <span className={step === 2 ? 'text-[#1D4E89]' : 'text-[#6B7280]'}>
+              2. {t('Thanh toán', 'Payment')}
+            </span>
+            <span className="text-[#D1D5DB]">•</span>
+            <span className={step === 3 ? 'text-[#1D4E89]' : 'text-[#6B7280]'}>
+              3. {t('Hoàn tất', 'Complete')}
+            </span>
+          </div>
+        </div>
+      </div>
 
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Số điện thoại *', 'Phone number *')}</span>
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="0912 345 678"
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
+      <div className="max-w-[800px] mx-auto px-4 pt-4 space-y-4">
 
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>Email</span>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="email@example.com"
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
+        {/* STEP 1: Fast-Checkout Form (Screen 6) */}
+        {step === 1 && (
+          <div className="space-y-4">
+            
+            {/* 1. Room Summary Card */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
+              <h2 className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">
+                {t('Thông tin đặt phòng', 'Booking Details')}
+              </h2>
 
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Số khách', 'Guests')}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        value={guests}
-                        onChange={(e) => setGuests(Number(e.target.value) || 1)}
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
-
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Ngày nhận phòng', 'Check in')}</span>
-                      <input
-                        type="date"
-                        value={ci}
-                        onChange={(e) => setCi(e.target.value)}
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
-
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Ngày trả phòng', 'Check out')}</span>
-                      <input
-                        type="date"
-                        value={co}
-                        onChange={(e) => setCo(e.target.value)}
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%' }}
-                      />
-                    </label>
+              <div className="flex items-center gap-3">
+                <div className="w-20 h-16 rounded-[8px] overflow-hidden bg-[#F5F7FA] shrink-0">
+                  <img
+                    src={room.images && room.images.length > 0 ? room.images[0] : 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg'}
+                    alt={room.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-1 flex-1 min-w-0">
+                  <h3 className="font-serif text-sm sm:text-base font-bold text-[#0F2D52] truncate">
+                    {isEn ? room.nameEn : room.name}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#4B5563]">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5 text-[#1D4E89]" />
+                      <span>{formatDateLabel(ci, co)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3.5 h-3.5 text-[#1D4E89]" />
+                      <span>{guests} {t('người lớn', 'adults')}, 1 {t('phòng', 'room')}</span>
+                    </div>
                   </div>
+                </div>
+              </div>
+            </div>
 
-                  <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '12px' }}>
-                    <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Yêu cầu đặc biệt', 'Anything we should know')}</span>
-                    <textarea
-                      rows={3}
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder={t('Đến muộn, giường phụ, ăn chay, kỷ niệm...', 'Late arrival, extra bed, vegetarian, anniversary...')}
-                      style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%', resize: 'vertical' }}
-                    />
+            {/* 2. Guest Contact Info Form */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-4 shadow-xs">
+              <div className="border-b border-[#ECECEC] pb-2">
+                <h2 className="font-serif text-base font-bold text-[#0F2D52]">
+                  {t('Thông tin liên hệ', 'Contact Information')}
+                </h2>
+                <p className="text-xs text-[#6B7280]">
+                  {t('Chúng tôi sử dụng thông tin này để đón quý khách tại bến tàu Nam Du.', 'We use this to arrange your pier transfer in Nam Du.')}
+                </p>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Họ và tên *', 'Full Name *')}
                   </label>
-                </section>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Nguyễn Văn A"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
 
-                <section className="checkout-card-section" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', padding: '20px 22px' }}>
-                  <h2 style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, letterSpacing: '-0.015em', color: '#0b1b26' }}>
-                    {t('Đưa đón bến tàu & Xe máy', 'Pier transfer & Scooter')}
-                  </h2>
-                  <p style={{ margin: '0 0 16px', fontSize: '12px', color: '#566e7d' }}>
-                    {t('Miễn phí xe đón bến tàu Củ Tron 2 chiều cho tất cả du khách.', 'Free pier transfer both ways for all guests.')}
-                  </p>
-                  <div className="checkout-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px' }}>
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Chuyến tàu đến', 'Arriving boat')}</span>
-                      <select
-                        value={boat}
-                        onChange={(e) => setBoat(e.target.value)}
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%', cursor: 'pointer' }}
-                      >
-                        <option value="">{t('Chưa biết — sẽ báo sau', 'Not sure — will notify later')}</option>
-                        <option value="superdong">Superdong · 07:30 Rạch Giá</option>
-                        <option value="phuquoc_express">Phú Quốc Express · 08:00 Rạch Giá</option>
-                        <option value="ngoc_thanh">Ngọc Thành · 08:30 Rạch Giá</option>
-                        <option value="hoa_binh">Hòa Bình Ship · 13:00 Rạch Giá</option>
-                      </select>
-                    </label>
-                    <label style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 500, color: '#0b1b26' }}>{t('Thuê xe máy', 'Scooter rental')}</span>
-                      <select
-                        value={bikes}
-                        onChange={(e) => setBikes(Number(e.target.value) || 0)}
-                        style={{ border: '1px solid #dbe7ef', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#0b1b26', background: '#ffffff', width: '100%', cursor: 'pointer' }}
-                      >
-                        <option value={0}>{t('Không cần', 'No thanks')}</option>
-                        <option value={1}>{t('1 xe · 150.000₫/ngày', '1 scooter · 150,000 VND/day')}</option>
-                        <option value={2}>{t('2 xe · 300.000₫/ngày', '2 scooters · 300,000 VND/day')}</option>
-                      </select>
-                    </label>
-                  </div>
-                </section>
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Số điện thoại *', 'Phone Number *')}
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="0901234567"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
 
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Email *', 'Email *')}
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="nguyenvana@gmail.com"
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Yêu cầu đặc biệt (tùy chọn)', 'Special Requests (optional)')}
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder={t('Nhập yêu cầu của bạn...', 'Enter special requests...')}
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89] resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Additional Services (Pier & Scooter) */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
+              <h2 className="font-serif text-sm font-bold text-[#0F2D52]">
+                {t('Đưa đón bến tàu & Xe máy', 'Pier Transfer & Scooter')}
+              </h2>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Chuyến tàu đến', 'Arriving Boat')}
+                  </label>
+                  <select
+                    value={boat}
+                    onChange={(e) => setBoat(e.target.value)}
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  >
+                    <option value="">{t('Chưa xác định — báo sau', 'Not sure — notify later')}</option>
+                    <option value="superdong">Superdong · 07:30 Rạch Giá</option>
+                    <option value="phuquoc_express">Phú Quốc Express · 08:00 Rạch Giá</option>
+                    <option value="ngoc_thanh">Ngọc Thành · 08:30 Rạch Giá</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block font-semibold text-[#1A1A1A]">
+                    {t('Thuê xe máy', 'Scooter Rental')}
+                  </label>
+                  <select
+                    value={bikes}
+                    onChange={(e) => setBikes(Number(e.target.value) || 0)}
+                    className="w-full border border-[#D1D5DB] rounded-[6px] px-3 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
+                  >
+                    <option value={0}>{t('Không thuê', 'No scooter')}</option>
+                    <option value={1}>{t('1 xe · 150.000đ/ngày', '1 scooter · 150,000 VND/day')}</option>
+                    <option value={2}>{t('2 xe · 300.000đ/ngày', '2 scooters · 300,000 VND/day')}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Price Summary Breakdown */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-2 text-xs">
+              <div className="flex items-center justify-between text-[#4B5563]">
+                <span>{formatVND(room.price)} × {nights} {t('đêm', 'nights')}</span>
+                <span className="font-semibold text-[#1A1A1A]">{formatVND(room.price * nights)}</span>
+              </div>
+              {bikes > 0 && (
+                <div className="flex items-center justify-between text-[#4B5563]">
+                  <span>{bikes} {t('xe máy', 'scooters')} × {nights} {t('ngày', 'days')}</span>
+                  <span className="font-semibold text-[#1A1A1A]">{formatVND(bikes * BIKE_RATE * nights)}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between text-emerald-700 font-medium pt-1">
+                <span>{t('Đưa đón bến tàu & Bữa sáng', 'Pier Transfer & Breakfast')}</span>
+                <span>{t('Miễn phí', 'Free')}</span>
+              </div>
+              <div className="border-t border-[#ECECEC] pt-2 flex items-center justify-between text-sm font-bold text-[#0F2D52]">
+                <span>{t('Tổng cộng', 'Total Amount')}</span>
+                <span className="text-base text-[#1D4E89]">{formatVND(totalAmount)}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Confirm & Payment Methods (Screen 7 & 8) */}
+        {step === 2 && (
+          <div className="space-y-4">
+            
+            {/* 1. Confirmation Summary Block */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
+              <h2 className="font-serif text-base font-bold text-[#0F2D52]">
+                {t('Xác nhận đặt phòng', 'Confirm Booking Details')}
+              </h2>
+
+              <div className="flex gap-3 pb-3 border-b border-[#ECECEC]">
+                <div className="w-16 h-14 rounded-[6px] overflow-hidden bg-[#F5F7FA] shrink-0">
+                  <img
+                    src={room.images && room.images.length > 0 ? room.images[0] : 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg'}
+                    alt={room.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-xs space-y-1">
+                  <h3 className="font-bold text-[#0F2D52]">{isEn ? room.nameEn : room.name}</h3>
+                  <p className="text-[#4B5563]">{formatDateLabel(ci, co)}</p>
+                  <p className="text-[#4B5563]">{guests} {t('người lớn', 'adults')}, 1 {t('phòng', 'room')}</p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 text-xs text-[#4B5563]">
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">{t('Họ và tên:', 'Guest Name:')}</span>
+                  <span className="font-semibold text-[#1A1A1A]">{name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">{t('Số điện thoại:', 'Phone:')}</span>
+                  <span className="font-semibold text-[#1A1A1A]">{phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">{t('Email:', 'Email:')}</span>
+                  <span className="font-semibold text-[#1A1A1A]">{email}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Payment Method Selector */}
+            <div className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
+              <h2 className="font-serif text-base font-bold text-[#0F2D52]">
+                {t('Phương thức thanh toán', 'Payment Method')}
+              </h2>
+
+              <div className="space-y-2">
+                {/* VietQR */}
                 <button
-                  className="checkout-step-action-btn"
-                  onClick={() => {
-                    setStep(2)
-                    window.scrollTo(0, 0)
-                  }}
-                  style={{
-                    width: '100%',
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    border: 'none',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    padding: '14px 24px',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'background 150ms ease',
-                  }}
+                  onClick={() => setMethod('qr')}
+                  className={`w-full p-3 rounded-[8px] border text-left flex items-start gap-3 transition ${
+                    method === 'qr' ? 'border-[#1D4E89] bg-[#F2F7FC]' : 'border-[#ECECEC] bg-white'
+                  }`}
                 >
-                  {t('Tiếp tục thanh toán', 'Continue to payment')}
+                  <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
+                    method === 'qr' ? 'border-[#1D4E89] bg-[#1D4E89]' : 'border-[#D1D5DB]'
+                  }`}>
+                    {method === 'qr' && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                  </div>
+                  <div className="space-y-0.5 text-xs">
+                    <span className="font-bold text-[#0F2D52] block">
+                      VietQR — {t('Chuyển khoản ngân hàng tự động', 'Automatic Bank Transfer')}
+                    </span>
+                    <span className="text-[#6B7280] block">
+                      {t('Quét mã QR bằng app ngân hàng, tiền xác nhận tức thì.', 'Scan QR code with any banking app for instant confirmation.')}
+                    </span>
+                  </div>
+                </button>
+
+                {/* MoMo */}
+                <button
+                  onClick={() => setMethod('momo')}
+                  className={`w-full p-3 rounded-[8px] border text-left flex items-start gap-3 transition ${
+                    method === 'momo' ? 'border-[#1D4E89] bg-[#F2F7FC]' : 'border-[#ECECEC] bg-white'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
+                    method === 'momo' ? 'border-[#1D4E89] bg-[#1D4E89]' : 'border-[#D1D5DB]'
+                  }`}>
+                    {method === 'momo' && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                  </div>
+                  <div className="space-y-0.5 text-xs">
+                    <span className="font-bold text-[#0F2D52] block">Ví MoMo</span>
+                    <span className="text-[#6B7280] block">Chuyển tiền tới Hotline 0985 000 650</span>
+                  </div>
+                </button>
+
+                {/* Pay on arrival */}
+                <button
+                  onClick={() => setMethod('cash')}
+                  className={`w-full p-3 rounded-[8px] border text-left flex items-start gap-3 transition ${
+                    method === 'cash' ? 'border-[#1D4E89] bg-[#F2F7FC]' : 'border-[#ECECEC] bg-white'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
+                    method === 'cash' ? 'border-[#1D4E89] bg-[#1D4E89]' : 'border-[#D1D5DB]'
+                  }`}>
+                    {method === 'cash' && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                  </div>
+                  <div className="space-y-0.5 text-xs">
+                    <span className="font-bold text-[#0F2D52] block">
+                      {t('Thanh toán khi nhận phòng', 'Pay in Full on Arrival')}
+                    </span>
+                    <span className="text-[#6B7280] block">
+                      {t('Xác nhận đặt giữ chỗ qua Zalo lễ tân.', 'Confirm reservation with receptionist on Zalo.')}
+                    </span>
+                  </div>
                 </button>
               </div>
-            )}
 
-            {/* Step 2: Payment */}
-            {step === 2 && (
-              <div style={{ display: 'grid', gap: '16px' }}>
-                <section className="checkout-card-section" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', padding: '20px 22px' }}>
-                  <h2 style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 600, letterSpacing: '-0.015em', color: '#0b1b26' }}>
-                    {t('Giữ phòng bằng cọc 50%', 'Hold your room with a 50% deposit')}
-                  </h2>
-                  <p style={{ margin: '0 0 16px', fontSize: '12px', color: '#566e7d' }}>
-                    {t('Thời tiết biển có thể đổi kế hoạch. Tàu ngừng chạy thì cọc luôn được hoàn 100%.', 'Deposits are always 100% refunded when boats stop running.')}
-                  </p>
-
-                  <div style={{ display: 'grid', gap: '8px', marginBottom: '20px' }}>
-                    {methodsList.map((m) => {
-                      const on = method === m.k
-                      return (
-                        <button
-                          key={m.k}
-                          onClick={() => setMethod(m.k as 'qr' | 'momo' | 'cash')}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            width: '100%',
-                            textAlign: 'left',
-                            padding: '12px 14px',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            transition: 'all 150ms ease',
-                            background: on ? '#f2f8fc' : '#ffffff',
-                            border: `1.5px solid ${on ? '#0284c7' : '#e6eef4'}`,
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              borderRadius: '50%',
-                              flexShrink: 0,
-                              border: `4.5px solid ${on ? '#0284c7' : '#dbe7ef'}`,
-                              background: '#ffffff',
-                              boxSizing: 'border-box',
-                            }}
-                          />
-                          <span style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
-                            <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#0b1b26' }}>
-                              {isEn ? m.titleEn : m.titleVi}
-                            </span>
-                            <span style={{ display: 'block', fontSize: '11px', color: '#566e7d', marginTop: '1px' }}>
-                              {isEn ? m.subEn : m.subVi}
-                            </span>
-                          </span>
-                          {m.tagVi && (
-                            <span style={{ fontSize: '9.5px', fontWeight: 600, color: '#00a85c', whiteSpace: 'nowrap' }}>
-                              {isEn ? m.tagEn : m.tagVi}
-                            </span>
-                          )}
-                        </button>
-                      )
-                    })}
+              {/* QR Code Display if VietQR selected */}
+              {method === 'qr' && (
+                <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[8px] p-3 flex flex-col sm:flex-row items-center gap-3 mt-3">
+                  <div className="w-36 h-36 bg-white p-1 rounded-[6px] border border-[#ECECEC] shrink-0">
+                    <img src={qrSrc} alt="VietQR" className="w-full h-full object-contain" />
                   </div>
-
-                  {method === 'qr' && (
-                    <div
-                      className="checkout-qr-box"
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '160px minmax(0, 1fr)',
-                        gap: '16px',
-                        alignItems: 'center',
-                        padding: '16px',
-                        borderRadius: '12px',
-                        background: '#f7fbfd',
-                        border: '1px solid rgba(0,0,0,0.06)',
-                      }}
-                    >
-                      <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #e6eef4', background: '#ffffff' }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={qrSrc}
-                          alt="VietQR"
-                          style={{ width: '100%', height: '160px', objectFit: 'contain', display: 'block' }}
-                        />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#0b1b26', marginBottom: '8px' }}>
-                          {t('Quét bằng app ngân hàng', 'Scan with any banking app')}
-                        </div>
-                        <div style={{ display: 'grid', gap: '6px', marginBottom: '10px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '12px' }}>
-                            <span style={{ color: '#566e7d' }}>{t('Tài khoản', 'Account')}</span>
-                            <span style={{ color: '#0b1b26', fontWeight: 600 }}>THE NAM DU HILL</span>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '12px' }}>
-                            <span style={{ color: '#566e7d' }}>{t('Số tài khoản', 'Number')}</span>
-                            <span style={{ color: '#0b1b26', fontWeight: 600, fontFamily: 'monospace' }}>0985 000 650</span>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '12px' }}>
-                            <span style={{ color: '#566e7d' }}>{t('Nội dung', 'Reference')}</span>
-                            <span style={{ color: '#0284c7', fontWeight: 700, fontFamily: 'monospace' }}>{refCode}</span>
-                          </div>
-                        </div>
-                        <div style={{ fontSize: '10.5px', lineHeight: 1.4, color: '#566e7d' }}>
-                          {t('Giữ đúng nội dung chuyển khoản như trên để tự động xác nhận.', 'Keep exact transfer reference for auto verification.')}
-                        </div>
-                      </div>
+                  <div className="space-y-1.5 text-xs flex-1">
+                    <div className="font-bold text-[#0F2D52]">{t('Cọc 50% giữ phòng:', 'Deposit 50% to hold room:')}</div>
+                    <div className="text-base font-bold text-[#1D4E89]">{formatVND(depositAmount)}</div>
+                    <div className="text-[#6B7280] flex justify-between border-t border-[#ECECEC] pt-1">
+                      <span>{t('Số tài khoản:', 'Account No:')}</span>
+                      <span className="font-mono font-bold text-[#1A1A1A]">0985 000 650</span>
                     </div>
-                  )}
-                </section>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    onClick={() => {
-                      setStep(1)
-                      window.scrollTo(0, 0)
-                    }}
-                    style={{
-                      background: '#ffffff',
-                      border: '1px solid #dbe7ef',
-                      color: '#0b1b26',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      padding: '12px 20px',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {t('Quay lại', 'Back')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setStep(3)
-                      window.scrollTo(0, 0)
-                    }}
-                    style={{
-                      flex: 1,
-                      background: '#00c46a',
-                      color: '#04241a',
-                      border: 'none',
-                      fontSize: '13.5px',
-                      fontWeight: 700,
-                      padding: '12px 24px',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {t('Tôi đã chuyển cọc', 'I have transferred the deposit')}
-                  </button>
+                    <div className="text-[#6B7280] flex justify-between">
+                      <span>{t('Nội dung chuyển:', 'Transfer Note:')}</span>
+                      <span className="font-mono font-bold text-[#1D4E89]">{refCode}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* Step 3: Confirmation */}
-            {step === 3 && (
-              <section className="checkout-card-section" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', padding: '24px 22px' }}>
-                <div
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    background: '#e8f9f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '22px',
-                    color: '#00a85c',
-                    marginBottom: '16px',
-                  }}
-                >
-                  ✓
-                </div>
-                <h2
-                  style={{
-                    margin: '0 0 10px',
-                    fontSize: '20px',
-                    fontWeight: 700,
-                    letterSpacing: '-0.02em',
-                    color: '#0b1b26',
-                    lineHeight: 1.25,
-                  }}
-                >
-                  {t('Đã ghi nhận — Resort sẽ xác nhận trong 30 phút', 'Deposit received — Resort will confirm within 30 minutes')}
-                </h2>
-                <p style={{ margin: '0 0 20px', fontSize: '13px', lineHeight: 1.55, color: '#566e7d' }}>
-                  {t(
-                    'Lễ tân resort đang đối soát thủ công và sẽ nhắn Zalo cho bạn ngay khi tiền vào tài khoản.',
-                    'Our receptionist is verifying your deposit and will text you on Zalo shortly.'
-                  )}
-                </p>
-
-                <div
-                  style={{
-                    display: 'inline-block',
-                    background: '#0b1b26',
-                    color: '#ffffff',
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    fontFamily: 'monospace',
-                    padding: '10px 18px',
-                    borderRadius: '8px',
-                    marginBottom: '20px',
-                  }}
-                >
-                  {refCode}
-                </div>
-
-                <div style={{ display: 'grid', gap: '8px' }}>
-                  <a
-                    href="https://zalo.me/0985000650"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      textAlign: 'center',
-                      background: '#0284c7',
-                      color: '#ffffff',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      padding: '12px 20px',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {t('Gửi ảnh chuyển khoản qua Zalo', 'Send receipt via Zalo')}
-                  </a>
-                  <Link
-                    href="/explore"
-                    style={{
-                      textAlign: 'center',
-                      border: '1px solid #dbe7ef',
-                      color: '#0b1b26',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      padding: '12px 20px',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {t('Khám phá Nam Du', 'Explore Nam Du')}
-                  </Link>
-                </div>
-              </section>
-            )}
+              )}
+            </div>
           </div>
+        )}
 
-          {/* Sticky Summary Sidebar */}
-          <aside className="checkout-summary-sidebar" style={{ position: 'sticky', top: '72px', display: 'grid', gap: '12px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', overflow: 'hidden' }}>
-              <div style={{ position: 'relative', height: '130px', background: '#eef4f8' }}>
-                {room.images && room.images.length > 0 ? (
+        {/* STEP 3: Booking Success (Screen 9) */}
+        {step === 3 && (
+          <div className="bg-white border border-[#ECECEC] rounded-[12px] p-6 text-center space-y-5 shadow-xs">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+              <CheckCircle className="w-10 h-10 stroke-[1.75]" />
+            </div>
+
+            <div className="space-y-1">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0F2D52]">
+                {t('Đặt phòng thành công!', 'Booking Successful!')}
+              </h2>
+              <p className="text-xs text-[#6B7280]">
+                {t('Cảm ơn bạn đã lựa chọn nghỉ dưỡng tại The Nam Du Hill Resort.', 'Thank you for choosing to stay at The Nam Du Hill Resort.')}
+              </p>
+            </div>
+
+            <div className="inline-block bg-[#F2F7FC] border border-[#1D4E89]/20 rounded-[8px] px-4 py-2 text-xs text-[#0F2D52] font-semibold">
+              {t('Mã đặt phòng của bạn là:', 'Your booking code is:')} <span className="text-[#1D4E89] font-mono text-sm font-bold ml-1">{bookingCode}</span>
+            </div>
+
+            {/* Summary Block */}
+            <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[8px] p-4 text-left space-y-2 text-xs">
+              <div className="flex items-center gap-3 pb-2 border-b border-[#ECECEC]">
+                <div className="w-12 h-12 rounded-[6px] overflow-hidden bg-[#F5F7FA] shrink-0">
                   <img
-                    src={room.images[0]}
-                    alt={isEn ? room.nameEn : room.name}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                    src={room.images && room.images.length > 0 ? room.images[0] : 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg'}
+                    alt={room.name}
+                    className="w-full h-full object-cover"
                   />
-                ) : (
-                  <ImageSlot
-                    id={`${roomSlug(room.code)}_g0`}
-                    placeholder={`${room.code} — ${isEn ? room.nameEn : room.name}`}
-                    style={{ position: 'absolute', inset: 0 }}
-                  />
-                )}
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '10px',
-                    left: '10px',
-                    background: 'rgba(255,255,255,0.94)',
-                    backdropFilter: 'blur(8px)',
-                    color: '#0b1b26',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    letterSpacing: '0.04em',
-                    padding: '4px 9px',
-                    borderRadius: '999px',
-                  }}
-                >
-                  {room.code}
-                </span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#0F2D52]">{isEn ? room.nameEn : room.name}</h4>
+                  <p className="text-[#6B7280]">{formatDateLabel(ci, co)}</p>
+                </div>
               </div>
-              <div style={{ padding: '16px 18px 18px' }}>
-                <h3 style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 600, color: '#0b1b26', lineHeight: 1.25 }}>
-                  {isEn ? room.nameEn : room.name}
-                </h3>
-                <div style={{ fontSize: '11.5px', color: '#566e7d', marginBottom: '12px' }}>
-                  {room.area} m² · {room.cap} {t('khách', 'guests')}
-                </div>
 
-                <div style={{ display: 'grid', gap: '6px', padding: '12px 0', borderTop: '1px solid #eef4f8', borderBottom: '1px solid #eef4f8' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '12px' }}>
-                    <span style={{ color: '#566e7d' }}>{t('Nhận phòng', 'Check in')}</span>
-                    <span style={{ color: '#0b1b26', fontWeight: 600 }}>{formatDate(ci)}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', fontSize: '12px' }}>
-                    <span style={{ color: '#566e7d' }}>{t('Trả phòng', 'Check out')}</span>
-                    <span style={{ color: '#0b1b26', fontWeight: 600 }}>{formatDate(co)}</span>
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gap: '6px', padding: '12px 0 0' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', fontSize: '12px', color: '#566e7d' }}>
-                    <span>{formatVND(room.price)} × {nights} {isEn ? 'night(s)' : 'đêm'}</span>
-                    <span style={{ color: '#0b1b26', fontWeight: 600 }}>{formatVND(room.price * nights)}</span>
-                  </div>
-                  {bikes > 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', fontSize: '12px', color: '#566e7d' }}>
-                      <span>{bikes} {isEn ? 'scooter(s)' : 'xe máy'} × {nights} {isEn ? 'day(s)' : 'ngày'}</span>
-                      <span style={{ color: '#0b1b26', fontWeight: 600 }}>{formatVND(bikes * BIKE_RATE * nights)}</span>
-                    </div>
-                  )}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', fontSize: '12px', color: '#566e7d' }}>
-                    <span>{t('Bữa sáng & đưa đón bến tàu', 'Breakfast & pier transfer')}</span>
-                    <span style={{ color: '#00a85c', fontWeight: 600 }}>{t('Đã gồm', 'Included')}</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', paddingTop: '10px', marginTop: '4px', borderTop: '1px solid #eef4f8', fontSize: '13.5px', fontWeight: 700, color: '#0b1b26' }}>
-                    <span>{t('Tổng cộng', 'Total')}</span>
-                    <span>{formatVND(totalAmount)}</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', paddingTop: '8px', marginTop: '4px', borderTop: '1px solid #eef4f8', fontSize: '13.5px', fontWeight: 700, color: '#0284c7' }}>
-                    <span>{t('Cọc ngay (50%)', 'Deposit now (50%)')}</span>
-                    <span>{formatVND(depositAmount)}</span>
-                  </div>
-                </div>
+              <div className="flex justify-between text-[#4B5563]">
+                <span>{t('Người đặt:', 'Guest Name:')}</span>
+                <span className="font-semibold text-[#1A1A1A]">{name}</span>
+              </div>
+              <div className="flex justify-between text-[#4B5563]">
+                <span>{t('Số điện thoại:', 'Phone:')}</span>
+                <span className="font-semibold text-[#1A1A1A]">{phone}</span>
+              </div>
+              <div className="flex justify-between text-[#4B5563]">
+                <span>{t('Tổng tiền:', 'Total Amount:')}</span>
+                <span className="font-bold text-[#1D4E89]">{formatVND(totalAmount)}</span>
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '14px', padding: '14px 16px', display: 'grid', gap: '8px' }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                <span style={{ color: '#00c46a', fontSize: '12px', lineHeight: 1.4 }}>✓</span>
-                <span style={{ fontSize: '11.5px', lineHeight: 1.4, color: '#566e7d' }}>{t('Huỷ miễn phí trước 7 ngày', 'Free cancellation up to 7 days before arrival')}</span>
-              </div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                <span style={{ color: '#00c46a', fontSize: '12px', lineHeight: 1.4 }}>✓</span>
-                <span style={{ fontSize: '11.5px', lineHeight: 1.4, color: '#566e7d' }}>{t('Hoàn 100% nếu tàu ngừng chạy do thời tiết', 'Full refund if boats stop for weather')}</span>
-              </div>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                <span style={{ color: '#00c46a', fontSize: '12px', lineHeight: 1.4 }}>✓</span>
-                <span style={{ fontSize: '11.5px', lineHeight: 1.4, color: '#566e7d' }}>{t('Đã gồm bữa sáng và đưa đón bến tàu', 'Breakfast and pier transfer included')}</span>
-              </div>
+            <p className="text-xs text-[#6B7280]">
+              {t('Thông tin xác nhận đã được gửi đến email ', 'Confirmation details sent to ')}
+              <span className="font-semibold text-[#1A1A1A]">{email}</span>
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Link href="/my-bookings" className="flex-1">
+                <Button variant="outline" size="md" radius="6px" className="w-full">
+                  {t('Xem đơn đặt', 'View My Bookings')}
+                </Button>
+              </Link>
+              <Link href="/" className="flex-1">
+                <Button variant="primary" size="md" radius="6px" className="w-full">
+                  {t('Quay về trang chủ', 'Back to Home')}
+                </Button>
+              </Link>
             </div>
-          </aside>
+          </div>
+        )}
+
+      </div>
+
+      {/* Fixed Full-Width Bottom Bar on Checkout Screen */}
+      {step < 3 && (
+        <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#ECECEC] p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50 flex items-center justify-between gap-3">
+          <div className="max-w-[800px] mx-auto w-full flex items-center justify-between gap-3">
+            <div className="shrink-0">
+              <span className="text-[10px] text-[#6B7280] block leading-none">{t('Tổng tiền', 'Total')}</span>
+              <span className="font-bold text-base text-[#0F2D52]">
+                {formatVND(totalAmount)}
+              </span>
+            </div>
+            <Button
+              variant="primary"
+              size="lg"
+              radius="6px"
+              className="flex-1 py-3 font-bold"
+              onClick={() => {
+                if (step === 1) setStep(2)
+                else handleCompleteBooking()
+                window.scrollTo(0, 0)
+              }}
+            >
+              {step === 1 ? t('Tiếp tục thanh toán', 'Continue to Payment') : t('Xác nhận đặt phòng', 'Confirm Booking')}
+            </Button>
+          </div>
         </div>
-      </main>
-
-      <footer className="checkout-footer" style={{ maxWidth: '1240px', margin: '40px auto 0', padding: '20px 24px 36px', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '11.5px', color: '#8fa5b3' }}>© 2026 The Nam Du Hill · Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang</span>
-        <span style={{ fontSize: '11.5px', color: '#8fa5b3' }}>Hotline <a href="tel:0985000650" style={{ fontWeight: 600, color: '#0b1b26', textDecoration: 'none' }}>0985 000 650</a></span>
-      </footer>
-
-      {/* Global Responsive Styles for Mobile Checkout */}
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .checkout-header-inner {
-            padding: 8px 12px !important;
-            gap: 8px !important;
-          }
-          .checkout-step-nav {
-            gap: 4px !important;
-          }
-          .step-label {
-            display: none !important;
-          }
-          .step-divider {
-            width: 10px !important;
-          }
-          .checkout-help-link {
-            display: none !important;
-          }
-          .checkout-main-container {
-            padding: 72px 12px 48px !important;
-          }
-          .checkout-grid-layout {
-            grid-template-columns: 1fr !important;
-            gap: 16px !important;
-          }
-          .checkout-form-grid {
-            grid-template-columns: 1fr !important;
-            gap: 10px !important;
-          }
-          .checkout-card-section {
-            padding: 14px 14px !important;
-            border-radius: 12px !important;
-          }
-          .checkout-step-action-btn {
-            display: none !important;
-          }
-          .checkout-qr-box {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-            text-align: center;
-          }
-          .checkout-summary-sidebar {
-            position: static !important;
-            order: -1; /* Place room summary at the top on mobile if needed, or normal flow */
-          }
-          .checkout-footer {
-            padding: 16px 12px 64px !important;
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 6px !important;
-          }
-        }
-      `}</style>
-    </div>
+      )}
+    </main>
   )
 }
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div style={{ padding: '60px 20px', textAlign: 'center', fontSize: '13px', color: '#566e7d' }}>Đang tải màn hình đặt phòng...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-xs text-[#6B7280]">Đang tải...</div>}>
       <CheckoutContent />
     </Suspense>
   )
