@@ -13,7 +13,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType>({
   language: 'vi',
   setLanguage: () => {},
-  t: (vi, en) => vi,
+  t: (vi) => vi,
 })
 
 export function LanguageProvider({ children }: { children: ReactNode }) {

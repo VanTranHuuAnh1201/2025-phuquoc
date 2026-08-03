@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLanguage } from '../../context/LanguageContext'
 import { BookingCalendarModal } from '../modals/BookingCalendarModal'
 import { Button } from '../common/Button'
-import { Calendar, Users, MapPin, ChevronRight, Star } from 'lucide-react'
+import { Calendar, Users, ChevronRight, Star } from 'lucide-react'
 
 const SLIDES = [
   { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },

@@ -117,7 +117,7 @@ export function DiningSection() {
                     </div>
                   </div>
                   <p className="text-xs text-[#4B5563] leading-relaxed italic">
-                    "{rev.comment}"
+                    &quot;{rev.comment}&quot;
                   </p>
                 </div>
 
