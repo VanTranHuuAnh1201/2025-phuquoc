@@ -46,14 +46,14 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
   const [guests, setGuests] = useState(room.cap || 2)
 
   // Calculate Nights & Total
-  const dIn = new Date(checkIn).getTime()
-  const dOut = new Date(checkOut).getTime()
+  const dIn = new Date(checkIn || '').getTime()
+  const dOut = new Date(checkOut || '').getTime()
   const diffDays = Math.max(1, Math.ceil((dOut - dIn) / (1000 * 3600 * 24)))
   const nights = isNaN(diffDays) ? 1 : diffDays
   const totalPrice = room.price * nights
   const deposit = Math.round(totalPrice * 0.5)
 
-  const syntaxText = `NDH ${room.code.replace('#', '')} ${checkIn.replace(/-/g, '')}`
+  const syntaxText = `NDH ${room.code.replace('#', '')} ${(checkIn || '').replace(/-/g, '')}`
   const qrUrl = `https://img.vietqr.io/image/970422-0985000650-compact2.png?amount=${deposit}&addInfo=${encodeURIComponent(
     syntaxText
   )}`
