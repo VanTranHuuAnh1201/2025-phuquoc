@@ -19,6 +19,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +30,23 @@ export function Header({ forceSolid = false }: HeaderProps) {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('.user-dropdown-container')) {
+        setUserDropdownOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
+
+  // Hide public header completely on admin pages
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
 
   const isSolid = forceSolid || !isHomePage || scrolled
 
@@ -110,17 +128,54 @@ export function Header({ forceSolid = false }: HeaderProps) {
               </button>
             </div>
 
-            <Link
-              href="/my-bookings"
-              className={`hidden md:flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings'
-                ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
-                : isSolid
-                  ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
-                  : 'border-white/40 text-white hover:bg-white/10'
+            {/* User Account Dropdown Container */}
+            <div className="relative user-dropdown-container">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${
+                  pathname === '/my-bookings' || pathname.startsWith('/admin')
+                    ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
+                    : isSolid
+                    ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
+                    : 'border-white/40 text-white hover:bg-white/10'
                 }`}
-            >
-              <User className="w-3.5 h-3.5 shrink-0" />
-            </Link>
+                aria-label="User Account Menu"
+              >
+                <User className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden lg:inline">{t('Tài khoản', 'Account')}</span>
+              </button>
+
+              {/* Dropdown Options */}
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#ECECEC] py-2 z-50 text-slate-800 text-xs animate-in fade-in slide-in-from-top-1 duration-150">
+                  <Link
+                    href="/my-bookings"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
+                  >
+                    <span className="text-base">📋</span>
+                    <div>
+                      <div className="font-bold text-[#0F2D52]">{t('Đơn đặt của tôi', 'My Bookings')}</div>
+                      <div className="text-[10px] text-slate-500">{t('Xem lịch sử phòng đã đặt', 'View booking history')}</div>
+                    </div>
+                  </Link>
+
+                  <div className="my-1 border-t border-slate-100" />
+
+                  <Link
+                    href="/admin"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
+                  >
+                    <span className="text-base">🏨</span>
+                    <div>
+                      <div className="font-bold text-[#0F2D52]">{t('Quản lý hệ thống (Admin)', 'Admin CMS')}</div>
+                      <div className="text-[10px] text-slate-500">{t('Trang quản lý resort Nam Du', 'Resort management panel')}</div>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <Link href="/rooms" className="hidden md:inline-block">
               <Button variant="primary" size="md" radius="6px">
@@ -199,6 +254,38 @@ export function Header({ forceSolid = false }: HeaderProps) {
                 </Link>
               )
             })}
+
+            <div className="my-1 border-t border-[#ECECEC]" />
+
+            <Link
+              href="/my-bookings"
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                pathname === '/my-bookings'
+                  ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
+                  : 'text-[#4B5563] hover:bg-[#F5F7FA]'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span>📋</span>
+                <span>{t('Đơn đặt của tôi', 'My Bookings')}</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                pathname.startsWith('/admin')
+                  ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
+                  : 'text-[#4B5563] hover:bg-[#F5F7FA]'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span>🏨</span>
+                <span>{t('Quản lý hệ thống (Admin)', 'Admin CMS')}</span>
+              </div>
+            </Link>
           </div>
 
           <div className="pt-3 border-t border-[#ECECEC]">

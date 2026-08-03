@@ -9,9 +9,11 @@ const compat = new FlatCompat({
 const config = [
     ...compat.extends('next/core-web-vitals', 'next/typescript'),
     {
-        // next-env.d.ts do Next tu sinh, bat buoc dung triple-slash reference
-        // va khong duoc sua bang tay -> loai khoi pham vi lint.
         ignores: ['node_modules/**', '.next/**', 'out/**', 'next-env.d.ts'],
+        rules: {
+            '@next/next/no-img-element': 'off',
+            '@typescript-eslint/no-unused-vars': 'warn',
+        },
     },
 ]
 

@@ -52,7 +52,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
   const { t, language } = useLanguage()
   const isEn = language === 'en'
 
-  const [currentSlide, setCurrentSlide] = useState(1)
+  const [currentSlide] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
 
   const roomImages = room.images && room.images.length > 0

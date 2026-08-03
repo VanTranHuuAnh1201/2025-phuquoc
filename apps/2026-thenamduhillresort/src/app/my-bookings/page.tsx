@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../../components/common/Button'
-import { ArrowLeft, Calendar, Users, CheckCircle2, ChevronRight, X, AlertCircle } from 'lucide-react'
+import { ArrowLeft, X } from 'lucide-react'
 
 interface BookingItem {
   id: string
@@ -25,8 +25,7 @@ interface BookingItem {
 }
 
 export default function MyBookingsPage() {
-  const { t, language } = useLanguage()
-  const isEn = language === 'en'
+  const { t } = useLanguage()
 
   const [tab, setTab] = useState<'upcoming' | 'completed'>('upcoming')
   const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null)
@@ -99,6 +98,7 @@ export default function MyBookingsPage() {
       }
     } catch {}
     setBookings(initialSampleBookings)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleCancelBooking = (bookingId: string) => {

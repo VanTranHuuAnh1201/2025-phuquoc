@@ -5,7 +5,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../../components/common/ImageSlot'
 import { DINING_MENU } from '../../data/dining'
 import { Button } from '../../components/common/Button'
-import { Utensils, Coffee, Flame, MessageCircle, Clock, CheckCircle } from 'lucide-react'
+import { Utensils, Coffee, Flame, MessageCircle } from 'lucide-react'
 
 export default function DiningPage() {
   const { t, language } = useLanguage()

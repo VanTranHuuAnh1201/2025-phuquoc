@@ -10,10 +10,11 @@ export function MobileStickyCta() {
   const pathname = usePathname()
   const { t } = useLanguage()
 
-  // Hide global bottom navigation bar on checkout page and room detail page to avoid clutter and covering the room CTA bar
+  // Hide global bottom navigation bar on checkout page, room detail page, and admin pages
   if (
     pathname === '/checkout' ||
     pathname.startsWith('/checkout') ||
+    pathname.startsWith('/admin') ||
     (pathname.startsWith('/rooms/') && pathname !== '/rooms')
   ) {
     return null

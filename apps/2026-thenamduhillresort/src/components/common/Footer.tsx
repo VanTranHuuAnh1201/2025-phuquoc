@@ -10,7 +10,7 @@ export function Footer() {
   const { t } = useLanguage()
   const pathname = usePathname()
 
-  if (pathname?.startsWith('/checkout')) {
+  if (pathname?.startsWith('/checkout') || pathname?.startsWith('/admin')) {
     return null
   }
 

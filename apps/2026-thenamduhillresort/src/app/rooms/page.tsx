@@ -7,7 +7,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { ROOMS, Room, formatVND, roomSlug } from '../../data/rooms'
 import { Button } from '../../components/common/Button'
 import { BookingModal } from '../../components/rooms/BookingModal'
-import { ArrowLeft, SlidersHorizontal, Check, Maximize2, Users, Eye } from 'lucide-react'
+import { ArrowLeft, SlidersHorizontal, Check, Maximize2, Users } from 'lucide-react'
 
 const FILTERS = [
   { k: 'all', vi: 'Tất cả', en: 'All' },
@@ -24,8 +24,6 @@ const SORTS = [
   { k: 'area', vi: 'Diện tích rộng nhất', en: 'Largest area' },
 ]
 
-const FAV_KEY = 'ndh:saved-rooms'
-
 function RoomsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -39,8 +37,6 @@ function RoomsContent() {
 
   const [activeFilter, setActiveFilter] = useState('all')
   const [activeSort, setActiveSort] = useState('rec')
-  const [favOnly, setFavOnly] = useState(false)
-  const [favs, setFavs] = useState<string[]>([])
   const [bookingRoom, setBookingRoom] = useState<Room | null>(null)
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
 
@@ -54,17 +50,8 @@ function RoomsContent() {
     }
   }, [roomType])
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(FAV_KEY)
-      if (stored) setFavs(JSON.parse(stored))
-    } catch (e) {
-      // ignore
-    }
-  }, [])
-
   const getVisibleRooms = () => {
-    let list = ROOMS.filter((r) => (favOnly ? favs.includes(r.code) : true)).filter((r) => {
+    let list = ROOMS.filter((r) => {
       if (activeFilter === 'all') return true
       if (activeFilter === 'sea') return /biển|sea/i.test(r.view)
       return r.group === activeFilter

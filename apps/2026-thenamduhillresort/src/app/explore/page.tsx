@@ -6,7 +6,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../../components/common/ImageSlot'
 import { SPOTS, SATELLITE_ISLANDS, TRIPS } from '../../data/explore'
 import { Button } from '../../components/common/Button'
-import { Compass, MapPin, Anchor, Calendar, ShieldCheck, Sun, ArrowRight, MessageCircle } from 'lucide-react'
+import { Compass, Anchor, Calendar, ShieldCheck, Sun, MessageCircle } from 'lucide-react'
 
 export default function ExplorePage() {
   const { t, language } = useLanguage()

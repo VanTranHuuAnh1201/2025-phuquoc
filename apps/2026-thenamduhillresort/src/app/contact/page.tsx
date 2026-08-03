@@ -3,11 +3,10 @@
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../../components/common/Button'
-import { Phone, MapPin, Mail, Clock, Send, MessageCircle, Navigation, CheckCircle, ShieldCheck } from 'lucide-react'
+import { MapPin, Mail, Clock, Send, MessageCircle, Navigation, CheckCircle } from 'lucide-react'
 
 export default function ContactPage() {
-  const { t, language } = useLanguage()
-  const isEn = language === 'en'
+  const { t } = useLanguage()
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
