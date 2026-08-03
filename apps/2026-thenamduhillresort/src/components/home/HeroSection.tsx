@@ -1,10 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { VideoModal } from '../modals/VideoModal'
-import { BookingCalendarModal } from '../modals/BookingCalendarModal'
 
 const SLIDES = [
   { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
@@ -18,23 +18,21 @@ export function HeroSection() {
   const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
-  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
   // Default dates: Today & Tomorrow
-  const [checkIn, setCheckIn] = useState('2026-08-03')
-  const [checkOut, setCheckOut] = useState('2026-08-04')
+  const [checkIn, setCheckIn] = useState(() => new Date().toISOString().split('T')[0])
+  const [checkOut, setCheckOut] = useState(() => new Date(Date.now() + 86400000).toISOString().split('T')[0])
   const [guests, setGuests] = useState('2 khách')
   const [roomType, setRoomType] = useState('Tất cả 20 hạng phòng')
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
-    }, 30000)
+    }, 30000) // Slide show interval: 7 seconds (7s)
     return () => clearInterval(timer)
   }, [])
 
-  const handleCheckAvailability = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation()
+  const handleCheckAvailability = () => {
     const params = new URLSearchParams()
     if (checkIn) params.set('checkIn', checkIn)
     if (checkOut) params.set('checkOut', checkOut)
@@ -49,7 +47,7 @@ export function HeroSection() {
       id="top"
       style={{
         position: 'relative',
-        minHeight: 'auto',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'flex-end',
         overflow: 'hidden',
@@ -133,7 +131,7 @@ export function HeroSection() {
         }}
       />
 
-      {/* Single Unified Fluid Hero Content Container */}
+      {/* Hero Content Container */}
       <div
         className="hero-container nd-section-container"
         style={{
@@ -142,89 +140,320 @@ export function HeroSection() {
           width: '100%',
           maxWidth: '1320px',
           margin: '0 auto',
-          padding: '120px 32px 36px',
+          padding: '160px 32px 42px',
         }}
       >
-        {/* Top Rating & Badge Bar */}
-        <div className="hero-badge-bar" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+        {/* Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
+          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
           <span
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: '#0284c7',
-              color: '#ffffff',
-              fontSize: '11px',
-              fontWeight: 800,
-              padding: '3px 9px',
-              borderRadius: '999px',
+              fontSize: '12px',
+              fontWeight: 700,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.86)',
             }}
           >
-            <span>⭐ 8.5/10</span>
-            <span>·</span>
-            <span>{t('300+ đánh giá', '300+ reviews')}</span>
-          </span>
-
-          <span className="nd-section-subtitle" style={{ color: 'rgba(255,255,255,0.82)' }}>
-            {t('Hilltop resort · Nam Du', 'Hilltop resort · Nam Du')}
+            {t('Hilltop boutique resort · Ấp Củ Tron, Nam Du', 'Hilltop boutique resort · Cu Tron, Nam Du')}
           </span>
         </div>
 
-        {/* Fluid Responsive Headline */}
-        <h1 className="hero-headline nd-h1" style={{ color: '#ffffff', maxWidth: '22ch', margin: '0 0 10px' }}>
+        {/* Headline */}
+        <h1
+          style={{
+            margin: '0 0 18px',
+            fontSize: 'clamp(36px, 5vw, 68px)',
+            lineHeight: 1.02,
+            fontWeight: 800,
+            letterSpacing: '-0.038em',
+            color: '#ffffff',
+            maxWidth: '15ch',
+            textWrap: 'balance',
+          }}
+        >
           {t('Bình minh và hoàng hôn từ cùng một sân hiên.', 'Sunrise and sunset, from the very same terrace.')}
         </h1>
 
-        {/* Sub-headline (Fluid text density) */}
-        <p className="hero-subheadline nd-lead-p" style={{ color: 'rgba(255,255,255,0.85)', maxWidth: '56ch', margin: '0 0 16px' }}>
+        {/* Sub-headline */}
+        <p
+          style={{
+            margin: '0 0 26px',
+            fontSize: 'clamp(15px, 1.3vw, 17.5px)',
+            lineHeight: 1.6,
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.84)',
+            maxWidth: '58ch',
+          }}
+        >
           {t(
             'Trên ngọn đồi cao nhất Ấp Củ Tron, thung lũng mở ra ôm trọn vịnh Hòn Lớn — và về đêm, ánh đèn chợ đêm Nam Du nằm ngay dưới chân bạn.',
             'On the highest hill of Cu Tron, the valley opens onto Hon Lon bay — and at night, the lights of the Nam Du night market sit right below you.'
           )}
         </p>
 
-        {/* Floating Booking Search Bar (Super Simplified Compact Booking.com Pill) */}
-        <div
-          id="booking"
-          onClick={() => setIsCalendarModalOpen(true)}
-          className="booking-search-widget"
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="booking-pill-info">
-            <span className="booking-pill-icon">🔍</span>
-            <div className="booking-pill-text">
-              <div className="booking-pill-title">The Nam Du Hill · {checkIn} — {checkOut}</div>
-              <div className="booking-pill-sub">{guests} · {roomType}</div>
+        {/* Action Buttons & Rating Stats */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '26px', flexWrap: 'wrap', marginBottom: '26px' }}>
+          <Link
+            href="/rooms"
+            style={{
+              background: '#ffffff',
+              color: '#0b1b26',
+              fontSize: '15px',
+              fontWeight: 700,
+              padding: '16px 30px',
+              borderRadius: '999px',
+              whiteSpace: 'nowrap',
+              textDecoration: 'none',
+              transition: 'background 150ms ease, transform 150ms ease',
+            }}
+          >
+            {t('Xem 20 hạng phòng', 'Explore 20 room types')}
+          </Link>
+
+          <button
+            onClick={() => setIsVideoModalOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '11px',
+              border: '1px solid rgba(255,255,255,0.46)',
+              background: 'rgba(255,255,255,0.10)',
+              backdropFilter: 'blur(10px)',
+              color: '#ffffff',
+              fontSize: '14.5px',
+              fontWeight: 600,
+              padding: '13px 22px 13px 14px',
+              borderRadius: '999px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span
+              style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: '#ffffff',
+                color: '#0b1b26',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '11px',
+                paddingLeft: '2px',
+              }}
+            >
+              ▶
+            </span>
+            <span>{t('Xem phim giới thiệu · 3:00', 'Watch the film · 3:00')}</span>
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '22px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '7px' }}>
+              <span style={{ fontSize: '21px', fontWeight: 900, letterSpacing: '-0.03em', color: '#ffffff' }}>
+                8.5
+              </span>
+              <span style={{ fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.74)' }}>
+                {t('300+ đánh giá Booking.com', '300+ Booking.com reviews')}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '7px' }}>
+              <span style={{ fontSize: '21px', fontWeight: 900, letterSpacing: '-0.03em', color: '#00e07a' }}>
+                9.1
+              </span>
+              <span style={{ fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.74)' }}>
+                {t('Nhân viên & chủ nhà', 'Staff & host care')}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '7px' }}>
+              <span style={{ fontSize: '21px', fontWeight: 900, letterSpacing: '-0.03em', color: '#ffffff' }}>
+                0₫
+              </span>
+              <span style={{ fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.74)' }}>
+                {t('Đưa đón bến tàu', 'Pier transfer')}
+              </span>
             </div>
           </div>
+        </div>
+
+        {/* Floating Booking Search Bar */}
+        <div
+          id="booking"
+          className="booking-bar"
+          style={{
+            background: 'rgba(255,255,255,0.96)',
+            backdropFilter: 'blur(18px)',
+            borderRadius: '22px',
+            boxShadow: '0 22px 54px rgba(3,20,32,0.34)',
+            padding: '14px 16px',
+            display: 'grid',
+            gridTemplateColumns: 'minmax(128px, 1fr) minmax(128px, 1fr) minmax(128px, 0.8fr) minmax(232px, 1.7fr) auto',
+            gap: '4px',
+            alignItems: 'stretch',
+          }}
+        >
+          <label className="booking-field" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 16px', borderRight: '1px solid #e6eef4' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 800,
+                letterSpacing: '0.13em',
+                textTransform: 'uppercase',
+                color: '#8fa5b3',
+              }}
+            >
+              {t('Nhận phòng', 'Check in')}
+            </span>
+            <input
+              type="date"
+              value={checkIn}
+              onChange={(e) => setCheckIn(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontSize: '14.5px',
+                fontWeight: 600,
+                color: '#0b1b26',
+                padding: 0,
+                width: '100%',
+              }}
+            />
+          </label>
+
+          <label className="booking-field" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 16px', borderRight: '1px solid #e6eef4' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 800,
+                letterSpacing: '0.13em',
+                textTransform: 'uppercase',
+                color: '#8fa5b3',
+              }}
+            >
+              {t('Trả phòng', 'Check out')}
+            </span>
+            <input
+              type="date"
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontSize: '14.5px',
+                fontWeight: 600,
+                color: '#0b1b26',
+                padding: 0,
+                width: '100%',
+              }}
+            />
+          </label>
+
+          <label className="booking-field" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 16px', borderRight: '1px solid #e6eef4' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 800,
+                letterSpacing: '0.13em',
+                textTransform: 'uppercase',
+                color: '#8fa5b3',
+              }}
+            >
+              {t('Số khách', 'Guests')}
+            </span>
+            <select
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontSize: '14.5px',
+                fontWeight: 600,
+                color: '#0b1b26',
+                padding: 0,
+                width: '100%',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="2 khách">{t('2 khách', '2 guests')}</option>
+              <option value="3 khách">{t('3 khách', '3 guests')}</option>
+              <option value="4 khách">{t('4 khách', '4 guests')}</option>
+              <option value="6 khách">{t('6 guests', '6 guests')}</option>
+              <option value="8 khách">{t('8 khách', '8 guests')}</option>
+            </select>
+          </label>
+
+          <label className="booking-field" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 16px', borderRight: '1px solid #e6eef4' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 800,
+                letterSpacing: '0.13em',
+                textTransform: 'uppercase',
+                color: '#8fa5b3',
+              }}
+            >
+              {t('Chọn phòng', 'Room type')}
+            </span>
+            <select
+              value={roomType}
+              onChange={(e) => setRoomType(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontSize: '14.5px',
+                fontWeight: 600,
+                color: '#0b1b26',
+                padding: 0,
+                width: '100%',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="Tất cả 20 hạng phòng">{t('Tất cả 20 hạng phòng', 'All 20 room types')}</option>
+              <option value="#14 Rock Deluxe">#14 Rock Deluxe · 1.776.000₫</option>
+              <option value="#05 Lục Giác Kính">#05 Lục Giác Kính · 1.546.000₫</option>
+              <option value="#07 Superior King">#07 Superior King · 2.971.000₫</option>
+              <option value="#08 Gia đình gác lửng">#08 Gia đình gác lửng · 3.088.000₫</option>
+              <option value="#08-09 Suite 8 khách">#08-09 Suite 8 khách · 5.662.000₫</option>
+            </select>
+          </label>
 
           <button
             onClick={handleCheckAvailability}
-            className="booking-submit-btn"
+            style={{
+              background: '#0284c7',
+              color: '#ffffff',
+              border: 'none',
+              fontSize: '14px',
+              fontWeight: 700,
+              padding: '17px 26px',
+              borderRadius: '15px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 6px 18px rgba(2,132,199,0.30)',
+              transition: 'background 150ms ease',
+            }}
           >
-            {t('Tìm phòng', 'Search')}
+            {t('Kiểm tra phòng trống', 'Check availability')}
           </button>
         </div>
 
-        {/* Perks Bar & Slide Dots */}
+        {/* Bottom Guarantee Note & Slide Dots */}
         <div
           style={{
-            marginTop: '12px',
+            marginTop: '18px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '12px',
+            gap: '24px',
             flexWrap: 'wrap',
           }}
         >
-          <div className="hero-perks-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.14)', padding: '3px 8px', borderRadius: '999px' }}>
-              ✓ Free bữa sáng
-            </span>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.14)', padding: '3px 8px', borderRadius: '999px' }}>
-              ✓ Đưa đón bến tàu
-            </span>
-          </div>
+          <span style={{ fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.72)' }}>
+            {t(
+              'Cam kết giá tốt nhất khi đặt trực tiếp · Huỷ miễn phí trước 7 ngày',
+              'Best rate guaranteed when you book direct · Free cancellation up to 7 days before arrival'
+            )}
+          </span>
 
           <div style={{ display: 'flex', gap: '8px' }}>
             {SLIDES.map((_, i) => (
@@ -233,7 +462,7 @@ export function HeroSection() {
                 onClick={() => setCurrentSlide(i)}
                 aria-label={`Slide ${i + 1}`}
                 style={{
-                  width: '24px',
+                  width: '26px',
                   height: '4px',
                   borderRadius: '2px',
                   border: 'none',
@@ -249,154 +478,37 @@ export function HeroSection() {
       </div>
 
       <VideoModal isOpen={isVideoModalOpen} onClose={() => setIsVideoModalOpen(false)} />
-      <BookingCalendarModal
-        isOpen={isCalendarModalOpen}
-        onClose={() => setIsCalendarModalOpen(false)}
-        checkIn={checkIn}
-        checkOut={checkOut}
-        guests={guests}
-        roomType={roomType}
-        onSave={(cIn, cOut, g, r) => {
-          setCheckIn(cIn)
-          setCheckOut(cOut)
-          setGuests(g)
-          setRoomType(r)
-        }}
-      />
 
       <style jsx global>{`
-        /* Fluid Compact Booking Pill Bar */
-        .booking-search-widget {
-          background: rgba(255,255,255,0.98);
-          backdrop-filter: blur(18px);
-          border-radius: 999px;
-          box-shadow: 0 16px 40px rgba(3,20,32,0.30);
-          padding: 8px 10px 8px 18px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          border: 2px solid transparent;
-          max-width: 680px;
-          transition: transform 150ms ease, box-shadow 150ms ease, border-color 200ms ease;
-        }
-        .booking-search-widget:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 22px 50px rgba(3,20,32,0.36);
-          border-color: rgba(0,108,228,0.35);
-        }
-        .booking-pill-info {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          flex: 1;
-          min-width: 0;
-        }
-        .booking-pill-icon {
-          font-size: 20px;
-          flex-shrink: 0;
-        }
-        .booking-pill-text {
-          display: flex;
-          flex-direction: column;
-          gap: 1px;
-          min-width: 0;
-        }
-        .booking-pill-title {
-          font-size: 14px;
-          font-weight: 800;
-          color: #0b1b26;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .booking-pill-sub {
-          font-size: 11.5px;
-          font-weight: 600;
-          color: #64748b;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .booking-submit-btn {
-          background: #006ce4;
-          color: #ffffff;
-          border: none;
-          font-size: 14px;
-          font-weight: 800;
-          padding: 12px 24px;
-          border-radius: 999px;
-          cursor: pointer;
-          white-space: nowrap;
-          box-shadow: 0 4px 14px rgba(0,108,228,0.30);
-          flex-shrink: 0;
-          transition: background 150ms ease, transform 150ms ease;
-        }
-        .booking-submit-btn:hover {
-          background: #0056b3;
-          transform: scale(1.02);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-          .hero-container {
-            padding-top: calc(85px + max(14px, env(safe-area-inset-top, 14px))) !important;
-            padding-bottom: 28px !important;
+        @keyframes floatCloudRight1 {
+          0% {
+            transform: translateX(-360px);
+          }
+          100% {
+            transform: translateX(100vw);
           }
         }
-
-        @media (max-width: 640px) {
-          #top {
-            min-height: 45vh !important;
-            height: 45vh !important;
+        @keyframes floatCloudRight2 {
+          0% {
+            transform: translateX(-400px);
           }
+          100% {
+            transform: translateX(100vw);
+          }
+        }
+        @media (max-width: 960px) {
           .hero-container {
-            padding-top: calc(54px + max(14px, env(safe-area-inset-top, 14px))) !important;
+            padding-top: calc(90px + max(14px, env(safe-area-inset-top, 14px))) !important;
             padding-left: 14px !important;
             padding-right: 14px !important;
-            padding-bottom: 12px !important;
+            padding-bottom: 24px !important;
           }
-          .hero-badge-bar {
-            display: none !important;
+          .booking-bar {
+            grid-template-columns: 1fr !important;
           }
-          .hero-headline {
-            font-size: 16px !important;
-            font-weight: 500 !important;
-            margin-bottom: 4px !important;
-            line-height: 1.25 !important;
-            letter-spacing: 0 !important;
-          }
-          .hero-subheadline {
-            display: block !important;
-            font-size: 12.5px !important;
-            font-weight: 400 !important;
-            color: rgba(255,255,255,0.88) !important;
-            margin-bottom: 8px !important;
-            line-height: 1.45 !important;
-            overflow: visible !important;
-          }
-          .hero-perks-bar {
-            display: none !important;
-          }
-          .booking-search-widget {
-            border: 2px solid #ffb700;
-            border-radius: 999px;
-            padding: 5px 6px 5px 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            margin-top: 4px;
-          }
-          .booking-pill-title {
-            font-size: 12px;
-            font-weight: 500;
-          }
-          .booking-pill-sub {
-            font-size: 10px;
-            font-weight: 400;
-          }
-          .booking-submit-btn {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 8px 14px;
+          .booking-field {
+            border-right: none !important;
+            border-bottom: 1px solid #e6eef4 !important;
           }
         }
       `}</style>

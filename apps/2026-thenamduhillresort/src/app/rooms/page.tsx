@@ -17,13 +17,6 @@ const FILTERS = [
   { k: 'signature', vi: 'Độc bản', en: 'Signature' },
 ]
 
-const SORTS = [
-  { k: 'rec', vi: 'Khuyên dùng', en: 'Recommended' },
-  { k: 'asc', vi: 'Giá: Thấp đến cao', en: 'Price: Low to High' },
-  { k: 'desc', vi: 'Giá: Cao đến thấp', en: 'Price: High to Low' },
-  { k: 'area', vi: 'Diện tích rộng nhất', en: 'Largest area' },
-]
-
 const FAV_KEY = 'ndh:saved-rooms'
 
 function RoomsContent() {
@@ -42,9 +35,6 @@ function RoomsContent() {
   const [favOnly, setFavOnly] = useState(false)
   const [favs, setFavs] = useState<string[]>([])
   const [bookingRoom, setBookingRoom] = useState<Room | null>(null)
-
-  // State for Filter Popup Modal
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
 
   const handleCardClick = (e: React.MouseEvent, code: string) => {
     const target = e.target as HTMLElement
@@ -113,41 +103,39 @@ function RoomsContent() {
   const visibleRooms = getVisibleRooms()
   const hasDateFilter = !!(checkIn || checkOut)
 
-  const activeFilterCount = (activeFilter !== 'all' ? 1 : 0) + (activeSort !== 'rec' ? 1 : 0) + (favOnly ? 1 : 0)
-
   return (
-    <main className="nd-page-main rooms-page-wrapper" style={{ paddingTop: '60px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
+    <main className="nd-page-main" style={{ paddingTop: '90px', minHeight: '100vh', background: '#ffffff', color: '#0b1b26' }}>
       {/* Top Title Banner */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto' }}>
+      <section className="nd-section-container" style={{ padding: '32px 32px 0', maxWidth: '1320px', margin: '0 auto' }}>
         {/* Availability Notice Banner if search params present */}
         {hasDateFilter && (
           <div
             style={{
               background: '#f0fdf4',
               border: '1px solid #bbf7d0',
-              borderRadius: '16px',
-              padding: '12px 18px',
-              marginBottom: '16px',
+              borderRadius: '20px',
+              padding: '16px 24px',
+              marginBottom: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'wrap',
-              gap: '10px',
+              gap: '12px',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '18px' }}>🗓️</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span style={{ fontSize: '24px' }}>🗓️</span>
               <div>
-                <div style={{ fontSize: '13px', fontWeight: 400, color: '#166534' }}>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: '#166534' }}>
                   {t(
                     `Kiểm tra phòng trống: ${checkIn || ''} đến ${checkOut || ''} ${guests ? `(${guests})` : ''}`,
                     `Availability search: ${checkIn || ''} to ${checkOut || ''} ${guests ? `(${guests})` : ''}`
                   )}
                 </div>
-                <div style={{ fontSize: '11.5px', color: '#15803d', marginTop: '2px' }}>
+                <div style={{ fontSize: '13.5px', color: '#15803d', marginTop: '2px', fontWeight: 600 }}>
                   {t(
-                    `Còn ${visibleRooms.length} hạng phòng trống cho ngày bạn chọn.`,
-                    `${visibleRooms.length} room types available for your dates.`
+                    `Còn ${visibleRooms.length} hạng phòng trống cho ngày bạn chọn — Rock Deluxe #14 chỉ còn 1 phòng.`,
+                    `${visibleRooms.length} room types available for your dates — Rock Deluxe #14 has 1 room left.`
                   )}
                 </div>
               </div>
@@ -155,29 +143,42 @@ function RoomsContent() {
             <Link
               href="/rooms"
               style={{
-                fontSize: '11.5px',
-                fontWeight: 400,
+                fontSize: '13px',
+                fontWeight: 700,
                 color: '#15803d',
                 background: '#dcfce7',
-                padding: '6px 12px',
-                borderRadius: '6px',
+                padding: '8px 16px',
+                borderRadius: '999px',
                 textDecoration: 'none',
               }}
             >
-              {t('Xóa bộ lọc ✕', 'Clear date filter ✕')}
+              {t('Xóa bộ lọc ngày ✕', 'Clear date filter ✕')}
             </Link>
           </div>
         )}
 
-        <div className="rooms-page-title-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.35fr) minmax(0, 1fr)', gap: '28px', alignItems: 'end', padding: '16px 0 24px' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.35fr) minmax(0, 1fr)', gap: '32px', alignItems: 'end', padding: '20px 0 30px' }}>
           <div>
-            <div className="nd-section-subtitle" style={{ color: '#0284c7', marginBottom: '4px' }}>
-              {t('20 HẠNG PHÒNG · 17 PHÒNG & 3 SUITE', '20 ROOM TYPES · 17 ROOMS & 3 SUITES')}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00c46a' }} />
+              <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#0284c7' }}>
+                {t('20 hạng phòng · 17 phòng & 3 suite', '20 room types · 17 rooms & 3 suites')}
+              </span>
             </div>
-            <h1 className="nd-h1" style={{ color: '#0b1b26', marginBottom: '8px' }}>
+            <h1
+              style={{
+                margin: '0 0 16px',
+                fontSize: 'clamp(32px, 4vw, 50px)',
+                lineHeight: 1.04,
+                fontWeight: 800,
+                letterSpacing: '-0.035em',
+                color: '#0b1b26',
+                textWrap: 'balance',
+              }}
+            >
               {t('Mỗi căn phòng dựng quanh thứ vốn đã có sẵn trên đồi.', 'Every room was built around what was already on the hill.')}
             </h1>
-            <p className="nd-lead-p" style={{ color: '#566e7d', maxWidth: '640px' }}>
+            <p style={{ margin: 0, fontSize: '16.5px', lineHeight: 1.62, color: '#566e7d', maxWidth: '640px' }}>
               {t(
                 'Vách đá, kính lục giác, gác lửng, bồn sục hướng thung lũng. Từ 15 m² cho hai người đến suite 70 m² cho tám người.',
                 'Rock walls, hexagonal glass, mezzanines, jacuzzis facing the valley. Sizes from 15 m² for two to a 70 m² suite for eight.'
@@ -186,99 +187,43 @@ function RoomsContent() {
           </div>
 
           {/* Rating Cards */}
-          <div className="rating-cards-wrapper" style={{ display: 'flex', gap: '10px' }}>
-            <div style={{ flex: 1, background: 'linear-gradient(150deg, #0284c7 0%, #075985 100%)', borderRadius: '16px', padding: '16px 18px', color: '#ffffff' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span style={{ fontSize: '28px', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1 }}>8.5</span>
-                <span style={{ fontSize: '11.5px', fontWeight: 400, color: 'rgba(255,255,255,0.85)' }}>{t('Rất tốt', 'Very good')}</span>
+          <div className="nd-grid-responsive" style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ flex: 1, background: 'linear-gradient(150deg, #0284c7 0%, #075985 100%)', borderRadius: '22px', padding: '22px 24px', color: '#ffffff' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                <span style={{ fontSize: '38px', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>8.5</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.82)' }}>{t('Rất tốt', 'Very good')}</span>
               </div>
-              <div style={{ marginTop: '6px', fontSize: '10.5px', fontWeight: 400, color: 'rgba(255,255,255,0.75)' }}>
-                {t('300+ đánh giá Booking.com', '300+ Booking.com reviews')}
+              <div style={{ marginTop: '10px', fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.72)' }}>
+                {t('300+ đánh giá trên Booking.com', '300+ reviews on Booking.com')}
               </div>
             </div>
-            <div style={{ flex: 1, background: 'linear-gradient(150deg, #00c46a 0%, #059669 100%)', borderRadius: '16px', padding: '16px 18px', color: '#ffffff' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span style={{ fontSize: '28px', fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1 }}>9.1</span>
-                <span style={{ fontSize: '11.5px', fontWeight: 400, color: 'rgba(255,255,255,0.88)' }}>{t('Nhân viên', 'Staff')}</span>
+            <div style={{ flex: 1, background: 'linear-gradient(150deg, #00c46a 0%, #059669 100%)', borderRadius: '22px', padding: '22px 24px', color: '#ffffff' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                <span style={{ fontSize: '38px', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1 }}>9.1</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.86)' }}>{t('Nhân viên', 'Staff')}</span>
               </div>
-              <div style={{ marginTop: '6px', fontSize: '10.5px', fontWeight: 400, color: 'rgba(255,255,255,0.80)' }}>
-                {t('Điểm cao nhất: chủ nhà', 'Highest-rated: host care')}
+              <div style={{ marginTop: '10px', fontSize: '12.5px', fontWeight: 500, color: 'rgba(255,255,255,0.80)' }}>
+                {t('Điểm cao nhất: sự tận tâm của chủ nhà', 'Highest-rated: host care')}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Simplified Sticky Filter Bar - Single Horizontal Row (Scroll X) */}
+      {/* Sticky Filter & Sort Bar */}
       <div
-        className="rooms-filter-bar"
         style={{
           position: 'sticky',
-          top: '64px',
+          top: '68px',
           zIndex: 60,
-          background: 'rgba(255,255,255,0.95)',
+          background: 'rgba(255,255,255,0.94)',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
-          borderTop: '1px solid rgba(0,0,0,0.04)',
+          borderBottom: '1px solid #eef4f8',
         }}
       >
-        <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Main Filter Popup Trigger Button */}
-          <button
-            onClick={() => setIsFilterModalOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              border: `1px solid ${activeFilterCount > 0 ? '#0284c7' : '#dbe7ef'}`,
-              background: activeFilterCount > 0 ? '#f0f9ff' : '#ffffff',
-              color: activeFilterCount > 0 ? '#0284c7' : '#0b1b26',
-              fontSize: '11.5px',
-              fontWeight: 400,
-              padding: '6px 12px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}
-          >
-            <span>{t('Bộ lọc', 'Filter')}</span>
-            {activeFilterCount > 0 && (
-              <span
-                style={{
-                  background: '#0284c7',
-                  color: '#ffffff',
-                  fontSize: '9.5px',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
-
-          {/* Separator hairline */}
-          <span style={{ width: '1px', height: '18px', background: '#e2e8f0', flexShrink: 0 }} />
-
-          {/* Single Row Horizontal Scrollable Category Filter Pills (Scroll X) */}
-          <div
-            className="no-scrollbar"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              overflowX: 'auto',
-              whiteSpace: 'nowrap',
-              flex: 1,
-              scrollBehavior: 'smooth',
-              paddingRight: '8px',
-            }}
-          >
+        <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '14px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          {/* Category Filter Buttons */}
+          <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
             {FILTERS.map((f) => {
               const active = activeFilter === f.k
               return (
@@ -286,58 +231,75 @@ function RoomsContent() {
                   key={f.k}
                   onClick={() => setActiveFilter(f.k)}
                   style={{
-                    border: `1px solid ${active ? '#0284c7' : '#e2e8f0'}`,
+                    border: `1px solid ${active ? '#0284c7' : '#dbe7ef'}`,
                     background: active ? '#0284c7' : '#ffffff',
-                    color: active ? '#ffffff' : '#475569',
-                    fontSize: '11.5px',
-                    fontWeight: 400,
-                    padding: '6px 12px',
-                    borderRadius: '6px',
+                    color: active ? '#ffffff' : '#3d5462',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    padding: '10px 17px',
+                    borderRadius: '999px',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    transition: 'all 120ms ease',
+                    transition: 'all 150ms ease',
                   }}
                 >
                   {isEn ? f.en : f.vi}
                 </button>
               )
             })}
+          </div>
 
-            {/* Favorite Filter Toggle Pill */}
+          {/* Right Controls: Favorites Counter & Sort Dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>
             <button
               onClick={() => setFavOnly(!favOnly)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
-                border: `1px solid ${favOnly ? '#0284c7' : '#e2e8f0'}`,
-                background: favOnly ? '#0284c7' : '#ffffff',
-                color: favOnly ? '#ffffff' : '#475569',
-                fontSize: '11.5px',
-                fontWeight: 400,
-                padding: '6px 12px',
-                borderRadius: '6px',
+                gap: '7px',
+                borderRadius: '999px',
+                padding: '8px 14px',
                 cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
+                transition: 'all 150ms ease',
+                border: `1px solid ${favOnly ? '#0284c7' : '#dbe7ef'}`,
+                background: favOnly ? '#0284c7' : '#ffffff',
+                color: favOnly ? '#ffffff' : '#0b1b26',
               }}
             >
-              <span>{favOnly ? '♥' : '♡'}</span>
-              <span>{t('Yêu thích', 'Saved')} ({favs.length})</span>
+              <span style={{ fontSize: '14px', lineHeight: 1 }}>{favOnly ? '♥' : '♡'}</span>
+              <span style={{ fontSize: '13px', fontWeight: 700 }}>{favs.length}</span>
             </button>
-          </div>
 
-          {/* Total rooms count badge */}
-          <span style={{ fontSize: '11px', fontWeight: 400, color: '#8fa5b3', flexShrink: 0, marginLeft: 'auto' }}>
-            {visibleRooms.length} {t('phòng', 'rooms')}
-          </span>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: '#8fa5b3' }}>
+              {visibleRooms.length} {t('phòng', 'rooms')}
+            </span>
+
+            <select
+              value={activeSort}
+              onChange={(e) => setActiveSort(e.target.value)}
+              style={{
+                border: '1px solid #dbe7ef',
+                background: '#ffffff',
+                color: '#0b1b26',
+                fontSize: '13px',
+                fontWeight: 600,
+                padding: '9px 14px',
+                borderRadius: '999px',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="rec">{t('Sắp xếp: Khuyên dùng', 'Sort: Recommended')}</option>
+              <option value="asc">{t('Giá: Thấp đến cao', 'Price: Low to High')}</option>
+              <option value="desc">{t('Giá: Cao đến thấp', 'Price: High to Low')}</option>
+              <option value="area">{t('Diện tích rộng nhất', 'Largest area')}</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Main Room Cards Grid */}
-      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '24px 16px 60px' }}>
-        <div className="rooms-grid-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+      <section className="nd-section-container" style={{ maxWidth: '1320px', margin: '0 auto', padding: '40px 32px 80px' }}>
+        <div className="nd-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
           {visibleRooms.map((r) => {
             const isFavorite = favs.includes(r.code)
             return (
@@ -346,7 +308,7 @@ function RoomsContent() {
                 className="nd-card nd-card-img-zoom"
                 onClick={(e) => handleCardClick(e, r.code)}
                 style={{
-                  borderRadius: '16px',
+                  borderRadius: '24px',
                   overflow: 'hidden',
                   background: '#ffffff',
                   border: '1px solid #e6eef4',
@@ -356,7 +318,7 @@ function RoomsContent() {
                 }}
               >
                 {/* Image & Badges */}
-                <div style={{ position: 'relative', height: '175px', background: '#eef4f8' }}>
+                <div style={{ position: 'relative', height: '208px', background: '#eef4f8' }}>
                   <Link href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`} style={{ display: 'block', position: 'absolute', inset: 0 }}>
                     <ImageSlot
                       id={roomSlug(r.code)}
@@ -370,16 +332,16 @@ function RoomsContent() {
                   <span
                     style={{
                       position: 'absolute',
-                      top: '10px',
-                      left: '10px',
+                      top: '12px',
+                      left: '12px',
                       background: 'rgba(6,40,58,0.85)',
                       backdropFilter: 'blur(8px)',
                       color: '#ffffff',
-                      fontSize: '10px',
-                      fontWeight: 400,
-                      letterSpacing: '0.04em',
-                      padding: '3px 8px',
-                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      letterSpacing: '0.06em',
+                      padding: '5px 11px',
+                      borderRadius: '999px',
                     }}
                   >
                     {r.code}
@@ -390,16 +352,16 @@ function RoomsContent() {
                     <span
                       style={{
                         position: 'absolute',
-                        top: '10px',
-                        left: '56px',
+                        top: '12px',
+                        left: '60px',
                         background: 'rgba(0,196,106,0.92)',
                         backdropFilter: 'blur(8px)',
                         color: '#04241a',
-                        fontSize: '9.5px',
-                        fontWeight: 400,
-                        letterSpacing: '0.04em',
-                        padding: '3px 8px',
-                        borderRadius: '6px',
+                        fontSize: '10.5px',
+                        fontWeight: 800,
+                        letterSpacing: '0.06em',
+                        padding: '5px 10px',
+                        borderRadius: '999px',
                       }}
                     >
                       {r.tag}
@@ -412,21 +374,21 @@ function RoomsContent() {
                     aria-label={isFavorite ? 'Bỏ lưu' : 'Lưu phòng'}
                     style={{
                       position: 'absolute',
-                      top: '10px',
-                      right: '10px',
-                      width: '30px',
-                      height: '30px',
+                      top: '12px',
+                      right: '12px',
+                      width: '36px',
+                      height: '36px',
                       borderRadius: '50%',
                       border: 'none',
                       background: isFavorite ? '#0284c7' : 'rgba(255,255,255,0.88)',
                       backdropFilter: 'blur(8px)',
                       color: isFavorite ? '#ffffff' : '#0b1b26',
-                      fontSize: '14px',
+                      fontSize: '16px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
                     }}
                   >
                     {isFavorite ? '♥' : '♡'}
@@ -434,50 +396,50 @@ function RoomsContent() {
                 </div>
 
                 {/* Card Content Body */}
-                <div style={{ padding: '14px 16px 16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <h2 className="nd-card-title" style={{ margin: '0 0 4px', color: '#0b1b26' }}>
+                <div style={{ padding: '20px 22px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <h2 style={{ margin: '0 0 6px', fontSize: '19px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
                     <Link href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`} style={{ color: 'inherit', textDecoration: 'none' }}>
                       {isEn ? r.nameEn : r.name}
                     </Link>
                   </h2>
 
-                  <p className="nd-card-desc" style={{ margin: '0 0 10px', color: '#566e7d', flex: 1 }}>
+                  <p style={{ margin: '0 0 16px', fontSize: '13.5px', lineHeight: 1.5, color: '#566e7d', flex: 1 }}>
                     {isEn ? r.blurbEn : r.blurb}
                   </p>
 
                   {/* Specifications Pills */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '10px', fontWeight: 400, color: '#3d5462', background: '#f2f8fc', padding: '3px 7px', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
                       {r.area} m²
                     </span>
-                    <span style={{ fontSize: '10px', fontWeight: 400, color: '#3d5462', background: '#f2f8fc', padding: '3px 7px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
                       {r.cap} {t('khách', 'guests')}
                     </span>
-                    <span style={{ fontSize: '10px', fontWeight: 400, color: '#3d5462', background: '#f2f8fc', padding: '3px 7px', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: '#3d5462', background: '#f2f8fc', padding: '5px 10px', borderRadius: '8px' }}>
                       {isEn ? r.viewEn : r.view}
                     </span>
                   </div>
 
                   {/* Card Footer: Price & Actions */}
-                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid #eef4f8' }}>
+                  <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #eef4f8' }}>
                     <div>
-                      <span className="nd-card-price">
+                      <span style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26' }}>
                         {formatVND(r.price)}
                       </span>
-                      <span className="nd-card-price-unit">{t('/đêm', '/night')}</span>
+                      <span style={{ fontSize: '12px', fontWeight: 500, color: '#8fa5b3' }}>{t('/đêm', '/night')}</span>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
                       <Link
                         href={`/rooms/${encodeURIComponent(r.code.replace('#', ''))}`}
                         style={{
                           background: '#f2f8fc',
                           border: '1px solid rgba(2,132,199,0.16)',
                           color: '#0284c7',
-                          fontSize: '11.5px',
-                          fontWeight: 400,
-                          padding: '6px 12px',
-                          borderRadius: '4px',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          padding: '10px 16px',
+                          borderRadius: '999px',
                           textDecoration: 'none',
                           display: 'inline-block',
                         }}
@@ -490,13 +452,14 @@ function RoomsContent() {
                         style={{
                           background: '#0284c7',
                           color: '#ffffff',
-                          fontSize: '11.5px',
-                          fontWeight: 400,
-                          padding: '6px 12px',
-                          borderRadius: '4px',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          padding: '11px 19px',
+                          borderRadius: '999px',
                           textDecoration: 'none',
                           display: 'inline-block',
                           whiteSpace: 'nowrap',
+                          transition: 'background 150ms ease',
                         }}
                       >
                         {t('Đặt phòng', 'Book')}
@@ -510,280 +473,44 @@ function RoomsContent() {
         </div>
 
         {/* 4 Benefits Included Grid */}
-        <div className="room-benefits-grid" style={{ margin: '32px 0 40px', borderRadius: '16px', background: '#f2f8fc', border: '1px solid rgba(2,132,199,0.10)', padding: '20px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+        <div style={{ margin: '44px 0 60px', borderRadius: '26px', background: '#f2f8fc', border: '1px solid rgba(2,132,199,0.10)', padding: '32px 36px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '28px' }}>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '10px' }}>
               {t('Phòng nào cũng có', 'Included in every room')}
             </div>
-            <div style={{ fontSize: '12.5px', fontWeight: 400, lineHeight: 1.45, color: '#0b1b26' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: '#0b1b26' }}>
               {t('Phòng tắm riêng, két an toàn, ấm đun nước, Wi-Fi, ga & khăn', 'Private bathroom, safe, kettle, free Wi-Fi, linen & towels')}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '10px' }}>
               {t('Trong khuôn viên', 'On site')}
             </div>
-            <div style={{ fontSize: '12.5px', fontWeight: 400, lineHeight: 1.45, color: '#0b1b26' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: '#0b1b26' }}>
               {t('Hồ bơi ngoài trời, sân vườn, sân hiên, nhà hàng, bida, đỗ xe miễn phí', 'Outdoor pool, garden, terrace, restaurant, billiards, free parking')}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '10px' }}>
               {t('Bữa sáng', 'Breakfast')}
             </div>
-            <div style={{ fontSize: '12.5px', fontWeight: 400, lineHeight: 1.45, color: '#0b1b26' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: '#0b1b26' }}>
               {t('Kiểu Á hoặc gọi món, phục vụ tại sân hiên đỉnh đồi', 'Asian or à la carte, served on the hilltop terrace')}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '10px' }}>
               {t('Đưa đón', 'Transfer')}
             </div>
-            <div style={{ fontSize: '12.5px', fontWeight: 400, lineHeight: 1.45, color: '#0b1b26' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.5, color: '#0b1b26' }}>
               {t('Xe riêng hai chiều từ bến tàu Củ Tron, miễn phí', 'Free private car both ways from Cu Tron pier')}
             </div>
           </div>
         </div>
       </section>
 
-      {/* FILTER POPUP MODAL */}
-      {isFilterModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            background: 'rgba(6, 30, 48, 0.45)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-          }}
-          onClick={() => setIsFilterModalOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '100%',
-              maxWidth: '480px',
-              background: '#ffffff',
-              borderTopLeftRadius: '16px',
-              borderTopRightRadius: '16px',
-              padding: '20px 20px 24px',
-              boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.15)',
-              maxHeight: '85vh',
-              overflowY: 'auto',
-              animation: 'slideUpFilter 0.25s ease-out',
-            }}
-          >
-            {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9' }}>
-              <div style={{ fontSize: '14px', fontWeight: 400, color: '#0b1b26' }}>
-                {t('Tất cả bộ lọc phòng', 'All room filters')}
-              </div>
-              <button
-                onClick={() => setIsFilterModalOpen(false)}
-                style={{
-                  background: '#f1f5f9',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '28px',
-                  height: '28px',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#64748b',
-                }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Filter Group 1: Category */}
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                {t('Danh mục phòng', 'Room Category')}
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {FILTERS.map((f) => {
-                  const active = activeFilter === f.k
-                  return (
-                    <button
-                      key={f.k}
-                      onClick={() => setActiveFilter(f.k)}
-                      style={{
-                        border: `1px solid ${active ? '#0284c7' : '#e2e8f0'}`,
-                        background: active ? '#0284c7' : '#ffffff',
-                        color: active ? '#ffffff' : '#334155',
-                        fontSize: '11.5px',
-                        fontWeight: 400,
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {isEn ? f.en : f.vi}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Filter Group 2: Sort By */}
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                {t('Sắp xếp theo', 'Sort by')}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {SORTS.map((s) => {
-                  const active = activeSort === s.k
-                  return (
-                    <button
-                      key={s.k}
-                      onClick={() => setActiveSort(s.k)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        border: `1px solid ${active ? '#0284c7' : '#e2e8f0'}`,
-                        background: active ? '#f0f9ff' : '#ffffff',
-                        color: active ? '#0284c7' : '#334155',
-                        fontSize: '11.5px',
-                        fontWeight: 400,
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                    >
-                      <span>{isEn ? s.en : s.vi}</span>
-                      {active && <span>✓</span>}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Filter Group 3: Saved / Favorites Only */}
-            <div style={{ marginBottom: '24px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 400, color: '#64748b', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                {t('Phòng đã lưu', 'Saved rooms')}
-              </div>
-              <button
-                onClick={() => setFavOnly(!favOnly)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  border: `1px solid ${favOnly ? '#0284c7' : '#e2e8f0'}`,
-                  background: favOnly ? '#f0f9ff' : '#ffffff',
-                  color: favOnly ? '#0284c7' : '#334155',
-                  fontSize: '11.5px',
-                  fontWeight: 400,
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  width: '100%',
-                }}
-              >
-                <span>{favOnly ? '♥' : '♡'}</span>
-                <span>{t('Chỉ hiển thị phòng tôi đã yêu thích', 'Only show rooms I favorited')} ({favs.length})</span>
-              </button>
-            </div>
-
-            {/* Modal Actions */}
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                onClick={() => {
-                  setActiveFilter('all')
-                  setActiveSort('rec')
-                  setFavOnly(false)
-                }}
-                style={{
-                  flex: 1,
-                  border: '1px solid #e2e8f0',
-                  background: '#ffffff',
-                  color: '#64748b',
-                  fontSize: '11.5px',
-                  fontWeight: 400,
-                  padding: '9px 0',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                }}
-              >
-                {t('Thiết lập lại', 'Reset')}
-              </button>
-              <button
-                onClick={() => setIsFilterModalOpen(false)}
-                style={{
-                  flex: 2,
-                  border: 'none',
-                  background: '#0284c7',
-                  color: '#ffffff',
-                  fontSize: '11.5px',
-                  fontWeight: 400,
-                  padding: '9px 0',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                }}
-              >
-                {t(`Áp dụng (${visibleRooms.length} phòng)`, `Apply (${visibleRooms.length} rooms)`)}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Booking Deposit Modal */}
       {bookingRoom && <BookingModal room={bookingRoom} onClose={() => setBookingRoom(null)} />}
-
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-
-        @keyframes slideUpFilter {
-          from {
-            transform: translateY(100%);
-          }
-          to {
-            transform: translateY(0);
-          }
-        }
-
-        @media (max-width: 640px) {
-          .rooms-page-wrapper {
-            padding-top: 52px !important;
-          }
-          .rooms-page-title-grid {
-            grid-template-columns: 1fr !important;
-            gap: 14px !important;
-            padding: 10px 0 16px !important;
-          }
-          .rating-cards-wrapper {
-            flex-direction: row !important;
-            gap: 8px !important;
-          }
-          .rooms-filter-bar {
-            top: 56px !important;
-          }
-          .rooms-grid-list {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-          }
-          .room-benefits-grid {
-            padding: 14px 16px !important;
-            margin: 20px 0 30px !important;
-            gap: 14px !important;
-          }
-        }
-      `}</style>
     </main>
   )
 }

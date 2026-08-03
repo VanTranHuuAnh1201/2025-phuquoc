@@ -61,9 +61,8 @@ export function PanoramaSection() {
   const current = STAGES[stageIndex]!
 
   return (
-    <section id="panorama" className="nd-section-container">
+    <section id="panorama" style={{ margin: '100px 0 0', padding: '0 32px' }}>
       <div
-        className="panorama-card-wrapper"
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
@@ -71,7 +70,7 @@ export function PanoramaSection() {
           overflow: 'hidden',
           position: 'relative',
           background: current.sky,
-          padding: '44px 36px 36px',
+          padding: '62px 56px 46px',
           transition: 'background 700ms ease',
         }}
       >
@@ -104,26 +103,51 @@ export function PanoramaSection() {
 
         {/* Grid Content */}
         <div
-          className="panorama-grid"
           style={{
             position: 'relative',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '36px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '52px',
             alignItems: 'center',
           }}
         >
           {/* Controls Column */}
           <div>
-            <span className="nd-section-subtitle" style={{ color: 'rgba(255,255,255,0.85)' }}>
+            <span
+              style={{
+                fontSize: '12px',
+                fontWeight: 800,
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.74)',
+              }}
+            >
               {t('Một chỗ đứng, bốn khung giờ', 'One viewpoint, four hours')}
             </span>
 
-            <h2 className="nd-h2" style={{ color: '#ffffff' }}>
+            <h2
+              style={{
+                margin: '14px 0 16px',
+                fontSize: 'clamp(32px, 3.5vw, 44px)',
+                lineHeight: 1.06,
+                fontWeight: 800,
+                letterSpacing: '-0.034em',
+                color: '#ffffff',
+                textWrap: 'balance',
+              }}
+            >
               {t('Kéo thử một ngày. Vẫn là sân hiên đó.', 'Drag through the day. This is the same terrace.')}
             </h2>
 
-            <p className="nd-lead-p" style={{ color: 'rgba(255,255,255,0.88)', marginBottom: '24px' }}>
+            <p
+              style={{
+                margin: '0 0 30px',
+                fontSize: '16px',
+                lineHeight: 1.62,
+                color: 'rgba(255,255,255,0.86)',
+                maxWidth: '460px',
+              }}
+            >
               {t(
                 'Bốn tấm ảnh thật chụp từ sân hiên resort, từ lúc trời hửng đến khi chợ đêm lên đèn. Không có tấm nào là dựng hình.',
                 'Four real photographs taken from the resort terrace, from first light to the night market coming on. Nothing here is a render.'
@@ -132,7 +156,6 @@ export function PanoramaSection() {
 
             {/* Range Slider Box */}
             <div
-              className="panorama-slider-box"
               style={{
                 background: 'rgba(255,255,255,0.14)',
                 backdropFilter: 'blur(16px)',
@@ -164,7 +187,7 @@ export function PanoramaSection() {
                 style={{ width: '100%', accentColor: '#ffffff', cursor: 'pointer', height: '4px' }}
               />
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', gap: '4px' }}>
                 {[
                   { index: 0, vi: 'Sáng sớm', en: 'Early morning' },
                   { index: 1, vi: 'Giữa trưa', en: 'Midday' },
@@ -179,9 +202,9 @@ export function PanoramaSection() {
                       border: 'none',
                       background: stageIndex === item.index ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.12)',
                       color: stageIndex === item.index ? '#0b1b26' : 'rgba(255,255,255,0.80)',
-                      fontSize: '11.5px',
-                      fontWeight: 600,
-                      padding: '5px 10px',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      padding: '7px 12px',
                       borderRadius: '999px',
                       cursor: 'pointer',
                     }}
@@ -195,7 +218,6 @@ export function PanoramaSection() {
 
           {/* Dynamic Photo Display Column */}
           <div
-            className="panorama-photo-card"
             style={{
               position: 'relative',
               borderRadius: '26px',
@@ -225,45 +247,14 @@ export function PanoramaSection() {
                 pointerEvents: 'none',
               }}
             />
-            <div className="panorama-photo-title" style={{ position: 'absolute', left: '26px', right: '26px', bottom: '24px', pointerEvents: 'none' }}>
-              <div style={{ fontSize: '18px', fontWeight: 600, letterSpacing: 0, color: '#ffffff', lineHeight: 1.25 }}>
+            <div style={{ position: 'absolute', left: '26px', right: '26px', bottom: '24px', pointerEvents: 'none' }}>
+              <div style={{ fontSize: '22px', fontWeight: 800, letterSpacing: '-0.022em', color: '#ffffff', lineHeight: 1.2 }}>
                 {language === 'en' ? current.timeLabelEn : current.timeLabel}
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .panorama-card-wrapper {
-            border-radius: 18px !important;
-            padding: 20px 14px 16px !important;
-          }
-          .panorama-grid {
-            grid-template-columns: 1fr !important;
-            gap: 14px !important;
-          }
-          .panorama-slider-box {
-            border-radius: 14px !important;
-            padding: 14px 12px !important;
-          }
-          .panorama-photo-card {
-            border-radius: 16px !important;
-            aspect-ratio: 16 / 10 !important;
-          }
-          .panorama-photo-title {
-            left: 14px !important;
-            right: 14px !important;
-            bottom: 12px !important;
-          }
-          .panorama-photo-title div {
-            font-size: 13.5px !important;
-            font-weight: 600 !important;
-            line-height: 1.3 !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }
