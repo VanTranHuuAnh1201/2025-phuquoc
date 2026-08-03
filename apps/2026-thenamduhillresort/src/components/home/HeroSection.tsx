@@ -49,7 +49,8 @@ export function HeroSection() {
       id="top"
       style={{
         position: 'relative',
-        minHeight: 'auto',
+        height: '70vh',
+        minHeight: '70vh',
         display: 'flex',
         alignItems: 'flex-end',
         overflow: 'hidden',
@@ -265,9 +266,11 @@ export function HeroSection() {
       />
 
       <style jsx global>{`
-        #top {
-          height: 70vh;
-          min-height: 70vh;
+        @media (min-width: 641px) {
+          #top {
+            height: 70vh !important;
+            min-height: 70vh !important;
+          }
         }
 
         /* Fluid Compact Booking Pill Bar */
