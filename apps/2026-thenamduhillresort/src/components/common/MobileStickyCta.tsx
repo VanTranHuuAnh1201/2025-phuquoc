@@ -10,8 +10,12 @@ export function MobileStickyCta() {
   const pathname = usePathname()
   const { t } = useLanguage()
 
-  // Hide global bottom navigation bar on checkout page to avoid clutter
-  if (pathname === '/checkout' || pathname.startsWith('/checkout')) {
+  // Hide global bottom navigation bar on checkout page and room detail page to avoid clutter and covering the room CTA bar
+  if (
+    pathname === '/checkout' ||
+    pathname.startsWith('/checkout') ||
+    (pathname.startsWith('/rooms/') && pathname !== '/rooms')
+  ) {
     return null
   }
 

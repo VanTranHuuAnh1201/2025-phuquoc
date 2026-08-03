@@ -1,0 +1,9 @@
+# AI Assistant Guidelines & Mandatory Rules
+
+## MANDATORY RULE: Mobile Layout 100% Preservation
+- The mobile version for `@repo/2026-thenamduhillresort` was completed first and is fully locked.
+- During any desktop layout refactoring (based on Figma / `3-desktop.png`), Mobile layout MUST NOT BE ALTERED OR BROKEN.
+- For any complex layout changes, use DOM separation:
+  - Mobile wrapper: `<div className="block md:hidden">`
+  - Desktop wrapper: `<div className="hidden md:block">`
+- Never modify non-prefixed Tailwind classes that dictate mobile styles unless explicitly fixing a mobile bug.

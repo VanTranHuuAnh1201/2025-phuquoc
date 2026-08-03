@@ -82,73 +82,66 @@ function RoomsContent() {
   const minPrice = visibleRooms.length > 0 ? Math.min(...visibleRooms.map((r) => r.price)) : 2300000
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] text-[#1A1A1A] pt-14 pb-20 sm:pb-10">
+    <main className="min-h-screen bg-[#FAFAF8] text-[#1A1A1A] pt-16 pb-20 sm:pb-12">
       
-      {/* 1. Mobile Search Bar Header */}
-      <div className="bg-white border-b border-[#ECECEC] sticky top-12 z-40 px-4 py-2.5 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#1A1A1A] hover:bg-[#E5E7EB] transition">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <div>
-            <div className="text-xs sm:text-sm font-semibold text-[#1A1A1A] flex items-center gap-1.5">
-              <span>{checkIn} - {checkOut}</span>
-              <span className="text-[#6B7280]">|</span>
-              <span>{guests}</span>
+      {/* 📱 1. MOBILE ONLY SEARCH BAR & HEADER (100% Intact Mobile View) */}
+      <div className="block md:hidden">
+        <div className="bg-white border-b border-[#ECECEC] sticky top-12 z-40 px-4 py-2.5 flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#1A1A1A] hover:bg-[#E5E7EB] transition">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div>
+              <div className="text-xs sm:text-sm font-semibold text-[#1A1A1A] flex items-center gap-1.5">
+                <span>{checkIn} - {checkOut}</span>
+                <span className="text-[#6B7280]">|</span>
+                <span>{guests}</span>
+              </div>
             </div>
           </div>
+          <Link href="/?openSearch=true" className="text-xs font-semibold text-[#1D4E89] hover:underline">
+            {t('Thay đổi', 'Change')}
+          </Link>
         </div>
-        <Link href="/?openSearch=true" className="text-xs font-semibold text-[#1D4E89] hover:underline">
-          {t('Thay đổi', 'Change')}
-        </Link>
-      </div>
 
-      {/* 2. Sub-header: Results count & Sort/Filter Trigger */}
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-        <span className="text-xs sm:text-sm font-semibold text-[#4B5563]">
-          {visibleRooms.length} {t('phòng phù hợp', 'matching rooms')}
-        </span>
-        <button
-          onClick={() => setIsFilterModalOpen(true)}
-          className="flex items-center gap-1.5 bg-white border border-[#ECECEC] text-xs font-medium px-3 py-1.5 rounded-[6px] shadow-2xs hover:bg-[#F5F7FA] transition"
-        >
-          <span>{t('Sắp xếp', 'Sort & Filter')}</span>
-          <SlidersHorizontal className="w-3.5 h-3.5 text-[#1D4E89]" />
-        </button>
-      </div>
+        <div className="max-w-[1280px] mx-auto px-4 py-3.5 flex items-center justify-between">
+          <span className="text-xs font-semibold text-[#4B5563]">
+            {visibleRooms.length} {t('phòng phù hợp', 'matching rooms')}
+          </span>
+          <button
+            onClick={() => setIsFilterModalOpen(true)}
+            className="flex items-center gap-1.5 bg-white border border-[#ECECEC] text-xs font-medium px-3 py-1.5 rounded-[6px] shadow-2xs hover:bg-[#F5F7FA] transition"
+          >
+            <span>{t('Sắp xếp', 'Sort & Filter')}</span>
+            <SlidersHorizontal className="w-3.5 h-3.5 text-[#1D4E89]" />
+          </button>
+        </div>
 
-      {/* 3. Room List (Divider-separated cards, borderless & paddingless per feedback) */}
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 divide-y divide-[#ECECEC]">
-        {visibleRooms.map((r) => {
-          return (
+        {/* Mobile Room List */}
+        <div className="px-4 divide-y divide-[#ECECEC]">
+          {visibleRooms.map((r) => (
             <div
               key={r.code}
               onClick={() => router.push(`/rooms/${roomSlug(r.code)}`)}
-              className="py-3.5 sm:py-4 cursor-pointer flex flex-row gap-3 sm:gap-4 items-stretch group"
+              className="py-3.5 cursor-pointer flex flex-row gap-3 items-stretch group"
             >
-              {/* Image Banner (No heart overlay button) */}
-              <div className="relative w-[115px] sm:w-56 md:w-64 aspect-[4/3] rounded-[10px] overflow-hidden bg-[#F5F7FA] shrink-0">
+              <div className="relative w-[115px] aspect-[4/3] rounded-[10px] overflow-hidden bg-[#F5F7FA] shrink-0">
                 <img
                   src={r.images?.[0] || 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg'}
                   alt={r.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                
-                {/* Room Code Badge */}
-                <span className="absolute top-1.5 left-1.5 bg-[#1A1A1A]/80 backdrop-blur-md text-white text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-[4px]">
+                <span className="absolute top-1.5 left-1.5 bg-[#1A1A1A]/80 backdrop-blur-md text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-[4px]">
                   {r.code}
                 </span>
               </div>
 
-              {/* Info Body (Normalized uniform dark icon colors) */}
               <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
                 <div>
-                  <h2 className="font-serif text-xs sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#1D4E89] transition-colors leading-tight truncate">
+                  <h2 className="font-serif text-xs font-bold text-[#1A1A1A] group-hover:text-[#1D4E89] transition-colors leading-tight truncate">
                     {isEn ? r.nameEn : r.name}
                   </h2>
-
-                  {/* Room Specs Row with Uniform Dark Icons */}
-                  <div className="flex items-center gap-2.5 text-[10px] sm:text-xs text-[#4B5563] font-normal mt-1 flex-wrap">
+                  <div className="flex items-center gap-2.5 text-[10px] text-[#4B5563] font-normal mt-1 flex-wrap">
                     <span className="flex items-center gap-1">
                       <Maximize2 className="w-3 h-3 text-[#4B5563]" />
                       {r.area}m²
@@ -157,34 +150,22 @@ function RoomsContent() {
                       <Users className="w-3 h-3 text-[#4B5563]" />
                       1 {t('giường đôi', 'double bed')}
                     </span>
-                    <span className="hidden sm:flex items-center gap-1">
-                      <Eye className="w-3 h-3 text-[#4B5563]" />
-                      {isEn ? r.viewEn : r.view}
-                    </span>
                   </div>
-
-                  {/* Included Perks List with Uniform Dark Icons */}
                   <div className="mt-1.5 space-y-0.5">
-                    <div className="flex items-center gap-1 text-[10px] sm:text-xs text-[#4B5563] font-medium">
+                    <div className="flex items-center gap-1 text-[10px] text-[#4B5563] font-medium">
                       <Check className="w-3 h-3 text-[#1D4E89] shrink-0" />
                       <span>{t('Bữa sáng miễn phí', 'Free Breakfast')}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] sm:text-xs text-[#4B5563] font-medium">
-                      <Check className="w-3 h-3 text-[#1D4E89] shrink-0" />
-                      <span>{t('Wifi miễn phí', 'Free Wifi')}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Price & Compact xs Select Button (Reduced 1 level height) */}
                 <div className="pt-1.5 border-t border-[#F5F7FA] flex items-center justify-between mt-1">
                   <div className="flex items-baseline gap-0.5">
-                    <span className="font-bold text-xs sm:text-base text-[#0F2D52]">
+                    <span className="font-bold text-xs text-[#0F2D52]">
                       {formatVND(r.price)}
                     </span>
-                    <span className="text-[9px] sm:text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+                    <span className="text-[9px] text-[#6B7280]">/{t('đêm', 'night')}</span>
                   </div>
-
                   <Link href={`/rooms/${roomSlug(r.code)}`} onClick={(e) => e.stopPropagation()}>
                     <Button variant="primary" size="xs" radius="6px">
                       {t('Chọn', 'Select')}
@@ -193,8 +174,204 @@ function RoomsContent() {
                 </div>
               </div>
             </div>
-          )
-        })}
+          ))}
+        </div>
+      </div>
+
+      {/* 🖥️ 2. DESKTOP ONLY SEARCH & 2-COLUMN LAYOUT (Figma 3-desktop.png Section 02) */}
+      <div className="hidden md:block max-w-[1280px] mx-auto px-6 lg:px-8 space-y-6 pt-4">
+        
+        {/* Desktop Header & Search Bar Card */}
+        <div className="space-y-4">
+          <div>
+            <h1 className="font-serif text-3xl font-bold text-[#1A1A1A]">
+              {t('Các loại phòng', 'Room Types')}
+            </h1>
+            <p className="text-sm text-[#6B7280] mt-1">
+              {t('Lựa chọn phòng phù hợp với nhu cầu của bạn', 'Select the room that best fits your needs')}
+            </p>
+          </div>
+
+          {/* Desktop Search Inputs Bar */}
+          <div className="bg-white rounded-[12px] p-3 border border-[#ECECEC] shadow-sm flex items-center gap-3">
+            <div className="flex-1 px-4 py-2 bg-[#FAFAF8] rounded-[8px] border border-[#E5E7EB] flex items-center justify-between text-sm">
+              <span className="font-semibold text-[#1A1A1A]">15/08/2025</span>
+              <span className="text-[#6B7280]">|</span>
+              <span className="font-semibold text-[#1A1A1A]">17/08/2025</span>
+            </div>
+            <div className="flex-1 px-4 py-2 bg-[#FAFAF8] rounded-[8px] border border-[#E5E7EB] flex items-center justify-between text-sm">
+              <span className="font-semibold text-[#1A1A1A]">{guests}</span>
+              <span className="text-xs text-[#6B7280]">▼</span>
+            </div>
+            <Button variant="primary" size="md" radius="8px" className="px-8 bg-[#0F2D52] hover:bg-[#163B6C]">
+              {t('Tìm phòng', 'Search')}
+            </Button>
+          </div>
+        </div>
+
+        {/* 2-Column Grid: Left Filter Sidebar + Right Room Cards List */}
+        <div className="flex gap-8 items-start">
+          
+          {/* Left Sidebar Filters */}
+          <div className="w-[260px] bg-white rounded-[12px] border border-[#ECECEC] p-5 space-y-6 shrink-0 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#ECECEC] pb-3">
+              <h3 className="font-bold text-sm text-[#1A1A1A]">{t('Bộ lọc', 'Filters')}</h3>
+              <button
+                onClick={() => setActiveFilter('all')}
+                className="text-xs font-semibold text-[#1D4E89] hover:underline"
+              >
+                {t('Xóa bộ lọc', 'Clear all')}
+              </button>
+            </div>
+
+            {/* Room Categories */}
+            <div className="space-y-2.5">
+              <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
+                {t('Loại phòng', 'Room Type')}
+              </span>
+              <div className="space-y-2 text-xs">
+                {[
+                  { k: 'all', label: `Tất cả (${ROOMS.length})` },
+                  { k: 'couple', label: 'Deluxe (4)' },
+                  { k: 'sea', label: 'Villa (4)' },
+                  { k: 'suite', label: 'Suite (3)' },
+                  { k: 'family', label: 'Family (1)' },
+                ].map((cat) => (
+                  <label
+                    key={cat.k}
+                    onClick={() => setActiveFilter(cat.k)}
+                    className="flex items-center gap-2 text-[#4B5563] cursor-pointer hover:text-[#1A1A1A]"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={activeFilter === cat.k}
+                      onChange={() => {}}
+                      className="rounded border-[#E5E7EB] text-[#1D4E89] focus:ring-0"
+                    />
+                    <span>{cat.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Range Slider */}
+            <div className="space-y-2.5 border-t border-[#ECECEC] pt-4">
+              <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
+                {t('Khoảng giá / đêm', 'Price Range / Night')}
+              </span>
+              <input type="range" min="2000000" max="5000000" className="w-full accent-[#1D4E89]" />
+              <div className="flex justify-between text-[11px] text-[#6B7280] font-medium">
+                <span>2.000.000đ</span>
+                <span>5.000.000đ</span>
+              </div>
+            </div>
+
+            {/* Amenities Checkboxes */}
+            <div className="space-y-2.5 border-t border-[#ECECEC] pt-4">
+              <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
+                {t('Tiện nghi', 'Amenities')}
+              </span>
+              <div className="space-y-2 text-xs">
+                {['Wi-Fi miễn phí', 'Hồ bơi', 'View biển', 'Ban công', 'Bồn tắm', 'Đưa đón sân bay'].map((item, idx) => (
+                  <label key={idx} className="flex items-center gap-2 text-[#4B5563] cursor-pointer hover:text-[#1A1A1A]">
+                    <input type="checkbox" className="rounded border-[#E5E7EB] text-[#1D4E89] focus:ring-0" />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Sort Dropdown & Desktop Room Cards */}
+          <div className="flex-1 space-y-4">
+            
+            {/* Top Sort Header */}
+            <div className="flex justify-end items-center">
+              <div className="flex items-center gap-2 text-xs text-[#6B7280] font-medium">
+                <span>{t('Sắp xếp:', 'Sort by:')}</span>
+                <select
+                  value={activeSort}
+                  onChange={(e) => setActiveSort(e.target.value)}
+                  className="bg-white border border-[#ECECEC] rounded-[6px] px-3 py-1.5 text-xs font-semibold text-[#1A1A1A] focus:outline-none cursor-pointer"
+                >
+                  <option value="rec">{t('Giá thấp đến cao', 'Price: Low to High')}</option>
+                  <option value="asc">{t('Giá thấp đến cao', 'Price: Low to High')}</option>
+                  <option value="desc">{t('Giá cao đến thấp', 'Price: High to Low')}</option>
+                  <option value="area">{t('Diện tích rộng nhất', 'Largest area')}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Desktop Room Cards List */}
+            <div className="space-y-4">
+              {visibleRooms.map((r) => (
+                <div
+                  key={r.code}
+                  className="bg-white rounded-[12px] border border-[#ECECEC] p-4 flex gap-5 hover:shadow-md transition group"
+                >
+                  {/* Image */}
+                  <div className="w-64 aspect-[16/10] rounded-[10px] overflow-hidden bg-[#F5F7FA] shrink-0 relative">
+                    <img
+                      src={r.images?.[0] || 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg'}
+                      alt={r.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-2 left-2 bg-[#1A1A1A]/80 backdrop-blur-md text-white text-xs font-semibold px-2 py-0.5 rounded-[4px]">
+                      {r.code}
+                    </span>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 flex flex-col justify-between py-1">
+                    <div>
+                      <h2 className="font-serif text-lg font-bold text-[#1A1A1A] group-hover:text-[#1D4E89] transition-colors">
+                        {isEn ? r.nameEn : r.name}
+                      </h2>
+
+                      <div className="flex items-center gap-4 text-xs text-[#6B7280] mt-1 font-medium">
+                        <span>📐 {r.area}m²</span>
+                        <span>👤 {r.cap} {t('người', 'guests')}</span>
+                        <span>🛏️ 1 {t('giường đôi', 'double bed')}</span>
+                        <span>👁️ {isEn ? r.viewEn : r.view}</span>
+                      </div>
+
+                      <div className="mt-3 space-y-1 text-xs text-[#1D4E89] font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{t('Bữa sáng miễn phí', 'Free breakfast included')}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{t('Wi-Fi miễn phí', 'Free high-speed Wi-Fi')}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{t('Hủy miễn phí', 'Free cancellation')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Price & Action */}
+                  <div className="w-[180px] flex flex-col justify-between items-end border-l border-[#ECECEC] pl-5 py-1 text-right">
+                    <div>
+                      <span className="font-bold text-xl text-[#0F2D52] block">
+                        {formatVND(r.price)}
+                      </span>
+                      <span className="text-xs text-[#6B7280]">/{t('đêm', 'night')}</span>
+                    </div>
+
+                    <Link href={`/rooms/${roomSlug(r.code)}`}>
+                      <Button variant="primary" size="md" radius="6px" className="bg-[#0F2D52] hover:bg-[#163B6C] px-6">
+                        {t('Xem chi tiết', 'View details')}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 4. Mobile Sticky Bottom Bar */}

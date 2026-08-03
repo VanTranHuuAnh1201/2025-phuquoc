@@ -41,17 +41,27 @@ export function RoomsSection() {
       image: ROOMS[5]?.images?.[0] || 'https://thenamduhill.com/image/catalog/room-suite/7-phong-superior-co-giuong-co-king/dai-dien-2.jpg',
       code: '#07',
     },
+    {
+      id: 'family-suite-ocean-view',
+      title: 'Family Suite Ocean View',
+      titleVi: 'Phòng Gia Đình Hướng Biển',
+      area: 60,
+      cap: 4,
+      price: 4500000,
+      image: ROOMS[0]?.images?.[0] || 'https://thenamduhill.com/image/catalog/room-suite/8-phong-sute-02-phong-ngu/dai-dien.jpg',
+      code: '#01',
+    },
   ]
 
   return (
-    <section className="py-5 sm:py-7 bg-[#FAFAF8] border-b border-[#ECECEC]">
+    <section className="py-5 sm:py-8 bg-[#FAFAF8] border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Standardized Section Header (Mobile 16px font size per Figma) */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Standardized Section Header */}
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Các loại phòng', 'Room Types')}
+              {t('Các loại phòng nổi bật', 'Featured Room Types')}
             </h2>
           </div>
           <Link href="/rooms">
@@ -61,8 +71,8 @@ export function RoomsSection() {
           </Link>
         </div>
 
-        {/* Room Cards Grid (Card Radius 12px) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Room Cards Grid (1 col Mobile, 2 col Tablet, 4 col Desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {featuredRooms.map((room) => (
             <Link
               key={room.id}
@@ -84,7 +94,7 @@ export function RoomsSection() {
               {/* Card Content */}
               <div className="p-4 flex flex-col flex-1 justify-between gap-2">
                 <div>
-                  <h3 className="font-serif font-bold text-[#1A1A1A] text-base group-hover:text-[#1D4E89] transition-colors">
+                  <h3 className="font-serif font-bold text-[#1A1A1A] text-sm sm:text-base group-hover:text-[#1D4E89] transition-colors line-clamp-1">
                     {isEn ? room.title : room.titleVi}
                   </h3>
                   <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1 font-normal">
@@ -95,13 +105,13 @@ export function RoomsSection() {
 
                 <div className="pt-3 border-t border-[#ECECEC] flex items-center justify-between mt-1">
                   <div className="flex items-baseline gap-1">
-                    <span className="font-bold text-base text-[#0F2D52]">
+                    <span className="font-bold text-sm sm:text-base text-[#0F2D52]">
                       {formatVND(room.price)}
                     </span>
                     <span className="text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
                   </div>
                   <Button variant="primary" size="sm" radius="6px">
-                    {t('Chọn phòng', 'Select')}
+                    {t('Xem phòng', 'View Room')}
                   </Button>
                 </div>
               </div>

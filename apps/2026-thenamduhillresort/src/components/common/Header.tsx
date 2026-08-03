@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../common/Button'
-import { Menu, X } from 'lucide-react'
 
 interface HeaderProps {
   forceSolid?: boolean
@@ -33,24 +33,23 @@ export function Header({ forceSolid = false }: HeaderProps) {
   const isSolid = forceSolid || !isHomePage || scrolled
 
   const navLinks = [
-    { href: '/', label: t('Trang chủ', 'Home') },
     { href: '/rooms', label: t('Phòng', 'Rooms') },
     { href: '/dining', label: t('Tiện ích', 'Amenities') },
     { href: '/explore', label: t('Ưu đãi', 'Offers') },
+    // { href: '/my-bookings', label: t('Đơn của tôi', 'My Bookings') },
     { href: '/blog', label: t('Về chúng tôi', 'About Us') },
     { href: '/contact', label: t('Liên hệ', 'Contact') },
   ]
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSolid
-          ? 'bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.05)] text-[#1A1A1A] py-2.5'
-          : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent text-white py-3'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isSolid
+        ? 'bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.05)] text-[#1A1A1A] py-2.5'
+        : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent text-white py-3'
+        }`}
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        
+
         {/* Left Side: Authentic Resort Logo */}
         <Link href={isCheckout ? '#' : '/'} className={`flex items-center gap-2.5 group ${isCheckout ? 'cursor-default pointer-events-none' : ''}`}>
           <img
@@ -60,16 +59,14 @@ export function Header({ forceSolid = false }: HeaderProps) {
           />
           <div className="flex flex-col leading-none">
             <span
-              className={`font-serif font-bold tracking-tight text-xs sm:text-sm ${
-                isSolid ? 'text-[#0F2D52]' : 'text-white'
-              }`}
+              className={`font-serif font-bold tracking-tight text-xs sm:text-sm ${isSolid ? 'text-[#0F2D52]' : 'text-white'
+                }`}
             >
               The Nam Du Hill
             </span>
             <span
-              className={`text-[10px] font-medium tracking-normal mt-0.5 ${
-                isSolid ? 'text-[#6B7280]' : 'text-white/80'
-              }`}
+              className={`text-[10px] font-medium tracking-normal mt-0.5 ${isSolid ? 'text-[#6B7280]' : 'text-white/80'
+                }`}
             >
               Nam Du, Kiên Giang
             </span>
@@ -85,13 +82,12 @@ export function Header({ forceSolid = false }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm font-medium transition-colors hover:text-[#1D4E89] relative py-1 ${
-                    isActive
-                      ? 'text-[#1D4E89] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#1D4E89] after:rounded-full'
-                      : isSolid
+                  className={`text-sm font-medium transition-colors hover:text-[#1D4E89] relative py-1 ${isActive
+                    ? 'text-[#1D4E89] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#1D4E89] after:rounded-full'
+                    : isSolid
                       ? 'text-[#4B5563]'
                       : 'text-white/90 hover:text-white'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -102,7 +98,30 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
         {/* Right Side Action Controls: Disabled on checkout */}
         {!isCheckout && (
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
+            {/* Desktop Language Selector */}
+            <div className="hidden md:flex items-center gap-1 text-xs font-medium cursor-pointer py-1 px-2 rounded-md hover:bg-black/5 transition">
+              <button
+                onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
+                className={`flex items-center gap-1 font-semibold ${isSolid ? 'text-[#1A1A1A]' : 'text-white'}`}
+              >
+                <span>{language === 'vi' ? 'VI' : 'EN'}</span>
+                <span className="text-[10px] opacity-70">▾</span>
+              </button>
+            </div>
+
+            <Link
+              href="/my-bookings"
+              className={`hidden md:flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings'
+                ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
+                : isSolid
+                  ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
+                  : 'border-white/40 text-white hover:bg-white/10'
+                }`}
+            >
+              <User className="w-3.5 h-3.5 shrink-0" />
+            </Link>
+
             <Link href="/rooms" className="hidden md:inline-block">
               <Button variant="primary" size="md" radius="6px">
                 {t('Đặt phòng', 'Book Now')}
@@ -111,11 +130,10 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition shadow-[0_2px_8px_rgba(0,0,0,0.05)] focus:outline-none ${
-                isSolid
-                  ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
-                  : 'bg-white/90 text-[#1A1A1A] hover:bg-white'
-              }`}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition shadow-[0_2px_8px_rgba(0,0,0,0.05)] focus:outline-none md:hidden ${isSolid
+                ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
+                : 'bg-white/90 text-[#1A1A1A] hover:bg-white'
+                }`}
               aria-label="Toggle menu"
             >
               {menuOpen ? <X className="w-5 h-5 stroke-[1.75]" /> : <Menu className="w-5 h-5 stroke-[1.75]" />}
@@ -144,21 +162,19 @@ export function Header({ forceSolid = false }: HeaderProps) {
                 <p className="text-[11px] text-[#6B7280]">Nam Du, Kiên Giang</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-1 bg-[#F5F7FA] p-1 rounded-full border border-[#E5E7EB]">
               <button
                 onClick={() => setLanguage('vi')}
-                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full transition ${
-                  language === 'vi' ? 'bg-[#1D4E89] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#1A1A1A]'
-                }`}
+                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full transition ${language === 'vi' ? 'bg-[#1D4E89] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#1A1A1A]'
+                  }`}
               >
                 🇻🇳 VI
               </button>
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full transition ${
-                  language === 'en' ? 'bg-[#1D4E89] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#1A1A1A]'
-                }`}
+                className={`px-2.5 py-1 text-[11px] font-semibold rounded-full transition ${language === 'en' ? 'bg-[#1D4E89] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#1A1A1A]'
+                  }`}
               >
                 🇺🇸 EN
               </button>
@@ -173,11 +189,10 @@ export function Header({ forceSolid = false }: HeaderProps) {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                    isActive
-                      ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
-                      : 'text-[#4B5563] hover:bg-[#F5F7FA]'
-                  }`}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${isActive
+                    ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
+                    : 'text-[#4B5563] hover:bg-[#F5F7FA]'
+                    }`}
                 >
                   <span>{link.label}</span>
                   {isActive && <div className="w-1.5 h-1.5 rounded-full bg-[#1D4E89]" />}

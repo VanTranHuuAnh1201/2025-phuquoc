@@ -32,24 +32,60 @@ export default function MyBookingsPage() {
   const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null)
   const [bookings, setBookings] = useState<BookingItem[]>([])
 
-  // Default sample mock booking matching Screen 10 & 11 in diagram
-  const sampleBooking: BookingItem = {
-    id: '#NDH123456',
-    roomName: 'Deluxe Sea View',
-    roomCode: '#R6',
-    roomImage: 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg',
-    dates: '15 Th8 - 17 Th8 (2 đêm)',
-    guests: '2 người lớn, 1 phòng',
-    contactName: 'Nguyễn Văn A',
-    contactPhone: '0901234567',
-    contactEmail: 'nguyenvana@gmail.com',
-    notes: 'Không có',
-    totalPrice: 4600000,
-    depositPrice: 2300000,
-    status: 'Sắp tới',
-    createdAt: '03/08/2026',
-    paymentMethod: 'Thanh toán chuyển khoản VietQR',
-  }
+  // Initial sample bookings (both upcoming & past completed)
+  const initialSampleBookings: BookingItem[] = [
+    {
+      id: '#NDH123456',
+      roomName: 'Deluxe Sea View',
+      roomCode: '#R6',
+      roomImage: 'https://thenamduhill.com/image/catalog/room-suite/6-phong-deluxe/cover6.jpg',
+      dates: '15 Th8 - 17 Th8 (2 đêm)',
+      guests: '2 người lớn, 1 phòng',
+      contactName: 'Nguyễn Văn A',
+      contactPhone: '0901234567',
+      contactEmail: 'nguyenvana@gmail.com',
+      notes: 'Không có',
+      totalPrice: 4600000,
+      depositPrice: 2300000,
+      status: 'Sắp tới',
+      createdAt: '03/08/2026',
+      paymentMethod: 'Thanh toán chuyển khoản VietQR',
+    },
+    {
+      id: '#NDH987654',
+      roomName: 'Executive Sea View Suite',
+      roomCode: '#R5',
+      roomImage: 'https://thenamduhill.com/image/catalog/room-suite/5-phong-executive/cover5.jpg',
+      dates: '10 Th4 - 12 Th4 2025 (2 đêm)',
+      guests: '2 người lớn',
+      contactName: 'Nguyễn Văn A',
+      contactPhone: '0901234567',
+      contactEmail: 'nguyenvana@gmail.com',
+      notes: 'Yêu cầu tầng cao view đẹp',
+      totalPrice: 5200000,
+      depositPrice: 5200000,
+      status: 'Đã hoàn thành',
+      createdAt: '05/04/2025',
+      paymentMethod: 'Thanh toán chuyển khoản VietQR',
+    },
+    {
+      id: '#NDH852963',
+      roomName: 'Hillside Bungalow Garden View',
+      roomCode: '#R2',
+      roomImage: 'https://thenamduhill.com/image/catalog/room-suite/2-bungalow-san-hien/cover2.jpg',
+      dates: '20 Th1 - 22 Th1 2025 (2 đêm)',
+      guests: '4 người lớn, 1 trẻ em',
+      contactName: 'Nguyễn Văn A',
+      contactPhone: '0901234567',
+      contactEmail: 'nguyenvana@gmail.com',
+      notes: 'Cần xe đón bến tàu Củ Tron',
+      totalPrice: 3800000,
+      depositPrice: 3800000,
+      status: 'Đã hoàn thành',
+      createdAt: '15/01/2025',
+      paymentMethod: 'Thẻ tín dụng / Ghi nợ',
+    },
+  ]
 
   useEffect(() => {
     try {
@@ -62,7 +98,7 @@ export default function MyBookingsPage() {
         }
       }
     } catch {}
-    setBookings([sampleBooking])
+    setBookings(initialSampleBookings)
   }, [])
 
   const handleCancelBooking = (bookingId: string) => {
@@ -132,8 +168,8 @@ export default function MyBookingsPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {activeBookings.map((b) => (
-              <div key={b.id} className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
+            {activeBookings.map((b, idx) => (
+              <div key={`${b.id}-${idx}`} className="bg-white border border-[#ECECEC] rounded-[12px] p-4 space-y-3 shadow-xs">
                 {/* Header Row */}
                 <div className="flex items-center justify-between border-b border-[#ECECEC] pb-2 text-xs">
                   <span className="font-mono font-bold text-[#1D4E89]">{b.id}</span>
@@ -160,20 +196,28 @@ export default function MyBookingsPage() {
                   </div>
                 </div>
 
-                {/* Footer Row */}
+                {/* Footer Row with 'Xem lại phòng' & 'Xem chi tiết' buttons */}
                 <div className="flex items-center justify-between pt-2 border-t border-[#ECECEC]">
                   <div className="text-xs">
                     <span className="text-[#6B7280]">{t('Tổng tiền:', 'Total:')} </span>
                     <span className="font-bold text-[#0F2D52]">{b.totalPrice.toLocaleString('vi-VN')}đ</span>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="xs"
-                    radius="6px"
-                    onClick={() => setSelectedBooking(b)}
-                  >
-                    {t('Xem chi tiết', 'View Details')}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/rooms/${b.roomCode.replace('#', '').toLowerCase()}`}>
+                      <Button variant="outline" size="xs" radius="6px" className="border-[#1D4E89] text-[#1D4E89] hover:bg-[#1D4E89]/5">
+                        {t('Xem màn hình phòng', 'View Room Page')}
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="primary"
+                      size="xs"
+                      radius="6px"
+                      className="bg-[#0F2D52] hover:bg-[#163B6C]"
+                      onClick={() => setSelectedBooking(b)}
+                    >
+                      {t('Xem chi tiết đơn', 'View Order Details')}
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -274,17 +318,23 @@ export default function MyBookingsPage() {
               </div>
             </div>
 
-            {/* Actions: Cancel Booking */}
-            {selectedBooking.status === 'Sắp tới' && (
-              <div className="pt-3 border-t border-[#ECECEC]">
+            {/* Actions: View Room Screen & Cancel Booking */}
+            <div className="pt-3 border-t border-[#ECECEC] space-y-2">
+              <Link href={`/rooms/${selectedBooking.roomCode.replace('#', '').toLowerCase()}`} className="block">
+                <Button variant="outline" size="md" fullWidth radius="6px" className="border-[#0F2D52] text-[#0F2D52] hover:bg-[#0F2D52]/5 text-xs font-bold py-2.5">
+                  {t('Xem lại màn hình phòng', 'Re-view Room Screen')}
+                </Button>
+              </Link>
+
+              {selectedBooking.status === 'Sắp tới' && (
                 <button
                   onClick={() => handleCancelBooking(selectedBooking.id)}
                   className="w-full py-2.5 text-xs font-bold text-rose-600 border border-rose-200 bg-rose-50/50 rounded-[6px] hover:bg-rose-100 transition"
                 >
                   {t('Hủy đặt phòng', 'Cancel Booking')}
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}
