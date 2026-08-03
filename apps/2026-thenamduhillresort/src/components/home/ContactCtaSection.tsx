@@ -8,14 +8,15 @@ export function ContactCtaSection() {
   const { t } = useLanguage()
 
   return (
-    <section id="contact" style={{ maxWidth: '1280px', margin: '100px auto 0', padding: '0 32px' }}>
+    <section id="contact" className="nd-section-container">
       <div
+        className="contact-cta-wrapper"
         style={{
-          borderRadius: '34px',
+          borderRadius: '30px',
           overflow: 'hidden',
           position: 'relative',
           background: '#0b1b26',
-          padding: '74px 56px',
+          padding: '48px 40px',
         }}
       >
         <div
@@ -27,58 +28,41 @@ export function ContactCtaSection() {
             height: '460px',
             borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(2,132,199,0.45) 0%, rgba(2,132,199,0) 68%)',
+            pointerEvents: 'none',
           }}
         />
 
         <div
+          className="contact-cta-grid"
           style={{
             position: 'relative',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '64px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '36px',
             alignItems: 'center',
           }}
         >
           <div>
-            <h2
-              style={{
-                margin: '0 0 16px',
-                fontSize: 'clamp(32px, 3.8vw, 44px)',
-                lineHeight: 1.06,
-                fontWeight: 800,
-                letterSpacing: '-0.034em',
-                color: '#ffffff',
-                textWrap: 'balance',
-              }}
-            >
+            <h2 className="nd-h2" style={{ color: '#ffffff', marginBottom: '8px' }}>
               {t('Đặt phòng trực tiếp với chính chủ nhà.', 'Book direct with the people who run the hill.')}
             </h2>
 
-            <p
-              style={{
-                margin: '0 0 30px',
-                fontSize: '16.5px',
-                lineHeight: 1.6,
-                color: 'rgba(255,255,255,0.68)',
-                maxWidth: '520px',
-              }}
-            >
+            <p className="nd-lead-p" style={{ color: 'rgba(255,255,255,0.76)', marginBottom: '20px', maxWidth: '520px' }}>
               {t(
                 'Cam kết giá tốt nhất, đón tiễn miễn phí, huỷ miễn phí trước 7 ngày, và luôn có người thật nghe máy.',
                 'Best rate guaranteed, free pier transfer, free cancellation up to 7 days before arrival, and a real person on the phone.'
               )}
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <Link
                 href="/rooms"
-                className="nd-btn-primary"
                 style={{
                   background: '#00c46a',
                   color: '#04241a',
-                  fontSize: '15px',
-                  fontWeight: 800,
-                  padding: '17px 32px',
+                  fontSize: '12.5px',
+                  fontWeight: 600,
+                  padding: '10px 20px',
                   borderRadius: '999px',
                   textDecoration: 'none',
                 }}
@@ -91,9 +75,9 @@ export function ContactCtaSection() {
                 style={{
                   border: '1px solid rgba(255,255,255,0.28)',
                   color: '#ffffff',
-                  fontSize: '15px',
+                  fontSize: '12.5px',
                   fontWeight: 600,
-                  padding: '17px 30px',
+                  padding: '10px 20px',
                   borderRadius: '999px',
                   textDecoration: 'none',
                   display: 'inline-block',
@@ -104,60 +88,42 @@ export function ContactCtaSection() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gap: '12px' }}>
+          <div style={{ display: 'grid', gap: '10px' }}>
             <div
-              className="nd-card"
+              className="nd-card contact-info-card"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '20px',
-                padding: '22px 24px',
+                borderRadius: '18px',
+                padding: '18px 20px',
                 backdropFilter: 'blur(8px)',
               }}
             >
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.50)',
-                  marginBottom: '7px',
-                }}
-              >
-                {t('Địa chỉ', 'Address')}
+              <div className="nd-card-tag" style={{ color: 'rgba(255,255,255,0.50)', marginBottom: '4px' }}>
+                {t('ĐỊA CHỈ', 'ADDRESS')}
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 600, color: '#ffffff', lineHeight: 1.5 }}>
+              <div className="nd-card-desc" style={{ color: '#ffffff', lineHeight: 1.45 }}>
                 {t(
-                  'Ấp Củ Tron, Đặc Khu Kiên Hải,\ntỉnh An Giang, Việt Nam',
-                  'Cu Tron hamlet, Kien Hai Special Zone,\nAn Giang province, Vietnam'
+                  'Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam',
+                  'Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam'
                 )}
               </div>
             </div>
 
             <div
-              className="nd-card"
+              className="nd-card contact-info-card"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '20px',
-                padding: '22px 24px',
+                borderRadius: '18px',
+                padding: '18px 20px',
                 backdropFilter: 'blur(8px)',
               }}
             >
-              <div
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.50)',
-                  marginBottom: '7px',
-                }}
-              >
-                {t('Cách đến', 'Getting here')}
+              <div className="nd-card-tag" style={{ color: 'rgba(255,255,255,0.50)', marginBottom: '4px' }}>
+                {t('CÁCH ĐẾN', 'GETTING HERE')}
               </div>
-              <div style={{ fontSize: '15px', fontWeight: 600, color: '#ffffff', lineHeight: 1.5 }}>
+              <div className="nd-card-desc" style={{ color: '#ffffff', lineHeight: 1.45 }}>
                 {t(
                   'Rạch Giá → bến Củ Tron bằng tàu cao tốc (2h15). Chúng tôi đón bạn tại bến.',
                   'Rach Gia → Cu Tron pier by speedboat (2h15). We meet you there.'
@@ -167,6 +133,22 @@ export function ContactCtaSection() {
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 640px) {
+          .contact-cta-wrapper {
+            border-radius: 18px !important;
+            padding: 20px 14px !important;
+          }
+          .contact-cta-grid {
+            gap: 18px !important;
+          }
+          .contact-info-card {
+            border-radius: 14px !important;
+            padding: 14px !important;
+          }
+        }
+      `}</style>
     </section>
   )
 }

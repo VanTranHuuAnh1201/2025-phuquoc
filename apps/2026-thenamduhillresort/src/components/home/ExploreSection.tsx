@@ -9,43 +9,26 @@ export function ExploreSection() {
   const { t } = useLanguage()
 
   return (
-    <section id="explore" style={{ maxWidth: '1320px', margin: '0 auto', padding: '100px 32px 0' }}>
+    <section id="explore" className="nd-section-container">
       <div
+        className="explore-section-header"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '60px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '20px',
           alignItems: 'end',
-          marginBottom: '30px',
+          marginBottom: '24px',
         }}
       >
         <div>
-          <span
-            style={{
-              fontSize: '12px',
-              fontWeight: 800,
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: '#00a85c',
-            }}
-          >
+          <span className="nd-section-subtitle">
             {t('21 hòn đảo · 9,12 km²', '21 islands · 9.12 km²')}
           </span>
-          <h2
-            style={{
-              margin: '14px 0 0',
-              fontSize: 'clamp(28px, 3.2vw, 42px)',
-              lineHeight: 1.08,
-              fontWeight: 800,
-              letterSpacing: '-0.032em',
-              color: '#0b1b26',
-              textWrap: 'balance',
-            }}
-          >
+          <h2 className="nd-h2">
             {t('Bạn không đi xa thế này chỉ để nằm trong phòng.', 'You did not come all this way for the room.')}
           </h2>
         </div>
-        <p style={{ margin: '0 0 6px', fontSize: '16px', lineHeight: 1.65, color: '#566e7d' }}>
+        <p className="nd-lead-p">
           {t(
             'Sáng nào cũng có tàu gỗ rời bến ngay dưới chân đồi. Lễ tân đặt chỗ giúp từ tối hôm trước — 200.000–400.000₫ mỗi người.',
             'A wooden boat leaves the pier below every morning. Reception books your seat the evening before — 200,000–400,000 VND a head.'
@@ -55,21 +38,22 @@ export function ExploreSection() {
 
       {/* 4 Island Cards Grid */}
       <div
+        className="island-cards-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '14px',
-          marginBottom: '40px',
+          marginBottom: '24px',
         }}
       >
         <Link
           href="/explore"
-          className="nd-card nd-card-img-zoom"
+          className="nd-card nd-card-img-zoom island-card-item"
           style={{
-            borderRadius: '24px',
+            borderRadius: '22px',
             overflow: 'hidden',
             position: 'relative',
-            minHeight: '320px',
+            minHeight: '260px',
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
@@ -85,14 +69,14 @@ export function ExploreSection() {
               pointerEvents: 'none',
             }}
           />
-          <div style={{ position: 'relative', padding: '22px', pointerEvents: 'none' }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', color: '#00e07a', marginBottom: '8px' }}>
+          <div style={{ position: 'relative', padding: '18px', pointerEvents: 'none' }}>
+            <span className="nd-card-tag" style={{ color: '#00e07a', display: 'block', marginBottom: '4px' }}>
               {t('MALDIVES THU NHỎ', 'MINI MALDIVES')}
-            </div>
-            <h3 style={{ margin: '0 0 7px', fontSize: '20px', fontWeight: 800, letterSpacing: '-0.024em', color: '#ffffff' }}>
+            </span>
+            <h3 className="nd-card-title" style={{ color: '#ffffff' }}>
               Hòn Hai Bờ Đập
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: 'rgba(255,255,255,0.78)' }}>
+            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {t('Hai đảo nối nhau bằng dải đá tự nhiên — chỗ lặn ngắm san hô.', 'Two islets joined by a natural stone causeway — the snorkelling stop.')}
             </p>
           </div>
@@ -100,12 +84,12 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
-          className="nd-card nd-card-img-zoom"
+          className="nd-card nd-card-img-zoom island-card-item"
           style={{
-            borderRadius: '24px',
+            borderRadius: '22px',
             overflow: 'hidden',
             position: 'relative',
-            minHeight: '320px',
+            minHeight: '260px',
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
@@ -121,14 +105,14 @@ export function ExploreSection() {
               pointerEvents: 'none',
             }}
           />
-          <div style={{ position: 'relative', padding: '22px', pointerEvents: 'none' }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', color: '#00e07a', marginBottom: '8px' }}>
+          <div style={{ position: 'relative', padding: '18px', pointerEvents: 'none' }}>
+            <span className="nd-card-tag" style={{ color: '#00e07a', display: 'block', marginBottom: '4px' }}>
               {t('5 BÃI BIỂN', 'FIVE BEACHES')}
-            </div>
-            <h3 style={{ margin: '0 0 7px', fontSize: '20px', fontWeight: 800, letterSpacing: '-0.024em', color: '#ffffff' }}>
+            </span>
+            <h3 className="nd-card-title" style={{ color: '#ffffff' }}>
               Hòn Mấu
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: 'rgba(255,255,255,0.78)' }}>
+            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {t('Đầu này cát trắng, đầu kia toàn đá cuội đen bóng.', 'White sand at one end, polished black pebbles at the other.')}
             </p>
           </div>
@@ -136,12 +120,12 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
-          className="nd-card nd-card-img-zoom"
+          className="nd-card nd-card-img-zoom island-card-item"
           style={{
-            borderRadius: '24px',
+            borderRadius: '22px',
             overflow: 'hidden',
             position: 'relative',
-            minHeight: '320px',
+            minHeight: '260px',
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
@@ -157,14 +141,14 @@ export function ExploreSection() {
               pointerEvents: 'none',
             }}
           />
-          <div style={{ position: 'relative', padding: '22px', pointerEvents: 'none' }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', color: '#00e07a', marginBottom: '8px' }}>
+          <div style={{ position: 'relative', padding: '18px', pointerEvents: 'none' }}>
+            <span className="nd-card-tag" style={{ color: '#00e07a', display: 'block', marginBottom: '4px' }}>
               {t('4 PHÚT XE MÁY', '4 MIN BY BIKE')}
-            </div>
-            <h3 style={{ margin: '0 0 7px', fontSize: '20px', fontWeight: 800, letterSpacing: '-0.024em', color: '#ffffff' }}>
+            </span>
+            <h3 className="nd-card-title" style={{ color: '#ffffff' }}>
               Bãi Cây Mến
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: 'rgba(255,255,255,0.78)' }}>
+            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {t('Bãi đẹp nhất đảo, dưới hàng dừa 80 năm tuổi.', 'The prettiest beach on the island, under 80-year-old palms.')}
             </p>
           </div>
@@ -172,12 +156,12 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
-          className="nd-card nd-card-img-zoom"
+          className="nd-card nd-card-img-zoom island-card-item"
           style={{
-            borderRadius: '24px',
+            borderRadius: '22px',
             overflow: 'hidden',
             position: 'relative',
-            minHeight: '320px',
+            minHeight: '260px',
             background: '#0a3b4d',
             display: 'flex',
             alignItems: 'flex-end',
@@ -193,14 +177,14 @@ export function ExploreSection() {
               pointerEvents: 'none',
             }}
           />
-          <div style={{ position: 'relative', padding: '22px', pointerEvents: 'none' }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', color: '#00e07a', marginBottom: '8px' }}>
+          <div style={{ position: 'relative', padding: '18px', pointerEvents: 'none' }}>
+            <span className="nd-card-tag" style={{ color: '#00e07a', display: 'block', marginBottom: '4px' }}>
               309 M
-            </div>
-            <h3 style={{ margin: '0 0 7px', fontSize: '20px', fontWeight: 800, letterSpacing: '-0.024em', color: '#ffffff' }}>
+            </span>
+            <h3 className="nd-card-title" style={{ color: '#ffffff' }}>
               Hải đăng Nam Du
             </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: 'rgba(255,255,255,0.78)' }}>
+            <p className="nd-card-desc" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {t('Từ trên đỉnh nhìn thấy cả 21 hòn đảo cùng lúc.', 'From the top you see all 21 islands at once.')}
             </p>
           </div>
@@ -209,36 +193,37 @@ export function ExploreSection() {
 
       {/* 3 Itinerary Cards Row */}
       <div
+        className="itinerary-cards-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '16px',
+          gap: '14px',
         }}
       >
         <Link
           href="/explore"
-          className="nd-card"
+          className="nd-card itinerary-card-item"
           style={{
             border: '1px solid #e6eef4',
-            borderRadius: '24px',
-            padding: '28px 30px',
+            borderRadius: '22px',
+            padding: '20px 22px',
             display: 'flex',
             flexDirection: 'column',
             textDecoration: 'none',
             background: '#ffffff',
           }}
         >
-          <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', color: '#0284c7', marginBottom: '12px' }}>
+          <span className="nd-card-tag" style={{ color: '#0284c7', display: 'block', marginBottom: '6px' }}>
             {t('LỊCH TRÌNH · 2 NGÀY 1 ĐÊM', 'ITINERARY · 2 DAYS 1 NIGHT')}
-          </div>
-          <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26', lineHeight: 1.32, marginBottom: '14px' }}>
+          </span>
+          <h3 className="nd-card-title" style={{ color: '#0b1b26', marginBottom: '10px' }}>
             {t('Đi cuối tuần: chiều đầu đi tàu ra đảo nhỏ, sáng hôm sau chạy vòng 11 km.', 'Weekend run: island boat on the first afternoon, the 11 km loop on the second morning.')}
-          </div>
-          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-            <span style={{ fontSize: '22px', fontWeight: 900, letterSpacing: '-0.03em', color: '#0b1b26' }}>
+          </h3>
+          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+            <span className="nd-card-price">
               2,1 – 2,8tr
             </span>
-            <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3' }}>
+            <span className="nd-card-price-unit">
               {t('mỗi khách, trọn gói', 'per person, all in')}
             </span>
           </div>
@@ -246,28 +231,28 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
-          className="nd-card"
+          className="nd-card itinerary-card-item"
           style={{
             border: '1px solid #e6eef4',
-            borderRadius: '24px',
-            padding: '28px 30px',
+            borderRadius: '22px',
+            padding: '20px 22px',
             display: 'flex',
             flexDirection: 'column',
             textDecoration: 'none',
             background: '#ffffff',
           }}
         >
-          <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', color: '#00a85c', marginBottom: '12px' }}>
+          <span className="nd-card-tag" style={{ color: '#00a85c', display: 'block', marginBottom: '6px' }}>
             {t('LỊCH TRÌNH · 3 NGÀY 2 ĐÊM', 'ITINERARY · 3 DAYS 2 NIGHTS')}
-          </div>
-          <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.022em', color: '#0b1b26', lineHeight: 1.32, marginBottom: '14px' }}>
+          </span>
+          <h3 className="nd-card-title" style={{ color: '#0b1b26', marginBottom: '10px' }}>
             {t('Đi thong thả: trọn một ngày trên biển qua bốn đảo, thêm hải đăng và đền miếu.', 'The unhurried one: a whole day at sea across four islands, plus the lighthouse and the shrines.')}
-          </div>
-          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-            <span style={{ fontSize: '22px', fontWeight: 900, letterSpacing: '-0.03em', color: '#0b1b26' }}>
+          </h3>
+          <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+            <span className="nd-card-price">
               2,8 – 4,0tr
             </span>
-            <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3' }}>
+            <span className="nd-card-price-unit">
               {t('mỗi khách, trọn gói', 'per person, all in')}
             </span>
           </div>
@@ -275,10 +260,10 @@ export function ExploreSection() {
 
         <Link
           href="/explore"
-          className="nd-card nd-glow-card"
+          className="nd-card nd-glow-card itinerary-card-item"
           style={{
-            borderRadius: '24px',
-            padding: '28px 30px',
+            borderRadius: '22px',
+            padding: '20px 22px',
             position: 'relative',
             overflow: 'hidden',
             background: 'linear-gradient(150deg, #0284c7 0%, #075985 100%)',
@@ -290,18 +275,39 @@ export function ExploreSection() {
           }}
         >
           <div>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.60)', marginBottom: '12px' }}>
-              {t('Cẩm nang đầy đủ', 'Full guide')}
-            </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.022em', lineHeight: 1.32 }}>
+            <span className="nd-card-tag" style={{ color: 'rgba(255,255,255,0.70)', display: 'block', marginBottom: '6px' }}>
+              {t('CẨM NANG ĐẦY ĐỦ', 'FULL GUIDE')}
+            </span>
+            <h3 className="nd-card-title" style={{ color: '#ffffff', marginBottom: '10px' }}>
               {t('Tàu xe, giá cả, mùa đẹp nhất và những thứ cần mang theo.', 'Boats, scooters, prices, the best season and what to bring.')}
-            </div>
+            </h3>
           </div>
-          <span style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff' }}>
+          <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#ffffff' }}>
             {t('Khám phá Nam Du →', 'Explore Nam Du →')}
           </span>
         </Link>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 640px) {
+          .explore-section-header {
+            gap: 10px !important;
+            margin-bottom: 16px !important;
+          }
+          .island-cards-grid, .itinerary-cards-grid {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+          }
+          .island-card-item {
+            min-height: 200px !important;
+            border-radius: 16px !important;
+          }
+          .itinerary-card-item {
+            border-radius: 16px !important;
+            padding: 14px 16px !important;
+          }
+        }
+      `}</style>
     </section>
   )
 }
