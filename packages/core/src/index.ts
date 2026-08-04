@@ -39,4 +39,8 @@ export {
 // -------------------------------------------------------------------- dữ liệu demo
 export { seasons, ratePlans, promotions, childPolicy, buildRoomUnits } from './data/operations.seed'
 export { generateDemoData, buildInventory } from './data/demo-generator'
+
+/** Chuỗi giao diện song ngữ dùng chung cho mọi theme. */
+export { UI } from './data/ui-strings'
+export type { UIKey } from './data/ui-strings'
 export type { DemoData, DemoDataOptions } from './data/demo-generator'
