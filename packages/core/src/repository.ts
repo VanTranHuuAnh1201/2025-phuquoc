@@ -10,7 +10,18 @@
  */
 
 import { propertyData } from './data'
-import type { Addon, Dining, Place, PropertyData, Room, RoomExtra, Tour } from './types'
+import type {
+    Addon,
+    Amenity,
+    Dining,
+    GalleryItem,
+    Place,
+    PropertyData,
+    Review,
+    Room,
+    RoomExtra,
+    Tour,
+} from './types'
 
 /** Id cơ sở lưu trú mặc định khi chưa có multi-tenant. */
 export const DEFAULT_PROPERTY_ID = 'nam-du-hill'
@@ -92,4 +103,26 @@ export async function getPlaces(
     propertyId: string = DEFAULT_PROPERTY_ID,
 ): Promise<Place[]> {
     return (await getProperty(propertyId)).places
+}
+
+/**
+ * Ba hàm dưới trả mảng rỗng khi cơ sở lưu trú chưa khai — nơi gọi không phải
+ * kiểm tra `undefined` rải rác.
+ */
+export async function getGallery(
+    propertyId: string = DEFAULT_PROPERTY_ID,
+): Promise<GalleryItem[]> {
+    return (await getProperty(propertyId)).gallery ?? []
+}
+
+export async function getAmenities(
+    propertyId: string = DEFAULT_PROPERTY_ID,
+): Promise<Amenity[]> {
+    return (await getProperty(propertyId)).amenities ?? []
+}
+
+export async function getReviews(
+    propertyId: string = DEFAULT_PROPERTY_ID,
+): Promise<Review[]> {
+    return (await getProperty(propertyId)).reviews ?? []
 }

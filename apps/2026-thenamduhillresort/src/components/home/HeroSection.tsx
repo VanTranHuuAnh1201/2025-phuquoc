@@ -1,18 +1,24 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { Calendar, ChevronRight, Play, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
+import { HERO_SLIDES as SLIDES } from '../../data/property'
 import { BookingCalendarModal } from '../modals/BookingCalendarModal'
-import { Button } from '../common/Button'
-import { Calendar, Users, ChevronRight, Star } from 'lucide-react'
 
-const SLIDES = [
-  { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
-  { src: '/uploads/pasted-1785691965790-0.png', alt: 'Vịnh Nam Du nhìn từ trên đồi' },
-  { src: '/uploads/pasted-1785690604574-0.png', alt: 'Sân hiên The Nam Du Hill' },
-  { src: '/uploads/pasted-1785690578814-0.png', alt: 'Sân hiên lục giác nhìn từ trên cao về đêm' },
-]
+/** Modal state is ISO (YYYY-MM-DD); the bar shows dd/mm/yyyy. */
+function formatDisplayDate(iso: string) {
+  const [y, m, d] = iso.split('-')
+  return y && m && d ? `${d}/${m}/${y}` : iso
+}
+
+function countNights(checkIn: string, checkOut: string) {
+  const start = new Date(checkIn).getTime()
+  const end = new Date(checkOut).getTime()
+  if (Number.isNaN(start) || Number.isNaN(end)) return 0
+  return Math.max(0, Math.round((end - start) / 86400000))
+}
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -20,9 +26,10 @@ export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
-  const [checkIn, setCheckIn] = useState('15/08/2025')
-  const [checkOut, setCheckOut] = useState('17/08/2025')
-  const [guests, setGuests] = useState('2 người lớn')
+  const [checkIn, setCheckIn] = useState('2026-08-15')
+  const [checkOut, setCheckOut] = useState('2026-08-17')
+  const [guests, setGuests] = useState('2 khách')
+  const [roomType, setRoomType] = useState('Tất cả 20 hạng phòng')
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,169 +38,231 @@ export function HeroSection() {
     return () => clearInterval(timer)
   }, [])
 
+  const nights = countNights(checkIn, checkOut)
+
   const handleSearch = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
     const params = new URLSearchParams()
     if (checkIn) params.set('checkIn', checkIn)
     if (checkOut) params.set('checkOut', checkOut)
     if (guests) params.set('guests', guests)
+    if (roomType) params.set('roomType', roomType)
     router.push(`/rooms?${params.toString()}`)
   }
 
+  /** One field of the search bar — opens the modal, since every field is edited there. */
+  const Field = ({
+    label,
+    value,
+    hint,
+    divider = true,
+  }: {
+    label: string
+    value: string
+    hint?: string
+    divider?: boolean
+  }) => (
+    <button
+      type="button"
+      onClick={() => setIsCalendarModalOpen(true)}
+      className={`group flex flex-col gap-1 px-4 py-2.5 text-left rounded-[12px] transition-colors hover:bg-[#eefafd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4] ${divider ? 'md:border-r md:border-[#d9eff5]' : ''
+        }`}
+    >
+      <span className="text-[10.5px] font-extrabold uppercase tracking-[0.13em] text-[#78a3ae]">
+        {label}
+      </span>
+      <span className="flex items-baseline gap-2">
+        <span className="text-[14.5px] font-semibold text-[#0b1b26] truncate">{value}</span>
+        {hint ? <span className="text-[11.5px] font-medium text-[#78a3ae]">{hint}</span> : null}
+      </span>
+    </button>
+  )
+
   return (
-    <section className="relative w-full bg-[#FAFAF8]">
-      
-      {/* Hero Visual Banner */}
-      <div className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] rounded-b-[20px] sm:rounded-b-[28px] overflow-hidden">
-        
-        {/* Background Images Slider */}
-        {SLIDES.map((slide, idx) => (
-          <img
-            key={idx}
-            src={slide.src}
-            alt={slide.alt}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-              currentSlide === idx ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
-            } transition-transform duration-10000`}
-          />
-        ))}
+    <section id="top" className="relative w-full overflow-hidden bg-[#0b4f5e]">
 
-        {/* Gradient Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#101828]/90 via-[#101828]/35 to-[#101828]/40" />
+      {/* Slides */}
+      {SLIDES.map((slide, idx) => (
+        <img
+          key={slide.src}
+          src={slide.src}
+          alt={slide.alt}
+          aria-hidden={currentSlide !== idx}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[900ms] ease-in-out ${currentSlide === idx ? 'opacity-100' : 'opacity-0'
+            }`}
+        />
+      ))}
 
-        {/* Hero Overlay Content */}
-        <div className="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center pb-12 sm:pb-16 text-white">
-          
-          {/* PA3 / Figma Rating Pill Tag */}
-          <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium w-fit mb-3">
-            <Star className="w-3.5 h-3.5 fill-[#C6A86A] text-[#C6A86A]" />
-            <span>4.9 (83 {t('đánh giá', 'reviews')})</span>
-          </div>
+      {/* Gradient overlay — keeps white text legible over any slide */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(4,70,86,0.44) 0%, rgba(6,140,160,0.10) 34%, rgba(4,90,108,0.30) 64%, rgba(4,74,90,0.72) 100%)',
+        }}
+      />
 
-          {/* Main Title (Playfair Display, 700 Bold) */}
-          <h1 className="font-serif text-[30px] sm:text-[40px] md:text-[56px] font-bold tracking-tight drop-shadow-md text-white leading-[1.15]">
-            The Nam Du Hill Resort
-          </h1>
+      <div className="relative z-10 w-full max-w-[1320px] mx-auto px-5 sm:px-8 pt-[96px] sm:pt-[130px] lg:pt-[160px] pb-10 sm:pb-[42px] min-h-[70vh] flex flex-col justify-end">
 
-          {/* Subtitle & Location Tag */}
-          <p className="text-sm sm:text-base md:text-lg text-white/90 font-normal mt-2 max-w-xl">
-            {t('Nghỉ dưỡng giữa thiên nhiên hoang sơ trên đảo Nam Du', 'Resort surrounded by pristine nature on Nam Du Island')}
-          </p>
-
-          <div className="mt-4 hidden md:flex items-center gap-4">
-            <button
-              onClick={() => router.push('/rooms')}
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-semibold border border-white/40 transition"
-            >
-              <span>{t('Khám phá ngay', 'Explore now')}</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+        {/* Eyebrow */}
+        <div className="flex items-center gap-3 mb-4 sm:mb-[18px]">
+          <span className="w-[7px] h-[7px] rounded-full bg-[#00c46a]" />
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white/[0.86]">
+            {t('Hilltop boutique resort · Ấp Củ Tron, Nam Du', 'Hilltop boutique resort · Cu Tron, Nam Du')}
+          </span>
         </div>
-      </div>
 
-      {/* 📱 MOBILE FLOATING BOOKING CARD (100% Intact Mobile View) */}
-      <div className="block md:hidden w-full max-w-lg mx-auto px-4 relative z-20 -mt-14 pb-6">
-        <div
-          onClick={() => setIsCalendarModalOpen(true)}
-          className="bg-white rounded-[12px] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#ECECEC] space-y-3 cursor-pointer hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition-all"
-        >
-          {/* Row 1: Check-in / Check-out */}
-          <div className="h-[48px] bg-[#F5F7FA] border border-[#E5E7EB] rounded-[8px] px-3.5 flex items-center justify-between hover:bg-[#E5E7EB]/60 transition">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[11px] font-normal text-[#6B7280] leading-none">
-                {t('Nhận phòng - Trả phòng', 'Check-in - Check-out')}
-              </span>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#1A1A1A]">
-                <Calendar className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
-                <span>15 Th8 - 17 Th8</span>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
-          </div>
+        <h1 className="m-0 mb-4 sm:mb-[18px] font-bold text-white text-[clamp(32px,5vw,68px)] leading-[1.04] tracking-[-0.038em] max-w-[15ch] text-balance">
+          {t('Bình minh và hoàng hôn từ cùng một sân hiên.', 'Sunrise and sunset, from the very same terrace.')}
+        </h1>
 
-          {/* Row 2: Guests */}
-          <div className="h-[48px] bg-[#F5F7FA] border border-[#E5E7EB] rounded-[8px] px-3.5 flex items-center justify-between hover:bg-[#E5E7EB]/60 transition">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[11px] font-normal text-[#6B7280] leading-none">
-                {t('Số khách', 'Guests')}
-              </span>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#1A1A1A]">
-                <Users className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
-                <span>{guests}</span>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#1D4E89] stroke-[1.75]" />
-          </div>
+        <p className="m-0 mb-5 sm:mb-[26px] text-[clamp(15px,1.3vw,17.5px)] leading-[1.6] text-white/[0.84] max-w-[58ch] line-clamp-3 sm:line-clamp-none">
+          {t(
+            'Trên ngọn đồi cao nhất Ấp Củ Tron, thung lũng mở ra ôm trọn vịnh Hòn Lớn — và về đêm, ánh đèn chợ đêm Nam Du nằm ngay dưới chân bạn.',
+            'On the highest hill of Cu Tron, the valley opens onto Hon Lon bay — and at night, the lights of the Nam Du night market sit right below you.'
+          )}
+        </p>
 
-          <Button
-            size="lg"
-            fullWidth
-            radius="6px"
-            onClick={(e) => {
-              e.stopPropagation()
-              handleSearch(e)
-            }}
-            className="mt-1"
+        {/* CTAs + rating strip — desktop only; mobile keeps just the search card */}
+        <div className="hidden sm:flex items-center gap-4 sm:gap-[26px] flex-wrap mb-6 sm:mb-[26px]">
+          <button
+            type="button"
+            onClick={() => router.push('/rooms')}
+            className="bg-white text-[#0b1b26] text-[15px] font-bold px-[30px] py-4 rounded-full whitespace-nowrap transition-all duration-150 hover:bg-[#00c46a] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            {t('Tìm phòng', 'Search')}
-          </Button>
+            {t('Xem 20 hạng phòng', 'Explore 20 room types')}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => router.push('/rooms')}
+            className="hidden sm:flex items-center gap-[11px] border border-white/[0.46] bg-white/10 backdrop-blur-[10px] text-white text-[14.5px] font-semibold pl-3.5 pr-[22px] py-[13px] rounded-full whitespace-nowrap transition-colors duration-150 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <span className="w-[30px] h-[30px] rounded-full bg-white text-[#0b1b26] flex items-center justify-center">
+              <Play className="w-3 h-3 fill-current translate-x-[1px]" />
+            </span>
+            <span>{t('Xem phim giới thiệu · 3:00', 'Watch the film · 3:00')}</span>
+          </button>
+
+          <div className="flex items-center gap-5 sm:gap-[22px] flex-wrap">
+            {[
+              { value: '8.5', accent: false, label: t('300+ đánh giá Booking.com', '300+ Booking.com reviews') },
+              { value: '9.1', accent: true, label: t('Nhân viên & chủ nhà', 'Staff & host care') },
+              { value: '0₫', accent: false, label: t('Đưa đón bến tàu', 'Pier transfer') },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-baseline gap-[7px]">
+                <span
+                  className={`text-[21px] font-black tracking-[-0.03em] ${stat.accent ? 'text-[#00e07a]' : 'text-white'
+                    }`}
+                >
+                  {stat.value}
+                </span>
+                <span className="text-[12.5px] font-medium text-white/[0.74]">{stat.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* 🖥️ DESKTOP HORIZONTAL FLOATING SEARCH BAR (Figma 3-desktop.png) */}
-      <div className="hidden md:block max-w-[1140px] mx-auto px-4 relative z-20 -mt-10 pb-8">
+        {/* 📱 MOBILE — condensed card: dates + guests on one row each, then CTA */}
         <div
-          onClick={() => setIsCalendarModalOpen(true)}
-          className="bg-white rounded-[16px] p-3 sm:p-4 shadow-[0_12px_40px_rgba(0,0,0,0.1)] border border-[#ECECEC] flex items-center justify-between gap-4 cursor-pointer hover:shadow-[0_20px_60px_rgba(0,0,0,0.14)] transition-all"
+          id="booking"
+          className="md:hidden bg-white/[0.96] backdrop-blur-[18px] rounded-[16px] shadow-[0_22px_54px_rgba(5,60,72,0.34)] p-3 space-y-2"
         >
-          {/* Check-in */}
-          <div className="flex-1 px-4 py-2 hover:bg-[#F5F7FA] rounded-[10px] transition border-r border-[#ECECEC]">
-            <span className="text-xs font-normal text-[#6B7280] block mb-1">
-              {t('Nhận phòng', 'Check-in')}
+          <button
+            type="button"
+            onClick={() => setIsCalendarModalOpen(true)}
+            className="w-full min-h-[52px] bg-[#f4fbfd] border border-[#d9eff5] rounded-[10px] px-3.5 py-2 flex items-center justify-between gap-3 text-left transition-colors hover:bg-[#eefafd] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4]"
+          >
+            <span className="flex items-center gap-2.5 min-w-0">
+              <Calendar className="w-[18px] h-[18px] shrink-0 text-[#06b6d4]" />
+              <span className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#78a3ae]">
+                  {t('Nhận phòng — Trả phòng', 'Check in — Check out')}
+                </span>
+                <span className="text-[13.5px] font-semibold text-[#0b1b26] truncate">
+                  {formatDisplayDate(checkIn)} — {formatDisplayDate(checkOut)}
+                  {nights > 0 ? (
+                    <span className="font-medium text-[#78a3ae]">
+                      {' '}· {nights} {t('đêm', nights > 1 ? 'nights' : 'night')}
+                    </span>
+                  ) : null}
+                </span>
+              </span>
             </span>
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
-              <Calendar className="w-4 h-4 text-[#1D4E89]" />
-              <span>15/08/2025</span>
-            </div>
-          </div>
+            <ChevronRight className="w-4 h-4 shrink-0 text-[#06b6d4]" />
+          </button>
 
-          {/* Check-out */}
-          <div className="flex-1 px-4 py-2 hover:bg-[#F5F7FA] rounded-[10px] transition border-r border-[#ECECEC]">
-            <span className="text-xs font-normal text-[#6B7280] block mb-1">
-              {t('Trả phòng', 'Check-out')}
+          <button
+            type="button"
+            onClick={() => setIsCalendarModalOpen(true)}
+            className="w-full min-h-[52px] bg-[#f4fbfd] border border-[#d9eff5] rounded-[10px] px-3.5 py-2 flex items-center justify-between gap-3 text-left transition-colors hover:bg-[#eefafd] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4]"
+          >
+            <span className="flex items-center gap-2.5 min-w-0">
+              <Users className="w-[18px] h-[18px] shrink-0 text-[#06b6d4]" />
+              <span className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#78a3ae]">
+                  {t('Số khách · Hạng phòng', 'Guests · Room type')}
+                </span>
+                <span className="text-[13.5px] font-semibold text-[#0b1b26] truncate">
+                  {guests} · {roomType}
+                </span>
+              </span>
             </span>
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
-              <Calendar className="w-4 h-4 text-[#1D4E89]" />
-              <span>17/08/2025</span>
-            </div>
-          </div>
+            <ChevronRight className="w-4 h-4 shrink-0 text-[#06b6d4]" />
+          </button>
 
-          {/* Guests */}
-          <div className="flex-1 px-4 py-2 hover:bg-[#F5F7FA] rounded-[10px] transition">
-            <span className="text-xs font-normal text-[#6B7280] block mb-1">
-              {t('Số khách', 'Guests')}
-            </span>
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
-              <Users className="w-4 h-4 text-[#1D4E89]" />
-              <span>{t('2 người lớn, 0 trẻ em', '2 adults, 0 kids')}</span>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="w-full min-h-[48px] bg-[#06b6d4] text-white text-sm font-bold rounded-[12px] shadow-[0_6px_18px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
+          >
+            {t('Kiểm tra phòng trống', 'Check availability')}
+          </button>
+        </div>
 
-          {/* Search Button */}
-          <div className="w-[180px]" onClick={(e) => e.stopPropagation()}>
-            <Button
-              size="lg"
-              fullWidth
-              radius="8px"
-              onClick={(e) => {
-                e.stopPropagation()
-                handleSearch(e)
-              }}
-              className="bg-[#0F2D52] hover:bg-[#163B6C] text-white h-[50px] text-sm font-semibold"
-            >
-              {t('Tìm phòng', 'Search')}
-            </Button>
+        {/* 🖥️ DESKTOP — full 5-column bar; every field opens BookingCalendarModal */}
+        <div className="hidden md:grid bg-white/[0.96] backdrop-blur-[18px] rounded-[22px] shadow-[0_22px_54px_rgba(5,60,72,0.34)] px-4 py-3.5 gap-1 [grid-template-columns:minmax(128px,1fr)_minmax(128px,1fr)_minmax(128px,0.8fr)_minmax(200px,1.5fr)_auto] items-stretch">
+          <Field
+            label={t('Nhận phòng', 'Check in')}
+            value={formatDisplayDate(checkIn)}
+          />
+          <Field
+            label={t('Trả phòng', 'Check out')}
+            value={formatDisplayDate(checkOut)}
+            hint={nights > 0 ? `${nights} ${t('đêm', nights > 1 ? 'nights' : 'night')}` : undefined}
+          />
+          <Field label={t('Số khách', 'Guests')} value={guests} />
+          <Field label={t('Chọn phòng', 'Room type')} value={roomType} divider={false} />
+
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="bg-[#06b6d4] text-white text-sm font-bold px-[26px] py-[17px] rounded-[15px] whitespace-nowrap shadow-[0_6px_18px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
+          >
+            {t('Kiểm tra phòng trống', 'Check availability')}
+          </button>
+        </div>
+
+        {/* Reassurance + slide dots */}
+        <div className="mt-[18px] flex items-center justify-between gap-6 flex-wrap">
+          <span className="text-[12.5px] font-medium text-white/[0.72]">
+            {t(
+              'Cam kết giá tốt nhất khi đặt trực tiếp · Huỷ miễn phí trước 7 ngày',
+              'Best rate guaranteed when you book direct · Free cancellation up to 7 days before arrival'
+            )}
+          </span>
+          <div className="flex gap-2">
+            {SLIDES.map((slide, idx) => (
+              <button
+                key={slide.src}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={t(`Ảnh ${idx + 1}`, `Slide ${idx + 1}`)}
+                aria-current={currentSlide === idx}
+                className={`w-[26px] h-1 rounded-sm p-0 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${currentSlide === idx ? 'bg-white' : 'bg-white/[0.36] hover:bg-white/60'
+                  }`}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -204,11 +273,13 @@ export function HeroSection() {
         checkIn={checkIn}
         checkOut={checkOut}
         guests={guests}
-        roomType="Tất cả 20 hạng phòng"
-        onSave={(cIn, cOut, g) => {
+        roomType={roomType}
+        onSave={(cIn, cOut, g, rt) => {
           setCheckIn(cIn)
           setCheckOut(cOut)
           setGuests(g)
+          setRoomType(rt)
+          setIsCalendarModalOpen(false)
         }}
       />
     </section>

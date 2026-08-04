@@ -137,6 +137,45 @@ export interface TransportLeg {
     price: I18nText
 }
 
+// ------------------------------------------------------------ thư viện & tiện ích
+
+/**
+ * Một khung trong dải thư viện ảnh của trang chủ (section `gallery`).
+ *
+ * `image` optional vì file ảnh nằm trong `public/` của từng app, mỗi app một
+ * cấu trúc khác nhau (xem `assets.ts`). Core giữ phần chữ nghĩa song ngữ —
+ * thứ mọi theme dùng chung; app tự cấp đường dẫn ảnh của nó.
+ */
+export interface GalleryItem {
+    id: string
+    title: I18nText
+    subtitle: I18nText
+    image?: string
+}
+
+/**
+ * Tiện ích của cơ sở lưu trú.
+ *
+ * `icon` là TÊN icon, không phải component — `core` không được chứa JSX
+ * (luật R2). Theme tự ánh xạ tên này sang icon của bộ nó dùng.
+ */
+export interface Amenity {
+    id: string
+    icon: string
+    label: I18nText
+    desc?: I18nText
+}
+
+/** Đánh giá của khách, hiện trên trang chủ. */
+export interface Review {
+    id: string
+    name: string
+    date: string
+    rating: number
+    comment: I18nText
+    avatar?: string
+}
+
 // ------------------------------------------------------------------ nội dung phụ
 
 export interface Fact {
@@ -185,4 +224,13 @@ export interface PropertyData {
     transport: TransportLeg[]
     faq: Faq[]
     notes: I18nText[]
+
+    /**
+     * Ba mục dưới đây để optional có chủ đích: các mẫu h1–h6 dựng trước khi
+     * chúng tồn tại, và không phải cơ sở lưu trú nào cũng có. Theme phải tự
+     * xử lý trường hợp thiếu thay vì giả định luôn có.
+     */
+    gallery?: GalleryItem[]
+    amenities?: Amenity[]
+    reviews?: Review[]
 }

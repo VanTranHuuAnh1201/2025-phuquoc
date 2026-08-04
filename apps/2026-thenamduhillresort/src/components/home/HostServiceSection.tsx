@@ -2,19 +2,12 @@
 
 import React from 'react'
 import { useLanguage } from '../../context/LanguageContext'
-import { Car, Anchor, Utensils, Gamepad2, Bike, Headphones, Star } from 'lucide-react'
+import { hostPerks } from '../../data/property'
+import { iconFor } from '../../data/icons'
+import { Star } from 'lucide-react'
 
 export function HostServiceSection() {
-  const { t } = useLanguage()
-
-  const perks = [
-    { icon: Car, label: t('Đón tiễn bến tàu miễn phí', 'Free pier transfer') },
-    { icon: Anchor, label: t('Tour cano lặn ngắm san hô', 'Private canoe & snorkeling') },
-    { icon: Utensils, label: t('Bữa sáng ngắm biển', 'Seaview breakfast') },
-    { icon: Gamepad2, label: t('Bàn bida & giải trí', 'Billiards & games') },
-    { icon: Bike, label: t('Cho thuê xe máy đồi', 'Motorbike rental') },
-    { icon: Headphones, label: t('Hỗ trợ 24/7', '24/7 support') },
-  ]
+  const { t, tx } = useLanguage()
 
   return (
     <section id="experience" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
@@ -38,15 +31,15 @@ export function HostServiceSection() {
 
             {/* Perks Badges */}
             <div className="flex flex-wrap gap-2 pt-2">
-              {perks.map((perk, idx) => {
-                const IconComp = perk.icon
+              {hostPerks.map((perk) => {
+                const IconComp = iconFor(perk.icon)
                 return (
                   <span
-                    key={idx}
+                    key={perk.id}
                     className="inline-flex items-center gap-1.5 bg-white border border-[#ECECEC] text-[#0F2D52] text-xs font-medium px-3 py-1.5 rounded-full shadow-2xs"
                   >
                     <IconComp className="w-3.5 h-3.5 text-[#1D4E89]" />
-                    <span>{perk.label}</span>
+                    <span>{tx(perk.label)}</span>
                   </span>
                 )
               })}

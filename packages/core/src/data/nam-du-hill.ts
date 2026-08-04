@@ -596,4 +596,135 @@ export const namDuHill: PropertyData = {
             'Bring motion-sickness tablets and check the forecast three days ahead.',
         ),
     ],
+
+    gallery: [
+        {
+            id: 'gallery-beach',
+            title: t('Bãi biển riêng', 'Private Beach'),
+            subtitle: t('Yên bình & tĩnh lặng', 'Peaceful & Pristine'),
+            image: '/uploads/hoang-hon.jpg',
+        },
+        {
+            id: 'gallery-pool',
+            title: t('Hồ bơi vô cực', 'Infinity Pool'),
+            subtitle: t('View biển 360°', '360° Ocean Panorama'),
+            image: '/uploads/ho-boi.jpg',
+        },
+        {
+            id: 'gallery-dining',
+            title: t('Nhà hàng view biển', 'Oceanfront Dining'),
+            subtitle: t('Ẩm thực hải sản tươi sống', 'Fresh Island Seafood'),
+            image: '/uploads/nha-hang-view-bien.jpg',
+        },
+        {
+            id: 'gallery-diving',
+            title: t('Lặn ngắm san hô', 'Coral Reef Diving'),
+            subtitle: t('Khám phá đại dương', 'Underwater Discovery'),
+            image: '/uploads/lan-ngan-san-ho.jpg',
+        },
+    ],
+
+    /**
+     * `icon` là tên icon dạng chuỗi, không phải component — `core` không chứa
+     * JSX (luật R2). Theme tự ánh xạ tên sang bộ icon nó dùng.
+     */
+    amenities: [
+        {
+            id: 'amenity-pool',
+            icon: 'waves',
+            label: t('Hồ bơi vô cực', 'Infinity Pool'),
+            desc: t('View biển', 'Sea view'),
+        },
+        {
+            id: 'amenity-restaurant',
+            icon: 'utensils',
+            label: t('Nhà hàng', 'Restaurant'),
+            desc: t('Ẩm thực đa dạng', 'Diverse cuisine'),
+        },
+        {
+            id: 'amenity-wifi',
+            icon: 'wifi',
+            label: t('Wi-Fi miễn phí', 'Free Wi-Fi'),
+            desc: t('Tốc độ cao', 'High speed'),
+        },
+        {
+            id: 'amenity-transfer',
+            icon: 'bus',
+            label: t('Đưa đón', 'Transfer'),
+            desc: t('Xe đưa đón tận nơi', 'Door-to-door shuttle'),
+        },
+        {
+            id: 'amenity-pier-transfer',
+            icon: 'car',
+            label: t('Đón tiễn bến tàu miễn phí', 'Free pier transfer'),
+        },
+        {
+            id: 'amenity-bike',
+            icon: 'bike',
+            label: t('Thuê xe máy', 'Motorbike rental'),
+            desc: t('Khám phá đảo', 'Explore the island'),
+        },
+        {
+            id: 'amenity-event',
+            icon: 'sparkles',
+            label: t('Tổ chức sự kiện', 'Event organizing'),
+            desc: t('Hội nghị, tiệc cưới', 'Conferences, weddings'),
+        },
+        {
+            id: 'amenity-canoe',
+            icon: 'anchor',
+            label: t('Tour cano lặn ngắm san hô', 'Private canoe & snorkeling'),
+        },
+        {
+            id: 'amenity-breakfast',
+            icon: 'utensils',
+            label: t('Bữa sáng ngắm biển', 'Seaview breakfast'),
+        },
+        {
+            id: 'amenity-billiards',
+            icon: 'gamepad',
+            label: t('Bàn bida & giải trí', 'Billiards & games'),
+        },
+        {
+            id: 'amenity-support',
+            icon: 'headphones',
+            label: t('Hỗ trợ 24/7', '24/7 support'),
+        },
+    ],
+
+    reviews: [
+        {
+            id: 'review-1',
+            name: 'Nguyễn Minh Tuấn',
+            date: '12/06/2025',
+            rating: 5,
+            comment: t(
+                'View đẹp, phòng sạch sẽ, nhân viên nhiệt tình. Sẽ quay lại lần sau!',
+                'Stunning view, clean rooms, extremely friendly staff. Will definitely come back!',
+            ),
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+        },
+        {
+            id: 'review-2',
+            name: 'Trần Hồng Anh',
+            date: '05/06/2025',
+            rating: 5,
+            comment: t(
+                'Không gian yên tĩnh, phù hợp nghỉ dưỡng cùng gia đình. Rất hài lòng.',
+                'Peaceful ambience, perfect for family vacations. Extremely satisfied.',
+            ),
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+        },
+        {
+            id: 'review-3',
+            name: 'Lê Quốc Bảo',
+            date: '01/06/2025',
+            rating: 5,
+            comment: t(
+                'Đồ ăn ngon, hải sản tươi, bể bơi view biển cực chill!',
+                'Delicious food, fresh seafood, the infinity ocean view pool is super relaxing!',
+            ),
+            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+        },
+    ],
 }

@@ -3,44 +3,14 @@
 import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
+import { property } from '../../data/property'
 import { Button } from '../common/Button'
 import { Star } from 'lucide-react'
 
 export function DiningSection() {
-  const { t } = useLanguage()
+  const { t, tx } = useLanguage()
 
-  const reviews = [
-    {
-      name: 'Nguyễn Minh Tuấn',
-      date: '12/06/2025',
-      rating: 5,
-      comment: t(
-        'View đẹp, phòng sạch sẽ, nhân viên nhiệt tình. Sẽ quay lại lần sau!',
-        'Stunning view, clean rooms, extremely friendly staff. Will definitely come back!'
-      ),
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-    },
-    {
-      name: 'Trần Hồng Anh',
-      date: '05/06/2025',
-      rating: 5,
-      comment: t(
-        'Không gian yên tĩnh, phù hợp nghỉ dưỡng cùng gia đình. Rất hài lòng.',
-        'Peaceful ambience, perfect for family vacations. Extremely satisfied.'
-      ),
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
-    },
-    {
-      name: 'Lê Quốc Bảo',
-      date: '01/06/2025',
-      rating: 5,
-      comment: t(
-        'Đồ ăn ngon, hải sản tươi, bể bơi view biển cực chill!',
-        'Delicious food, fresh seafood, the infinity ocean view pool is super relaxing!'
-      ),
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
-    },
-  ]
+  const reviews = property.reviews ?? []
 
   return (
     <section className="py-5 sm:py-7 bg-[#FAFAF8] border-b border-[#ECECEC]">
@@ -88,9 +58,9 @@ export function DiningSection() {
 
           {/* User Review Cards (3 Columns, Card Radius 12px) */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {reviews.map((rev, idx) => (
+            {reviews.map((rev) => (
               <div
-                key={idx}
+                key={rev.id}
                 className="bg-white rounded-[12px] p-4 border border-[#ECECEC] shadow-sm flex flex-col justify-between hover:shadow-md transition"
               >
                 <div>
@@ -117,7 +87,7 @@ export function DiningSection() {
                     </div>
                   </div>
                   <p className="text-xs text-[#4B5563] leading-relaxed italic">
-                    &quot;{rev.comment}&quot;
+                    &quot;{tx(rev.comment)}&quot;
                   </p>
                 </div>
 

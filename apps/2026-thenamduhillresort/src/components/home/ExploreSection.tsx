@@ -1,44 +1,17 @@
 'use client'
 
-import React from 'react'
+import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
-import { ArrowRight } from 'lucide-react'
+import { featuredPlaces } from '../../data/property'
 
 export function ExploreSection() {
-  const { t } = useLanguage()
-
-  const islands = [
-    {
-      title: 'Hòn Hai Bờ Đập',
-      tag: t('MALDIVES THU NHỎ', 'MINI MALDIVES'),
-      desc: t('Hai đảo nối nhau bằng dải đá tự nhiên — chỗ lặn ngắm san hô.', 'Two islets joined by a natural stone causeway.'),
-      image: '/uploads/hero-1.jpg',
-    },
-    {
-      title: 'Hòn Mấu',
-      tag: t('5 BÃI BIỂN', 'FIVE BEACHES'),
-      desc: t('Đầu này cát trắng, đầu kia toàn đá cuội đen bóng.', 'White sand at one end, polished black pebbles at the other.'),
-      image: '/uploads/pasted-1785691965790-0.png',
-    },
-    {
-      title: 'Bãi Cây Mến',
-      tag: t('4 PHÚT XE MÁY', '4 MIN BY BIKE'),
-      desc: t('Bãi đẹp nhất đảo, dưới hàng dừa 80 năm tuổi.', 'The prettiest beach on the island, under 80-year-old palms.'),
-      image: '/uploads/pasted-1785690604574-0.png',
-    },
-    {
-      title: 'Hải đăng Nam Du',
-      tag: '309 M',
-      desc: t('Từ trên đỉnh nhìn thấy cả 21 hòn đảo cùng lúc.', 'From the top you see all 21 islands at once.'),
-      image: '/uploads/hero-2.jpg',
-    },
-  ]
+  const { t, tx } = useLanguage()
 
   return (
     <section id="explore" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
-        
+
         {/* Standardized Section Header (Mobile 16px font size per Figma) */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
           <div>
@@ -59,28 +32,28 @@ export function ExploreSection() {
 
         {/* 4 Island Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {islands.map((item, idx) => (
+          {featuredPlaces.map((item) => (
             <Link
-              key={idx}
+              key={item.id}
               href="/explore"
               className="relative aspect-[4/3] rounded-[16px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group flex items-end p-4"
             >
               <img
                 src={item.image}
-                alt={item.title}
+                alt={tx(item.name)}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#101828]/90 via-[#101828]/40 to-transparent" />
-              
+
               <div className="relative z-10 text-white">
                 <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-1">
-                  {item.tag}
+                  {tx(item.tag)}
                 </span>
                 <h3 className="font-bold text-base text-white leading-tight">
-                  {item.title}
+                  {tx(item.name)}
                 </h3>
                 <p className="text-xs text-white/80 font-normal mt-1 line-clamp-2">
-                  {item.desc}
+                  {tx(item.desc)}
                 </p>
               </div>
             </Link>
@@ -89,7 +62,7 @@ export function ExploreSection() {
 
         {/* 3 Itinerary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          
+
           <Link
             href="/explore"
             className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 hover:bg-white hover:shadow-md transition flex flex-col justify-between"

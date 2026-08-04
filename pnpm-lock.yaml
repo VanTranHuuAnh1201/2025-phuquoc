@@ -133,6 +133,9 @@ importers:
 
   apps/2026-thenamduhillresort:
     dependencies:
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.2.8)
