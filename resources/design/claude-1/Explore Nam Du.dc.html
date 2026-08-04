@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif; background: #ffffff; color: #0b1b26; -webkit-font-smoothing: antialiased; }
+  a { color: #06b6d4; text-decoration: none; }
+  a:hover { color: #0891b2; }
+  :focus-visible { outline: 3px solid #06b6d4; outline-offset: 3px; border-radius: 6px; }
+  input, button, select { font-family: inherit; }
+
+  /* ---------- mobile ---------- */
+  #ndh-mbar { display: none; }
+  @media (max-width: 900px) {
+    [style*="max-width: 1320px"], [style*="max-width: 1280px"], [style*="max-width: 1240px"], [style*="max-width: 1180px"], [style*="max-width: 1120px"], [style*="max-width: 1040px"] { padding-left: 18px !important; padding-right: 18px !important; }
+    section[style]:not(#top) { padding-top: 58px !important; }
+    #top { min-height: 100svh !important; }
+    h1[style] { font-size: clamp(31px, 8.4vw, 46px) !important; line-height: 1.05 !important; letter-spacing: -0.03em !important; }
+    h2[style] { font-size: clamp(25px, 6.4vw, 34px) !important; line-height: 1.12 !important; }
+    h3[style] { font-size: clamp(17px, 4.4vw, 21px) !important; }
+    [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [style*="grid-template-columns: minmax(0, 1fr) minmax(0"], [style*="grid-template-columns: minmax(0, 1.2fr)"], [style*="grid-template-columns: minmax(0, 1.15fr)"], [style*="grid-template-columns: minmax(0, 1.4fr)"], [style*="grid-template-columns: minmax(0, 2fr)"], [style*="grid-template-columns: minmax(0, 1.7fr)"], [style*="grid-template-columns: minmax(132px"], [style*="grid-template-columns: minmax(0, 0.9fr)"] { grid-template-columns: minmax(0, 1fr) !important; }
+    [style*="gap: 60px"], [style*="gap: 64px"], [style*="gap: 52px"], [style*="gap: 56px"], [style*="gap: 44px"] { gap: 26px !important; }
+    [style*="padding: 54px 56px"], [style*="padding: 74px 56px"], [style*="padding: 48px 52px"], [style*="padding: 56px 56px"], [style*="padding: 44px 48px"] { padding: 30px 20px !important; }
+    [style*="position: sticky"] { position: static !important; }
+    [style*="grid-auto-rows: 250px"] { grid-auto-rows: 196px !important; }
+    [style*="grid-auto-rows: 220px"] { grid-auto-rows: 178px !important; }
+    [data-brandsub] { display: none !important; }
+    #ndh-mbar { display: flex !important; }
+    body { padding-bottom: 76px !important; }
+  }
+  @media (max-width: 620px) {
+    [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+    [style*="grid-column: span 2"], [style*="grid-column: span 3"] { grid-column: auto !important; }
+    [style*="grid-row: span 2"] { grid-row: auto !important; }
+    [style*="border-right: 1px solid #d9eff5"] { border-right: none !important; border-bottom: 1px solid #d9eff5 !important; }
+    section[style]:not(#top) { padding-top: 46px !important; }
+    [style*="grid-auto-rows"] { grid-auto-rows: 210px !important; }
+  }
+
+  @media (max-width: 900px) {
+    [style*="grid-auto-rows"] { grid-auto-rows: auto !important; }
+    [style*="grid-auto-rows"] > * { min-height: 172px !important; }
+    [style*="padding: 62px 56px 46px"] { padding: 34px 20px 30px !important; }
+    #panorama { margin-top: 58px !important; padding: 0 18px !important; }
+    [data-sun] { left: 84% !important; top: 34px !important; width: 78px !important; height: 78px !important; }
+    [data-mhide] { display: none !important; }
+    [style*="padding: 14px 16px; display: grid"] { padding: 8px 10px !important; }
+    [style*="border-radius: 34px"] { border-radius: 24px !important; }
+    [style*="border-radius: 26px"] { border-radius: 20px !important; }
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 24px !important; }
+  }
+  @media (max-width: 620px) {
+    [style*="grid-auto-rows"] > * { min-height: 200px !important; }
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+  }
+
+  @media (max-width: 900px) {
+    [style*="position: sticky"][data-keepsticky] { position: sticky !important; }
+    [data-chips] { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; margin: 0 -18px; padding-left: 18px; padding-right: 18px; }
+    [data-chips]::-webkit-scrollbar { display: none; }
+    [data-chips] > * { flex: 0 0 auto; }
+    [style*="padding: 4px 32px 0"], [style*="padding: 0 32px 24px"], [style*="padding: 24px 32px"] { padding-left: 18px !important; padding-right: 18px !important; }
+    [style*="max-height: 90vh"], [style*="max-height: 88vh"] { max-height: 92svh !important; }
+  }
+
+  @media (max-width: 900px) {
+    h1[style] { font-size: clamp(26px, 7.2vw, 37px) !important; line-height: 1.08 !important; }
+    h2[style] { font-size: clamp(21px, 5.2vw, 27px) !important; line-height: 1.15 !important; }
+    h3[style] { font-size: clamp(15.5px, 3.9vw, 18px) !important; }
+    [style*="letter-spacing: 0.16em"], [style*="letter-spacing: 0.15em"], [style*="letter-spacing: 0.14em"], [style*="letter-spacing: 0.13em"] { font-size: 10px !important; letter-spacing: 0.1em !important; }
+    [style*="font-size: 17px;"], [style*="font-size: 16px;"] { font-size: 14.5px !important; }
+    [style*="font-size: 15px;"], [style*="font-size: 15.5px;"] { font-size: 13.5px !important; }
+    [style*="font-size: 14px;"] { font-size: 13px !important; }
+    p[style] { line-height: 1.55 !important; }
+    [style*="padding: 32px 34px;"], [style*="padding: 28px 30px;"], [style*="padding: 32px 36px;"], [style*="padding: 28px;"], [style*="padding: 26px;"], [style*="padding: 24px;"], [style*="padding: 22px 24px;"], [style*="padding: 20px 22px;"] { padding: 16px 15px !important; }
+    [style*="border-radius: 34px;"], [style*="border-radius: 26px;"], [style*="border-radius: 24px;"] { border-radius: 16px !important; }
+    [style*="border-radius: 22px;"], [style*="border-radius: 20px;"] { border-radius: 14px !important; }
+    [style*="border: 1.5px solid"] { border-width: 1px !important; }
+    [style*="margin-top: 96px"], [style*="margin-top: 88px"], [style*="margin-top: 100px"] { margin-top: 42px !important; }
+    [style*="margin: 44px 0 0"], [style*="margin-bottom: 34px"], [style*="margin-bottom: 40px"] { margin-top: 22px !important; margin-bottom: 20px !important; }
+    section[style]:not(#top) { padding-top: 42px !important; }
+    [data-cols2] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+    input[style], select[style], textarea[style] { padding: 11px 12px !important; font-size: 16px !important; border-radius: 11px !important; }
+    [data-filterbar] { flex-wrap: nowrap !important; padding-top: 8px !important; padding-bottom: 8px !important; gap: 10px !important; }
+    [data-filterbar] select { padding: 7px 9px !important; font-size: 12px !important; border-radius: 10px !important; }
+    [data-count] { display: none !important; }
+  }
+  @media (max-width: 620px) {
+    [data-cols2] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [data-cols2] > [data-wide] { grid-column: 1 / -1 !important; }
+  }
+
+  ::selection { background: #00c46a; color: #04241a; }
+</style>
+</helmet>
+
+<div>
+
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; backdrop-filter: blur(18px); background: rgba(255,255,255,0.94); border-bottom: 1px solid rgba(6,182,212,0.10);">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 13px 32px; display: flex; align-items: center; gap: 20px;">
+    <a href="Nam Du Hill.dc.html" style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+      <img src="uploads/OP5-b8f91eaa.png" alt="The Nam Du Hill" style="width: 40px; height: 40px; object-fit: contain;" />
+      <span style="display: flex; flex-direction: column; line-height: 1.1;">
+        <span style="font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">THE NAM DU HILL</span>
+        <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; color: #06b6d4;">HILLTOP BOUTIQUE RESORT</span>
+      </span>
+    </a>
+    <nav ref="{{ navRef }}" style="display: flex; align-items: center; gap: 22px; margin-left: auto; flex-wrap: nowrap;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 14px; font-weight: 700; color: #06b6d4; white-space: nowrap;">Khám phá</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Liên hệ</a>
+    </nav>
+    <button ref="{{ menuBtnRef }}" onClick="{{ toggleMenu }}" aria-label="Mở menu" style="display: none; margin-left: auto; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 17px; cursor: pointer; flex-shrink: 0;">☰</button>
+    <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+      <div ref="{{ langRef }}" style="display: flex; align-items: center; background: #eef6fb; border-radius: 999px; padding: 3px;">
+        <button onClick="{{ setVI }}" data-lang="vi" style="border: none; background: #ffffff; color: #0b1b26; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.10);">VI</button>
+        <button onClick="{{ setEN }}" data-lang="en" style="border: none; background: transparent; color: #6b8394; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer;">EN</button>
+      </div>
+      <a href="Rooms.dc.html" data-en="Book a room" style="background: #06b6d4; color: #ffffff; font-size: 13px; font-weight: 700; padding: 11px 20px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 18px rgba(6,182,212,0.30); transition: background 150ms ease;" style-hover="background:#0891b2">Đặt phòng</a>
+    </div>
+  </div>
+  <div ref="{{ menuRef }}" style="display: none; border-top: 1px solid rgba(6,182,212,0.10); background: #ffffff;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 12px 32px 18px; display: grid; gap: 2px;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Khám phá</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0;">Liên hệ</a>
+    </div>
+  </div>
+</header>
+
+<section style="position: relative; min-height: 66vh; display: flex; align-items: flex-end; overflow: hidden; background: #0b4f5e;">
+  <img src="uploads/pasted-1785691965790-0.png" alt="Vịnh Nam Du" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" />
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,60,72,0.62) 0%, rgba(5,60,72,0.20) 38%, rgba(4,74,90,0.76) 100%);"></div>
+  <div style="position: relative; width: 100%; max-width: 1320px; margin: 0 auto; padding: 160px 32px 50px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+      <span style="width: 7px; height: 7px; border-radius: 50%; background: #00c46a;"></span>
+      <span data-en="21 islands · 9.12 km² · Gulf of Thailand" style="font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.86);">21 hòn đảo · 9,12 km² · Vịnh Thái Lan</span>
+    </div>
+    <h1 data-en="Twenty-one islands. Four days is not enough — here is how to spend two or three." style="margin: 0 0 18px; font-size: clamp(34px, 4.6vw, 62px); line-height: 1.03; font-weight: 800; letter-spacing: -0.036em; color: #ffffff; max-width: 19ch; text-wrap: balance;">Hai mươi mốt hòn đảo. Bốn ngày không đủ — đây là cách đi trong hai hoặc ba.</h1>
+    <p data-en="Everything below is what our guests actually do. Ask reception and we will arrange the boat, the bike and the table." style="margin: 0; font-size: clamp(15px, 1.3vw, 17.5px); line-height: 1.6; color: rgba(255,255,255,0.84); max-width: 60ch;">Toàn bộ nội dung dưới đây là những gì khách của chúng tôi thật sự làm. Báo lễ tân, chúng tôi lo tàu, xe và bàn ăn.</p>
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 0 32px;">
+  <div style="margin-top: -40px; position: relative; z-index: 10; background: #ffffff; border-radius: 24px; box-shadow: 0 18px 48px rgba(8,72,86,0.16); border: 1px solid rgba(6,182,212,0.10); padding: 26px 30px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px;">
+    <div>
+      <div data-en="Best season" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #78a3ae; margin-bottom: 8px;">Mùa đẹp nhất</div>
+      <div data-en="December – March" style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">Tháng 12 – tháng 3</div>
+      <div data-en="Calm sea, clear water, no seasickness" style="font-size: 12.5px; color: #78a3ae; margin-top: 5px;">Biển êm, nước trong, ít say sóng</div>
+    </div>
+    <div>
+      <div data-en="Highest point" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #78a3ae; margin-bottom: 8px;">Đỉnh cao nhất</div>
+      <div style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">309 m</div>
+      <div data-en="Nam Du lighthouse, on Hon Lon" style="font-size: 12.5px; color: #78a3ae; margin-top: 5px;">Hải đăng Nam Du, trên Hòn Lớn</div>
+    </div>
+    <div>
+      <div data-en="Getting here" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #78a3ae; margin-bottom: 8px;">Cách ra đảo</div>
+      <div data-en="Rach Gia → 2–3 h by speedboat" style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">Rạch Giá → 2–3 giờ tàu</div>
+      <div data-en="We meet you at Cu Tron pier, free" style="font-size: 12.5px; color: #78a3ae; margin-top: 5px;">Chúng tôi đón tại bến Củ Tron, miễn phí</div>
+    </div>
+    <div>
+      <div data-en="Bring with you" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #78a3ae; margin-bottom: 8px;">Nhớ mang theo</div>
+      <div data-en="ID card &amp; cash" style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">CCCD &amp; tiền mặt</div>
+      <div data-en="Border-zone checks; ATMs are scarce" style="font-size: 12.5px; color: #78a3ae; margin-top: 5px;">Kiểm soát vùng biên; ATM rất ít</div>
+    </div>
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 32px 0;">
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; align-items: end; margin-bottom: 30px;">
+    <div>
+      <span data-en="On Hon Lon, the main island" style="font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #00b869;">Trên Hòn Lớn, đảo chính</span>
+      <h2 data-en="Eleven kilometres of coast road, and everything worth stopping for." style="margin: 14px 0 0; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.08; font-weight: 800; letter-spacing: -0.032em; color: #0b1b26; text-wrap: balance;">Mười một cây số đường ven biển, và mọi chỗ đáng dừng lại.</h2>
+    </div>
+    <p data-en="A rented scooter costs 120,000–150,000 VND a day. The whole loop takes a morning if you stop often — and you will." style="margin: 0 0 6px; font-size: 16px; line-height: 1.65; color: #4c6b74;">Thuê xe máy 120.000–150.000₫/ngày. Chạy hết vòng mất một buổi sáng nếu dừng nhiều — và bạn sẽ dừng nhiều.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+    <sc-for list="{{ spots }}" as="s" hint-placeholder-count="6">
+      <article style="border-radius: 24px; overflow: hidden; background: #ffffff; border: 1px solid #d9eff5; display: flex; flex-direction: column; transition: box-shadow 200ms ease, transform 200ms ease;" style-hover="box-shadow:0 18px 40px rgba(8,72,86,0.13); transform:translateY(-4px)">
+        <div style="position: relative; height: 196px; background: #eefafd;">
+          <image-slot id="{{ s.slotId }}" src="{{ s.img }}" placeholder="{{ s.name }}" style="position: absolute; inset: 0;"></image-slot>
+          <span style="position: absolute; top: 12px; left: 12px; display: inline-block; white-space: nowrap; background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); color: #0b1b26; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; padding: 6px 11px; border-radius: 999px;">{{ s.dist }}</span>
+        </div>
+        <div style="padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1;">
+          <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26; line-height: 1.24;">{{ s.name }}</h3>
+          <p style="margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: #4c6b74;">{{ s.text }}</p>
+          <div style="margin-top: auto; font-size: 12.5px; font-weight: 700; color: #06b6d4;">{{ s.tip }}</div>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 32px 0;">
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; align-items: end; margin-bottom: 30px;">
+    <div>
+      <span data-en="The satellite islands" style="font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #00b869;">Cụm đảo vệ tinh</span>
+      <h2 data-en="A wooden boat, four islands, one long day." style="margin: 14px 0 0; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.08; font-weight: 800; letter-spacing: -0.032em; color: #0b1b26; text-wrap: balance;">Một chiếc tàu gỗ, bốn hòn đảo, một ngày dài.</h2>
+    </div>
+    <p data-en="200,000–400,000 VND per person shared, or charter the whole boat. Reception books it the evening before." style="margin: 0 0 6px; font-size: 16px; line-height: 1.65; color: #4c6b74;">200.000–400.000₫/người nếu ghép đoàn, hoặc thuê trọn tàu. Lễ tân đặt giúp từ tối hôm trước.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;">
+    <sc-for list="{{ islands }}" as="i" hint-placeholder-count="4">
+      <article style="border-radius: 24px; overflow: hidden; position: relative; min-height: 340px; background: #0d5b68; display: flex; align-items: flex-end; transition: transform 200ms ease;" style-hover="transform:translateY(-4px)">
+        <image-slot id="{{ i.slotId }}" src="{{ i.img }}" placeholder="{{ i.name }}" style="position: absolute; inset: 0;"></image-slot>
+        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(4,74,90,0.76) 100%); pointer-events: none;"></div>
+        <div style="position: relative; padding: 22px 22px 24px; pointer-events: none;">
+          <div style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.12em; color: #00e07a; margin-bottom: 8px;">{{ i.badge }}</div>
+          <h3 style="margin: 0 0 8px; font-size: 21px; font-weight: 800; letter-spacing: -0.024em; color: #ffffff; line-height: 1.16;">{{ i.name }}</h3>
+          <p style="margin: 0; font-size: 13px; line-height: 1.52; color: rgba(255,255,255,0.78);">{{ i.text }}</p>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 32px 0;">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 40px; flex-wrap: wrap; margin-bottom: 26px;">
+    <div style="max-width: 640px;">
+      <span data-en="Suggested itineraries" style="font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #00b869;">Lịch trình gợi ý</span>
+      <h2 data-en="Two nights or three. Both start with the overnight coach." style="margin: 14px 0 0; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.08; font-weight: 800; letter-spacing: -0.032em; color: #0b1b26; text-wrap: balance;">Hai đêm hay ba đêm. Cả hai đều bắt đầu bằng chuyến xe đêm.</h2>
+    </div>
+    <div style="display: flex; gap: 7px;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+        <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 26px; align-items: start;">
+
+    <div style="border: 1px solid #d9eff5; border-radius: 26px; overflow: hidden;">
+      <sc-for list="{{ legs }}" as="l" hint-placeholder-count="6">
+        <div style="{{ l.rowStyle }}">
+          <div style="width: 128px; flex-shrink: 0;">
+            <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: #06b6d4; margin-bottom: 4px;">{{ l.day }}</div>
+            <div style="font-size: 14px; font-weight: 800; color: #0b1b26;">{{ l.time }}</div>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 15px; font-weight: 700; color: #0b1b26; line-height: 1.4; margin-bottom: 5px;">{{ l.title }}</div>
+            <div style="font-size: 13.5px; line-height: 1.6; color: #4c6b74;">{{ l.text }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <aside style="position: sticky; top: 96px; display: grid; gap: 14px;">
+      <div style="border: 1px solid #d9eff5; border-radius: 24px; box-shadow: 0 14px 40px rgba(8,72,86,0.09); padding: 24px; background: #ffffff;">
+        <div ref="{{ costTitleRef }}" data-en="Estimated cost per person" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: #78a3ae; margin-bottom: 14px;">Dự toán chi phí mỗi khách</div>
+        <sc-for list="{{ costs }}" as="c" hint-placeholder-count="6">
+          <div style="{{ c.style }}">
+            <span>{{ c.label }}</span>
+            <span style="{{ c.valStyle }}">{{ c.value }}</span>
+          </div>
+        </sc-for>
+        <div data-en="Excludes personal shopping. Staying at Nam Du Hill replaces the accommodation line." style="margin-top: 14px; font-size: 11.5px; line-height: 1.5; color: #78a3ae;">Chưa gồm mua sắm cá nhân. Ở Nam Du Hill thì thay vào dòng lưu trú.</div>
+      </div>
+
+      <div data-sheen style="border-radius: 24px; background: linear-gradient(150deg, #06b6d4 0%, #0e7490 100%); position: relative; overflow: hidden; padding: 26px; color: #ffffff;">
+        <div data-en="We arrange all of it" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.62); margin-bottom: 10px;">Chúng tôi lo hết phần này</div>
+        <div data-en="Speedboat tickets, pier pickup, scooter, the island boat and the BBQ table — tell reception the day before." style="font-size: 15px; font-weight: 700; line-height: 1.5; margin-bottom: 18px;">Vé tàu cao tốc, đón bến, xe máy, tàu đi đảo và bàn BBQ — báo lễ tân trước một ngày.</div>
+        <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" data-en="Plan my trip on Zalo" style="display: block; text-align: center; background: #00c46a; color: #04241a; font-size: 14px; font-weight: 800; padding: 14px 20px; border-radius: 14px;" style-hover="background:#00e07a">Nhờ tư vấn qua Zalo</a>
+        <a href="Rooms.dc.html" data-en="Pick a room first" style="display: block; text-align: center; margin-top: 8px; border: 1px solid rgba(255,255,255,0.34); color: #ffffff; font-size: 14px; font-weight: 700; padding: 14px 20px; border-radius: 14px;" style-hover="background:rgba(255,255,255,0.12)">Chọn phòng trước</a>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 32px 0;">
+  <div style="border-radius: 28px; background: #e9f9fd; border: 1px solid rgba(6,182,212,0.10); padding: 40px 44px;">
+    <h2 data-en="Before you book the boat" style="margin: 0 0 24px; font-size: 26px; font-weight: 800; letter-spacing: -0.026em; color: #0b1b26;">Trước khi bạn đặt vé tàu</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px;">
+      <div>
+        <div data-en="Book 2–4 weeks ahead in high season" style="font-size: 15.5px; font-weight: 800; color: #0b1b26; margin-bottom: 8px;">Đặt trước 2–4 tuần vào cao điểm</div>
+        <p data-en="From December to March boat capacity runs out. Rooms and return tickets both need booking early." style="margin: 0; font-size: 14px; line-height: 1.6; color: #4c6b74;">Từ tháng 12 đến tháng 3 tàu thường hết chỗ. Cả phòng lẫn vé khứ hồi đều nên đặt sớm.</p>
+      </div>
+      <div>
+        <div data-en="Watch the wind, not the rain" style="font-size: 15.5px; font-weight: 800; color: #0b1b26; margin-bottom: 8px;">Xem gió, không phải xem mưa</div>
+        <p data-en="Speedboats stop running above force 6. Check the forecast three days out — and note that we always refund deposits when the sea closes." style="margin: 0; font-size: 14px; line-height: 1.6; color: #4c6b74;">Gió trên cấp 6 là tàu ngừng chạy. Xem dự báo trước 3 ngày — và yên tâm, biển động thì chúng tôi luôn hoàn cọc.</p>
+      </div>
+      <div>
+        <div data-en="Leave the coral where it is" style="font-size: 15.5px; font-weight: 800; color: #0b1b26; margin-bottom: 8px;">Để san hô lại chỗ của nó</div>
+        <p data-en="Fresh water and waste handling are limited out here. Take your rubbish back, and never break or stand on coral." style="margin: 0; font-size: 14px; line-height: 1.6; color: #4c6b74;">Nước ngọt và xử lý rác ngoài đảo còn hạn chế. Mang rác về, và tuyệt đối không bẻ hay giẫm lên san hô.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div id="ndh-mbar" style="display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; align-items: center; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.94); backdrop-filter: blur(20px); border-top: 1px solid rgba(6,182,212,0.14); box-shadow: 0 -8px 28px rgba(5,60,72,0.10);">
+  <a href="tel:0985000650" data-en="Call" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Gọi</a>
+  <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Zalo</a>
+  <a href="Rooms.dc.html" data-en="Book a room" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 14px; background: #06b6d4; color: #ffffff; font-size: 14.5px; font-weight: 800; white-space: nowrap; box-shadow: 0 8px 20px rgba(6,182,212,0.32);">Đặt phòng</a>
+</div>
+
+<footer style="background: #0e7490; color: #ffffff; margin-top: 96px;">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 56px 32px 40px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.95fr); gap: 44px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 20px;">
+        <img src="uploads/OP5-b8f91eaa.png" alt="" style="width: 44px; height: 44px; object-fit: contain; background: #ffffff; border-radius: 12px; padding: 3px;" />
+        <span style="font-size: 16px; font-weight: 800; color: #ffffff;">THE NAM DU HILL</span>
+      </div>
+      <div data-en="THE NAM DU HILL business household · Registered 18/10/2021 · Tax ID 1702244746" style="font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,0.72); margin-bottom: 18px;">Hộ kinh doanh THE NAM DU HILL · Đăng ký lần đầu 18/10/2021 · MST 1702244746</div>
+      <div style="display: grid; gap: 11px;">
+        <div data-en="Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam" style="font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.92);">Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam</div>
+        <a href="mailto:thenamduhill@gmail.com" style="font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.92);" style-hover="color:#7dd3fc">thenamduhill@gmail.com</a>
+        <a href="tel:0985000650" style="font-size: 19px; font-weight: 800; color: #ffffff;" style-hover="color:#7dd3fc">0985 000 650</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="INFORMATION" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">THÔNG TIN</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="#" data-en="Privacy policy" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Chính sách bảo mật</a>
+        <a href="#" data-en="General terms" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Quy định chung</a>
+        <a href="#" data-en="How to book" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn đặt phòng</a>
+        <a href="#" data-en="Check-in &amp; cancellation" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn nhận &amp; huỷ phòng</a>
+        <a href="#" data-en="Payment guide" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn thanh toán</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="EXPLORE" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KHÁM PHÁ</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="Rooms.dc.html" data-en="20 room types" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">20 hạng phòng</a>
+        <a href="Dining.dc.html" data-en="Dining &amp; BBQ" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Ẩm thực &amp; BBQ</a>
+        <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Khám phá</a>
+        <a href="Contact.dc.html" data-en="Contact &amp; map" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Liên hệ &amp; bản đồ</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="FOLLOW" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KẾT NỐI</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <a href="https://facebook.com/thenamduhill" target="_blank" rel="noopener" aria-label="Facebook" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">f</a>
+        <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" aria-label="Zalo" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">Za</a>
+        <a href="https://thenamduhill.com" target="_blank" rel="noopener" aria-label="Website" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">◍</a>
+      </div>
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 9px 12px;">
+        <span style="font-size: 15px; color: #38bdf8;">✓</span>
+        <span data-en="Registered with the Ministry of Industry and Trade" style="font-size: 10.5px; font-weight: 700; line-height: 1.35; color: rgba(255,255,255,0.86);">ĐÃ THÔNG BÁO<br />BỘ CÔNG THƯƠNG</span>
+      </div>
+    </div>
+  </div>
+  <div style="border-top: 1px solid rgba(255,255,255,0.14);">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <span style="font-size: 12.5px; color: rgba(255,255,255,0.60);">© 2026 The Nam Du Hill · thenamduhill.com</span>
+      <span data-en="Best rate when you book direct · Free pier transfer · Free cancellation up to 7 days" style="font-size: 12.5px; color: rgba(255,255,255,0.60);">Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí · Huỷ miễn phí trước 7 ngày</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const SPOTS = [
+  { id: 'caymen', vi: 'Bãi Cây Mến', en: 'Cay Men Beach', d: '4 phút xe', de: '4 min ride',
+    t: 'Bãi tắm đẹp nhất Nam Du, nằm trong vịnh kín gió. Cát trắng mịn, nước xanh lơ và hàng dừa cổ thụ 70–80 năm tuổi nghiêng bóng xuống mặt nước.',
+    te: 'The prettiest beach on Nam Du, tucked into a sheltered bay. Fine white sand, pale blue water and 70–80-year-old coconut palms leaning over it.',
+    tip: 'Nước êm, hợp bơi và bắt ốc ở gờ đá', tipe: 'Calm water; good for swimming and rock-pooling' },
+  { id: 'haidang', vi: 'Hải đăng Nam Du', en: 'Nam Du Lighthouse', d: '309 m', de: '309 m',
+    t: 'Một trong những ngọn hải đăng cao nhất Việt Nam. Từ trên đỉnh thu trọn cả 21 hòn đảo vào tầm mắt giữa biển trời mênh mông.',
+    te: 'One of the highest lighthouses in Vietnam. From the top you take in all 21 islands at once.',
+    tip: 'Đi lúc 16:30 để kịp hoàng hôn trên đường về', tipe: 'Go at 16:30 to catch sunset on the way down' },
+  { id: 'baingu', vi: 'Bãi Ngự & Giếng Vua', en: 'Bai Ngu &amp; the King\u2019s Well', d: 'Phía Tây đảo', de: 'West side',
+    t: 'Nơi vua Gia Long từng dừng chân lánh nạn. Giếng Ngự là giếng nước ngọt tự nhiên sát bờ biển nhưng chưa bao giờ cạn, kể cả những mùa khô khốc liệt nhất.',
+    te: 'Where Emperor Gia Long once sheltered. The King\u2019s Well is a natural freshwater well beside the sea that has never run dry.',
+    tip: 'Ghé kèm khi chạy vòng đảo buổi sáng', tipe: 'Fold into the morning island loop' },
+  { id: 'baichet', vi: 'Bãi Chệt & chợ hải sản', en: 'Bai Chet &amp; the fish market', d: 'Bến tàu chính', de: 'Main pier',
+    t: 'Trung tâm giao thương của đảo: bến tàu chính, chợ hải sản tươi sống, quán ăn và dịch vụ. Tên gọi bắt nguồn từ truyền thuyết giao chiến thương thuyền thế kỷ 16.',
+    te: 'The island\u2019s trading centre: main pier, live seafood market, eateries and services.',
+    tip: 'Mua hải sản chiều rồi mang lên đồi nướng', tipe: 'Buy your catch here and grill it up at the resort' },
+  { id: 'dinhong', vi: 'Dinh Ông Nam Hải', en: 'Dinh Ong Nam Hai shrine', d: 'Ven biển', de: 'Coastal',
+    t: 'Nơi thờ và bảo tồn bộ xương cá Ông dài hơn 15 m do ngư dân phát hiện dạt vào bờ. Cạnh đó là Miếu Bà Chúa Xứ, chốn tâm linh của cư dân đảo.',
+    te: 'Home to a 15-metre whale skeleton found washed ashore by fishermen, beside the Ba Chua Xu shrine.',
+    tip: 'Đi cùng buổi sáng ngày cuối trước khi rời đảo', tipe: 'Good for the last morning before the boat' },
+  { id: 'chodem', vi: 'Chợ đêm Nam Du', en: 'Nam Du night market', d: 'Dưới chân đồi', de: 'Below the hill',
+    t: 'Hải sản nướng xiên, mực một nắng, đồ lưu niệm. Từ sân hiên resort nhìn thẳng xuống thấy cả dãy đèn chợ sáng lên lúc 19 giờ.',
+    te: 'Grilled skewers, one-sun-dried squid, souvenirs. From the resort terrace you look straight down on its lights coming on at seven.',
+    tip: 'Đi bộ xuống mất 8 phút, lên dốc thì gọi xe', tipe: '8 minutes downhill; call for a ride back up' }
+];
+
+const ISLANDS = [
+  { id: 'haibodap', vi: 'Hòn Hai Bờ Đập', en: 'Hon Hai Bo Dap', b: 'MALDIVES THU NHỎ', be: 'MINI MALDIVES',
+    t: 'Hai đảo nhỏ nối nhau bằng dải đá tự nhiên vắt ngang biển. Nước nông và trong, tàu thả neo cho khách lặn ngắm san hô và chèo SUP.',
+    te: 'Two islets joined by a natural stone causeway. Shallow, clear water — boats anchor here for snorkelling and SUP.' },
+  { id: 'honmau', vi: 'Hòn Mấu', en: 'Hon Mau', b: '5 BÃI BIỂN', be: 'FIVE BEACHES',
+    t: 'Hơn 120 hộ dân sống bằng nghề lưới ghẹ. Năm bãi mỗi bãi một kiểu: Bãi Chướng và Bãi Nam cát trắng, Bãi Đá Đen phủ đá cuội đen bóng.',
+    te: 'A crab-netting village of 120 households. Five beaches, each different — white sand at Bai Chuong, polished black pebbles at Bai Da Den.' },
+  { id: 'hondau', vi: 'Hòn Dầu', en: 'Hon Dau', b: '90% RỪNG NGUYÊN SINH', be: '90% PRIMARY FOREST',
+    t: 'Hoang sơ, hơn 90% diện tích là rừng nguyên sinh. Rặng dừa ngả ra biển, xích đu gỗ trên nước và tổ chim bằng rễ cây là những góc chụp quen thuộc.',
+    te: 'Almost untouched, over 90% primary forest. Palms leaning over the water, a wooden swing and a nest woven from roots.' },
+  { id: 'honngang', vi: 'Hòn Ngang', en: 'Hon Ngang', b: 'LÀNG BÈ NỔI', be: 'FLOATING FARMS',
+    t: 'Vùng biển êm nhất quần đảo, nơi neo đậu tàu thuyền và nuôi hải sản lồng bè. Lên nhà bè ăn cá mú hấp, tôm hùm, nhum nướng ngay trên mặt nước.',
+    te: 'The calmest water in the archipelago, full of floating fish farms. Eat steamed grouper and grilled urchin right on the water.' }
+];
+
+const TRIPS = {
+  d2: { vi: '2 ngày 1 đêm', en: '2 days · 1 night',
+    legs: [
+      ['ĐÊM 1','Night 1','22:00 – 06:00','Xe giường nằm TP.HCM → Rạch Giá','Overnight coach HCMC → Rach Gia','Bắt xe từ Bến xe Miền Tây, ngủ trên xe. Phương Trang ~230.000₫, Kumho ~210.000₫.','Depart Mien Tay station and sleep on board. Around 210,000–230,000 VND.'],
+      ['NGÀY 1','Day 1','06:00 – 11:00','Tàu cao tốc ra đảo, nhận phòng','Speedboat out, check in','Ăn sáng ở Rạch Giá, lên tàu 07:30. Cập bến Củ Tron 10:30 — xe resort đón sẵn. Gửi đồ, ăn trưa hải sản.','Breakfast in Rach Gia, boat at 07:30, ashore by 10:30 where our car is waiting.'],
+      ['NGÀY 1','Day 1','13:00 – 17:30','Tàu gỗ đi 3 đảo nhỏ','Wooden boat, three islands','Hòn Dầu chụp rặng dừa → Hòn Mấu tắm Bãi Chướng → Hòn Hai Bờ Đập lặn san hô, chèo SUP, ăn cháo nhum nóng trên tàu.','Hon Dau for the palms, Hon Mau to swim, Hon Hai Bo Dap to snorkel and paddle.'],
+      ['NGÀY 1','Day 1','18:30 – 21:30','BBQ hải sản trên đồi','Seafood BBQ on the hill','Ghẹ hấp, cá xương xanh nướng, nhum mỡ hành. Sau đó tự do dạo chợ đêm ngay dưới chân đồi.','Steamed crab, grilled needlefish, urchin with spring onion, then the night market below.'],
+      ['NGÀY 2','Day 2','06:00 – 11:30','Bình minh, rồi vòng quanh Hòn Lớn','Sunrise, then the island loop','Cà phê trên sân hiên lúc mặt trời lên. Xe máy đi Miếu Bà Chúa Xứ, Ba Hòn Nồm, Bãi Ngự, Giếng Vua, tắm Bãi Cây Mến, ghé Dinh Ông.','Coffee on the terrace at sunrise, then the 11 km loop by scooter.'],
+      ['NGÀY 2','Day 2','11:30 – 18:00','Trả phòng và về bờ','Check out and head back','Cơm trưa, mua khô cá xương xanh làm quà. Tàu 14:00 về Rạch Giá, 16:30 cập bến, lên xe về TP.HCM.','Lunch, buy dried fish, 14:00 boat, ashore 16:30, coach home.']
+    ],
+    costs: [
+      ['Xe khách khứ hồi TP.HCM – Rạch Giá','Return coach HCMC – Rach Gia','460 – 500K'],
+      ['Tàu cao tốc khứ hồi','Return speedboat','450 – 500K'],
+      ['Xe máy + tàu gỗ đi đảo','Scooter + island boat','250 – 350K'],
+      ['Lưu trú','Accommodation','250 – 500K'],
+      ['Ăn uống & tiệc BBQ','Food and the BBQ','600 – 800K'],
+      ['Vé tham quan, dụng cụ lặn','Entry fees, snorkel gear','100 – 150K']
+    ],
+    total: '2.110.000 – 2.800.000₫' },
+  d3: { vi: '3 ngày 2 đêm', en: '3 days · 2 nights',
+    legs: [
+      ['ĐÊM 1','Night 1','23:00 – 06:00','Xe giường nằm TP.HCM → Rạch Giá','Overnight coach HCMC → Rach Gia','Ngủ trên xe, sáng có mặt ở cảng Rạch Giá.','Sleep on board, arrive at Rach Gia port in the morning.'],
+      ['NGÀY 1','Day 1','06:30 – 11:00','Ra đảo, nhận phòng, ăn trưa','Out to the island, check in','Tàu cao tốc ra Nam Du, xe resort đón tại bến Củ Tron. Nhận phòng, cơm trưa hải sản.','Speedboat out, our car meets you at the pier, then a seafood lunch.'],
+      ['NGÀY 1','Day 1','14:00 – 17:30','Chinh phục Hòn Lớn','The main island','Lên hải đăng 309 m ngắm toàn cảnh 21 đảo. Bãi Ngự, Giếng Vua, tắm Bãi Cây Mến, hoàng hôn ở Sunset Bar.','Up to the 309 m lighthouse, then Bai Ngu, the King\u2019s Well, a swim at Cay Men and sunset at the bar.'],
+      ['NGÀY 2','Day 2','08:00 – 17:00','Trọn ngày trên tàu, bốn hòn đảo','A full day at sea, four islands','08:00 Hòn Mấu tắm Bãi Chướng · 10:30 Hòn Dầu rừng nguyên sinh · 12:00 Hòn Ngang ăn trưa trên bè nổi · 14:00 Hòn Hai Bờ Đập lặn san hô, chèo SUP, cháo nhum trên đường về.','Hon Mau, Hon Dau, lunch on a floating farm at Hon Ngang, then snorkelling at Hon Hai Bo Dap.'],
+      ['NGÀY 2','Day 2','18:30 – 22:00','BBQ ngoài trời & lửa trại','Outdoor BBQ and a fire','Tiệc nướng hải sản trên đỉnh đồi, karaoke và lửa trại bên bờ biển.','Seafood on the grill up on the hill, karaoke, and a fire by the water.'],
+      ['NGÀY 3','Day 3','06:00 – 11:00','Bình minh và phần văn hoá','Sunrise and the cultural half-day','Đón bình minh ở Bãi Sỏi. Viếng Dinh Ông xem bộ xương cá Ông, thắp nhang Miếu Bà. Ghé chợ Bãi Chệt mua khô hải sản.','Sunrise at Bai Soi, the whale shrine, then the market for dried seafood.'],
+      ['NGÀY 3','Day 3','11:30 – 17:30','Trả phòng và về bờ','Check out and head back','Cơm trưa, trả phòng, 13:30 ra cảng. Tàu 14:00 về Rạch Giá, xe đón về TP.HCM.','Lunch, check out, 14:00 boat, coach home from Rach Gia.']
+    ],
+    costs: [
+      ['Xe khách khứ hồi TP.HCM – Rạch Giá','Return coach HCMC – Rach Gia','460 – 500K'],
+      ['Tàu cao tốc khứ hồi','Return speedboat','450 – 500K'],
+      ['Xe máy + tàu gỗ đi đảo','Scooter + island boat','350 – 450K'],
+      ['Lưu trú 2 đêm','Two nights\u2019 accommodation','500K – 1tr'],
+      ['Ăn uống & tiệc BBQ','Food and the BBQ','900K – 1,3tr'],
+      ['Vé tham quan, dụng cụ lặn','Entry fees, snorkel gear','150 – 250K']
+    ],
+    total: '2.810.000 – 4.000.000₫' }
+};
+
+
+const SCENERY = ['uploads/hero-1.jpg','uploads/hero-2.jpg','uploads/pasted-1785690635080-0.png','uploads/pasted-1785690771266-0.png','uploads/pasted-1785691965790-0.png','uploads/pasted-1785690604574-0.png'];
+const scenery = (i) => SCENERY[i % SCENERY.length];
+
+class Component extends DCLogic {
+  state = { lang: 'vi', trip: 'd2' };
+  langRef = React.createRef();
+  navRef = React.createRef();
+  menuBtnRef = React.createRef();
+  menuRef = React.createRef();
+  costTitleRef = React.createRef();
+
+  setLang = (lang) => {
+    if (lang === this.state.lang) return;
+    document.querySelectorAll('[data-en]').forEach((el) => {
+      if (!el.dataset.vi) el.dataset.vi = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.vi;
+    });
+    const box = this.langRef.current;
+    if (box) box.querySelectorAll('[data-lang]').forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.style.background = on ? '#ffffff' : 'transparent';
+      b.style.color = on ? '#0b1b26' : '#6b8394';
+      b.style.boxShadow = on ? '0 1px 3px rgba(0,0,0,0.10)' : 'none';
+    });
+    document.documentElement.lang = lang;
+    this.setState({ lang });
+  };
+
+  enhance() {
+    const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    document.querySelectorAll('image-slot').forEach((slot) => {
+      const frame = slot.parentElement;
+      if (!frame) return;
+      const card = frame.closest('article') || frame;
+      slot.style.transition = 'transform 900ms ' + EASE;
+      slot.style.willChange = 'transform';
+      card.addEventListener('pointerenter', () => { slot.style.transform = 'scale(1.055)'; });
+      card.addEventListener('pointerleave', () => { slot.style.transform = 'none'; });
+    });
+    document.querySelectorAll('[data-sheen]').forEach((el) => {
+      if (el.dataset.sheenOn) return;
+      el.dataset.sheenOn = '1';
+      const g = document.createElement('div');
+      g.style.cssText = 'position:absolute;inset:0;opacity:0;pointer-events:none;border-radius:inherit;transition:opacity 320ms ease;';
+      el.appendChild(g);
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        g.style.background = 'radial-gradient(340px circle at ' + (e.clientX - r.left) + 'px ' + (e.clientY - r.top) +
+          'px, rgba(255,255,255,0.15), rgba(255,255,255,0) 62%)';
+        g.style.opacity = '1';
+      });
+      el.addEventListener('pointerleave', () => { g.style.opacity = '0'; });
+    });
+    const all = [];
+    document.querySelectorAll('section').forEach((sec) => {
+      const list = [];
+      sec.querySelectorAll(':scope > div, :scope > div > article, :scope > div > a, :scope > div > blockquote').forEach((k) => {
+        if (k.offsetHeight > 40) list.push(k);
+      });
+      list.forEach((el, i) => {
+        const d = Math.min(i, 5) * 70;
+        el.style.opacity = '0';
+        el.style.translate = '0 16px';
+        el.style.transition = (el.style.transition ? el.style.transition + ', ' : '') +
+          'opacity 700ms ' + EASE + ' ' + d + 'ms, translate 700ms ' + EASE + ' ' + d + 'ms';
+        all.push(el);
+      });
+    });
+    const show = (el) => { el.style.opacity = '1'; el.style.translate = 'none'; };
+    if (window.IntersectionObserver) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      all.forEach((el) => io.observe(el));
+    }
+    window.setTimeout(() => all.forEach(show), 2200);
+  }
+
+  applyLayout = () => {
+    const wide = window.innerWidth >= 1080;
+    if (this.navRef.current) this.navRef.current.style.display = wide ? 'flex' : 'none';
+    if (this.menuBtnRef.current) this.menuBtnRef.current.style.display = wide ? 'none' : 'flex';
+    if (wide && this.menuRef.current) this.menuRef.current.style.display = 'none';
+  };
+
+  componentDidMount() {
+    window.setTimeout(() => this.enhance(), 60); this.applyLayout(); window.addEventListener('resize', this.applyLayout); }
+  componentWillUnmount() { window.removeEventListener('resize', this.applyLayout); }
+
+  renderVals() {
+    const en = this.state.lang === 'en';
+    const t = TRIPS[this.state.trip];
+    const rowBase = 'display: flex; align-items: flex-start; gap: 20px; padding: 22px 26px;';
+    const costRow = 'display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 8px 0; font-size: 13.5px; font-weight: 600; color: #4c6b74;';
+    const costLast = 'display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 0 2px; margin-top: 6px; border-top: 1px solid #d9eff5; font-size: 14.5px; font-weight: 800; color: #0b1b26;';
+
+    return {
+      langRef: this.langRef,
+      navRef: this.navRef,
+      menuBtnRef: this.menuBtnRef,
+      menuRef: this.menuRef,
+      costTitleRef: this.costTitleRef,
+      setVI: () => this.setLang('vi'),
+      setEN: () => this.setLang('en'),
+      toggleMenu: () => {
+        const m = this.menuRef.current;
+        if (m) m.style.display = m.style.display === 'block' ? 'none' : 'block';
+      },
+
+      spots: SPOTS.map((s, si) => ({
+        slotId: 'ndh-spot-' + s.id,
+        img: scenery(si),
+        name: en ? s.en : s.vi,
+        text: en ? s.te : s.t,
+        tip: en ? s.tipe : s.tip,
+        dist: en ? s.de : s.d
+      })),
+
+      islands: ISLANDS.map((i, ii) => ({
+        slotId: 'ndh-island-' + i.id,
+        img: scenery(ii + 3),
+        name: en ? i.en : i.vi,
+        text: en ? i.te : i.t,
+        badge: en ? i.be : i.b
+      })),
+
+      tabs: ['d2', 'd3'].map((k) => {
+        const on = this.state.trip === k;
+        return {
+          label: en ? TRIPS[k].en : TRIPS[k].vi,
+          onClick: () => this.setState({ trip: k }),
+          style: 'border: 1px solid ' + (on ? '#06b6d4' : '#cfeaf2') + '; background: ' + (on ? '#06b6d4' : '#ffffff') +
+            '; color: ' + (on ? '#ffffff' : '#375b64') + '; font-size: 13.5px; font-weight: 700; padding: 12px 22px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: all 150ms ease;'
+        };
+      }),
+
+      legs: t.legs.map((l, i) => ({
+        day: en ? l[1] : l[0],
+        time: l[2],
+        title: en ? l[4] : l[3],
+        text: en ? l[6] : l[5],
+        rowStyle: rowBase + (i < t.legs.length - 1 ? ' border-bottom: 1px solid #eefafd;' : '')
+      })),
+
+      costs: t.costs.map((c) => ({
+        label: en ? c[1] : c[0],
+        value: c[2],
+        style: costRow,
+        valStyle: 'color:#0b1b26; font-weight:700; white-space:nowrap;'
+      })).concat([{
+        label: en ? 'Estimated total' : 'Tổng dự toán',
+        value: t.total,
+        style: costLast,
+        valStyle: 'color:#06b6d4; font-weight:800; white-space:nowrap;'
+      }])
+    };
+  }
+}
+
+</script>
+</body>
+</html>

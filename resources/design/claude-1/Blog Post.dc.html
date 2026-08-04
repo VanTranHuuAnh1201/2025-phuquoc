@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif; background: #ffffff; color: #0b1b26; -webkit-font-smoothing: antialiased; }
+  a { color: #06b6d4; text-decoration: none; }
+  a:hover { color: #0891b2; }
+  :focus-visible { outline: 3px solid #06b6d4; outline-offset: 3px; border-radius: 6px; }
+  input, button, select { font-family: inherit; }
+  ::selection { background: #00c46a; color: #04241a; }
+  @keyframes ndFade { from { opacity: 0; } to { opacity: 1; } }
+  #ndh-mbar { display: none; }
+  @media (max-width: 1000px) {
+    [data-article-grid] { grid-template-columns: minmax(0, 1fr) !important; gap: 34px !important; }
+    [style*="position: sticky"] { position: static !important; }
+  }
+  @media (max-width: 900px) {
+    [style*="max-width: 1320px"] { padding-left: 18px !important; padding-right: 18px !important; }
+    h1[style] { font-size: clamp(27px, 7.4vw, 38px) !important; line-height: 1.08 !important; }
+    h2[style] { font-size: 21px !important; }
+    [style*="padding: 24px;"], [style*="padding: 22px 24px;"] { padding: 16px 15px !important; }
+    [style*="border-radius: 24px"] { border-radius: 16px !important; }
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 24px !important; }
+    #ndh-mbar { display: flex !important; }
+    body { padding-bottom: 76px !important; }
+  }
+  @media (max-width: 620px) {
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+    [style*="grid-template-columns: repeat(3"] { grid-template-columns: minmax(0, 1fr) !important; }
+  }
+</style>
+</helmet>
+
+<div>
+
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; backdrop-filter: blur(18px); background: rgba(255,255,255,0.94); border-bottom: 1px solid rgba(6,182,212,0.10);">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 13px 32px; display: flex; align-items: center; gap: 20px;">
+    <a href="Nam Du Hill.dc.html" style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+      <img src="uploads/OP5-b8f91eaa.png" alt="The Nam Du Hill" style="width: 40px; height: 40px; object-fit: contain;" />
+      <span style="display: flex; flex-direction: column; line-height: 1.1;">
+        <span style="font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">THE NAM DU HILL</span>
+        <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; color: #06b6d4;">HILLTOP BOUTIQUE RESORT</span>
+      </span>
+    </a>
+    <nav ref="{{ navRef }}" style="display: flex; align-items: center; gap: 22px; margin-left: auto; flex-wrap: nowrap;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Khám phá</a>
+      <a href="Blog Post.dc.html" data-en="Journal" style="font-size: 14px; font-weight: 700; color: #06b6d4; white-space: nowrap;">Cẩm nang</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Liên hệ</a>
+    </nav>
+    <button ref="{{ menuBtnRef }}" onClick="{{ toggleMenu }}" aria-label="Mở menu" style="display: none; margin-left: auto; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 17px; cursor: pointer; flex-shrink: 0;">☰</button>
+    <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+      <div ref="{{ langRef }}" style="display: flex; align-items: center; background: #eef6fb; border-radius: 999px; padding: 3px;">
+        <button onClick="{{ setVI }}" data-lang="vi" style="border: none; background: #ffffff; color: #0b1b26; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.10);">VI</button>
+        <button onClick="{{ setEN }}" data-lang="en" style="border: none; background: transparent; color: #6b8394; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer;">EN</button>
+      </div>
+      <a href="Rooms.dc.html" data-en="Book a room" style="background: #06b6d4; color: #ffffff; font-size: 13px; font-weight: 700; padding: 11px 20px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 18px rgba(6,182,212,0.30); transition: background 150ms ease;" style-hover="background:#0891b2">Đặt phòng</a>
+    </div>
+  </div>
+  <div ref="{{ menuRef }}" style="display: none; border-top: 1px solid rgba(6,182,212,0.10); background: #ffffff;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 12px 32px 18px; display: grid; gap: 2px;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Khám phá</a>
+      <a href="Blog Post.dc.html" data-en="Journal" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Cẩm nang</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0;">Liên hệ</a>
+    </div>
+  </div>
+</header>
+
+<div style="max-width: 1320px; margin: 0 auto; padding: 82px 32px 0;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 22px 0 16px; font-size: 12.5px; font-weight: 600; color: #78a3ae; flex-wrap: wrap;">
+    <a href="Nam Du Hill.dc.html" data-en="Home" style="color: #78a3ae;" style-hover="color:#06b6d4">Trang chủ</a>
+    <span>›</span>
+    <a href="Blog Post.dc.html" data-en="Journal" style="color: #78a3ae;" style-hover="color:#06b6d4">Cẩm nang Nam Du</a>
+    <span>›</span>
+    <span style="color: #0b1b26;">{{ title }}</span>
+  </div>
+</div>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 0 32px;">
+  <div data-article-grid="" style="display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 56px; align-items: start;">
+
+    <article>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;">
+        <span style="display: inline-block; white-space: nowrap; background: #06b6d4; color: #ffffff; font-size: 11.5px; font-weight: 800; letter-spacing: 0.06em; padding: 6px 12px; border-radius: 999px;">{{ category }}</span>
+        <span style="font-size: 12.5px; font-weight: 600; color: #78a3ae;">{{ meta }}</span>
+      </div>
+
+      <h1 style="margin: 0 0 14px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.06; font-weight: 800; letter-spacing: -0.034em; color: #0b1b26; text-wrap: balance;">{{ title }}</h1>
+      <p style="margin: 0 0 24px; font-size: 18px; line-height: 1.6; color: #4c6b74; max-width: 62ch;">{{ lede }}</p>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0 22px; border-top: 1px solid #eefafd; border-bottom: 1px solid #eefafd; margin-bottom: 28px;">
+        <div style="width: 38px; height: 38px; border-radius: 50%; background: #eef6fb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #06b6d4; flex-shrink: 0;">{{ initials }}</div>
+        <div style="display: flex; flex-direction: column; line-height: 1.3;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #0b1b26;">{{ author }}</span>
+          <span style="font-size: 12px; font-weight: 500; color: #78a3ae;">{{ role }}</span>
+        </div>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+          <button onClick="{{ copyLink }}" ref="{{ shareRef }}" data-en="Copy link" style="border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 12.5px; font-weight: 700; padding: 9px 14px; border-radius: 999px; cursor: pointer; transition: background 150ms ease;" style-hover="background:#e9f9fd">Sao chép liên kết</button>
+        </div>
+      </div>
+
+      <div style="position: relative; height: 420px; border-radius: 24px; overflow: hidden; background: #eefafd; margin-bottom: 12px;">
+        <image-slot id="{{ heroSlot }}" src="{{ heroImg }}" placeholder="{{ heroHint }}" style="position: absolute; inset: 0;"></image-slot>
+      </div>
+      <div style="font-size: 12px; font-weight: 500; color: #78a3ae; margin-bottom: 34px;">{{ heroCaption }}</div>
+
+      <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="6">
+        <div style="{{ b.wrap }}">
+          <sc-if value="{{ b.isHead }}" hint-placeholder-val="{{ false }}">
+            <h2 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.026em; color: #0b1b26;">{{ b.text }}</h2>
+          </sc-if>
+          <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ true }}">
+            <p style="margin: 0; font-size: 16.5px; line-height: 1.75; color: #375b64; max-width: 66ch;">{{ b.text }}</p>
+          </sc-if>
+          <sc-if value="{{ b.isQuote }}" hint-placeholder-val="{{ false }}">
+            <blockquote style="margin: 0; border-left: 3px solid #00c46a; padding: 4px 0 4px 22px; font-size: 19px; line-height: 1.55; font-weight: 600; letter-spacing: -0.015em; color: #0b1b26;">{{ b.text }}</blockquote>
+          </sc-if>
+          <sc-if value="{{ b.isImage }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="position: relative; height: 300px; border-radius: 20px; overflow: hidden; background: #eefafd;">
+                <image-slot id="{{ b.slotId }}" src="{{ b.img }}" placeholder="{{ b.text }}" style="position: absolute; inset: 0;"></image-slot>
+              </div>
+              <div style="font-size: 12px; font-weight: 500; color: #78a3ae; margin-top: 8px;">{{ b.caption }}</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ b.isList }}" hint-placeholder-val="{{ false }}">
+            <div style="display: grid; gap: 9px; background: #f4fdff; border: 1px solid #d9eff5; border-radius: 20px; padding: 22px 24px;">
+              <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="4">
+                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                  <span style="color: #00c46a; font-size: 13px; line-height: 1.6; flex-shrink: 0;">✓</span>
+                  <span style="font-size: 15px; line-height: 1.6; color: #375b64;">{{ it.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 40px 0 0; padding-top: 26px; border-top: 1px solid #eefafd;">
+        <sc-for list="{{ tags }}" as="t" hint-placeholder-count="4">
+          <span style="font-size: 12.5px; font-weight: 700; color: #4c6b74; background: #e9f9fd; border: 1px solid #d9eff5; padding: 8px 14px; border-radius: 999px;">{{ t.label }}</span>
+        </sc-for>
+      </div>
+    </article>
+
+    <aside style="position: sticky; top: 96px; display: grid; gap: 12px;">
+      <div style="border: 1px solid #d9eff5; border-radius: 24px; box-shadow: 0 14px 40px rgba(8,72,86,0.09); padding: 24px; background: #ffffff;">
+        <div data-en="More from the journal" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: #78a3ae; margin-bottom: 16px;">Bài viết khác</div>
+        <div style="display: grid; gap: 4px;">
+          <sc-for list="{{ others }}" as="o" hint-placeholder-count="4">
+            <button onClick="{{ o.onPick }}" style="text-align: left; display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 13px; align-items: center; padding: 10px; margin: 0 -10px; border: none; background: transparent; border-radius: 16px; cursor: pointer; transition: background 150ms ease;" style-hover="background:#e9f9fd">
+              <div style="position: relative; height: 60px; border-radius: 12px; overflow: hidden; background: #eefafd;">
+                <image-slot id="{{ o.slotId }}" src="{{ o.img }}" placeholder="{{ o.hint }}" style="position: absolute; inset: 0;"></image-slot>
+              </div>
+              <div>
+                <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #06b6d4; margin-bottom: 4px;">{{ o.category }}</div>
+                <div style="font-size: 14px; font-weight: 700; letter-spacing: -0.016em; color: #0b1b26; line-height: 1.3; margin-bottom: 4px;">{{ o.title }}</div>
+                <div style="font-size: 11.5px; font-weight: 500; color: #78a3ae;">{{ o.meta }}</div>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+        <div style="height: 1px; background: #eefafd; margin: 16px 0;"></div>
+        <a href="Explore Nam Du.dc.html" data-en="All guides to Nam Du →" style="font-size: 13.5px; font-weight: 700; color: #06b6d4;">Xem tất cả cẩm nang →</a>
+      </div>
+
+      <div style="border: 1px solid #d9eff5; border-radius: 24px; padding: 24px; background: #f4fdff;">
+        <div data-en="Reading this before your trip?" style="font-size: 16px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26; margin-bottom: 6px;">Đang lên kế hoạch ra đảo?</div>
+        <div data-en="Book direct for the best rate, free pier transfer and breakfast included." style="font-size: 13px; line-height: 1.55; color: #4c6b74; margin-bottom: 16px;">Đặt trực tiếp để có giá tốt nhất, đưa đón bến tàu miễn phí và đã gồm bữa sáng.</div>
+        <div style="display: grid; gap: 8px;">
+          <a href="Rooms.dc.html" data-en="See 20 room types" style="text-align: center; background: #06b6d4; color: #ffffff; font-size: 14px; font-weight: 700; padding: 14px 20px; border-radius: 14px; transition: background 150ms ease;" style-hover="background:#0891b2">Xem 20 hạng phòng</a>
+          <a href="tel:0985000650" style="text-align: center; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 14px; font-weight: 700; padding: 14px 20px; border-radius: 14px; transition: background 150ms ease;" style-hover="background:#e9f9fd">Gọi 0985 000 650</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 80px 32px 0;">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 24px;">
+    <h2 data-en="Keep reading" style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.028em; color: #0b1b26;">Đọc tiếp</h2>
+    <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du →" style="font-size: 14px; font-weight: 700; color: #06b6d4; white-space: nowrap;">Khám phá →</a>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+    <sc-for list="{{ others }}" as="o" hint-placeholder-count="3">
+      <button onClick="{{ o.onPick }}" style="text-align: left; padding: 0; border: 1px solid #d9eff5; border-radius: 22px; overflow: hidden; background: #ffffff; cursor: pointer; display: flex; flex-direction: column; transition: box-shadow 200ms ease, transform 200ms ease;" style-hover="box-shadow:0 16px 36px rgba(8,72,86,0.13); transform:translateY(-3px)">
+        <div style="position: relative; height: 168px; background: #eefafd;">
+          <image-slot id="{{ o.cardSlot }}" src="{{ o.img }}" placeholder="{{ o.hint }}" style="position: absolute; inset: 0;"></image-slot>
+        </div>
+        <div style="padding: 18px 20px 20px;">
+          <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #06b6d4; margin-bottom: 6px;">{{ o.category }}</div>
+          <div style="font-size: 16px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26; line-height: 1.28; margin-bottom: 8px;">{{ o.title }}</div>
+          <div style="font-size: 13.5px; line-height: 1.55; color: #4c6b74; margin-bottom: 12px;">{{ o.lede }}</div>
+          <div style="font-size: 12px; font-weight: 600; color: #78a3ae;">{{ o.meta }}</div>
+        </div>
+      </button>
+    </sc-for>
+  </div>
+</section>
+
+<div id="ndh-mbar" style="display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; align-items: center; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.94); backdrop-filter: blur(20px); border-top: 1px solid rgba(6,182,212,0.14); box-shadow: 0 -8px 28px rgba(5,60,72,0.10);">
+  <a href="tel:0985000650" data-en="Call" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Gọi</a>
+  <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Zalo</a>
+  <a href="Rooms.dc.html" data-en="Book a room" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 14px; background: #06b6d4; color: #ffffff; font-size: 14.5px; font-weight: 800; white-space: nowrap; box-shadow: 0 8px 20px rgba(6,182,212,0.32);">Đặt phòng</a>
+</div>
+
+<footer style="background: #0e7490; color: #ffffff; margin-top: 96px;">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 56px 32px 40px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.95fr); gap: 44px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 20px;">
+        <img src="uploads/OP5-b8f91eaa.png" alt="" style="width: 44px; height: 44px; object-fit: contain; background: #ffffff; border-radius: 12px; padding: 3px;" />
+        <span style="font-size: 16px; font-weight: 800; color: #ffffff;">THE NAM DU HILL</span>
+      </div>
+      <div data-en="THE NAM DU HILL business household · Registered 18/10/2021 · Tax ID 1702244746" style="font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,0.72); margin-bottom: 18px;">Hộ kinh doanh THE NAM DU HILL · Đăng ký lần đầu 18/10/2021 · MST 1702244746</div>
+      <div style="display: grid; gap: 11px;">
+        <div data-en="Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam" style="font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.92);">Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam</div>
+        <a href="mailto:thenamduhill@gmail.com" style="font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.92);" style-hover="color:#7dd3fc">thenamduhill@gmail.com</a>
+        <a href="tel:0985000650" style="font-size: 19px; font-weight: 800; color: #ffffff;" style-hover="color:#7dd3fc">0985 000 650</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="INFORMATION" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">THÔNG TIN</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="#" data-en="Privacy policy" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Chính sách bảo mật</a>
+        <a href="#" data-en="General terms" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Quy định chung</a>
+        <a href="#" data-en="How to book" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn đặt phòng</a>
+        <a href="#" data-en="Payment guide" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn thanh toán</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="EXPLORE" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KHÁM PHÁ</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="Rooms.dc.html" data-en="20 room types" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">20 hạng phòng</a>
+        <a href="Contact.dc.html" data-en="Contact &amp; map" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Liên hệ &amp; bản đồ</a>
+        <a href="Dining.dc.html" data-en="Dining &amp; BBQ" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Ẩm thực &amp; BBQ</a>
+        <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Khám phá</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="FOLLOW" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KẾT NỐI</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <a href="https://facebook.com/thenamduhill" target="_blank" rel="noopener" aria-label="Facebook" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">f</a>
+        <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" aria-label="Zalo" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">Za</a>
+        <a href="https://thenamduhill.com" target="_blank" rel="noopener" aria-label="Website" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">◍</a>
+      </div>
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 9px 12px;">
+        <span style="font-size: 15px; color: #38bdf8;">✓</span>
+        <span data-en="Registered with the Ministry of Industry and Trade" style="font-size: 10.5px; font-weight: 700; line-height: 1.35; color: rgba(255,255,255,0.86);">ĐÃ THÔNG BÁO<br />BỘ CÔNG THƯƠNG</span>
+      </div>
+    </div>
+  </div>
+  <div style="border-top: 1px solid rgba(255,255,255,0.14);">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <span style="font-size: 12.5px; color: rgba(255,255,255,0.60);">© 2026 The Nam Du Hill · thenamduhill.com</span>
+      <span data-en="Best rate when you book direct · Free pier transfer · Free cancellation up to 7 days" style="font-size: 12.5px; color: rgba(255,255,255,0.60);">Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí · Huỷ miễn phí trước 7 ngày</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const POSTS = [
+  {
+    id: 'tau-ra-nam-du',
+    cat: ['DI CHUYỂN', 'GETTING THERE'],
+    t: ['Đi tàu ra Nam Du: chuyến nào, giá bao nhiêu, say sóng thì làm sao',
+        'The boat to Nam Du: which run, what it costs, and what to do about seasickness'],
+    lede: ['Từ bến Rạch Giá ra Củ Tron mất khoảng 2 giờ 15 phút. Đây là những gì chúng tôi dặn khách trước mỗi chuyến, sau bảy năm đón khách ở bến tàu.',
+           'Rach Gia pier to Cu Tron takes about 2 hours 15 minutes. This is what we tell guests before every trip, after seven years of meeting them at the pier.'],
+    author: ['Trần Minh Hải', 'Hai Tran'],
+    role: ['Quản lý khu nghỉ', 'Resort manager'],
+    date: ['12 tháng 6, 2026', '12 June 2026'],
+    read: [8, 8],
+    caption: ['Bến tàu Rạch Giá lúc 7h sáng, chuyến đầu tiên trong ngày.', 'Rach Gia pier at 7am, the first run of the day.'],
+    tags: [['Tàu cao tốc','Speedboat'], ['Rạch Giá','Rach Gia'], ['Say sóng','Seasickness'], ['Lịch trình','Schedule']],
+    body: [
+      ['h', 'Chọn chuyến nào', 'Which run to take'],
+      ['p', 'Mỗi ngày có ba chuyến từ Rạch Giá: 7h15, 9h30 và 12h45. Chuyến sáng sớm gần như luôn êm nhất vì biển chưa nổi gió. Nếu bạn đi cuối tuần trong mùa cao điểm từ tháng 4 đến tháng 8, hãy đặt vé trước ít nhất hai ngày — chuyến 7h15 thường hết sạch từ chiều hôm trước.',
+            'There are three runs a day from Rach Gia: 7:15, 9:30 and 12:45. The early one is almost always the calmest, before the wind picks up. If you are travelling on a weekend between April and August, book at least two days ahead — the 7:15 usually sells out the afternoon before.'],
+      ['l', ['Ngồi giữa thân tàu, hàng ghế thấp — ít xóc nhất','Uống thuốc chống say 30 phút trước giờ khởi hành','Mang theo một chai nước và ít bánh mặn','Đừng đọc điện thoại trong 20 phút đầu ra khơi'],
+            ['Sit mid-hull in a lower row — the least motion','Take motion-sickness tablets 30 minutes before departure','Bring water and something salty to nibble','Do not look at your phone for the first 20 minutes']],
+      ['q', 'Khách hay hỏi có nên đi chuyến trưa cho thong thả. Câu trả lời của chúng tôi là không — biển chiều ở vùng này khác hẳn biển sáng.',
+            'Guests often ask about the midday run so they can sleep in. Our answer is no — the afternoon sea here is a different sea.'],
+      ['i', 'Bên trong khoang tàu cao tốc', 'Khoang ghế của tàu Superdong, hàng ghế giữa thân là chỗ êm nhất.', 'Superdong cabin — the mid-hull rows ride the softest.'],
+      ['h', 'Đến đảo rồi thì sao', 'Once you land'],
+      ['p', 'Tàu cập bến Củ Tron, xe của khu nghỉ đợi ngay đầu cầu cảng — bạn không cần đặt trước, chỉ cần nhắn giờ tàu vào Zalo trước một ngày. Đường lên đồi dài 1,8 km, dốc và hẹp, nên chúng tôi khuyên khách đừng tự thuê xe máy trong ngày đầu tiên khi chưa quen đường.',
+            'The boat docks at Cu Tron and our car waits at the head of the pier — no booking needed, just send your boat time over Zalo the day before. The hill road is 1.8 km, steep and narrow, so we suggest not renting a motorbike on your first day.'],
+      ['p', 'Nếu tàu bị huỷ vì thời tiết — chuyện xảy ra vài lần mỗi năm vào mùa gió chướng — tiền cọc phòng của bạn được hoàn đủ, không cần giải thích gì thêm.',
+            'If the boat is cancelled for weather — which happens a few times a year in the monsoon months — your deposit is refunded in full, no explanation needed.']
+    ]
+  },
+  {
+    id: 'phong-hang-da',
+    cat: ['HẬU TRƯỜNG', 'BEHIND THE SCENES'],
+    t: ['Chúng tôi đã xây phòng quanh một vách đá như thế nào',
+        'How we built a room around a cliff'],
+    lede: ['Phòng 14 mất mười bốn tháng để hoàn thành, phần lớn thời gian là để tìm cách không chạm vào tảng đá.',
+           'Room 14 took fourteen months, most of it spent working out how not to touch the rock.'],
+    author: ['Nguyễn Thu Vân', 'Van Nguyen'],
+    role: ['Đồng sáng lập', 'Co-founder'],
+    date: ['28 tháng 4, 2026', '28 April 2026'],
+    read: [6, 6],
+    caption: ['Vách đá nguyên khối trong phòng ngủ số 14.', 'The untouched cliff face inside room 14.'],
+    tags: [['Phòng 14','Room 14'], ['Kiến trúc','Architecture'], ['Hang đá','Cave'], ['Xây dựng','Construction']],
+    body: [
+      ['p', 'Khi dọn nền cho khối phòng phía đông, chúng tôi gặp một mỏm đá granite cao gần bốn mét chạy chéo qua đúng chỗ định đặt giường. Phương án đầu tiên của nhà thầu là phá bỏ. Chúng tôi đã dừng công trình hai tháng để nghĩ lại.',
+            'Clearing the ground for the east block, we hit a granite outcrop nearly four metres tall running diagonally through exactly where the bed was meant to go. The contractor proposed removing it. We stopped work for two months instead.'],
+      ['h', 'Không phá, thì phải đo', 'If you do not cut, you measure'],
+      ['p', 'Toàn bộ mặt đá được đo thủ công theo lưới 20 cm, rồi dựng lại trên bản vẽ. Tường phòng bám theo đường viền đá thay vì cắt qua nó, nên không có bức tường nào trong phòng 14 thật sự thẳng. Phòng tắm nằm lọt trong khe đá tự nhiên phía sau — chúng tôi chỉ thêm sàn, thoát nước và một ô cửa kính.',
+            'The whole rock face was measured by hand on a 20 cm grid, then redrawn. The walls follow the stone rather than cut through it, so no wall in room 14 is truly straight. The bathroom sits inside the natural cleft behind it — we added a floor, drainage and one pane of glass.'],
+      ['q', 'Đá không nứt vì mình xây quanh nó. Đá nứt vì mình ép nó thẳng.',
+            'Rock does not crack because you build around it. It cracks because you force it straight.'],
+      ['i', 'Phòng tắm trong hang đá', 'Phòng tắm nằm trong khe đá tự nhiên, chỉ thêm sàn và thoát nước.', 'The bathroom inside the natural cleft — only floor and drainage were added.'],
+      ['p', 'Con suối chảy qua nền đá vẫn còn nguyên. Về đêm khách nghe rõ tiếng nước, và đó là lý do phòng 14 luôn kín trước các phòng khác ba tuần.',
+            'The stream running under the rock is still there. At night you hear it clearly, and that is why room 14 books out three weeks ahead of every other room.']
+    ]
+  },
+  {
+    id: 'an-gi-o-nam-du',
+    cat: ['ẨM THỰC', 'FOOD'],
+    t: ['Ăn gì ở Nam Du: chín món và ba nơi khách hay bỏ lỡ',
+        'Eating on Nam Du: nine dishes and three places most guests miss'],
+    lede: ['Chợ đêm chỉ là phần dễ thấy. Những bữa ngon nhất trên đảo thường nằm ở nơi không có biển hiệu.',
+           'The night market is the obvious part. The best meals on the island tend to have no sign out front.'],
+    author: ['Lê Quốc Bảo', 'Bao Le'],
+    role: ['Bếp trưởng', 'Head chef'],
+    date: ['3 tháng 3, 2026', '3 March 2026'],
+    read: [7, 7],
+    caption: ['Nhum biển nướng mỡ hành, món chỉ ngon từ tháng 3 đến tháng 7.', 'Grilled sea urchin — only worth ordering March to July.'],
+    tags: [['Chợ đêm','Night market'], ['Hải sản','Seafood'], ['Nhum biển','Sea urchin'], ['BBQ']],
+    body: [
+      ['h', 'Món theo mùa, không phải theo thực đơn', 'Order by season, not by menu'],
+      ['p', 'Nhum biển ngon nhất từ tháng 3 đến tháng 7. Ngoài khoảng đó, hàng quán vẫn bán nhưng là hàng đông lạnh chở từ đất liền ra, và bạn sẽ trả giá tươi cho món không tươi. Cá bớp thì ngược lại — mùa gió chướng cá chắc thịt hơn hẳn.',
+            'Sea urchin is at its best March to July. Outside that window it is still sold, but frozen and shipped from the mainland — you pay fresh prices for something that is not. Cobia is the opposite: it firms up in the windy months.'],
+      ['l', ['Nhum nướng mỡ hành — chỉ gọi trong mùa','Cá bớp nấu ngót, ăn buổi trưa','Ốc giác hấp gừng ở dãy quán cuối chợ đêm','Bánh canh ghẹ ở quán không tên gần trạm y tế'],
+            ['Grilled sea urchin with scallion oil — in season only','Cobia in clear sour broth, best at lunch','Steamed sea snail with ginger at the far end of the market','Crab noodle soup at the unnamed stall near the clinic']],
+      ['i', 'Chợ đêm Nam Du buổi tối', 'Chợ đêm bắt đầu đông từ 18h30, quán ngon nhất nằm ở dãy trong cùng.', 'The market fills from 6:30pm; the best stalls are in the back row.'],
+      ['p', 'Trên đồi, bếp của chúng tôi mua cá trực tiếp từ ba chiếc ghe quen mỗi sáng. Nếu hôm đó biển động và ghe không ra, thực đơn tối sẽ đổi — chúng tôi không nhập hàng đông lạnh để giữ đúng thực đơn in sẵn.',
+            'Up on the hill, our kitchen buys from the same three boats each morning. If the sea is rough and they do not go out, the evening menu changes — we do not bring in frozen fish to keep a printed menu honest.']
+    ]
+  },
+  {
+    id: 'ba-ngay-o-dao',
+    cat: ['LỊCH TRÌNH', 'ITINERARY'],
+    t: ['Ba ngày ở Nam Du mà không phải chạy đua',
+        'Three days on Nam Du without rushing'],
+    lede: ['Đảo nhỏ, nhưng đường đi lại chậm. Đây là lịch trình chúng tôi thật sự khuyên khách, không phải lịch trình nhồi đủ mười điểm check-in.',
+           'The island is small but slow to move around. This is the itinerary we actually recommend, not the one that fits ten photo stops.'],
+    author: ['Trần Minh Hải', 'Hai Tran'],
+    role: ['Quản lý khu nghỉ', 'Resort manager'],
+    date: ['15 tháng 1, 2026', '15 January 2026'],
+    read: [9, 9],
+    caption: ['Bãi Mến lúc chiều muộn, thời điểm ít người nhất trong ngày.', 'Bai Men in late afternoon, the emptiest hour of the day.'],
+    tags: [['Lịch trình','Itinerary'], ['Bãi Mến','Bai Men'], ['Hòn Mấu','Hon Mau'], ['Hải đăng','Lighthouse']],
+    body: [
+      ['h', 'Ngày 1 — đừng đi đâu cả', 'Day 1 — go nowhere'],
+      ['p', 'Chuyến tàu sáng thả bạn xuống đảo lúc gần 10h. Nhận phòng, ăn trưa, ngủ một giấc. Chiều muộn đi bộ xuống Bãi Mến, cách khu nghỉ 900 m — đây là khung giờ bãi vắng nhất và nước trong nhất trong ngày.',
+            'The morning boat puts you on the island around 10. Check in, eat, sleep. Late afternoon, walk down to Bai Men, 900 m from the resort — the emptiest and clearest hour of the day.'],
+      ['h', 'Ngày 2 — ra các hòn nhỏ', 'Day 2 — the outer islets'],
+      ['p', 'Thuê ghe đi Hòn Mấu và Hòn Ngang từ sáng sớm, về trước 14h để tránh gió chiều. Hòn Mấu có hai bãi nằm sát nhau nhưng khác hẳn: một bên cát trắng mịn, một bên toàn đá cuội tròn.',
+            'Hire a boat to Hon Mau and Hon Ngang early, and be back before 2pm to beat the afternoon wind. Hon Mau has two beaches side by side that could not be less alike: fine white sand on one, round pebbles on the other.'],
+      ['q', 'Nếu chỉ có một buổi để chọn, hãy chọn buổi sáng ở Hòn Mấu thay vì buổi chiều ở bất cứ đâu.',
+            'If you only get one outing, take a morning at Hon Mau over an afternoon anywhere else.'],
+      ['i', 'Hòn Mấu nhìn từ ghe', 'Hòn Mấu nhìn từ ghe, khoảng 25 phút từ Củ Tron.', 'Hon Mau from the boat, about 25 minutes from Cu Tron.'],
+      ['h', 'Ngày 3 — hải đăng rồi về', 'Day 3 — the lighthouse, then home'],
+      ['p', 'Lên hải đăng vào sáng sớm khi trời còn mát, mất khoảng 40 phút đi bộ từ khu nghỉ. Từ trên đó nhìn thấy toàn bộ quần đảo trong một khung hình. Xuống núi kịp ăn trưa rồi ra bến cho chuyến 12h45.',
+            'Walk up to the lighthouse early while it is still cool, about 40 minutes from the resort. From the top the whole archipelago fits in one frame. Back down in time for lunch and the 12:45 boat.']
+    ]
+  }
+];
+
+
+const SCENERY = ['uploads/hero-1.jpg','uploads/pasted-1785691965790-0.png','uploads/hero-2.jpg','uploads/pasted-1785690771266-0.png','uploads/pasted-1785690635080-0.png','uploads/pasted-1785690604574-0.png','uploads/pasted-1785690646676-0.png','uploads/cover14-600x600.jpg'];
+const scenery = (i) => SCENERY[Math.abs(i) % SCENERY.length];
+
+class Component extends DCLogic {
+  state = { lang: 'vi', idx: 0 };
+  langRef = React.createRef();
+  navRef = React.createRef();
+  menuBtnRef = React.createRef();
+  menuRef = React.createRef();
+  shareRef = React.createRef();
+
+  setLang = (lang) => {
+    if (lang === this.state.lang) return;
+    document.querySelectorAll('[data-en]').forEach((el) => {
+      if (!el.dataset.vi) el.dataset.vi = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.vi;
+    });
+    const box = this.langRef.current;
+    if (box) box.querySelectorAll('[data-lang]').forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.style.background = on ? '#ffffff' : 'transparent';
+      b.style.color = on ? '#0b1b26' : '#6b8394';
+      b.style.boxShadow = on ? '0 1px 3px rgba(0,0,0,0.10)' : 'none';
+    });
+    document.documentElement.lang = lang;
+    this.setState({ lang });
+  };
+
+  applyLayout = () => {
+    const wide = window.innerWidth >= 1080;
+    if (this.navRef.current) this.navRef.current.style.display = wide ? 'flex' : 'none';
+    if (this.menuBtnRef.current) this.menuBtnRef.current.style.display = wide ? 'none' : 'flex';
+    if (wide && this.menuRef.current) this.menuRef.current.style.display = 'none';
+  };
+
+  componentDidMount() {
+    this.applyLayout();
+    window.addEventListener('resize', this.applyLayout);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.applyLayout); }
+
+  renderVals() {
+    const i = this.state.lang === 'en' ? 1 : 0;
+    const en = i === 1;
+    const p = POSTS[this.state.idx];
+    const gap = 'margin-bottom: 22px;';
+
+    const blocks = p.body.map((b, k) => {
+      const kind = b[0];
+      return {
+        isHead: kind === 'h',
+        isText: kind === 'p',
+        isQuote: kind === 'q',
+        isImage: kind === 'i',
+        isList: kind === 'l',
+        text: kind === 'l' ? '' : (kind === 'i' ? b[1] : b[1 + i]),
+        caption: kind === 'i' ? b[2 + i] : '',
+        slotId: 'ndh-blog-' + p.id + '-b' + k,
+        img: scenery(k + 2),
+        items: kind === 'l' ? b[1 + i].map((s) => ({ label: s })) : [],
+        wrap: kind === 'h' ? 'margin: 12px 0 14px;' : gap
+      };
+    });
+
+    const author = p.author[i];
+    const meta = p.date[i] + ' · ' + (en ? p.read[i] + ' min read' : p.read[i] + ' phút đọc');
+
+    return {
+      langRef: this.langRef,
+      navRef: this.navRef,
+      menuBtnRef: this.menuBtnRef,
+      menuRef: this.menuRef,
+      shareRef: this.shareRef,
+      setVI: () => this.setLang('vi'),
+      setEN: () => this.setLang('en'),
+      toggleMenu: () => {
+        const m = this.menuRef.current;
+        if (m) m.style.display = m.style.display === 'block' ? 'none' : 'block';
+      },
+      copyLink: () => {
+        const btn = this.shareRef.current;
+        const url = location.href.split('#')[0] + '#' + p.id;
+        if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
+        if (btn) {
+          const old = btn.textContent;
+          btn.textContent = en ? 'Copied' : 'Đã sao chép';
+          window.setTimeout(() => { btn.textContent = old; }, 1600);
+        }
+      },
+
+      category: p.cat[i],
+      title: p.t[i],
+      lede: p.lede[i],
+      author,
+      role: p.role[i],
+      initials: author.split(' ').slice(-2).map((w) => w[0]).join('').toUpperCase(),
+      meta,
+      heroSlot: 'ndh-blog-' + p.id + '-hero',
+      heroImg: scenery(i),
+      heroHint: en ? 'Lead photo — ' + p.t[1] : 'Ảnh bìa — ' + p.t[0],
+      heroCaption: p.caption[i],
+      blocks,
+      tags: p.tags.map((t) => ({ label: '#' + t[i] })),
+
+      others: POSTS.map((o, k) => ({ o, k })).filter((x) => x.k !== this.state.idx).map(({ o, k }) => ({
+        category: o.cat[i],
+        title: o.t[i],
+        lede: o.lede[i].split('. ')[0] + '.',
+        meta: o.date[i] + ' · ' + (en ? o.read[i] + ' min' : o.read[i] + ' phút'),
+        slotId: 'ndh-blog-' + o.id + '-thumb',
+        cardSlot: 'ndh-blog-' + o.id + '-hero',
+        img: scenery(k + 1),
+        hint: en ? 'Lead photo — ' + o.t[1] : 'Ảnh bìa — ' + o.t[0],
+        onPick: () => { this.setState({ idx: k }); window.scrollTo(0, 0); }
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

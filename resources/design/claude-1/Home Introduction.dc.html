@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif; background: #eef2f5; color: #0b1b26; -webkit-font-smoothing: antialiased; overflow: hidden; }
+  a { color: #0284c7; text-decoration: none; }
+  a:hover { color: #0369a1; }
+</style>
+</helmet>
+
+<div style="height: 100vh; padding: 18px; display: grid; grid-template-columns: 2fr 1fr; gap: 16px; overflow: hidden;">
+
+  <div style="display: flex; flex-direction: column; gap: 10px; min-height: 0;" data-screen-label="01 Trang chủ">
+    <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+      <img src="uploads/OP5-b8f91eaa.png" alt="The Nam Du Hill" style="width: 30px; height: 30px; object-fit: contain; background: #fff; border-radius: 8px; padding: 2px;" />
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #7d94a3;">01</span>
+      <a href="Nam Du Hill.dc.html" style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">Trang chủ</a>
+      <a href="Nam Du Hill.dc.html" style="margin-left: auto; font-size: 11px; font-weight: 700;">Mở toàn màn hình ↗</a>
+    </div>
+    <div ref="{{ boxHome }}" style="position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 16px; border: 1px solid #dde7ee; background: #fff; box-shadow: 0 16px 36px rgba(11,27,38,0.09);">
+      <iframe ref="{{ frameHome }}" src="Nam Du Hill.dc.html" title="Trang chủ" style="position: absolute; top: 0; left: 0; width: 1440px; height: 900px; border: 0; transform-origin: top left;"></iframe>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-rows: 1fr 1fr; gap: 16px; min-height: 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 10px; min-height: 0;" data-screen-label="02 Danh sách phòng">
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: #7d94a3;">02</span>
+        <a href="Rooms.dc.html" style="font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">Danh sách phòng</a>
+        <a href="Rooms.dc.html" style="margin-left: auto; font-size: 11px; font-weight: 700;">Mở ↗</a>
+      </div>
+      <div ref="{{ boxRooms }}" style="position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 16px; border: 1px solid #dde7ee; background: #fff; box-shadow: 0 16px 36px rgba(11,27,38,0.09);">
+        <iframe ref="{{ frameRooms }}" src="Rooms.dc.html" title="Danh sách phòng" loading="lazy" style="position: absolute; top: 0; left: 0; width: 1440px; height: 900px; border: 0; transform-origin: top left;"></iframe>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; min-height: 0;" data-screen-label="03 Chi tiết phòng">
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; color: #7d94a3;">03</span>
+        <a href="Room Detail.dc.html" style="font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">Chi tiết phòng</a>
+        <a href="Room Detail.dc.html" style="margin-left: auto; font-size: 11px; font-weight: 700;">Mở ↗</a>
+      </div>
+      <div ref="{{ boxDetail }}" style="position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 16px; border: 1px solid #dde7ee; background: #fff; box-shadow: 0 16px 36px rgba(11,27,38,0.09);">
+        <iframe ref="{{ frameDetail }}" src="Room Detail.dc.html" title="Chi tiết phòng" loading="lazy" style="position: absolute; top: 0; left: 0; width: 1440px; height: 900px; border: 0; transform-origin: top left;"></iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  boxHome = React.createRef();
+  frameHome = React.createRef();
+  boxRooms = React.createRef();
+  frameRooms = React.createRef();
+  boxDetail = React.createRef();
+  frameDetail = React.createRef();
+
+  fit = () => {
+    const pairs = [
+      [this.boxHome, this.frameHome],
+      [this.boxRooms, this.frameRooms],
+      [this.boxDetail, this.frameDetail]
+    ];
+    pairs.forEach(([b, f]) => {
+      const box = b.current, frame = f.current;
+      if (!box || !frame) return;
+      const w = box.clientWidth, h = box.clientHeight;
+      if (!w || !h) return;
+      const s = w / 1440;
+      frame.style.height = Math.ceil(h / s) + 'px';
+      frame.style.transform = 'scale(' + s + ')';
+    });
+  };
+
+  componentDidMount() {
+    this.fit();
+    window.addEventListener('resize', this.fit);
+    window.setTimeout(this.fit, 300);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.fit); }
+
+  renderVals() {
+    return {
+      boxHome: this.boxHome, frameHome: this.frameHome,
+      boxRooms: this.boxRooms, frameRooms: this.frameRooms,
+      boxDetail: this.boxDetail, frameDetail: this.frameDetail
+    };
+  }
+}
+
+</script>
+</body>
+</html>

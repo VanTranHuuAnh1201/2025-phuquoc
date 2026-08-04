@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif; background: #ffffff; color: #0b1b26; -webkit-font-smoothing: antialiased; }
+  a { color: #06b6d4; text-decoration: none; }
+  a:hover { color: #0891b2; }
+  :focus-visible { outline: 3px solid #06b6d4; outline-offset: 3px; border-radius: 6px; }
+  input, button, select, textarea { font-family: inherit; }
+  input::placeholder, textarea::placeholder { color: #b3c4d0; }
+  @keyframes ndIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- mobile ---------- */
+  #ndh-mbar { display: none; }
+  @media (max-width: 900px) {
+    [style*="max-width: 1320px"], [style*="max-width: 1280px"], [style*="max-width: 1240px"], [style*="max-width: 1180px"], [style*="max-width: 1120px"], [style*="max-width: 1040px"] { padding-left: 18px !important; padding-right: 18px !important; }
+    section[style]:not(#top) { padding-top: 58px !important; }
+    #top { min-height: 100svh !important; }
+    h1[style] { font-size: clamp(31px, 8.4vw, 46px) !important; line-height: 1.05 !important; letter-spacing: -0.03em !important; }
+    h2[style] { font-size: clamp(25px, 6.4vw, 34px) !important; line-height: 1.12 !important; }
+    h3[style] { font-size: clamp(17px, 4.4vw, 21px) !important; }
+    [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(3"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [style*="grid-template-columns: minmax(0, 1fr) minmax(0"], [style*="grid-template-columns: minmax(0, 1.2fr)"], [style*="grid-template-columns: minmax(0, 1.15fr)"], [style*="grid-template-columns: minmax(0, 1.4fr)"], [style*="grid-template-columns: minmax(0, 2fr)"], [style*="grid-template-columns: minmax(0, 1.7fr)"], [style*="grid-template-columns: minmax(132px"], [style*="grid-template-columns: minmax(0, 0.9fr)"] { grid-template-columns: minmax(0, 1fr) !important; }
+    [style*="gap: 60px"], [style*="gap: 64px"], [style*="gap: 52px"], [style*="gap: 56px"], [style*="gap: 44px"] { gap: 26px !important; }
+    [style*="padding: 54px 56px"], [style*="padding: 74px 56px"], [style*="padding: 48px 52px"], [style*="padding: 56px 56px"], [style*="padding: 44px 48px"] { padding: 30px 20px !important; }
+    [style*="position: sticky"] { position: static !important; }
+    [style*="grid-auto-rows: 250px"] { grid-auto-rows: 196px !important; }
+    [style*="grid-auto-rows: 220px"] { grid-auto-rows: 178px !important; }
+    [data-brandsub] { display: none !important; }
+    #ndh-mbar { display: flex !important; }
+    body { padding-bottom: 76px !important; }
+  }
+  @media (max-width: 620px) {
+    [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+    [style*="grid-column: span 2"], [style*="grid-column: span 3"] { grid-column: auto !important; }
+    [style*="grid-row: span 2"] { grid-row: auto !important; }
+    [style*="border-right: 1px solid #d9eff5"] { border-right: none !important; border-bottom: 1px solid #d9eff5 !important; }
+    section[style]:not(#top) { padding-top: 46px !important; }
+    [style*="grid-auto-rows"] { grid-auto-rows: 210px !important; }
+  }
+
+  @media (max-width: 900px) {
+    [style*="grid-auto-rows"] { grid-auto-rows: auto !important; }
+    [style*="grid-auto-rows"] > * { min-height: 172px !important; }
+    [style*="padding: 62px 56px 46px"] { padding: 34px 20px 30px !important; }
+    #panorama { margin-top: 58px !important; padding: 0 18px !important; }
+    [data-sun] { left: 84% !important; top: 34px !important; width: 78px !important; height: 78px !important; }
+    [data-mhide] { display: none !important; }
+    [style*="padding: 14px 16px; display: grid"] { padding: 8px 10px !important; }
+    [style*="border-radius: 34px"] { border-radius: 24px !important; }
+    [style*="border-radius: 26px"] { border-radius: 20px !important; }
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 24px !important; }
+  }
+  @media (max-width: 620px) {
+    [style*="grid-auto-rows"] > * { min-height: 200px !important; }
+    footer [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+  }
+
+  @media (max-width: 900px) {
+    [style*="position: sticky"][data-keepsticky] { position: sticky !important; }
+    [data-chips] { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; margin: 0 -18px; padding-left: 18px; padding-right: 18px; }
+    [data-chips]::-webkit-scrollbar { display: none; }
+    [data-chips] > * { flex: 0 0 auto; }
+    [style*="padding: 4px 32px 0"], [style*="padding: 0 32px 24px"], [style*="padding: 24px 32px"] { padding-left: 18px !important; padding-right: 18px !important; }
+    [style*="max-height: 90vh"], [style*="max-height: 88vh"] { max-height: 92svh !important; }
+  }
+
+  @media (max-width: 900px) {
+    h1[style] { font-size: clamp(26px, 7.2vw, 37px) !important; line-height: 1.08 !important; }
+    h2[style] { font-size: clamp(21px, 5.2vw, 27px) !important; line-height: 1.15 !important; }
+    h3[style] { font-size: clamp(15.5px, 3.9vw, 18px) !important; }
+    [style*="letter-spacing: 0.16em"], [style*="letter-spacing: 0.15em"], [style*="letter-spacing: 0.14em"], [style*="letter-spacing: 0.13em"] { font-size: 10px !important; letter-spacing: 0.1em !important; }
+    [style*="font-size: 17px;"], [style*="font-size: 16px;"] { font-size: 14.5px !important; }
+    [style*="font-size: 15px;"], [style*="font-size: 15.5px;"] { font-size: 13.5px !important; }
+    [style*="font-size: 14px;"] { font-size: 13px !important; }
+    p[style] { line-height: 1.55 !important; }
+    [style*="padding: 32px 34px;"], [style*="padding: 28px 30px;"], [style*="padding: 32px 36px;"], [style*="padding: 28px;"], [style*="padding: 26px;"], [style*="padding: 24px;"], [style*="padding: 22px 24px;"], [style*="padding: 20px 22px;"] { padding: 16px 15px !important; }
+    [style*="border-radius: 34px;"], [style*="border-radius: 26px;"], [style*="border-radius: 24px;"] { border-radius: 16px !important; }
+    [style*="border-radius: 22px;"], [style*="border-radius: 20px;"] { border-radius: 14px !important; }
+    [style*="border: 1.5px solid"] { border-width: 1px !important; }
+    [style*="margin-top: 96px"], [style*="margin-top: 88px"], [style*="margin-top: 100px"] { margin-top: 42px !important; }
+    [style*="margin: 44px 0 0"], [style*="margin-bottom: 34px"], [style*="margin-bottom: 40px"] { margin-top: 22px !important; margin-bottom: 20px !important; }
+    section[style]:not(#top) { padding-top: 42px !important; }
+    [data-cols2] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+    input[style], select[style], textarea[style] { padding: 11px 12px !important; font-size: 16px !important; border-radius: 11px !important; }
+    [data-filterbar] { flex-wrap: nowrap !important; padding-top: 8px !important; padding-bottom: 8px !important; gap: 10px !important; }
+    [data-filterbar] select { padding: 7px 9px !important; font-size: 12px !important; border-radius: 10px !important; }
+    [data-count] { display: none !important; }
+  }
+  @media (max-width: 620px) {
+    [data-cols2] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    [data-cols2] > [data-wide] { grid-column: 1 / -1 !important; }
+  }
+
+  ::selection { background: #00c46a; color: #04241a; }
+</style>
+</helmet>
+
+<div>
+
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; backdrop-filter: blur(18px); background: rgba(255,255,255,0.94); border-bottom: 1px solid rgba(6,182,212,0.10);">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 13px 32px; display: flex; align-items: center; gap: 20px;">
+    <a href="Nam Du Hill.dc.html" style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+      <img src="uploads/OP5-b8f91eaa.png" alt="The Nam Du Hill" style="width: 40px; height: 40px; object-fit: contain;" />
+      <span style="display: flex; flex-direction: column; line-height: 1.1;">
+        <span style="font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; color: #0b1b26;">THE NAM DU HILL</span>
+        <span style="font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; color: #06b6d4;">HILLTOP BOUTIQUE RESORT</span>
+      </span>
+    </a>
+    <nav ref="{{ navRef }}" style="display: flex; align-items: center; gap: 22px; margin-left: auto; flex-wrap: nowrap;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 14px; font-weight: 600; color: #375b64; white-space: nowrap;" style-hover="color:#06b6d4">Khám phá</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 14px; font-weight: 700; color: #06b6d4; white-space: nowrap;">Liên hệ</a>
+    </nav>
+    <button ref="{{ menuBtnRef }}" onClick="{{ toggleMenu }}" aria-label="Mở menu" style="display: none; margin-left: auto; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 17px; cursor: pointer; flex-shrink: 0;">☰</button>
+    <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+      <div ref="{{ langRef }}" style="display: flex; align-items: center; background: #eef6fb; border-radius: 999px; padding: 3px;">
+        <button onClick="{{ setVI }}" data-lang="vi" style="border: none; background: #ffffff; color: #0b1b26; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.10);">VI</button>
+        <button onClick="{{ setEN }}" data-lang="en" style="border: none; background: transparent; color: #6b8394; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer;">EN</button>
+      </div>
+      <a href="Rooms.dc.html" data-en="Book a room" style="background: #06b6d4; color: #ffffff; font-size: 13px; font-weight: 700; padding: 11px 20px; border-radius: 999px; white-space: nowrap; box-shadow: 0 6px 18px rgba(6,182,212,0.30); transition: background 150ms ease;" style-hover="background:#0891b2">Đặt phòng</a>
+    </div>
+  </div>
+  <div ref="{{ menuRef }}" style="display: none; border-top: 1px solid rgba(6,182,212,0.10); background: #ffffff;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 12px 32px 18px; display: grid; gap: 2px;">
+      <a href="Rooms.dc.html" data-en="Rooms" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Phòng</a>
+      <a href="Dining.dc.html" data-en="Dining" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Ẩm thực</a>
+      <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0; border-bottom: 1px solid #eefafd;">Khám phá</a>
+      <a href="Contact.dc.html" data-en="Contact" style="font-size: 15px; font-weight: 700; color: #0b1b26; padding: 12px 0;">Liên hệ</a>
+    </div>
+  </div>
+</header>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 116px 32px 0;">
+  <div style="padding: 30px 0 34px; max-width: 720px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+      <span style="width: 7px; height: 7px; border-radius: 50%; background: #00c46a;"></span>
+      <span data-en="Someone answers, any hour" style="font-size: 12px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #06b6d4;">Luôn có người nghe máy</span>
+    </div>
+    <h1 data-en="Contact &amp; booking" style="margin: 0 0 14px; font-size: clamp(32px, 4vw, 52px); line-height: 1.04; font-weight: 800; letter-spacing: -0.036em; color: #0b1b26; text-wrap: balance;">Liên hệ &amp; đặt phòng</h1>
+    <p data-en="Send the form and we reply on Zalo within the hour — usually much sooner. Booking direct always beats the OTA rate." style="margin: 0; font-size: 17px; line-height: 1.6; color: #4c6b74;">Gửi form và chúng tôi trả lời qua Zalo trong vòng một tiếng — thường là nhanh hơn nhiều. Đặt trực tiếp luôn rẻ hơn giá trên OTA.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 26px; align-items: start;">
+
+    <form onSubmit="{{ onSubmit }}" style="background: #ffffff; border: 1px solid #d9eff5; border-radius: 26px; padding: 32px 34px; box-shadow: 0 14px 40px rgba(8,72,86,0.07);">
+      <h2 data-en="Quick booking request" style="margin: 0 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -0.024em; color: #0b1b26;">Đặt phòng nhanh</h2>
+      <p data-en="Get in touch for the best available rate." style="margin: 0 0 24px; font-size: 13.5px; color: #78a3ae;">Liên hệ ngay để nhận ưu đãi tốt nhất.</p>
+
+      <div data-cols2 style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Full name *" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Họ và tên *</span>
+          <input required type="text" placeholder="Nhập họ và tên" style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Phone number *" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Số điện thoại *</span>
+          <input required type="tel" placeholder="0123 456 789" style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+        </label>
+        <label style="grid-column: span 2; display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Email" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Email</span>
+          <input type="email" placeholder="email@example.com" style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Check in" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Ngày nhận phòng</span>
+          <input type="date" style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Check out" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Ngày trả phòng</span>
+          <input type="date" style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%;" />
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Guests" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Số khách</span>
+          <select style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; cursor: pointer;">
+            <option>2 khách</option>
+            <option>3 khách</option>
+            <option>4 khách</option>
+            <option>6 khách</option>
+            <option>8 khách</option>
+          </select>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Room type" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Hạng phòng</span>
+          <select style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; cursor: pointer;">
+            <option>Chưa quyết — tư vấn giúp</option>
+            <option>#14 Rock Deluxe · 1.776.000₫</option>
+            <option>#05 Lục Giác Kính · 1.546.000₫</option>
+            <option>#07 Superior King · 2.971.000₫</option>
+            <option>#08-09 Suite 8 khách · 5.662.000₫</option>
+          </select>
+        </label>
+        <label style="grid-column: span 2; display: flex; flex-direction: column; gap: 7px;">
+          <span data-en="Message" style="font-size: 12.5px; font-weight: 700; color: #375b64;">Tin nhắn</span>
+          <textarea rows="4" placeholder="Yêu cầu đặc biệt, loại phòng mong muốn..." style="border: 1px solid #cfeaf2; border-radius: 13px; padding: 14px 16px; font-size: 15px; font-weight: 500; color: #0b1b26; background: #ffffff; width: 100%; resize: vertical;"></textarea>
+        </label>
+      </div>
+
+      <div ref="{{ sentRef }}" style="display: none; margin-top: 16px; padding: 14px 18px; border-radius: 14px; background: #e8f9f0; border: 1px solid rgba(0,196,106,0.30); font-size: 14px; font-weight: 700; color: #04684a;"></div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px;">
+        <button type="submit" data-en="Send request" style="background: #06b6d4; color: #ffffff; border: none; font-size: 15px; font-weight: 700; padding: 16px 32px; border-radius: 15px; cursor: pointer; box-shadow: 0 8px 22px rgba(6,182,212,0.28); transition: background 150ms ease;" style-hover="background:#0891b2">Gửi yêu cầu</button>
+        <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" data-en="Or message us on Zalo" style="border: 1px solid #cfeaf2; color: #0b1b26; font-size: 15px; font-weight: 700; padding: 16px 26px; border-radius: 15px; transition: background 150ms ease;" style-hover="background:#e9f9fd">Hoặc nhắn Zalo ngay</a>
+      </div>
+      <p data-en="Booking direct: best rate guaranteed, free pier transfer, free cancellation up to 7 days before arrival." style="margin: 16px 0 0; font-size: 12.5px; line-height: 1.55; color: #78a3ae;">Đặt trực tiếp: cam kết giá tốt nhất, đưa đón bến tàu miễn phí, huỷ miễn phí trước 7 ngày.</p>
+    </form>
+
+    <aside style="display: grid; gap: 14px;">
+      <div style="background: #0e4653; border-radius: 26px; padding: 30px 32px; color: #ffffff;">
+        <div data-en="Reservations" style="font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.44); margin-bottom: 14px;">Đặt phòng</div>
+        <a href="tel:0985000650" style="display: block; font-size: 30px; font-weight: 900; letter-spacing: -0.035em; color: #ffffff; margin-bottom: 6px;" style-hover="color:#00e07a">0985 000 650</a>
+        <div data-en="Zalo on the same number · 24/7" style="font-size: 13px; color: rgba(255,255,255,0.62); margin-bottom: 24px;">Zalo cùng số · 24/7</div>
+
+        <div style="display: grid; gap: 18px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.14);">
+          <div>
+            <div data-en="Address" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.44); margin-bottom: 7px;">Địa chỉ</div>
+            <div data-en="Group 6, Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam" style="font-size: 14.5px; font-weight: 600; line-height: 1.5; color: #ffffff;">Tổ 6, Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam</div>
+          </div>
+          <div>
+            <div data-en="Email" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.44); margin-bottom: 7px;">Email</div>
+            <a href="mailto:thenamduhill@gmail.com" style="font-size: 14.5px; font-weight: 600; color: #ffffff;" style-hover="color:#00e07a">thenamduhill@gmail.com</a>
+          </div>
+          <div>
+            <div data-en="Reception hours" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.44); margin-bottom: 7px;">Giờ lễ tân</div>
+            <div data-en="Check in from 14:00 · check out by 12:00 · desk staffed 24/7" style="font-size: 14.5px; font-weight: 600; line-height: 1.5; color: #ffffff;">Nhận phòng từ 14:00 · trả phòng trước 12:00 · trực 24/7</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #d9eff5; border-radius: 26px; padding: 26px 28px;">
+        <div data-en="Getting here" style="font-size: 11px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; color: #78a3ae; margin-bottom: 16px;">Cách di chuyển</div>
+        <div style="display: grid; gap: 16px;">
+          <div style="display: flex; gap: 13px; align-items: flex-start;">
+            <span style="width: 22px; height: 22px; border-radius: 50%; background: #eef6fb; color: #06b6d4; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</span>
+            <div>
+              <div data-en="HCMC → Rach Gia" style="font-size: 14.5px; font-weight: 700; color: #0b1b26;">TP.HCM → Rạch Giá</div>
+              <div data-en="Overnight sleeper coach, 7 h, 210–250k" style="font-size: 13px; color: #78a3ae; margin-top: 2px;">Xe giường nằm đêm, 7 tiếng, 210–250k</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 13px; align-items: flex-start;">
+            <span style="width: 22px; height: 22px; border-radius: 50%; background: #eef6fb; color: #06b6d4; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</span>
+            <div>
+              <div data-en="Rach Gia → Cu Tron pier" style="font-size: 14.5px; font-weight: 700; color: #0b1b26;">Rạch Giá → bến Củ Tron</div>
+              <div data-en="Speedboat, 2–3 h, ~226k. Superdong, Phu Quoc Express, Ngoc Thanh." style="font-size: 13px; color: #78a3ae; margin-top: 2px;">Tàu cao tốc, 2–3 tiếng, ~226k. Superdong, Phú Quốc Express, Ngọc Thành.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 13px; align-items: flex-start;">
+            <span style="width: 22px; height: 22px; border-radius: 50%; background: #e8f9f0; color: #00b869; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</span>
+            <div>
+              <div data-en="Pier → the hill" style="font-size: 14.5px; font-weight: 700; color: #0b1b26;">Bến tàu → lên đồi</div>
+              <div data-en="Our private car meets your boat. Free, both ways." style="font-size: 13px; color: #00b869; font-weight: 600; margin-top: 2px;">Xe riêng của resort đón tận tàu. Miễn phí, hai chiều.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section style="max-width: 1320px; margin: 0 auto; padding: 40px 32px 0;">
+  <div style="border-radius: 26px; overflow: hidden; border: 1px solid #d9eff5; position: relative; height: 420px; background: #eefafd;">
+    <iframe title="Bản đồ The Nam Du Hill" src="https://www.openstreetmap.org/export/embed.html?bbox=104.28%2C9.64%2C104.42%2C9.72&amp;layer=mapnik&amp;marker=9.6835%2C104.3595" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;" loading="lazy"></iframe>
+    <div style="position: absolute; left: 24px; bottom: 24px; background: #ffffff; border-radius: 18px; padding: 20px 24px; box-shadow: 0 12px 32px rgba(5,60,72,0.20); max-width: 330px;">
+      <div style="font-size: 15px; font-weight: 800; color: #0b1b26; margin-bottom: 6px;">THE NAM DU HILL</div>
+      <div data-en="Group 6, Cu Tron hamlet, An Giang" style="font-size: 13px; line-height: 1.5; color: #4c6b74; margin-bottom: 12px;">Tổ 6, Ấp Củ Tron, tỉnh An Giang</div>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=THE+NAM+DU+HILL+resort+Nam+Du" target="_blank" rel="noopener" data-en="Open in Google Maps →" style="font-size: 13px; font-weight: 700; color: #06b6d4;">Mở trong Google Maps →</a>
+    </div>
+  </div>
+</section>
+
+
+<div id="ndh-mbar" style="display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; align-items: center; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.94); backdrop-filter: blur(20px); border-top: 1px solid rgba(6,182,212,0.14); box-shadow: 0 -8px 28px rgba(5,60,72,0.10);">
+  <a href="tel:0985000650" data-en="Call" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Gọi</a>
+  <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 16px; border-radius: 14px; border: 1px solid #cfeaf2; background: #ffffff; color: #0b1b26; font-size: 13.5px; font-weight: 700; white-space: nowrap;">Zalo</a>
+  <a href="Rooms.dc.html" data-en="Book a room" style="flex: 1; display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 14px; background: #06b6d4; color: #ffffff; font-size: 14.5px; font-weight: 800; white-space: nowrap; box-shadow: 0 8px 20px rgba(6,182,212,0.32);">Đặt phòng</a>
+</div>
+
+<footer style="background: #0e7490; color: #ffffff; margin-top: 88px;">
+  <div style="max-width: 1320px; margin: 0 auto; padding: 56px 32px 40px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.95fr); gap: 44px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 11px; margin-bottom: 20px;">
+        <img src="uploads/OP5-b8f91eaa.png" alt="" style="width: 44px; height: 44px; object-fit: contain; background: #ffffff; border-radius: 12px; padding: 3px;" />
+        <span style="font-size: 16px; font-weight: 800; color: #ffffff;">THE NAM DU HILL</span>
+      </div>
+      <div data-en="THE NAM DU HILL business household · Registered 18/10/2021 · Tax ID 1702244746" style="font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,0.72); margin-bottom: 18px;">Hộ kinh doanh THE NAM DU HILL · Đăng ký lần đầu 18/10/2021 · MST 1702244746</div>
+      <div style="display: grid; gap: 11px;">
+        <div data-en="Cu Tron hamlet, Kien Hai Special Zone, An Giang province, Vietnam" style="font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.92);">Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam</div>
+        <a href="mailto:thenamduhill@gmail.com" style="font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.92);" style-hover="color:#7dd3fc">thenamduhill@gmail.com</a>
+        <a href="tel:0985000650" style="font-size: 19px; font-weight: 800; color: #ffffff;" style-hover="color:#7dd3fc">0985 000 650</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="INFORMATION" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">THÔNG TIN</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="#" data-en="Privacy policy" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Chính sách bảo mật</a>
+        <a href="#" data-en="General terms" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Quy định chung</a>
+        <a href="#" data-en="How to book" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn đặt phòng</a>
+        <a href="#" data-en="Check-in &amp; cancellation" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn nhận &amp; huỷ phòng</a>
+        <a href="#" data-en="Payment guide" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Hướng dẫn thanh toán</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="EXPLORE" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KHÁM PHÁ</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: grid; gap: 11px;">
+        <a href="Rooms.dc.html" data-en="20 room types" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">20 hạng phòng</a>
+        <a href="Dining.dc.html" data-en="Dining &amp; BBQ" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Ẩm thực &amp; BBQ</a>
+        <a href="Explore Nam Du.dc.html" data-en="Explore Nam Du" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Khám phá</a>
+        <a href="Contact.dc.html" data-en="Contact &amp; map" style="font-size: 13.5px; color: rgba(255,255,255,0.78);" style-hover="color:#7dd3fc">Liên hệ &amp; bản đồ</a>
+      </div>
+    </div>
+    <div>
+      <div data-en="FOLLOW" style="font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: #ffffff; margin-bottom: 8px;">KẾT NỐI</div>
+      <div style="width: 26px; height: 3px; background: #fbbf24; border-radius: 2px; margin-bottom: 18px;"></div>
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <a href="https://facebook.com/thenamduhill" target="_blank" rel="noopener" aria-label="Facebook" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">f</a>
+        <a href="https://zalo.me/0985000650" target="_blank" rel="noopener" aria-label="Zalo" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">Za</a>
+        <a href="https://thenamduhill.com" target="_blank" rel="noopener" aria-label="Website" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #ffffff;" style-hover="background:#06b6d4">◍</a>
+      </div>
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 9px 12px;">
+        <span style="font-size: 15px; color: #38bdf8;">✓</span>
+        <span data-en="Registered with the Ministry of Industry and Trade" style="font-size: 10.5px; font-weight: 700; line-height: 1.35; color: rgba(255,255,255,0.86);">ĐÃ THÔNG BÁO<br />BỘ CÔNG THƯƠNG</span>
+      </div>
+    </div>
+  </div>
+  <div style="border-top: 1px solid rgba(255,255,255,0.14);">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <span style="font-size: 12.5px; color: rgba(255,255,255,0.60);">© 2026 The Nam Du Hill · thenamduhill.com</span>
+      <span data-en="Best rate when you book direct · Free pier transfer · Free cancellation up to 7 days" style="font-size: 12.5px; color: rgba(255,255,255,0.60);">Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí · Huỷ miễn phí trước 7 ngày</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+class Component extends DCLogic {
+  state = { lang: 'vi' };
+  langRef = React.createRef();
+  navRef = React.createRef();
+  menuBtnRef = React.createRef();
+  menuRef = React.createRef();
+  sentRef = React.createRef();
+
+  setLang = (lang) => {
+    if (lang === this.state.lang) return;
+    document.querySelectorAll('[data-en]').forEach((el) => {
+      if (!el.dataset.vi) el.dataset.vi = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.vi;
+    });
+    const box = this.langRef.current;
+    if (box) box.querySelectorAll('[data-lang]').forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.style.background = on ? '#ffffff' : 'transparent';
+      b.style.color = on ? '#0b1b26' : '#6b8394';
+      b.style.boxShadow = on ? '0 1px 3px rgba(0,0,0,0.10)' : 'none';
+    });
+    document.documentElement.lang = lang;
+    this.setState({ lang });
+  };
+
+  applyLayout = () => {
+    const wide = window.innerWidth >= 1080;
+    if (this.navRef.current) this.navRef.current.style.display = wide ? 'flex' : 'none';
+    if (this.menuBtnRef.current) this.menuBtnRef.current.style.display = wide ? 'none' : 'flex';
+    if (wide && this.menuRef.current) this.menuRef.current.style.display = 'none';
+  };
+
+  componentDidMount() { this.applyLayout(); window.addEventListener('resize', this.applyLayout); }
+  componentWillUnmount() { window.removeEventListener('resize', this.applyLayout); }
+
+  renderVals() {
+    return {
+      langRef: this.langRef,
+      navRef: this.navRef,
+      menuBtnRef: this.menuBtnRef,
+      menuRef: this.menuRef,
+      sentRef: this.sentRef,
+      setVI: () => this.setLang('vi'),
+      setEN: () => this.setLang('en'),
+      toggleMenu: () => {
+        const m = this.menuRef.current;
+        if (m) m.style.display = m.style.display === 'block' ? 'none' : 'block';
+      },
+      onSubmit: (e) => {
+        e.preventDefault();
+        const el = this.sentRef.current;
+        if (!el) return;
+        el.style.display = 'block';
+        el.textContent = this.state.lang === 'en'
+          ? 'Request sent. We will reply on Zalo within the hour.'
+          : 'Đã gửi yêu cầu. Chúng tôi sẽ trả lời qua Zalo trong vòng một tiếng.';
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

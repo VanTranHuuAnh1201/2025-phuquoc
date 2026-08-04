@@ -63,6 +63,16 @@ export interface NavItem {
 
 // ----------------------------------------------------------------------- phòng
 
+/** Nhóm hạng phòng, dùng để lọc trên trang danh sách và CMS. */
+export type RoomGroup = 'couple' | 'family' | 'suite'
+
+/** Đánh giá của khách về một hạng phòng. */
+export interface RoomReview {
+    who: string
+    score: string
+    text: I18nText
+}
+
 export interface Room {
     id: string
     name: I18nText
@@ -75,6 +85,14 @@ export interface Room {
     price: number
     tags: I18nText[]
     images?: string[]
+
+    /** Nhóm để lọc: đôi / gia đình / suite. */
+    group?: RoomGroup
+    /** Phụ thu giường phụ, VND. */
+    extraBedFee?: number
+    /** Số phòng trống còn lại — hiện badge "chỉ còn N phòng". */
+    remaining?: number
+    reviews?: RoomReview[]
 }
 
 /** Chi tiết mở rộng theo từng hạng phòng (key = Room.id). */
@@ -174,6 +192,86 @@ export interface Review {
     rating: number
     comment: I18nText
     avatar?: string
+}
+
+// ---------------------------------------------------------- khám phá & thực đơn
+
+/** Điểm dừng chân trên đảo chính. */
+export interface ExploreSpot {
+    id: string
+    name: I18nText
+    /** Khoảng cách/thời gian di chuyển, vd "4 phút xe máy". */
+    dist: I18nText
+    text: I18nText
+    /** Mẹo thực địa cho khách. */
+    tip: I18nText
+}
+
+/** Đảo vệ tinh quanh quần đảo. */
+export interface SatelliteIsland {
+    id: string
+    name: I18nText
+    badge: I18nText
+    text: I18nText
+}
+
+export interface ItineraryLeg {
+    day: I18nText
+    time: string
+    title: I18nText
+    text: I18nText
+}
+
+export interface CostItem {
+    label: I18nText
+    val: string
+}
+
+/** Lịch trình mẫu, vd 2 ngày 1 đêm. */
+export interface TripPlan {
+    key: string
+    name: I18nText
+    legs: ItineraryLeg[]
+    costs: CostItem[]
+    total: string
+}
+
+export interface MenuItem {
+    id: number
+    name: I18nText
+    /** Giá VND. Dùng `formatPrice()` khi hiển thị. */
+    price: number
+}
+
+export interface MenuCategory {
+    key: string
+    name: I18nText
+    items: MenuItem[]
+}
+
+// ---------------------------------------------------------------------- blog
+
+export interface BlogBlock {
+    kind: 'h' | 'p' | 'q' | 'i' | 'l'
+    text?: I18nText
+    caption?: I18nText
+    slotId?: string
+    items?: I18nText[]
+}
+
+export interface BlogPost {
+    id: string
+    category: I18nText
+    title: I18nText
+    lede: I18nText
+    author: I18nText
+    role: I18nText
+    date: I18nText
+    readMin: number
+    heroSlot: string
+    heroCaption: I18nText
+    tags: I18nText[]
+    blocks: BlogBlock[]
 }
 
 // ------------------------------------------------------------------ nội dung phụ

@@ -12,6 +12,7 @@
 import { t } from '../i18n'
 import type { I18nText } from '../i18n'
 import type { PropertyData, Room, RoomExtra } from '../types'
+import { roomBusinessInfo } from './room-business'
 
 // ============================================================ tầng ngoài (RAW)
 
@@ -274,6 +275,8 @@ export function mapSeedToRoom(raw: SeedRoomType): Room {
         price: raw.price,
         tags: buildTags(raw),
         images: propertyImages(raw.images),
+        // Phần biên tập viên quyết định, không có trong bản crawl.
+        ...(roomBusinessInfo[raw.id] ?? {}),
     }
 }
 

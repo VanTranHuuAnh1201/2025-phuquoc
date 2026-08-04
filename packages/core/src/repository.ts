@@ -10,17 +10,25 @@
  */
 
 import { propertyData } from './data'
+import { blogPosts } from './data/blog'
+import { diningMenu } from './data/dining-menu'
+import { exploreSpots, satelliteIslands, tripPlans } from './data/explore'
 import type {
     Addon,
     Amenity,
+    BlogPost,
     Dining,
+    ExploreSpot,
     GalleryItem,
+    MenuCategory,
     Place,
     PropertyData,
     Review,
     Room,
     RoomExtra,
+    SatelliteIsland,
     Tour,
+    TripPlan,
 } from './types'
 
 /** Id cơ sở lưu trú mặc định khi chưa có multi-tenant. */
@@ -125,4 +133,33 @@ export async function getReviews(
     propertyId: string = DEFAULT_PROPERTY_ID,
 ): Promise<Review[]> {
     return (await getProperty(propertyId)).reviews ?? []
+}
+
+/**
+ * Bốn nguồn dưới đây hiện chung cho mọi cơ sở lưu trú (chưa multi-tenant) nên
+ * chưa nhận `propertyId`. Chữ ký sẽ thêm tham số đó khi tách theo tenant —
+ * vẫn `async` sẵn nên nơi gọi không phải sửa.
+ */
+export async function getBlogPosts(): Promise<BlogPost[]> {
+    return blogPosts
+}
+
+export async function getBlogPost(id: string): Promise<BlogPost | undefined> {
+    return blogPosts.find((post) => post.id === id)
+}
+
+export async function getExploreSpots(): Promise<ExploreSpot[]> {
+    return exploreSpots
+}
+
+export async function getSatelliteIslands(): Promise<SatelliteIsland[]> {
+    return satelliteIslands
+}
+
+export async function getTripPlans(): Promise<Record<string, TripPlan>> {
+    return tripPlans
+}
+
+export async function getDiningMenu(): Promise<Record<string, MenuCategory>> {
+    return diningMenu
 }

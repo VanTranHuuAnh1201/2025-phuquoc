@@ -43,4 +43,10 @@ export { generateDemoData, buildInventory } from './data/demo-generator'
 /** Chuỗi giao diện song ngữ dùng chung cho mọi theme. */
 export { UI } from './data/ui-strings'
 export type { UIKey } from './data/ui-strings'
+
+/** Nội dung biên tập: blog, khám phá đảo, thực đơn. */
+export { blogPosts } from './data/blog'
+export { exploreSpots, satelliteIslands, tripPlans } from './data/explore'
+export { diningMenu } from './data/dining-menu'
+export { roomBusinessInfo } from './data/room-business'
 export type { DemoData, DemoDataOptions } from './data/demo-generator'
