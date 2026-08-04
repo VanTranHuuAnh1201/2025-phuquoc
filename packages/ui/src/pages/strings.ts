@@ -57,6 +57,30 @@ export interface PageStrings {
     viewRooms: string
     contactUs: string
 
+    // ---- Dining ----
+    diningPage: string
+    diningTitle: string
+    diningSub: string
+    venuesTitle: string
+    menuTitle: string
+    menuSub: string
+    menuNote: string
+    diningCtaTitle: string
+    diningCtaSub: string
+
+    // ---- Blog ----
+    blogPage: string
+    blogTitle: string
+    blogSub: string
+    readMore: string
+    minRead: string
+    latestTitle: string
+    blogEmpty: string
+    byAuthor: string
+    backToBlog: string
+    tagsTitle: string
+    relatedTitle: string
+
     // ---- Contact ----
     contactTitle: string
     contactSub: string
@@ -133,6 +157,30 @@ export const defaultPageStrings: PageStringSet = {
         viewRooms: 'Xem hạng phòng',
         contactUs: 'Liên hệ tư vấn',
 
+        diningPage: 'Ẩm thực',
+        diningTitle: 'Ẩm thực tại Nam Du Hill',
+        diningSub:
+            'Hải sản đánh bắt trong ngày, bếp Việt và quầy bar hướng biển. Thực đơn đổi theo mẻ cá về mỗi sáng.',
+        venuesTitle: 'Các điểm ăn uống',
+        menuTitle: 'Thực đơn tham khảo',
+        menuSub: 'Giá đã bao gồm thuế và phí phục vụ.',
+        menuNote: 'Hải sản tính theo giá thị trường trong ngày — lễ tân báo giá trước khi chế biến.',
+        diningCtaTitle: 'Đặt bàn hoặc báo suất ăn',
+        diningCtaSub: 'Báo trước một ngày để bếp chuẩn bị, nhất là với đoàn đông hoặc khách ăn chay.',
+
+        blogPage: 'Cẩm nang',
+        blogTitle: 'Cẩm nang Nam Du',
+        blogSub:
+            'Kinh nghiệm đi lại, lịch trình gợi ý và những điều nên biết trước chuyến đi — viết bởi đội ngũ tại đảo.',
+        readMore: 'Đọc tiếp',
+        minRead: 'phút đọc',
+        latestTitle: 'Bài viết mới nhất',
+        blogEmpty: 'Chưa có bài viết trong mục này. Chọn mục khác hoặc xem tất cả bài viết.',
+        byAuthor: 'bởi',
+        backToBlog: '← Xem tất cả bài viết',
+        tagsTitle: 'Chủ đề',
+        relatedTitle: 'Bài viết khác',
+
         contactTitle: 'Liên hệ & Đặt chỗ',
         contactSub:
             'Gọi hotline để giữ phòng nhanh nhất, hoặc để lại thông tin — chúng tôi gọi lại trong 15 phút.',
@@ -197,6 +245,30 @@ export const defaultPageStrings: PageStringSet = {
         galleryCtaSub: 'Check room availability, or reach out and we will plan the itinerary with you.',
         viewRooms: 'View rooms',
         contactUs: 'Talk to us',
+
+        diningPage: 'Dining',
+        diningTitle: 'Dining at Nam Du Hill',
+        diningSub:
+            'Seafood landed the same morning, a Vietnamese kitchen and a bar facing the water. The menu shifts with each catch.',
+        venuesTitle: 'Where to eat',
+        menuTitle: 'Sample menu',
+        menuSub: 'Prices include tax and service charge.',
+        menuNote: 'Seafood is charged at the day rate — the front desk quotes you before cooking.',
+        diningCtaTitle: 'Reserve a table or pre-order meals',
+        diningCtaSub: 'Give the kitchen a day of notice, especially for large groups or vegetarian guests.',
+
+        blogPage: 'Guides',
+        blogTitle: 'The Nam Du guide',
+        blogSub:
+            'How to get here, itineraries worth copying and what to know before you go — written by the team on the island.',
+        readMore: 'Read on',
+        minRead: 'min read',
+        latestTitle: 'Latest articles',
+        blogEmpty: 'No articles in this category yet. Pick another, or view all articles.',
+        byAuthor: 'by',
+        backToBlog: '← View all articles',
+        tagsTitle: 'Topics',
+        relatedTitle: 'More articles',
 
         contactTitle: 'Contact & Booking',
         contactSub:

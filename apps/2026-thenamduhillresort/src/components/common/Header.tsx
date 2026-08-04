@@ -1,6 +1,6 @@
 'use client'
 
-import { UI } from '@repo/core'
+import { namDuHill, pick, UI } from '@repo/core'
 
 import { Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
@@ -52,12 +52,20 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
   const isSolid = forceSolid || !isHomePage || scrolled
 
-  const navLinks = [
-    { href: '/rooms', label: language === 'vi' ? 'Phòng' : 'Rooms' },
-    { href: '/dining', label: language === 'vi' ? 'Ẩm thực' : 'Dining' },
-    { href: '/explore', label: language === 'vi' ? 'Khám phá' : 'Explore' },
-    { href: '/contact', label: language === 'vi' ? 'Liên hệ' : 'Contact' },
-  ]
+  const hrefMap: Record<string, string> = {
+    '#rooms': '/rooms',
+    '#dining': '/dining',
+    '#places': '/explore',
+    '#gallery': '/gallery',
+    '#contact': '/contact',
+  }
+
+  const navLinks = namDuHill.nav
+    .filter((item: { href: string }) => item.href !== '#tours')
+    .map((item: { href: string; label: any }) => ({
+      href: hrefMap[item.href] || item.href,
+      label: pick(item.label, language as 'vi' | 'en'),
+    }))
 
   return (
     <header
@@ -115,32 +123,52 @@ export function Header({ forceSolid = false }: HeaderProps) {
               })}
             </nav>
 
-            {/* Action Controls: Language Selector, User Account & Book Now */}
-            <div className="flex items-center gap-3">
-              {/* Desktop Language Selector */}
-              <div className="hidden md:flex items-center gap-1 text-xs font-medium cursor-pointer py-1 px-2 rounded-md hover:bg-black/5 transition">
+            {/* Action Controls: Language Selector (VI | EN), User Account & Book Now */}
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              {/* Language Selector: VI | EN */}
+              <div className="flex items-center gap-1 text-xs font-medium py-1 px-1">
                 <button
-                  onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
-                  className={`flex items-center gap-1 font-semibold ${isSolid ? 'text-[#1A1A1A]' : 'text-white'}`}
+                  onClick={() => setLanguage('vi')}
+                  className={`px-1 py-0.5 text-xs transition uppercase ${language === 'vi'
+                      ? isSolid
+                        ? 'font-bold text-[#0F2D52]'
+                        : 'font-bold text-white'
+                      : isSolid
+                        ? 'text-[#6B7280] hover:text-[#1A1A1A]'
+                        : 'text-white/60 hover:text-white'
+                    }`}
                 >
-                  <span>{language === 'vi' ? 'VI' : 'EN'}</span>
-                  <span className="text-[10px] opacity-70">▾</span>
+                  VI
+                </button>
+                <span className={`text-[10px] ${isSolid ? 'text-[#D1D5DB]' : 'text-white/40'}`}>|</span>
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`px-1 py-0.5 text-xs transition uppercase ${language === 'en'
+                      ? isSolid
+                        ? 'font-bold text-[#0F2D52]'
+                        : 'font-bold text-white'
+                      : isSolid
+                        ? 'text-[#6B7280] hover:text-[#1A1A1A]'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                >
+                  EN
                 </button>
               </div>
 
               {/* User Account Dropdown Container */}
-              <div className="hidden md:flex relative user-dropdown-container">
+              <div className="relative user-dropdown-container">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings' || pathname.startsWith('/admin')
-                    ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
-                    : isSolid
-                      ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
-                      : 'border-white/40 text-white hover:bg-white/10'
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition border ${pathname === '/my-bookings' || pathname.startsWith('/admin')
+                      ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
+                      : isSolid
+                        ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
+                        : 'border-white/40 text-white hover:bg-white/10'
                     }`}
                   aria-label="User Account Menu"
                 >
-                  <User className="w-3.5 h-3.5 shrink-0" />
+                  <User className="w-4 h-4 shrink-0" />
                 </button>
 
                 {/* Dropdown Options */}
@@ -175,21 +203,23 @@ export function Header({ forceSolid = false }: HeaderProps) {
                 )}
               </div>
 
-              <Link href="/rooms" className="hidden md:inline-block">
+              {/* Book Now Button */}
+              <Link href="/rooms" className="hidden sm:inline-block">
                 <Button variant="primary" size="md" radius="6px">
                   {tx(UI.bookNow2)}
                 </Button>
               </Link>
 
+              {/* Mobile Drawer Toggle */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition shadow-[0_2px_8px_rgba(0,0,0,0.05)] focus:outline-none md:hidden ${isSolid
-                  ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
-                  : 'bg-white/90 text-[#1A1A1A] hover:bg-white'
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition focus:outline-none md:hidden ${isSolid
+                    ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
+                    : 'bg-white/20 text-white hover:bg-white/30'
                   }`}
                 aria-label="Toggle menu"
               >
-                {menuOpen ? <X className="w-5 h-5 stroke-[1.75]" /> : <Menu className="w-5 h-5 stroke-[1.75]" />}
+                {menuOpen ? <X className="w-4 h-4 stroke-[2]" /> : <Menu className="w-4 h-4 stroke-[2]" />}
               </button>
             </div>
           </div>

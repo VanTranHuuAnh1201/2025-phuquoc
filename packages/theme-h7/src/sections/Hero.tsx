@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
+import { BookingCalendarModal } from '@repo/ui'
+import { useCartStore } from '../../../../apps/2026-thenamduhill/src/stores/cart.store'
 
 import { meta } from '../meta'
 import { ui } from '../strings'
@@ -98,6 +100,9 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
     const heroImages = hero.images?.length ? hero.images : HERO_IMAGES
     const [currentSlide, setCurrentSlide] = useState(0)
 
+    const cart = useCartStore()
+    const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+
     useEffect(() => {
         if (heroImages.length < 2) return
         const timer = setInterval(() => {
@@ -109,6 +114,22 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
     const adultsLabel = locale === 'vi' ? 'Người lớn' : 'Adults'
     const childrenLabel = locale === 'vi' ? 'Trẻ em' : 'Children'
     const ctaLabel = locale === 'vi' ? 'Chọn ngày & xem phòng' : 'Choose dates & view rooms'
+
+    const formatDisplayDate = (iso: string) => {
+        if (!iso) return ''
+        const [y, m, d] = iso.split('-')
+        return y && m && d ? `${d}/${m}/${y}` : iso
+    }
+
+    const totalGuests = cart.guests.adults + (cart.guests.children?.length || 0)
+    const guestsDisplay = locale === 'vi' ? `${totalGuests} khách` : `${totalGuests} guests`
+    const roomTypeDisplay = locale === 'vi' ? 'Tất cả 20 hạng phòng' : 'All 20 rooms'
+
+    const handleSave = (checkIn: string, checkOut: string, guestsStr: string) => {
+        cart.setDates(checkIn, checkOut)
+        const num = parseInt(guestsStr) || 2
+        cart.setGuests({ adults: num, children: [] })
+    }
 
     return (
         <section id="top" className="h7-hero">
@@ -153,56 +174,44 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
             {/* ---------- FORM TRA CỨU ---------- */}
             <div className="h7-searchwrap">
                 <form className="h7-search" onSubmit={(e) => e.preventDefault()}>
-                    <div className="h7-search-fields">
+                    <div className="h7-search-fields" onClick={() => setIsCalendarModalOpen(true)} style={{ cursor: 'pointer' }}>
                         <div style={FIELD} className="h7-field">
-                            <label htmlFor="h7-in" style={LABEL}>
+                            <div style={LABEL}>
                                 {t.checkIn}
-                            </label>
+                            </div>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <IconCalendar />
-                                <input id="h7-in" type="date" style={INPUT} defaultValue="2026-08-11" />
+                                <div style={INPUT}>{formatDisplayDate(cart.checkIn)}</div>
                             </span>
                         </div>
 
                         <div style={FIELD} className="h7-field">
-                            <label htmlFor="h7-out" style={LABEL}>
+                            <div style={LABEL}>
                                 {t.checkOut}
-                            </label>
+                            </div>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <IconCalendar />
-                                <input id="h7-out" type="date" style={INPUT} defaultValue="2026-08-13" />
+                                <div style={INPUT}>{formatDisplayDate(cart.checkOut)}</div>
                             </span>
                         </div>
 
                         <div style={FIELD} className="h7-field">
-                            <label htmlFor="h7-adults" style={LABEL}>
+                            <div style={LABEL}>
                                 {adultsLabel}
-                            </label>
+                            </div>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <IconUser />
-                                <select id="h7-adults" style={INPUT} defaultValue="2">
-                                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                                        <option key={n} value={n}>
-                                            {n}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div style={INPUT}>{cart.guests.adults}</div>
                             </span>
                         </div>
 
                         <div style={FIELD} className="h7-field h7-field-last">
-                            <label htmlFor="h7-children" style={LABEL}>
+                            <div style={LABEL}>
                                 {childrenLabel}
-                            </label>
+                            </div>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <IconUser />
-                                <select id="h7-children" style={INPUT} defaultValue="0">
-                                    {[0, 1, 2, 3, 4].map((n) => (
-                                        <option key={n} value={n}>
-                                            {n}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div style={INPUT}>{cart.guests.children?.length || 0}</div>
                             </span>
                         </div>
                     </div>
@@ -216,6 +225,17 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                     <Assurances locale={locale} />
                 </div>
             </div>
+
+            <BookingCalendarModal
+                isOpen={isCalendarModalOpen}
+                onClose={() => setIsCalendarModalOpen(false)}
+                checkIn={cart.checkIn}
+                checkOut={cart.checkOut}
+                guests={guestsDisplay}
+                roomType={roomTypeDisplay}
+                locale={locale}
+                onSave={handleSave}
+            />
 
             <style>{`
                 .h7-hero {

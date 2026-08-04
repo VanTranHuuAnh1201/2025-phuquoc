@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { featuredPlaces } from '../../data/property'
+import { SectionHeading } from '../common/SectionHeading'
 
 export function ExploreSection() {
   const { tx } = useLanguage()
@@ -14,20 +15,12 @@ export function ExploreSection() {
     <section id="explore" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
 
-        {/* Standardized Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-          <div>
-            <span className="text-xs font-extrabold text-[#FFB800] uppercase tracking-widest">
-              {tx(UI.n21Islands912Km)}
-            </span>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mt-0.5">
-              {tx(UI.exploreNamDuArchipelago)}
-            </h2>
-          </div>
-          <p className="text-xs sm:text-sm text-[#6B7280] max-w-lg font-normal">
-            {tx(UI.woodenBoatsLeaveThePierBelow)}
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow={tx(UI.n21Islands912Km)}
+          title={tx(UI.exploreNamDuArchipelago)}
+          description={tx(UI.woodenBoatsLeaveThePierBelow)}
+          className="mb-0"
+        />
 
         {/* 4 Island Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

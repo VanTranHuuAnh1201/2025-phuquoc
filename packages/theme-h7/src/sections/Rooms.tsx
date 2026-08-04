@@ -10,6 +10,7 @@ import { ImageSlot } from '@repo/ui'
 
 import { meta } from '../meta'
 import { ui } from '../strings'
+import { ScrollRail } from './ScrollRail'
 
 const SLUG = meta.slug
 
@@ -44,24 +45,45 @@ function IconArea() {
     )
 }
 
-export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) {
+export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
     const t = ui[locale]
     const sectionTitle = locale === 'vi' ? 'Hạng phòng nổi bật' : 'Featured rooms'
     const detailLabel = locale === 'vi' ? 'Xem chi tiết' : 'View details'
     const fromLabel = locale === 'vi' ? 'từ' : 'from'
 
+    const railLabels =
+        locale === 'vi'
+            ? {
+                  prev: 'Xem các hạng phòng trước đó',
+                  next: 'Xem các hạng phòng tiếp theo',
+                  group: 'Danh sách hạng phòng nổi bật',
+              }
+            : {
+                  prev: 'Previous room types',
+                  next: 'Next room types',
+                  group: 'Featured room types',
+              }
+
     return (
         <section id="rooms" className="h7-rooms">
             <div className="h7-rooms-inner">
-                <div className="h7-sec-head">
-                    <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href={themePath(SLUG, 'rooms')} className="h7-sec-link">
-                        {t.viewAll}
-                        <span aria-hidden="true">→</span>
-                    </a>
-                </div>
-
-                <div className="h7-rooms-rail">
+                <ScrollRail
+                    className="h7-rooms-rail"
+                    labels={railLabels}
+                    head={(nav) => (
+                        <div className="h7-sec-head">
+                            <h2 className="h7-sec-title">{sectionTitle}</h2>
+                            {/* Nút cuộn đứng TRƯỚC link: nó điều khiển tại chỗ,
+                                còn "Xem tất cả" là điều hướng rời trang nên
+                                nằm cuối, sát mép. */}
+                            {nav}
+                            <a href={themePath(slug, 'rooms')} className="h7-sec-link">
+                                {t.viewAll}
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    )}
+                >
                     {data.rooms.map((room) => (
                         <article key={room.id} className="h7-room">
                             <div className="h7-room-media">
@@ -99,7 +121,7 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                                 </div>
 
                                 <a
-                                    href={roomPath(SLUG, room.id)}
+                                    href={roomPath(slug, room.id)}
                                     className="h7-room-cta"
                                     aria-label={`${detailLabel} — ${pick(room.name, locale)}`}
                                 >
@@ -108,7 +130,7 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                             </div>
                         </article>
                     ))}
-                </div>
+                </ScrollRail>
             </div>
 
             <style>{`
@@ -121,19 +143,21 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
 
                 .h7-sec-head {
                     display: flex;
-                    align-items: baseline;
-                    justify-content: space-between;
+                    align-items: center;
                     gap: 16px;
                     padding: 0 var(--space-4);
                     margin-bottom: 16px;
                 }
+                /* Tiêu đề đẩy cụm nút + link về sát mép phải. Dùng margin-left
+                   auto thay cho space-between vì header có BA phần tử —
+                   space-between sẽ dàn đều và ném cụm nút ra giữa. */
                 .h7-sec-title {
                     font-size: 15px;
                     font-weight: 700;
                     letter-spacing: 0.07em;
                     text-transform: uppercase;
                     color: var(--text);
-                    margin: 0;
+                    margin: 0 auto 0 0;
                 }
                 .h7-sec-link {
                     display: inline-flex;
@@ -253,28 +277,22 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                 .h7-room-cta:active { transform: translateY(1px); }
                 .h7-room-cta:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
-                /* ---- DESKTOP: lưới 4 cột, hết cuộn ngang ---- */
+                /* ---- Máy tính bảng: thẻ hẹp lại, vẫn một hàng ---- */
+                @media (min-width: 640px) {
+                    .h7-rooms-rail { grid-auto-columns: 42vw; }
+                }
+
+                /* ---- DESKTOP: vẫn MỘT hàng, chỉ đổi bề rộng thẻ ---- */
                 @media (min-width: 960px) {
                     .h7-rooms { padding: 48px 0 16px; }
                     .h7-sec-head { padding: 0 var(--space-6); margin-bottom: 20px; }
                     .h7-sec-title { font-size: 16px; }
                     .h7-rooms-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(4, minmax(0, 1fr));
-                        grid-auto-columns: auto;
+                        /* Bốn thẻ vừa khít container; phòng thứ 5 trở đi thì
+                           cuộn tiếp — không bao giờ xuống hàng thứ hai. */
+                        grid-auto-columns: calc((var(--container) - var(--space-6) * 2 - 20px * 3) / 4);
                         gap: 20px;
-                        overflow-x: visible;
-                        padding: 4px var(--space-6) 8px;
-                    }
-                }
-
-                /* Máy tính bảng: 2 cột thay vì băng cuộn. */
-                @media (min-width: 640px) and (max-width: 959px) {
-                    .h7-rooms-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(2, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        overflow-x: visible;
+                        padding: 4px var(--space-6) 18px;
                     }
                 }
             `}</style>

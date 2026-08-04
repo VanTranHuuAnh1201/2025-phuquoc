@@ -4,12 +4,12 @@ import { UI } from '@repo/core'
 
 import React from 'react'
 import { useLanguage } from '../../context/LanguageContext'
-import { hostPerks } from '../../data/property'
+import { hostPerks, TESTIMONIALS } from '../../data/property'
 import { iconFor } from '../../data/icons'
-import { Star } from 'lucide-react'
+import { TestimonialColumns } from './TestimonialColumns'
 
 export function HostServiceSection() {
-  const { tx } = useLanguage()
+  const { tx, language } = useLanguage()
 
   return (
     <section id="experience" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
@@ -45,41 +45,12 @@ export function HostServiceSection() {
             </div>
           </div>
 
-          {/* Right Host Testimonials Stack */}
-          <div className="grid grid-cols-1 gap-3">
-            <blockquote className="bg-white rounded-[12px] p-4.5 border border-[#FFB800]/30 shadow-xs hover:shadow-md transition">
-              <div className="flex text-[#FFB800] gap-1 mb-2">
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-              </div>
-              <p className="text-xs sm:text-sm text-[#1A1A1A] font-medium italic leading-relaxed">
-                &ldquo;{tx(UI.theHostIsGenuinelyAttentiveShe)}&rdquo;
-              </p>
-              <footer className="text-[10px] font-bold text-[#0F2D52] mt-2.5 uppercase tracking-wider flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]"></span>
-                Ngọc Anh · TP.HCM
-              </footer>
-            </blockquote>
-
-            <blockquote className="bg-gradient-to-br from-[#0B192C] to-[#163B6C] text-white rounded-[12px] p-4.5 shadow-sm border border-white/10">
-              <div className="flex text-[#FFB800] gap-1 mb-2">
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
-              </div>
-              <p className="text-xs sm:text-sm text-white/95 font-medium italic leading-relaxed">
-                &ldquo;{tx(UI.weWokeForTheSunriseAnd)}&rdquo;
-              </p>
-              <footer className="text-[10px] font-bold text-[#FFB800] mt-2.5 uppercase tracking-wider flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]"></span>
-                Minh Trí · Cần Thơ
-              </footer>
-            </blockquote>
+          {/* Right — đánh giá của khách, ba cột cuộn lệch chiều */}
+          <div>
+            <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider mb-2.5">
+              {language === 'vi' ? 'Khách đã ở nói gì' : 'What past guests say'}
+            </p>
+            <TestimonialColumns items={TESTIMONIALS} />
           </div>
         </div>
       </div>

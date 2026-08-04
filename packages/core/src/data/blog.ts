@@ -222,7 +222,7 @@ export const blogPosts: BlogPost[] = [
     },
     {
         id: 'ba-ngay-o-dao',
-        category: t('LỊCH TRÌNH', 'ITINERARY'),
+        category: t('SỰ KIỆN', 'EVENT'),
         title: t('Ba ngày ở Nam Du mà không phải chạy đua', 'Three days on Nam Du without rushing'),
         lede: t('Đảo nhỏ, nhưng đường đi lại chậm. Đây là lịch trình chúng tôi thật sự khuyên khách, không phải lịch trình nhồi đủ mười điểm check-in.', 'The island is small but slow to move around. This is the itinerary we actually recommend, not the one that fits ten photo stops.'),
         author: t('Trần Minh Hải', 'Hai Tran'),
@@ -283,6 +283,162 @@ export const blogPosts: BlogPost[] = [
             {
                 kind: 'p',
                 text: t('Lên hải đăng vào sáng sớm khi trời còn mát, mất khoảng 40 phút đi bộ từ khu nghỉ. Từ trên đó nhìn thấy toàn bộ quần đảo trong một khung hình. Xuống núi kịp ăn trưa rồi ra bến cho chuyến 12h45.', 'Walk up to the lighthouse early while it is still cool, about 40 minutes from the resort. From the top the whole archipelago fits in one frame. Back down in time for lunch and the 12:45 boat.'),
+            },
+        ],
+    },
+    {
+        id: 'tau-lan-bien-ngu-dao',
+        category: t('TRẢI NGHIỆM', 'EXPERIENCES'),
+        title: t('Trải nghiệm đi tàu – lặn biển – ngủ đảo khi du lịch Nam Du', 'Boat rides, snorkelling and a night on the island in Nam Du'),
+        lede: t('Ba trải nghiệm làm nên một chuyến Nam Du trọn vẹn: chuyến tàu ra đảo, buổi lặn ngắm san hô và một đêm ngủ lại giữa biển.', 'Three things make a Nam Du trip complete: the crossing, a morning among the coral, and one night spent out on the island.'),
+        author: t('The Nam Du Hill Resort', 'The Nam Du Hill Resort'),
+        role: t('Đội ngũ khu nghỉ', 'Resort team'),
+        date: t('15 tháng 1, 2026', '15 January 2026'),
+        readMin: 6,
+        heroSlot: 'ndh-blog-tau-ra-nam-du-hero',
+        heroCaption: t('Chuyến tàu sáng rời bến Rạch Giá ra quần đảo Nam Du.', 'The morning boat leaving Rach Gia for the Nam Du archipelago.'),
+        tags: [
+            {
+                vi: 'Lặn biển',
+                en: 'Snorkelling',
+            },
+            {
+                vi: 'Tàu cao tốc',
+                en: 'Speedboat',
+            },
+            {
+                vi: 'Ngủ đảo',
+                en: 'Island stay',
+            },
+        ],
+        blocks: [
+            {
+                kind: 'h',
+                text: t('Chuyến tàu ra đảo', 'The crossing'),
+            },
+            {
+                kind: 'p',
+                text: t('Hành trình bắt đầu từ bến Rạch Giá, mất khoảng hai giờ mười lăm phút để tới Củ Tron. Đây là quãng thời gian đẹp nhất để nhìn quần đảo hiện dần lên phía chân trời — nên chọn chuyến sáng sớm khi biển còn êm.', 'The trip starts at Rach Gia pier and takes about two hours fifteen to reach Cu Tron. It is the best window to watch the archipelago rise on the horizon — take an early run, while the sea is still calm.'),
+            },
+            {
+                kind: 'h',
+                text: t('Lặn ngắm san hô', 'Among the coral'),
+            },
+            {
+                kind: 'p',
+                text: t('Đội ngũ khu nghỉ hỗ trợ sắp xếp ghe ra các hòn nhỏ, nơi nước trong và rạn san hô còn nguyên vẹn. Buổi sáng là thời điểm nước lặng và tầm nhìn dưới mặt nước rõ nhất trong ngày.', 'Our team arranges boats out to the smaller islets, where the water is clear and the reefs are still intact. Mornings bring the flattest water and the best visibility below the surface.'),
+            },
+            {
+                kind: 'h',
+                text: t('Một đêm ngủ lại đảo', 'A night on the island'),
+            },
+            {
+                kind: 'p',
+                text: t('Điều khiến Nam Du khác với một chuyến đi trong ngày là buổi tối. Khi tàu cuối cùng rời bến, đảo trở nên rất yên — chỉ còn tiếng sóng và bầu trời sao gần như không bị ánh đèn thành phố che khuất.', 'What separates Nam Du from a day trip is the evening. Once the last boat leaves, the island goes quiet — just the surf and a sky almost untouched by city light.'),
+            },
+        ],
+    },
+    {
+        id: 'trai-nghiem-nam-du-lan-dau',
+        category: t('TRẢI NGHIỆM', 'EXPERIENCES'),
+        title: t('Trải nghiệm không thể bỏ lỡ khi du lịch đảo Nam Du lần đầu', 'What not to miss on your first trip to Nam Du'),
+        lede: t('Lần đầu ra Nam Du thường chỉ có hai đến ba ngày. Đây là những gì chúng tôi khuyên khách nên ưu tiên, và những gì có thể để dành cho lần sau.', 'A first trip to Nam Du usually means two or three days. Here is what we suggest putting first, and what can wait for next time.'),
+        author: t('The Nam Du Hill Resort', 'The Nam Du Hill Resort'),
+        role: t('Đội ngũ khu nghỉ', 'Resort team'),
+        date: t('15 tháng 1, 2026', '15 January 2026'),
+        readMin: 5,
+        heroSlot: 'ndh-spot-haidang',
+        heroCaption: t('Đường lên hải đăng, điểm nhìn cao nhất quần đảo.', 'The lighthouse road, the highest viewpoint in the archipelago.'),
+        tags: [
+            {
+                vi: 'Lần đầu',
+                en: 'First visit',
+            },
+            {
+                vi: 'Hải đăng',
+                en: 'Lighthouse',
+            },
+            {
+                vi: 'Bãi Mến',
+                en: 'Bai Men',
+            },
+        ],
+        blocks: [
+            {
+                kind: 'h',
+                text: t('Lên hải đăng một lần', 'Climb to the lighthouse once'),
+            },
+            {
+                kind: 'p',
+                text: t('Ở độ cao 309 m, đây là điểm duy nhất nhìn thấy toàn bộ quần đảo trong một khung hình. Đi vào sáng sớm khi trời còn mát, mất khoảng 40 phút đi bộ từ khu nghỉ.', 'At 309 m this is the only place the whole archipelago fits in one frame. Go early while it is still cool — about 40 minutes on foot from the resort.'),
+            },
+            {
+                kind: 'h',
+                text: t('Đi vòng quanh đảo', 'Ride the coastal loop'),
+            },
+            {
+                kind: 'p',
+                text: t('Đường ven biển dài khoảng 11 km, chạy hết chưa tới một buổi. Nên đi ngược chiều kim đồng hồ để mặt trời không chiếu thẳng vào mắt lúc chiều muộn.', 'The coastal road runs about 11 km and takes less than half a day. Go anticlockwise so the late sun stays out of your eyes.'),
+            },
+            {
+                kind: 'h',
+                text: t('Để dành cho lần sau', 'Save it for next time'),
+            },
+            {
+                kind: 'p',
+                text: t('Đừng cố đi hết các hòn nhỏ trong một chuyến. Chọn một hòn và ở lại đó lâu hơn — Nam Du là nơi càng đi chậm càng đáng đi.', 'Do not try to reach every islet in one trip. Pick one and stay longer — Nam Du rewards the slower pace.'),
+            },
+        ],
+    },
+    {
+        id: 'nam-du-thien-duong-hoang-so',
+        category: t('TRẢI NGHIỆM', 'EXPERIENCES'),
+        title: t('Trải nghiệm du lịch đảo Nam Du: thiên đường biển hoang sơ đáng đi nhất miền Tây', 'Nam Du: the most worthwhile untouched island in the Mekong Delta'),
+        lede: t('Quần đảo 21 hòn nằm cách bờ 90 km, vẫn giữ được nhịp sống chậm và những bãi biển chưa bị lấp đầy bởi hàng quán.', 'Twenty-one islands lying 90 km offshore, still holding on to a slow rhythm and beaches not yet crowded out by concessions.'),
+        author: t('The Nam Du Hill Resort', 'The Nam Du Hill Resort'),
+        role: t('Đội ngũ khu nghỉ', 'Resort team'),
+        date: t('15 tháng 1, 2026', '15 January 2026'),
+        readMin: 7,
+        heroSlot: 'ndh-island-honmau',
+        heroCaption: t('Một trong các hòn vệ tinh của quần đảo Nam Du.', 'One of the satellite islets in the Nam Du archipelago.'),
+        tags: [
+            {
+                vi: 'Nam Du',
+                en: 'Nam Du',
+            },
+            {
+                vi: 'Biển hoang sơ',
+                en: 'Untouched coast',
+            },
+            {
+                vi: 'Miền Tây',
+                en: 'Mekong Delta',
+            },
+        ],
+        blocks: [
+            {
+                kind: 'h',
+                text: t('Vì sao Nam Du còn hoang sơ', 'Why Nam Du is still quiet'),
+            },
+            {
+                kind: 'p',
+                text: t('Khoảng cách chính là thứ giữ cho đảo yên tĩnh. Không có sân bay, không có cầu — mọi người đến đây đều phải đi tàu, và điều đó tự nó lọc bớt lượng khách.', 'Distance is what keeps the island quiet. There is no airport and no bridge — everyone arrives by boat, and that alone thins the crowd.'),
+            },
+            {
+                kind: 'h',
+                text: t('Mùa nào nên đi', 'When to come'),
+            },
+            {
+                kind: 'p',
+                text: t('Từ tháng 12 đến tháng 3 là khoảng đẹp nhất: biển lặng, trời trong và ít mưa. Mùa gió chướng biển động hơn, tàu có thể huỷ chuyến vài lần mỗi năm.', 'December to March is the best stretch: calm sea, clear sky, little rain. In the monsoon months the water is rougher and boats are cancelled a few times a year.'),
+            },
+            {
+                kind: 'h',
+                text: t('Đi rồi nên làm gì', 'What to do once there'),
+            },
+            {
+                kind: 'p',
+                text: t('Lặn ngắm san hô ở các hòn nhỏ, chạy vòng đường ven biển, lên hải đăng, và dành ít nhất một buổi chiều không có kế hoạch gì cả. Khu nghỉ hỗ trợ sắp xếp ghe, tour đảo và đón tàu tại bến Củ Tron.', 'Snorkel around the islets, ride the coastal loop, climb to the lighthouse — and leave at least one afternoon with nothing planned. We help arrange boats, island tours and pier pickup at Cu Tron.'),
             },
         ],
     },

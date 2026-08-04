@@ -3,10 +3,9 @@
 import { UI } from '@repo/core'
 
 import React from 'react'
-import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { property } from '../../data/property'
-import { Button } from '../common/Button'
+import { SectionHeading } from '../common/SectionHeading'
 import { Star } from 'lucide-react'
 
 export function DiningSection() {
@@ -18,22 +17,12 @@ export function DiningSection() {
     <section className="py-5 sm:py-7 bg-[#FAFAF8] border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Standardized Section Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {tx(UI.whatOurGuestsSay)}
-            </h2>
-            <p className="text-xs sm:text-sm font-normal text-[#6B7280] mt-0.5">
-              {tx(UI.youArePickedUpAtThe)}
-            </p>
-          </div>
-          <Link href="/contact">
-            <Button variant="secondary" size="sm" radius="6px">
-              {tx(UI.viewAll)}
-            </Button>
-          </Link>
-        </div>
+        <SectionHeading
+          title={tx(UI.whatOurGuestsSay)}
+          description={tx(UI.youArePickedUpAtThe)}
+          href="/contact"
+          actionLabel={tx(UI.viewAll)}
+        />
 
         {/* Content Layout: Score Card + Review Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">

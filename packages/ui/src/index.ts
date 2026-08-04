@@ -49,6 +49,9 @@ export type {
 export { Modal } from './Modal'
 export type { ModalProps } from './Modal'
 
+export { BookingCalendarModal } from './BookingCalendarModal'
+export type { BookingCalendarModalProps } from './BookingCalendarModal'
+
 export { StatCard } from './StatCard'
 export type { StatCardProps } from './StatCard'
 
@@ -79,6 +82,15 @@ export type { ContactPageProps } from './pages/ContactPage'
 
 export { CheckoutPage } from './pages/CheckoutPage'
 export type { CheckoutPageProps } from './pages/CheckoutPage'
+
+export { DiningPage } from './pages/DiningPage'
+export type { DiningPageProps } from './pages/DiningPage'
+
+export { BlogPage } from './pages/BlogPage'
+export type { BlogPageProps } from './pages/BlogPage'
+
+export { BlogDetailPage } from './pages/BlogDetailPage'
+export type { BlogDetailPageProps } from './pages/BlogDetailPage'
 
 export {
     PageBody,

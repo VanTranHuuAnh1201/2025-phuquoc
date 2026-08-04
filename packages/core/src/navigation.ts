@@ -26,33 +26,41 @@ import { SECTION_IDS, type SectionId } from './types'
 const SECTION_ROUTES: Partial<Record<SectionId, string>> = {
     rooms: 'rooms',
     tours: 'tours',
+    dining: 'dining',
     gallery: 'gallery',
     contact: 'contact',
 }
 
 /** Trang con không gắn với section nào trong bộ id chuẩn của luật R7. */
-export type ThemeSubPage = 'rooms' | 'tours' | 'gallery' | 'contact' | 'checkout'
+export type ThemeSubPage =
+    | 'rooms'
+    | 'tours'
+    | 'dining'
+    | 'blog'
+    | 'gallery'
+    | 'contact'
+    | 'checkout'
 
 /** Gốc của một mẫu: `/h1`. */
 export function themeRoot(slug: string): string {
-    return `/${slug}`
+    return slug ? `/${slug}` : '/'
 }
 
 /**
  * Đường dẫn tới một trang con: `themePath('h3', 'rooms')` → `/h3/rooms`.
  */
 export function themePath(slug: string, page: ThemeSubPage): string {
-    return `/${slug}/${page}`
+    return slug ? `/${slug}/${page}` : `/${page}`
 }
 
 /** Chi tiết một hạng phòng: `/h3/rooms/bungalow-bien`. */
 export function roomPath(slug: string, roomId: string): string {
-    return `/${slug}/rooms/${roomId}`
+    return slug ? `/${slug}/rooms/${roomId}` : `/rooms/${roomId}`
 }
 
 /** Chi tiết một combo: `/h3/tours/nam-du-3n2d`. */
 export function tourPath(slug: string, tourId: string): string {
-    return `/${slug}/tours/${tourId}`
+    return slug ? `/${slug}/tours/${tourId}` : `/tours/${tourId}`
 }
 
 /**
@@ -78,10 +86,10 @@ export function themeHref(slug: string, href: string, fromHome = false): string 
     if (id === 'top' || id === '') return themeRoot(slug)
 
     const route = SECTION_ROUTES[id as SectionId]
-    if (route) return `/${slug}/${route}`
+    if (route) return slug ? `/${slug}/${route}` : `/${route}`
 
     // Chưa có trang riêng: cuộn trong trang chủ.
-    return fromHome ? href : `${themeRoot(slug)}${href}`
+    return fromHome ? href : (slug ? `${themeRoot(slug)}${href}` : `${href}`)
 }
 
 /** Section này đã có trang riêng chưa. */

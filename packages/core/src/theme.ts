@@ -45,6 +45,9 @@ export interface ThemeDefinition<
     TTourDetailComponent = unknown,
     TGalleryComponent = unknown,
     TContactComponent = unknown,
+    TDiningComponent = unknown,
+    TBlogComponent = unknown,
+    TBlogDetailComponent = unknown,
 > {
     meta: ThemeMeta
     /**
@@ -79,12 +82,19 @@ export interface ThemeDefinition<
     Gallery?: TGalleryComponent
     /** Trang liên hệ. */
     Contact?: TContactComponent
+    /** Trang ẩm thực — điểm ăn uống + thực đơn. */
+    Dining?: TDiningComponent
+    /** Cẩm nang / blog. */
+    Blog?: TBlogComponent
+    /** Chi tiết một bài cẩm nang. */
+    BlogDetail?: TBlogDetailComponent
 }
 
 /** Props mọi theme nhận được. Dữ liệu đến từ core, theme chỉ hiển thị. */
 export interface ThemePageProps<TData = unknown> {
     data: TData
     locale: string
+    extra?: unknown
 }
 
 /**
@@ -95,6 +105,9 @@ export interface ThemePageProps<TData = unknown> {
  * từng slot — thêm slot thứ chín sau này không phải sửa chữ ký hàm.
  */
 export type AnyTheme = ThemeDefinition<
+    unknown,
+    unknown,
+    unknown,
     unknown,
     unknown,
     unknown,

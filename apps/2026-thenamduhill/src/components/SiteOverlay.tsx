@@ -20,48 +20,5 @@ import { useLocale } from './LocaleProvider'
 import { S, tr } from '@/strings'
 
 export function SiteOverlay() {
-    const { locale } = useLocale()
-
-    return (
-        <div
-            style={{
-                position: 'fixed',
-                top: 'var(--space-3)',
-                right: 'var(--space-4)',
-                zIndex: 70,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-2)',
-                padding: 'var(--space-2) var(--space-3)',
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-pill)',
-                boxShadow: 'var(--shadow)',
-                color: 'var(--text)',
-                fontFamily: 'var(--font-body)',
-            }}
-        >
-            {/*
-              Lối vào luồng đặt phòng. Các theme có nút `#booking` riêng nhưng
-              đó là dải CTA gọi điện; nút này mới dẫn vào luồng 4 bước.
-            */}
-            <Link
-                href="/booking"
-                style={{
-                    padding: 'var(--space-2) var(--space-4)',
-                    background: 'var(--accent)',
-                    color: 'var(--text-inverse)',
-                    borderRadius: 'var(--radius-pill)',
-                    fontSize: 'var(--text-xs)',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                }}
-            >
-                {tr(S.bookNow, locale)}
-            </Link>
-
-            <AccountBar />
-        </div>
-    )
+    return null
 }

@@ -60,7 +60,19 @@ body {
   background-color: #FAFAF8;
   color: #4B5563;
   font-size: 15px;
-  overflow-x: hidden;
+  /*
+   * `clip` chứ KHÔNG phải `hidden`.
+   *
+   * Spec CSS: khi một trục là `hidden` còn trục kia `visible`, trình duyệt
+   * âm thầm đổi trục `visible` thành `auto`. Nên `overflow-x: hidden` biến
+   * `overflow-y` của body thành `auto` — body thành scroll container, và mọi
+   * `position: sticky` bên trong dính vào BODY thay vì vào viewport. Cuộn
+   * trang là thanh dính trôi mất.
+   *
+   * `clip` chặn tràn ngang y hệt nhưng không tạo scroll container.
+   * Cùng lý do với `overflow-x-clip` ở `layout.tsx`.
+   */
+  overflow-x: clip;
 }
 
 /* Custom Serif Heading Utility */
@@ -79,4 +91,57 @@ body {
 
 .text-balance {
   text-wrap: balance;
+}
+
+/* ---------------------------------------------------------------------------
+   Cột đánh giá cuộn vô hạn — dùng ở `HostServiceSection`.
+
+   CÁCH HOẠT ĐỘNG: danh sách card được render HAI lần liên tiếp trong cùng một
+   track. Track chạy từ 0 tới -50% rồi lặp — đúng lúc bản sao thứ hai về đúng
+   vị trí bản đầu, nên mắt không thấy điểm nối.
+
+   VÌ SAO KHÔNG DÙNG THƯ VIỆN: đây là một phép tịnh tiến tuyến tính lặp vô hạn,
+   thứ CSS làm gọn hơn JS và chạy trên compositor nên không tốn main thread.
+
+   VÌ SAO `will-change` + `translate3d`: ép lên lớp riêng, tránh giật khi
+   cuộn trang trên máy yếu.
+--------------------------------------------------------------------------- */
+@keyframes testimonial-scroll-up {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes testimonial-scroll-down {
+  from {
+    transform: translate3d(0, -50%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.testimonial-track {
+  animation: testimonial-scroll-up var(--testimonial-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+.testimonial-track--reverse {
+  animation-name: testimonial-scroll-down;
+}
+
+/* Dừng khi người dùng rê chuột vào để đọc — cuộn mà không đọc kịp là vô dụng */
+.testimonial-viewport:hover .testimonial-track,
+.testimonial-viewport:focus-within .testimonial-track {
+  animation-play-state: paused;
+}
+
+/* WCAG 2.2 — 2.3.3 Animation from Interactions */
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-track {
+    animation: none;
+  }
 }

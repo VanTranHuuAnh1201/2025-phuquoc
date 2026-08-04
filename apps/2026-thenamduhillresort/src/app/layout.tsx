@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import '@repo/ui/tokens.css'
+import '@repo/theme-h7/tokens.css'
 import { LanguageProvider } from '../context/LanguageContext'
 import { Header } from '../components/common/Header'
 import { Footer } from '../components/common/Footer'
@@ -29,7 +31,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-[#FAFAFA] text-[#344054] font-sans antialiased">
         <LanguageProvider>
           <Header />
-          <div className="w-full overflow-x-hidden">{children}</div>
+          {/*
+            * `overflow-x-clip` chứ KHÔNG phải `overflow-x-hidden`.
+            *
+            * `overflow-x: hidden` khiến trình duyệt tính `overflow-y` thành
+            * `auto`, biến div này thành một scroll container. Mọi
+            * `position: sticky` bên trong sẽ dính vào DIV đó thay vì vào
+            * viewport — cuộn trang là thanh dính trôi mất. Đây đúng là lý do
+            * bộ lọc ở /gallery không dính được.
+            *
+            * `clip` chặn tràn ngang y hệt nhưng KHÔNG tạo scroll container,
+            * nên sticky ở mọi trang con vẫn hoạt động.
+            */}
+          <div className="w-full overflow-x-clip">{children}</div>
           <Footer />
           <MobileStickyCta />
         </LanguageProvider>

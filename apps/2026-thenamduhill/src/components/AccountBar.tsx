@@ -20,17 +20,18 @@ import { BellIcon, UserIcon } from './icons'
 import { NOTIFICATION_TITLE, S, tr } from '@/strings'
 
 const ICON_BUTTON: React.CSSProperties = {
-    width: 36,
-    height: 36,
+    width: 34,
+    height: 34,
     display: 'grid',
     placeItems: 'center',
     background: 'transparent',
-    border: '1px solid var(--border)',
+    border: 'none',
     borderRadius: 'var(--radius-pill)',
     color: 'inherit',
     cursor: 'pointer',
     position: 'relative',
     flexShrink: 0,
+    transition: 'opacity 180ms ease',
 }
 
 const PANEL: React.CSSProperties = {
@@ -92,32 +93,41 @@ export function AccountBar() {
             <div
                 role="group"
                 aria-label={locale === 'vi' ? 'Chọn ngôn ngữ' : 'Choose language'}
-                style={{ display: 'flex', gap: 2 }}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    marginRight: 2,
+                }}
             >
-                {LOCALES.map((code) => (
-                    <button
-                        key={code}
-                        type="button"
-                        onClick={() => setLocale(code)}
-                        aria-pressed={locale === code}
-                        style={{
-                            padding: 'var(--space-1) var(--space-2)',
-                            minWidth: 30,
-                            minHeight: 24,
-                            fontSize: 'var(--text-xs)',
-                            fontWeight: locale === code ? 700 : 500,
-                            fontFamily: 'var(--font-body)',
-                            color: 'inherit',
-                            background: 'transparent',
-                            border: 'none',
-                            borderRadius: 'var(--radius-sm)',
-                            cursor: 'pointer',
-                            opacity: locale === code ? 1 : 0.6,
-                            textTransform: 'uppercase',
-                        }}
-                    >
-                        {code}
-                    </button>
+                {LOCALES.map((code, index) => (
+                    <span key={code} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        {index > 0 && (
+                            <span style={{ opacity: 0.35, fontSize: 11, margin: '0 3px' }}>|</span>
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => setLocale(code)}
+                            aria-pressed={locale === code}
+                            style={{
+                                padding: '2px 3px',
+                                fontSize: '12px',
+                                fontWeight: locale === code ? 700 : 400,
+                                fontFamily: 'var(--font-body)',
+                                color: 'inherit',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                opacity: locale === code ? 1 : 0.55,
+                                textTransform: 'uppercase',
+                                transition: 'opacity 180ms ease',
+                            }}
+                        >
+                            {code}
+                        </button>
+                    </span>
                 ))}
             </div>
 
@@ -138,27 +148,9 @@ export function AccountBar() {
                         onClick={() => setOpenPanel((p) => (p === 'user' ? 'none' : 'user'))}
                         aria-expanded={openPanel === 'user'}
                         aria-label={user.fullName || tr(S.myOrders, locale)}
-                        style={{
-                            ...ICON_BUTTON,
-                            width: 'auto',
-                            padding: '0 var(--space-3)',
-                            gap: 'var(--space-2)',
-                            display: 'flex',
-                            fontSize: 'var(--text-sm)',
-                            fontFamily: 'var(--font-body)',
-                        }}
+                        style={ICON_BUTTON}
                     >
                         <UserIcon size={18} />
-                        <span
-                            style={{
-                                maxWidth: 90,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            {user.fullName || user.phone || user.email}
-                        </span>
                     </button>
 
                     {openPanel === 'user' && (

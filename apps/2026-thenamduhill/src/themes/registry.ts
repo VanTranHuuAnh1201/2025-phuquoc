@@ -1,4 +1,10 @@
-import type { Locale, PropertyData, ThemeDefinition } from '@repo/core'
+import type {
+    BlogPost,
+    Locale,
+    MenuCategory,
+    PropertyData,
+    ThemeDefinition,
+} from '@repo/core'
 import themeH1 from '@repo/theme-h1'
 import themeH2 from '@repo/theme-h2'
 import themeH3 from '@repo/theme-h3'
@@ -17,17 +23,27 @@ import themeH7 from '@repo/theme-h7'
  * kiến trúc đang rò rỉ, phải trừu tượng hoá lại (luật R5).
  */
 
-export type HomeComponent = (props: { data: PropertyData; locale: Locale }) => React.ReactNode
-export type RoomsComponent = (props: { data: PropertyData; locale: Locale }) => React.ReactNode
+export type HomeComponent = (props: {
+    data: PropertyData
+    locale: Locale
+    extra?: React.ReactNode
+}) => React.ReactNode
+export type RoomsComponent = (props: {
+    data: PropertyData
+    locale: Locale
+    extra?: React.ReactNode
+}) => React.ReactNode
 export type RoomDetailComponent = (props: {
     data: PropertyData
     locale: Locale
     roomSlug?: string
+    extra?: React.ReactNode
 }) => React.ReactNode
 export type CheckoutComponent = (props: {
     data: PropertyData
     locale: Locale
     searchParams?: Record<string, string | string[] | undefined>
+    extra?: React.ReactNode
 }) => React.ReactNode
 
 /** Trang chi tiết combo — nhận slug từ URL, giống `RoomDetailComponent`. */
@@ -35,12 +51,42 @@ export type TourDetailComponent = (props: {
     data: PropertyData
     locale: Locale
     tourSlug?: string
+    extra?: React.ReactNode
 }) => React.ReactNode
 
 /** Các trang tĩnh còn lại chỉ cần dữ liệu và ngôn ngữ. */
 export type SimplePageComponent = (props: {
     data: PropertyData
     locale: Locale
+    extra?: React.ReactNode
+}) => React.ReactNode
+
+/**
+ * Ẩm thực và Cẩm nang đọc thêm nguồn ngoài `PropertyData` — thực đơn và danh
+ * sách bài viết. Route lấy chúng qua `getDiningMenu()` / `getBlogPosts()` rồi
+ * truyền xuống, nên theme vẫn không tự fetch (luật R4/R8).
+ */
+export type DiningPageComponent = (props: {
+    data: PropertyData
+    locale: Locale
+    menu?: Record<string, MenuCategory>
+    extra?: React.ReactNode
+}) => React.ReactNode
+
+export type BlogPageComponent = (props: {
+    data: PropertyData
+    locale: Locale
+    posts?: BlogPost[]
+    extra?: React.ReactNode
+}) => React.ReactNode
+
+/** Chi tiết một bài — nhận bài đang xem và vài bài gợi ý đọc tiếp. */
+export type BlogDetailComponent = (props: {
+    data: PropertyData
+    locale: Locale
+    post?: BlogPost
+    related?: BlogPost[]
+    extra?: React.ReactNode
 }) => React.ReactNode
 
 export type AnyThemeDefinition = ThemeDefinition<
@@ -51,7 +97,10 @@ export type AnyThemeDefinition = ThemeDefinition<
     SimplePageComponent,
     TourDetailComponent,
     SimplePageComponent,
-    SimplePageComponent
+    SimplePageComponent,
+    DiningPageComponent,
+    BlogPageComponent,
+    BlogDetailComponent
 >
 
 export const themes: readonly AnyThemeDefinition[] = [

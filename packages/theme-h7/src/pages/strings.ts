@@ -142,7 +142,7 @@ export interface PageStrings {
 export const pageUi: Record<Locale, PageStrings> = {
     vi: {
         home: 'Trang chủ',
-        roomsPage: 'Hạng phòng',
+        roomsPage: 'Phòng',
         toursPage: 'Combo & Tour',
         galleryPage: 'Thư viện ảnh',
         contactPage: 'Liên hệ',
@@ -152,9 +152,9 @@ export const pageUi: Record<Locale, PageStrings> = {
         fromPrice: 'Giá từ',
         guestsWord: 'khách',
 
-        roomsTitle: 'Hạng phòng & Suite',
+        roomsTitle: 'Phòng & Suite',
         roomsSub:
-            'Bảy hạng phòng trên sườn đồi, tất cả đều hướng biển hoặc thung lũng. Chọn phòng và thêm tiện ích ngay trên trang.',
+            'Các phòng trên sườn đồi, tất cả đều hướng biển hoặc thung lũng. Chọn phòng và thêm tiện ích ngay trên trang.',
         checkIn: 'Ngày nhận phòng',
         checkOut: 'Ngày trả phòng',
         guests: 'Số khách',
@@ -163,7 +163,7 @@ export const pageUi: Record<Locale, PageStrings> = {
         sortRec: 'Gợi ý',
         sortAsc: 'Giá thấp → cao',
         sortDesc: 'Giá cao → thấp',
-        countLabel: 'hạng phòng',
+        countLabel: 'phòng',
         viewDetail: 'Chi tiết',
         select: 'Chọn phòng',
         selected: 'Đã chọn ✓',
@@ -181,15 +181,15 @@ export const pageUi: Record<Locale, PageStrings> = {
         viewDefault: 'Hướng biển / thung lũng',
         perksDefault: ['Wifi miễn phí', 'Điều hòa', 'Hồ bơi & bida', 'Đồ vệ sinh miễn phí'],
 
-        descTitle: 'Về hạng phòng này',
+        descTitle: 'Về phòng này',
         amenitiesTitle: 'Tiện nghi trong phòng',
         viewTitle: 'Tầm nhìn',
         conditionsTitle: 'Điều kiện đặt phòng',
-        otherRooms: 'Hạng phòng khác',
+        otherRooms: 'Phòng khác',
         roomPrice: 'Tiền phòng',
         extraBedLabel: 'Giường phụ',
         extraBedNote: 'Vượt số khách tiêu chuẩn — đã tính giường phụ.',
-        backToRooms: 'Xem hạng phòng khác',
+        backToRooms: 'Xem các phòng khác',
         specArea: 'Diện tích',
         specGuests: 'Sức chứa',
         specBed: 'Giường',

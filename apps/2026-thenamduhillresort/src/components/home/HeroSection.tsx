@@ -123,7 +123,7 @@ export function HeroSection() {
         </p>
 
         {/* CTAs + rating strip — desktop only; mobile keeps just the search card */}
-        <div className="hidden sm:flex items-center gap-4 sm:gap-[26px] flex-wrap mb-6 sm:mb-[26px]">
+        {/* <div className="hidden sm:flex items-center gap-4 sm:gap-[26px] flex-wrap mb-6 sm:mb-[26px]">
           <button
             type="button"
             onClick={() => router.push('/rooms')}
@@ -160,7 +160,7 @@ export function HeroSection() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* 📱 MOBILE — single compact pill: summary + CTA side by side */}
         <div

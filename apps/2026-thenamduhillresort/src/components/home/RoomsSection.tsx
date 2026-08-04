@@ -6,6 +6,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../common/Button'
+import { SectionHeading } from '../common/SectionHeading'
 import { ROOMS, formatVND, roomSlug } from '../../data/rooms'
 import { Maximize2, Users } from 'lucide-react'
 
@@ -60,19 +61,17 @@ export function RoomsSection() {
     <section className="py-5 sm:py-8 bg-[#FAFAF8] border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Standardized Section Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <div>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {tx(UI.featuredRoomTypes)}
-            </h2>
-          </div>
-          <Link href="/rooms">
-            <Button variant="secondary" size="sm" radius="6px">
-              {tx(UI.viewAll)}
-            </Button>
-          </Link>
-        </div>
+        <SectionHeading
+          title={tx(UI.featuredRoomTypes)}
+          description={
+            isEn
+              ? 'Sea-view rooms, villas and family suites'
+              : 'Phòng hướng biển, biệt thự và phòng gia đình'
+          }
+          className="sm:mb-6"
+          href="/rooms"
+          actionLabel={tx(UI.viewAll)}
+        />
 
         {/* Room Cards Grid (1 col Mobile, 2 col Tablet, 4 col Desktop) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

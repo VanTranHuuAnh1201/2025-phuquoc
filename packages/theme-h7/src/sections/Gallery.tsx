@@ -21,7 +21,7 @@ const TILES = [
 
 export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }) {
     const sectionTitle = locale === 'vi' ? 'Ảnh thật tại resort' : 'Real photos at the resort'
-    const linkLabel = locale === 'vi' ? 'Xem tất cả ảnh' : 'View all photos'
+    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
     // Gom ảnh sẵn có từ các hạng phòng — nguồn duy nhất là `core` (luật R8).
     const images = data.rooms.flatMap((room) => room.images ?? [])

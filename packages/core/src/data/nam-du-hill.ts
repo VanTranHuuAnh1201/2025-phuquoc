@@ -27,13 +27,12 @@ export const namDuHill: PropertyData = {
     },
 
     nav: [
-        { href: '#top', label: t('Trang chủ', 'Home') },
-        { href: '#rooms', label: t('Hạng phòng', 'Rooms & Suites') },
-        { href: '#dining', label: t('Nhà hàng & Bar', 'Wining & Dining') },
-        { href: '#tours', label: t('Lịch trình tour', 'Itineraries') },
-        { href: '#places', label: t('Điểm đến', 'Destinations') },
-        { href: '#gallery', label: t('Thư viện ảnh', 'Gallery') },
-        { href: '#contact', label: t('Liên hệ', 'Contact') },
+        { href: '#rooms', label: t('Phòng', 'Rooms & Suites') },
+        { href: '#dining', label: t('Ẩm thực', 'Wining & Dining') },
+        { href: '#places', label: t('Khám phá', 'Experiences') },
+        { href: '#tours', label: t('Sự kiện', 'Events') },
+        { href: '#gallery', label: t('Thư viện', 'Gallery') },
+        { href: '#contact', label: t('Liên hệ', 'Contact Us') },
     ],
 
     hero: {
@@ -70,7 +69,7 @@ export const namDuHill: PropertyData = {
                 'Set on an ocean-facing hillside, The Nam Du Hill Resort is the ideal stop for anyone seeking calm and comfort. Every moment here is shaped by attentive, personal service.',
             ),
             t(
-                'Hệ thống phòng tiện nghi, không gian café & bar trên cao cùng đội ngũ nhân viên thân thiện sẽ mang lại cho bạn những ngày thư giãn trọn vẹn. Từ dịch vụ đưa đón, hỗ trợ tour khám phá đảo đến các tiện ích trải nghiệm địa phương — tất cả đều được thiết kế để tối đa sự thoải mái cho du khách.',
+                'Hệ thống phòng tiện nghi, không gian café & bar trên cao cùng đội ngũ nhân viên thân thiện sẽ mang lại cho bạn những ngày thư giãn trọn vẹn. Từ dịch vụ đưa đón, hỗ trợ tour khám phá đảo đến các tiện ích trải nghiệm địa phương tất cả đều được thiết kế để tối đa sự thoải mái cho du khách.',
                 'Well-appointed rooms, a rooftop café & bar and a warm team make for genuinely restful days. From pier transfers and island tours to local experiences, everything is designed around your comfort.',
             ),
         ],
@@ -187,6 +186,252 @@ export const namDuHill: PropertyData = {
     ],
 
     roomExtras: {
+        'room-suite-garden': {
+            maxGuests: 8,
+            defaultGuests: 6,
+            extraBed: 450000,
+            bed: t('03 giường đôi', 'Three double beds'),
+            view: t('Nhìn ra sân vườn rộng và xanh mát', 'Spacious green garden view'),
+            long: t(
+                'Suite 02 phòng ngủ với diện tích 48 m², thích hợp cho gia đình hoặc nhóm bạn 6–8 người. Không gian ấm cúng, thiết kế hiện đại hòa quyện với cảnh quan thiên nhiên bao quanh.',
+                'Two-bedroom Suite with 48 m² space, ideal for families or groups of 6–8. Warm atmosphere and modern design surrounded by lush greenery.',
+            ),
+            long2: t(
+                'Phòng được trang bị đầy đủ tiện nghi, góc bếp nhỏ tiện lợi và phòng tắm riêng biệt mang lại sự thoải mái tối đa.',
+                'Equipped with full amenities, a convenient kitchenette, and a private bathroom for maximum comfort.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('Bếp nhỏ', 'Kitchenette'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+                t('Áo choàng tắm', 'Bathrobe'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
+        'room-suite-sea': {
+            maxGuests: 8,
+            defaultGuests: 6,
+            extraBed: 450000,
+            bed: t('03 giường đôi lớn', 'Three large double beds'),
+            view: t('Nhìn thẳng ra biển Nam Du và hoàng hôn', 'Direct view of Nam Du sea and sunset'),
+            long: t(
+                'Suite 02 phòng ngủ hướng biển rộng 48 m² có ban công rộng ngắm trọn hoàng hôn Nam Du. Lựa chọn hàng đầu cho các chuyến du lịch gia đình hoặc nhóm bạn.',
+                'Sea-view 48 m² two-bedroom suite with a wide balcony for sunset views. Top choice for family vacations and group trips.',
+            ),
+            long2: t(
+                'Cửa kính lớn đón trọn ánh nắng tự nhiên và luồng gió biển trong lành, mang đến những khoảnh khắc nghỉ dưỡng tuyệt vời.',
+                'Large glass doors let in natural sunlight and fresh ocean breezes for a memorable holiday.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('Ban công hướng biển', 'Sea-view balcony'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+                t('Áo choàng tắm', 'Bathrobe'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
+        'room-suite-8': {
+            maxGuests: 10,
+            defaultGuests: 8,
+            extraBed: 450000,
+            bed: t('04 giường đơn & 02 giường đôi cực lớn', 'Four single & two extra-large double beds'),
+            view: t('Toàn cảnh biển ngọc và quần đảo', 'Panoramic ocean view of archipelago'),
+            long: t(
+                'Căn Suite lớn nhất resort với diện tích 56 m², 02 phòng ngủ độc lập và 02 nhà vệ sinh riêng. Sức chứa tiêu chuẩn 8 người, tối đa 10 người.',
+                'The resort’s largest suite with 56 m², 2 separate bedrooms and 2 private bathrooms. Standard capacity for 8 guests, up to 10.',
+            ),
+            long2: t(
+                'Không gian sinh hoạt chung rộng rãi, lý tưởng cho đoàn du lịch lớn cần sự thoải mái và tiện nghi đồng bộ.',
+                'Spacious communal living area, ideal for large travel groups desiring convenience and comfort.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('02 Nhà vệ sinh riêng', '2 Private bathrooms'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+                t('Áo choàng tắm', 'Bathrobe'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
+        'room-triple-balcony': {
+            maxGuests: 4,
+            defaultGuests: 3,
+            extraBed: 450000,
+            bed: t('01 giường đôi lớn & 01 giường đơn', 'One king bed & one single bed'),
+            view: t('Hướng thung lũng xanh và một góc biển', 'Facing green valley and sea view'),
+            long: t(
+                'Phòng 32 m² sở hữu ban công riêng rộng rãi lộng gió. Phù hợp cho nhóm 3 bạn trẻ hoặc gia đình nhỏ có trẻ em.',
+                '32 m² room featuring a broad, breezy private balcony. Perfect for groups of 3 friends or small families.',
+            ),
+            long2: t(
+                'Tận hưởng không khí trong lành buổi sáng từ ban công với tầm nhìn bao quát thung lũng đồi núi Nam Du.',
+                'Enjoy crisp morning air from the balcony with panoramic views over Nam Du’s lush hills.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('Ban công rộng', 'Spacious balcony'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
+        'room-triple-valley': {
+            maxGuests: 4,
+            defaultGuests: 3,
+            extraBed: 450000,
+            bed: t('01 giường đôi & 01 giường đơn', 'One double bed & one single bed'),
+            view: t('Hướng nhìn thung lũng thiên nhiên yên tĩnh', 'Quiet natural valley view'),
+            long: t(
+                'Phòng 26 m² ấm cúng hướng về phía thung lũng tĩnh mịch, đem lại không gian nghỉ ngơi thư thái tuyệt đối sau những giờ vui chơi trên biển.',
+                'Cozy 26 m² room facing a quiet valley, offering peaceful rest after a long day at sea.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('Két sắt an toàn', 'In-room safe'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
+        'room-family-sea': {
+            maxGuests: 5,
+            defaultGuests: 4,
+            extraBed: 450000,
+            bed: t('01 giường đôi trung & 01 giường đôi lớn', 'One medium & one large double bed'),
+            view: t('Tầng 1 nhìn thẳng ra vịnh biển Củ Tron', 'Ground floor direct view of Cu Tron bay'),
+            long: t(
+                'Phòng 51 m² tại tầng 1 với lối đi thuận tiện, diện tích cực rộng rãi dành cho gia đình 4 người. Tầm nhìn mở ra khoảng biển biếc tuyệt đẹp.',
+                'Spacious 51 m² ground floor room with easy access, designed for families of 4. Open views facing the sparkling bay.',
+            ),
+            long2: t(
+                'Bố trí nội thất tối giản tinh tế, giường nệm cao cấp giúp cả gia đình có giấc ngủ trọn vẹn.',
+                'Minimalist elegant interior with premium mattresses for a restful night.',
+            ),
+            amenities: [
+                t('Phòng không hút thuốc', 'Non-smoking room'),
+                t('Đồ vệ sinh cá nhân miễn phí', 'Free toiletries'),
+                t('Sử dụng hồ bơi và bida', 'Pool and billiards access'),
+                t('Máy điều hòa', 'Air conditioning'),
+                t('Két sắt an toàn', 'In-room safe'),
+                t('Mini bar (có tính phí)', 'Mini bar (chargeable)'),
+                t('Dép mang trong nhà', 'Indoor slippers'),
+                t('Ấm đun nước', 'Electric kettle'),
+                t('Máy sấy tóc', 'Hair dryer'),
+                t('Áo choàng tắm', 'Bathrobe'),
+            ],
+            conditions: [
+                t('Không hút thuốc trong phòng', 'No smoking in the room'),
+                t(
+                    'Nhận phòng từ 14:00 · trả phòng trước 12:00',
+                    'Check in from 14:00 · check out before 12:00',
+                ),
+                t(
+                    'Trẻ dưới 6 tuổi ngủ chung miễn phí',
+                    'Children under 6 stay free when sharing',
+                ),
+                t(
+                    'Huỷ miễn phí trước 72 giờ',
+                    'Free cancellation up to 72 hours before',
+                ),
+            ],
+        },
         'room-family-seaview': {
             maxGuests: 4,
             defaultGuests: 2,
@@ -279,6 +524,7 @@ export const namDuHill: PropertyData = {
                 'Vietnamese drip coffee, island teas and mocktails on the rooftop.',
             ),
             note: t('06:30 – 22:00', '06:30 – 22:00'),
+            image: '/uploads/nha-hang-view-bien.jpg',
         },
         {
             id: 'dining-bbq',
@@ -288,6 +534,7 @@ export const namDuHill: PropertyData = {
                 'Foil-grilled needlefish, sea urchin with scallion oil, beer-steamed crab.',
             ),
             note: t('Từ 320.000đ / khách', 'From 320,000₫ per guest'),
+            image: '/uploads/hoang-hon.jpg',
         },
         {
             id: 'dining-hotpot',
@@ -297,6 +544,7 @@ export const namDuHill: PropertyData = {
                 'Cobia raised in Hon Ngang floating pens, cooked with island greens.',
             ),
             note: t('Phục vụ theo nhóm 4–8 khách', 'Serves 4–8 guests'),
+            image: '/uploads/hero-1.jpg',
         },
         {
             id: 'dining-bar',
@@ -306,6 +554,7 @@ export const namDuHill: PropertyData = {
                 'Island cocktails, cold beer and a private karaoke room.',
             ),
             note: t('17:00 – 24:00', '17:00 – 24:00'),
+            image: '/uploads/hero-4.png',
         },
     ],
 
@@ -443,6 +692,7 @@ export const namDuHill: PropertyData = {
                 'Vịnh kín gió, cát trắng mịn, hàng dừa cổ thụ 70–80 năm tuổi nghiêng bóng ra biển.',
                 'A wind-sheltered bay with fine white sand and 70–80-year-old coconut palms.',
             ),
+            image: '/uploads/du-lich-bai-cay-men-nam-du.jpg',
         },
         {
             id: 'place-bai-ngu',
@@ -452,6 +702,7 @@ export const namDuHill: PropertyData = {
                 'Nơi vua Gia Long từng dừng chân; giếng nước ngọt sát biển không bao giờ cạn.',
                 'Where King Gia Long once sheltered; a freshwater well by the sea that never runs dry.',
             ),
+            image: '/uploads/hero-2.jpg',
         },
         {
             id: 'place-hai-dang',
@@ -461,6 +712,7 @@ export const namDuHill: PropertyData = {
                 'Trên đỉnh đồi hơn 300m — một trong những hải đăng cao nhất Việt Nam, thu trọn 21 hòn đảo.',
                 "On a 300m+ hilltop, one of Vietnam's highest lighthouses, overlooking all 21 islands.",
             ),
+            image: '/uploads/hai-dang-Ke-Ga-2.jpg',
         },
         {
             id: 'place-hon-mau',
@@ -470,6 +722,7 @@ export const namDuHill: PropertyData = {
                 'Năm bãi biển khác biệt: Bãi Chướng, Bãi Nam cát trắng; Bãi Bắc và Bãi Đá Đen đá cuội bóng.',
                 'Five distinct beaches: white sand at Bai Chuong and Bai Nam, black pebbles at Bai Da Den.',
             ),
+            image: '/uploads/du-lich-hon-mau.jpg',
         },
         {
             id: 'place-hai-bo-dap',
@@ -479,6 +732,7 @@ export const namDuHill: PropertyData = {
                 '"Maldives thu nhỏ" của Nam Du — hai đảo nối nhau bằng dải đá tự nhiên, nước nông và trong.',
                 "Nam Du's \"mini Maldives\" — two islets joined by a natural stone spit, shallow and clear.",
             ),
+            image: '/uploads/honhaibodap.jpg',
         },
         {
             id: 'place-hon-dau',
@@ -488,6 +742,7 @@ export const namDuHill: PropertyData = {
                 'Hơn 90% diện tích là rừng nguyên sinh; rặng dừa ngả ra biển và xích đu gỗ trên nước.',
                 'Over 90% primary forest; palms leaning over the water and a wooden swing in the sea.',
             ),
+            image: '/uploads/lan-ngan-san-ho.jpg',
         },
         {
             id: 'place-hon-ngang',
@@ -497,6 +752,7 @@ export const namDuHill: PropertyData = {
                 'Vùng biển êm nhất quần đảo, trung tâm nuôi hải sản lồng bè — ăn cá bớp ngay trên bè.',
                 'The calmest water in the archipelago and its aquaculture hub — eat cobia on the raft.',
             ),
+            image: '/uploads/ho-boi.jpg',
         },
         {
             id: 'place-bai-chet',
@@ -506,6 +762,7 @@ export const namDuHill: PropertyData = {
                 'Bến tàu chính, chợ hải sản tươi sống và trung tâm dịch vụ sầm uất nhất trên đảo.',
                 "The main pier, the fresh seafood market and the island's busiest service hub.",
             ),
+            image: '/uploads/nha-hang-view-bien.jpg',
         },
     ],
 

@@ -125,6 +125,7 @@ export interface Dining {
     name: I18nText
     desc: I18nText
     note: I18nText
+    image?: string
 }
 
 export interface TourDay {

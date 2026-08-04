@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { pick, type Locale, type PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
 
@@ -70,6 +73,7 @@ function IconPlay() {
 
 export function About({ data, locale }: { data: PropertyData; locale: Locale }) {
     const { facts, about } = data
+    const [showVideo, setShowVideo] = useState(false)
 
     const videoLabel = locale === 'vi' ? 'Xem video giới thiệu' : 'Watch video'
     const moreLabel = locale === 'vi' ? 'Khám phá thêm về resort' : 'Learn more'
@@ -98,17 +102,52 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
             <section id="about" className="h7-about">
                 <div className="h7-about-grid">
                     <div className="h7-about-media">
-                        <ImageSlot
-                            placeholder={locale === 'vi' ? 'Toàn cảnh resort' : 'Resort overview'}
-                            height="100%"
-                            style={{ borderRadius: 'var(--radius)' }}
-                        />
-                        <button type="button" className="h7-video-btn" aria-label={videoLabel}>
-                            <span className="h7-video-dot">
-                                <IconPlay />
-                            </span>
-                            {videoLabel}
-                        </button>
+                        {showVideo ? (
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    borderRadius: 'var(--radius)',
+                                    overflow: 'hidden',
+                                    background: '#000000',
+                                }}
+                            >
+                                <video
+                                    controls
+                                    autoPlay
+                                    playsInline
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                    }}
+                                >
+                                    <source src="/video/8102936365457.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+                        ) : (
+                            <>
+                                <ImageSlot
+                                    placeholder={locale === 'vi' ? 'Toàn cảnh resort' : 'Resort overview'}
+                                    src="/uploads/hero-1.jpg"
+                                    height="100%"
+                                    style={{ borderRadius: 'var(--radius)' }}
+                                />
+                                <button
+                                    type="button"
+                                    className="h7-video-btn"
+                                    aria-label={videoLabel}
+                                    onClick={() => setShowVideo(true)}
+                                >
+                                    <span className="h7-video-dot">
+                                        <IconPlay />
+                                    </span>
+                                    {videoLabel}
+                                </button>
+                            </>
+                        )}
                     </div>
 
                     <div>

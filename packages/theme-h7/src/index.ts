@@ -5,8 +5,11 @@ import { meta } from './meta'
 import { RoomsPage } from './pages/RoomsPage'
 import { RoomDetailPage } from './pages/RoomDetailPage'
 import {
+    BlogDetailPage,
+    BlogPage,
     CheckoutPage,
     ContactPage,
+    DiningPage,
     GalleryPage,
     TourDetailPage,
     ToursPage,
@@ -30,7 +33,10 @@ const themeH7: ThemeDefinition<
     typeof ToursPage,
     typeof TourDetailPage,
     typeof GalleryPage,
-    typeof ContactPage
+    typeof ContactPage,
+    typeof DiningPage,
+    typeof BlogPage,
+    typeof BlogDetailPage
 > = {
     meta,
     sections,
@@ -42,6 +48,9 @@ const themeH7: ThemeDefinition<
     TourDetail: TourDetailPage,
     Gallery: GalleryPage,
     Contact: ContactPage,
+    Dining: DiningPage,
+    Blog: BlogPage,
+    BlogDetail: BlogDetailPage,
 }
 
 export default themeH7
@@ -54,4 +63,14 @@ export {
     TourDetailPage,
     GalleryPage,
     ContactPage,
+    DiningPage,
+    BlogPage,
+    BlogDetailPage,
 }
+
+export { About as H7About } from './sections/About'
+export { Rooms as H7Rooms } from './sections/Rooms'
+export { Dining as H7Dining } from './sections/Dining'
+export { Places as H7Places } from './sections/Places'
+export { Practical as H7Practical } from './sections/Practical'
+

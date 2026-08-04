@@ -57,6 +57,11 @@ const IMAGE_MAP: Record<string, string> = {
   'ndh-blog-an-gi-o-nam-du-hero': 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=1200&q=80',
   'ndh-blog-ba-ngay-o-dao-hero': '/uploads/pasted-1785691965790-0.png',
   'ndh-explore-hero': '/uploads/hai-dang-Ke-Ga-2.jpg',
+
+  // Tiện nghi & dịch vụ — khối giới thiệu ở trang /explore
+  'ndh-amenity-nature': 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1000&q=80',
+  'ndh-amenity-cafe': 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=800&q=80',
+  'ndh-amenity-quiet': 'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?auto=format&fit=crop&w=800&q=80',
 }
 
 interface ImageSlotProps {

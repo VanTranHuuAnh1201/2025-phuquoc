@@ -54,7 +54,7 @@ const DATA = {
         "Set on an ocean-facing hillside, The Nam Du Hill Resort is the ideal stop for anyone seeking calm and comfort. Every moment here is shaped by attentive, personal service."
       ),
       T(
-        "Hệ thống phòng tiện nghi, không gian café & bar trên cao cùng đội ngũ nhân viên thân thiện sẽ mang lại cho bạn những ngày thư giãn trọn vẹn. Từ dịch vụ đưa đón, hỗ trợ tour khám phá đảo đến các tiện ích trải nghiệm địa phương — tất cả đều được thiết kế để tối đa sự thoải mái cho du khách.",
+        "Hệ thống phòng tiện nghi, không gian café & bar trên cao cùng đội ngũ nhân viên thân thiện sẽ mang lại cho bạn những ngày thư giãn trọn vẹn. Từ dịch vụ đưa đón, hỗ trợ tour khám phá đảo đến các tiện ích trải nghiệm địa phương tất cả đều được thiết kế để tối đa sự thoải mái cho du khách.",
         "Well-appointed rooms, a rooftop café & bar and a warm team make for genuinely restful days. From pier transfers and island tours to local experiences, everything is designed around your comfort."
       )
     ],

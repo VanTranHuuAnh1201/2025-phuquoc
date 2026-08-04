@@ -14,10 +14,9 @@ const SLUG = meta.slug
  * qua trang `/h7/tours`, nên không mất đường dẫn nào.
  */
 
-export function Places({ data, locale }: { data: PropertyData; locale: Locale }) {
+export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
     const sectionTitle = locale === 'vi' ? 'Khám phá Nam Du' : 'Explore Nam Du'
-    const linkLabel =
-        locale === 'vi' ? 'Xem tất cả điểm đến & trải nghiệm' : 'View all destinations & experiences'
+    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
     const places = data.places.slice(0, 3)
     const tours = data.tours.slice(0, 2)
@@ -27,7 +26,7 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
             <div className="h7-places-inner">
                 <div className="h7-sec-head">
                     <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href={themePath(SLUG, 'tours')} className="h7-sec-link">
+                    <a href={themePath(slug, 'blog')} className="h7-sec-link">
                         {linkLabel}
                         <span aria-hidden="true">→</span>
                     </a>
@@ -55,7 +54,7 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
                     {/* Cột combo — thẻ ngang, ảnh trái, tên + giá phải. */}
                     <div className="h7-combos">
                         {tours.map((tour) => (
-                            <a key={tour.id} href={tourPath(SLUG, tour.id)} className="h7-combo">
+                            <a key={tour.id} href={tourPath(slug, tour.id)} className="h7-combo">
                                 <span className="h7-combo-media">
                                     <ImageSlot
                                         placeholder={pick(tour.name, locale)}

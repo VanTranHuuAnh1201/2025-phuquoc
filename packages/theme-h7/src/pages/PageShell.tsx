@@ -37,7 +37,15 @@ function navHref(href: string): string {
     return NAV_ROUTES[href] ?? `/h7${href}`
 }
 
-export function PageHeader({ data, locale }: { data: PropertyData; locale: Locale }) {
+export function PageHeader({
+    data,
+    locale,
+    extra,
+}: {
+    data: PropertyData
+    locale: Locale
+    extra?: React.ReactNode
+}) {
     const t = pageUi[locale]
     const { brand, nav } = data
     const scrolled = useScrolled()
@@ -99,26 +107,40 @@ export function PageHeader({ data, locale }: { data: PropertyData; locale: Local
                         href="/h7"
                         style={{
                             flexShrink: 0,
-                            display: 'grid',
-                            gap: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
                             textDecoration: 'none',
-                            whiteSpace: 'nowrap',
                         }}
                     >
-                        <span
-                            style={{
-                                fontFamily: 'var(--font-display)',
-                                fontSize: 14.5,
-                                fontWeight: 800,
-                                letterSpacing: '0.02em',
-                                color: 'var(--text)',
-                            }}
-                        >
-                            {brand.name.toUpperCase()}
-                        </span>
-                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                            {brand.suffix} · Nam Du Island
-                        </span>
+                        <img
+                            src={brand.logo || '/OP5.png'}
+                            alt={brand.name}
+                            style={{ height: 36, width: 36, borderRadius: '50%', objectFit: 'contain', background: '#fff', padding: 2 }}
+                        />
+                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                            <span
+                                style={{
+                                    fontSize: '14px',
+                                    fontWeight: 700,
+                                    fontFamily: 'var(--font-serif, Georgia, serif)',
+                                    color: 'var(--text)',
+                                    letterSpacing: '-0.01em',
+                                }}
+                            >
+                                {brand.name || 'The Nam Du Hill'}
+                            </span>
+                            <span
+                                style={{
+                                    fontSize: '10.5px',
+                                    fontWeight: 500,
+                                    color: 'var(--text-muted)',
+                                    marginTop: 2,
+                                }}
+                            >
+                                Nam Du, Kiên Giang
+                            </span>
+                        </div>
                     </a>
 
                     <nav
@@ -132,7 +154,9 @@ export function PageHeader({ data, locale }: { data: PropertyData; locale: Local
                             overflow: 'hidden',
                         }}
                     >
-                        {nav.map((item) => (
+                        {nav
+                            .filter((item) => item.href !== '#top' && item.href !== '/')
+                            .map((item) => (
                             <a
                                 key={item.href}
                                 href={navHref(item.href)}
@@ -152,23 +176,27 @@ export function PageHeader({ data, locale }: { data: PropertyData; locale: Local
                         ))}
                     </nav>
 
-                    <a
-                        href="/h7/rooms"
-                        style={{
-                            padding: '10px 20px',
-                            borderRadius: 'var(--radius-pill)',
-                            fontSize: 13.5,
-                            fontWeight: 600,
-                            whiteSpace: 'nowrap',
-                            flexShrink: 0,
-                            background: 'var(--accent)',
-                            color: 'var(--text-inverse)',
-                            boxShadow: 'var(--shadow-sm)',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        {t.bookNow}
-                    </a>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                        {extra && <div style={{ display: 'flex', alignItems: 'center' }}>{extra}</div>}
+
+                        <a
+                            href="/h7/rooms"
+                            style={{
+                                padding: '10px 20px',
+                                borderRadius: 'var(--radius-pill)',
+                                fontSize: 13.5,
+                                fontWeight: 600,
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                                background: 'var(--accent)',
+                                color: 'var(--text-inverse)',
+                                boxShadow: 'var(--shadow-sm)',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            {t.bookNow}
+                        </a>
+                    </div>
                 </div>
             </header>
         </div>

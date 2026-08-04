@@ -37,12 +37,13 @@ export const sections: readonly SectionId[] = [
 export interface HomeProps {
     data: PropertyData
     locale: Locale
+    extra?: React.ReactNode
 }
 
-export function Home({ data, locale }: HomeProps) {
+export function Home({ data, locale, extra }: HomeProps) {
     return (
         <div data-theme="h7" style={{ fontFamily: 'var(--font-body)', overflowX: 'hidden' }}>
-            <Header data={data} locale={locale} />
+            <Header data={data} locale={locale} extra={extra} />
             <main>
                 <Hero data={data} locale={locale} />
                 <About data={data} locale={locale} />

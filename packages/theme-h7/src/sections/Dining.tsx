@@ -1,5 +1,9 @@
-import { pick, type Locale, type PropertyData } from '@repo/core'
+import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
+
+import { meta } from '../meta'
+
+const SLUG = meta.slug
 
 /**
  * Ẩm thực — bốn điểm ăn uống trong resort.
@@ -10,16 +14,16 @@ import { ImageSlot } from '@repo/ui'
  *          thứ tự render, nhưng cùng một quy tắc thị giác).
  */
 
-export function Dining({ data, locale }: { data: PropertyData; locale: Locale }) {
+export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
     const sectionTitle = locale === 'vi' ? 'Ẩm thực' : 'Dining'
-    const linkLabel = locale === 'vi' ? 'Xem thực đơn & dịch vụ' : 'View menu & services'
+    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
     return (
         <section id="dining" className="h7-dining">
             <div className="h7-dining-inner">
                 <div className="h7-sec-head">
                     <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href="#contact" className="h7-sec-link">
+                    <a href={themePath(slug, 'dining')} className="h7-sec-link">
                         {linkLabel}
                         <span aria-hidden="true">→</span>
                     </a>
@@ -29,6 +33,7 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
                     {data.dining.map((venue) => (
                         <article key={venue.id} className="h7-dine">
                             <ImageSlot
+                                src={venue.image}
                                 placeholder={pick(venue.name, locale)}
                                 height={160}
                                 style={{ borderRadius: 'var(--radius)' }}

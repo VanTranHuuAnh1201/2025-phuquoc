@@ -4,6 +4,7 @@ import { findTheme, getProperty, isLocale, themeSlugs, DEFAULT_LOCALE } from '@r
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
 import { SiteOverlay } from '@/components/SiteOverlay'
+import { AccountBar } from '@/components/AccountBar'
 
 interface PageProps {
     params: Promise<{ theme: string }>
@@ -41,7 +42,7 @@ export default async function RoomsListingPage({ params, searchParams }: PagePro
     return (
         <LocaleProvider>
             <SiteOverlay />
-            <RoomsComponent data={data} locale={locale} />
+            <RoomsComponent data={data} locale={locale} extra={<AccountBar />} />
         </LocaleProvider>
     )
 }

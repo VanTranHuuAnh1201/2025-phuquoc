@@ -26,8 +26,23 @@ import {
 import Link from 'next/link'
 import { use, useState } from 'react'
 import { Button } from '../../../components/common/Button'
+import { BookingCalendarModal } from '../../../components/modals/BookingCalendarModal'
 import { useLanguage } from '../../../context/LanguageContext'
 import { ROOMS, Room, formatVND, roomSlug } from '../../../data/rooms'
+
+/** Số đêm giữa hai mốc ISO; tối thiểu 1 để tổng tiền không bao giờ bằng 0. */
+function countNights(checkIn: string, checkOut: string) {
+  const start = new Date(checkIn).getTime()
+  const end = new Date(checkOut).getTime()
+  if (Number.isNaN(start) || Number.isNaN(end)) return 1
+  return Math.max(1, Math.round((end - start) / 86400000))
+}
+
+function formatDisplayDate(iso: string) {
+  if (!iso) return ''
+  const [y, m, d] = iso.split('-')
+  return y && m && d ? `${d}/${m}/${y}` : iso
+}
 
 interface RoomDetailPageProps {
   params: Promise<{ id: string }>
@@ -56,6 +71,13 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
 
   const [currentSlide] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
+
+  // Ngày & số khách của khối đặt phòng — sửa qua cùng popup với hero.
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+  const [checkIn, setCheckIn] = useState('2026-08-15')
+  const [checkOut, setCheckOut] = useState('2026-08-17')
+  const [guests, setGuests] = useState('2 khách')
+  const nights = countNights(checkIn, checkOut)
 
   const roomImages = room.images && room.images.length > 0
     ? room.images
@@ -361,7 +383,12 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
 
         {/* Mobile Fixed Bottom CTA Bar (Matches screenshot 100%) */}
         <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#ECECEC] px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 flex items-center justify-between">
-          <div>
+          <button
+            type="button"
+            onClick={() => setIsCalendarModalOpen(true)}
+            aria-label={t('Thay đổi ngày và số khách', 'Change dates and guests')}
+            className="text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D4E89] rounded-[4px]"
+          >
             <span className="text-[11px] text-[#6B7280] block leading-none">{tx(UI.from)}</span>
             <div className="flex items-baseline gap-1 mt-0.5">
               <span className="font-bold text-lg text-[#1A1A1A]">
@@ -369,7 +396,10 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               </span>
               <span className="text-[10px] text-[#6B7280]">/{tx(UI.nights)}</span>
             </div>
-          </div>
+            <span className="text-[10px] text-[#1D4E89] font-semibold block mt-0.5 underline">
+              {formatDisplayDate(checkIn)} — {formatDisplayDate(checkOut)} · {guests}
+            </span>
+          </button>
           <Link href={`/checkout?room=${encodeURIComponent(room.code)}`}>
             <Button variant="primary" size="md" radius="8px" className="bg-[#0F2D52] hover:bg-[#163B6C] px-5 py-2.5 text-sm font-bold shadow-sm">
               {tx(UI.selectRoom)}
@@ -514,29 +544,39 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               </div>
 
               {/* Date Selection Box */}
-              <div className="border border-[#ECECEC] rounded-[10px] p-2.5 space-y-1.5 bg-[#FAFAF8]">
+              <button
+                type="button"
+                onClick={() => setIsCalendarModalOpen(true)}
+                aria-label={t('Thay đổi ngày nhận và trả phòng', 'Change check-in and check-out dates')}
+                className="w-full text-left border border-[#ECECEC] rounded-[10px] p-2.5 space-y-1.5 bg-[#FAFAF8] hover:border-[#1D4E89] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D4E89] transition"
+              >
                 <div className="flex justify-between items-center text-xs">
                   <div>
                     <span className="text-[10px] text-[#6B7280] block">{tx(UI.checkIn)}</span>
-                    <span className="font-semibold text-[#1A1A1A]">15/08/2025</span>
+                    <span className="font-semibold text-[#1A1A1A]">{formatDisplayDate(checkIn)}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-[10px] text-[#6B7280] block">{tx(UI.checkOut)}</span>
-                    <span className="font-semibold text-[#1A1A1A]">17/08/2025</span>
+                    <span className="font-semibold text-[#1A1A1A]">{formatDisplayDate(checkOut)}</span>
                   </div>
                 </div>
                 <div className="text-center pt-1 border-t border-[#E5E7EB] text-[10px] font-semibold text-[#1D4E89]">
-                  2 {tx(UI.nights)}
+                  {nights} {tx(UI.nights)}
                 </div>
-              </div>
+              </button>
 
               {/* Guest Count Box */}
               <div className="border border-[#ECECEC] rounded-[10px] p-2.5 flex justify-between items-center text-xs bg-[#FAFAF8]">
                 <div>
                   <span className="text-[10px] text-[#6B7280] block">{tx(UI.guests2)}</span>
-                  <span className="font-semibold text-[#1A1A1A] text-xs">{tx(UI.n2Adults0Kids)}</span>
+                  <span className="font-semibold text-[#1A1A1A] text-xs">{guests}</span>
                 </div>
-                <button className="text-[11px] font-semibold text-[#1D4E89] border border-[#1D4E89] px-2 py-0.5 rounded-[4px] hover:bg-[#1D4E89]/5 transition">
+                <button
+                  type="button"
+                  onClick={() => setIsCalendarModalOpen(true)}
+                  aria-label={t('Thay đổi số khách', 'Change number of guests')}
+                  className="text-[11px] font-semibold text-[#1D4E89] border border-[#1D4E89] px-2 py-0.5 rounded-[4px] hover:bg-[#1D4E89]/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D4E89] active:bg-[#1D4E89]/10 transition"
+                >
                   {tx(UI.change)}
                 </button>
               </div>
@@ -545,7 +585,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               <div className="flex justify-between items-center pt-1 border-t border-[#ECECEC]">
                 <span className="text-xs font-semibold text-[#4B5563]">{tx(UI.total)}</span>
                 <span className="font-bold text-lg text-[#0F2D52]">
-                  {formatVND(room.price * 2)}
+                  {formatVND(room.price * nights)}
                 </span>
               </div>
 
@@ -819,6 +859,21 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
         </div>
 
       </div>
+
+      {/* Popup chọn ngày & số khách — dùng chung với hero trang chủ. */}
+      <BookingCalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        guests={guests}
+        roomType={isEn ? room.nameEn : room.name}
+        onSave={(nextCheckIn, nextCheckOut, nextGuests) => {
+          setCheckIn(nextCheckIn)
+          setCheckOut(nextCheckOut)
+          setGuests(nextGuests)
+        }}
+      />
     </main>
   )
 }

@@ -53,7 +53,15 @@ function IconClose({ size = 22 }: { size?: number }) {
     )
 }
 
-export function Header({ data, locale }: { data: PropertyData; locale: Locale }) {
+export function Header({
+    data,
+    locale,
+    extra,
+}: {
+    data: PropertyData
+    locale: Locale
+    extra?: React.ReactNode
+}) {
     const t = ui[locale]
     const { brand, nav } = data
     const scrolled = useScrolled()
@@ -100,20 +108,45 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         <img
                             src={brand.logo || '/OP5.png'}
                             alt={brand.name}
-                            style={{ height: 44, width: 'auto', objectFit: 'contain' }}
+                            style={{ height: 38, width: 38, borderRadius: '50%', objectFit: 'contain', background: '#fff', padding: 2 }}
                         />
+                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                            <span
+                                style={{
+                                    fontSize: '15px',
+                                    fontWeight: 700,
+                                    fontFamily: 'var(--font-serif, Georgia, serif)',
+                                    color: fg,
+                                    letterSpacing: '-0.01em',
+                                }}
+                            >
+                                {brand.name || 'The Nam Du Hill'}
+                            </span>
+                            <span
+                                style={{
+                                    fontSize: '11px',
+                                    fontWeight: 500,
+                                    color: onDark ? 'rgba(255,255,255,0.75)' : 'var(--text-muted)',
+                                    marginTop: 2,
+                                }}
+                            >
+                                Nam Du, Kiên Giang
+                            </span>
+                        </div>
                     </a>
 
                     <nav
                         style={{
                             display: 'flex',
-                            gap: 2,
+                            gap: 4,
                             marginLeft: 'auto',
                             alignItems: 'center',
                             minWidth: 0,
                         }}
                     >
-                        {nav.map((item) => (
+                        {nav
+                            .filter((item) => item.href !== '#top' && item.href !== '/')
+                            .map((item) => (
                             <a
                                 key={item.href}
                                 href={themeHref(SLUG, item.href, true)}
@@ -134,56 +167,27 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         ))}
                     </nav>
 
-                    {/* Khối hotline hai dòng — đúng bản thiết kế desktop. */}
-                    <a
-                        href={tel}
-                        style={{
-                            display: 'grid',
-                            gap: 1,
-                            textDecoration: 'none',
-                            flexShrink: 0,
-                            marginLeft: 'var(--space-4)',
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: '11.5px',
-                                color: onDark ? 'rgba(255,255,255,0.82)' : 'var(--text-muted)',
-                                transition: 'color 240ms ease',
-                            }}
-                        >
-                            {t.phoneLabel}
-                        </span>
-                        <span
-                            style={{
-                                fontSize: '14.5px',
-                                fontWeight: 800,
-                                color: fg,
-                                transition: 'color 240ms ease',
-                            }}
-                        >
-                            {brand.phone}
-                        </span>
-                    </a>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                        {extra && <div key="extra-desktop" style={{ display: 'flex', alignItems: 'center', color: fg }}>{extra}</div>}
 
-                    <a
-                        href={themePath(SLUG, 'rooms')}
-                        className="h7-cta"
-                        style={{
-                            padding: '12px 22px',
-                            borderRadius: 'var(--radius-sm)',
-                            background: 'var(--accent)',
-                            /* Navy trên vàng ≈ 9.2:1 — trắng trên vàng chỉ 1.9:1 (trượt AA). */
-                            color: 'var(--on-accent)',
-                            fontSize: '14.5px',
-                            fontWeight: 700,
-                            whiteSpace: 'nowrap',
-                            flexShrink: 0,
-                            textDecoration: 'none',
-                        }}
-                    >
-                        {t.bookNow}
-                    </a>
+                        <a
+                            href={themePath(SLUG, 'rooms')}
+                            className="h7-cta"
+                            style={{
+                                padding: '10px 20px',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--accent)',
+                                color: 'var(--on-accent)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                                textDecoration: 'none',
+                            }}
+                        >
+                            {t.bookNow}
+                        </a>
+                    </div>
                 </div>
 
                 {/* ---------- MOBILE ---------- */}
@@ -225,20 +229,23 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         />
                     </a>
 
-                    <a
-                        href={tel}
-                        aria-label={`${t.phoneLabel} ${brand.phone}`}
-                        style={{
-                            width: 40,
-                            height: 40,
-                            display: 'grid',
-                            placeItems: 'center',
-                            color: fg,
-                            textDecoration: 'none',
-                        }}
-                    >
-                        <IconPhone size={20} />
-                    </a>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: fg }}>
+                        {extra && <div key="extra-mobile">{extra}</div>}
+                        <a
+                            href={tel}
+                            aria-label={`${t.phoneLabel} ${brand.phone}`}
+                            style={{
+                                width: 40,
+                                height: 40,
+                                display: 'grid',
+                                placeItems: 'center',
+                                color: fg,
+                                textDecoration: 'none',
+                            }}
+                        >
+                            <IconPhone size={20} />
+                        </a>
+                    </div>
                 </div>
 
                 {/* Panel menu mobile — đổ xuống dưới thanh, nền trắng. */}
@@ -255,7 +262,9 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                             overflowY: 'auto',
                         }}
                     >
-                        {nav.map((item) => (
+                        {nav
+                            .filter((item) => item.href !== '#top' && item.href !== '/')
+                            .map((item) => (
                             <a
                                 key={item.href}
                                 href={themeHref(SLUG, item.href, true)}

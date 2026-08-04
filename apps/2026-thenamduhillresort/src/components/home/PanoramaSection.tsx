@@ -2,10 +2,9 @@
 
 import { UI } from '@repo/core'
 
-import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { gallery } from '../../data/property'
-import { Button } from '../common/Button'
+import { SectionHeading } from '../common/SectionHeading'
 
 export function PanoramaSection() {
   const { tx } = useLanguage()
@@ -14,22 +13,12 @@ export function PanoramaSection() {
     <section className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Standardized Section Header (Mobile 16px font size per Figma) */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {tx(UI.momentsAtTheNamDuHill)}
-            </h2>
-            <p className="text-xs font-normal text-[#6B7280] mt-0.5">
-              {tx(UI.captureUnforgettableIslandMemories)}
-            </p>
-          </div>
-          <Link href="/explore">
-            <Button variant="secondary" size="sm" radius="6px">
-              {tx(UI.viewAll)}
-            </Button>
-          </Link>
-        </div>
+        <SectionHeading
+          title={tx(UI.momentsAtTheNamDuHill)}
+          description={tx(UI.captureUnforgettableIslandMemories)}
+          href="/explore"
+          actionLabel={tx(UI.viewAll)}
+        />
 
         {/* 2x2 Grid on Mobile, 4-col on Desktop (Image Radius 16px) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

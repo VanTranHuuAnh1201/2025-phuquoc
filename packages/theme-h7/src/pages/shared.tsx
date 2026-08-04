@@ -1,7 +1,10 @@
-import type { Locale, PropertyData } from '@repo/core'
+import type { BlogPost, Locale, MenuCategory, PropertyData } from '@repo/core'
 import {
+    BlogDetailPage as UiBlogDetailPage,
+    BlogPage as UiBlogPage,
     CheckoutPage as UiCheckoutPage,
     ContactPage as UiContactPage,
+    DiningPage as UiDiningPage,
     GalleryPage as UiGalleryPage,
     TourDetailPage as UiTourDetailPage,
     ToursPage as UiToursPage,
@@ -10,7 +13,7 @@ import {
 import { meta } from '../meta'
 
 /**
- * Bốn trang con dùng chung, gắn sẵn slug của mẫu này.
+ * Các trang con dùng chung, gắn sẵn slug của mẫu này.
  *
  * Bố cục nằm ở `@repo/ui` vì prototype chỉ có MỘT bản cho mỗi trang trong số
  * này — không có `Tours H2`, `Gallery H3`… như Rooms hay Checkout. Mẫu nào
@@ -46,6 +49,35 @@ export function GalleryPage({ data, locale }: PageProps) {
 
 export function ContactPage({ data, locale }: PageProps) {
     return <UiContactPage data={data} locale={locale} slug={SLUG} />
+}
+
+export function DiningPage({
+    data,
+    locale,
+    menu,
+}: PageProps & { menu?: Record<string, MenuCategory> }) {
+    return <UiDiningPage data={data} locale={locale} slug={SLUG} menu={menu} />
+}
+
+export function BlogPage({ data, locale, posts }: PageProps & { posts?: BlogPost[] }) {
+    return <UiBlogPage data={data} locale={locale} slug={SLUG} posts={posts} />
+}
+
+export function BlogDetailPage({
+    data,
+    locale,
+    post,
+    related,
+}: PageProps & { post?: BlogPost; related?: BlogPost[] }) {
+    return (
+        <UiBlogDetailPage
+            data={data}
+            locale={locale}
+            slug={SLUG}
+            post={post}
+            related={related}
+        />
+    )
 }
 
 export function CheckoutPage({
