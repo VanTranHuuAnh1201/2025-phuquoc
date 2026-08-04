@@ -15,7 +15,12 @@ import { ImageSlot } from '@repo/ui'
  * Nội dung lấy từ `data.facts` / `data.about` của core (luật R8).
  */
 
-const USP_ICONS = [IconShield, IconVan, IconDeposit, IconWaves]
+const USP_ICONS: readonly (() => React.ReactElement)[] = [
+    IconShield,
+    IconVan,
+    IconDeposit,
+    IconWaves,
+]
 
 function IconShield() {
     return (
@@ -75,7 +80,7 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
             <section className="h7-usp-section">
                 <div className="h7-usp">
                     {facts.slice(0, 4).map((fact, idx) => {
-                        const Icon = USP_ICONS[idx % USP_ICONS.length]
+                        const Icon = USP_ICONS[idx % USP_ICONS.length] ?? IconShield
                         return (
                             <div key={fact.label.en} className="h7-usp-item">
                                 <Icon />
