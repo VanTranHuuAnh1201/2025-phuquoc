@@ -1,0 +1,71 @@
+/**
+ * Mẫu 07 — Sunlit Coastal.
+ *
+ * Bảng màu trích từ bộ thiết kế The Nam Du Hill Resort (desktop VI, mobile VI
+ * và bản EN): navy #075E9E cho tiêu đề/footer, vàng nghệ #F5B921 cho mọi CTA,
+ * nền trắng với dải #F7F9FC xen kẽ.
+ *
+ * Khác mẫu 01 ở hai điểm quyết định diện mạo:
+ *   - CTA chuyển từ xanh sang VÀNG, chữ trên nút là navy (không phải trắng).
+ *     Trắng trên #F5B921 chỉ đạt 1.9:1 — trượt WCAG AA. Navy #0F2942 trên nền
+ *     vàng đạt ~9.2:1, và đúng với bản thiết kế.
+ *   - Tiêu đề dùng serif, thân bài dùng sans — tạo chất nghỉ dưỡng.
+ *
+ * File này ghi đè hợp đồng token ở `@repo/ui/tokens.css`. Chỉ khai báo biến —
+ * không viết selector cho component của `ui` (đó là vi phạm ranh giới).
+ */
+
+[data-theme='h7'] {
+    /* --- màu ------------------------------------------------------------ */
+    --brand: #075e9e;
+    --brand-dark: #06467a;
+    --brand-light: #1c7ac4;
+
+    /* Vàng nghệ — màu của mọi nút hành động trong bản thiết kế. */
+    --accent: #f5b921;
+    --accent-dark: #dda012;
+
+    /* Chữ đặt trên nền vàng. Tách riêng khỏi --text-inverse vì nút vàng cần
+       chữ ĐẬM MÀU, trong khi nút navy cần chữ trắng. */
+    --on-accent: #0f2942;
+
+    --surface: #ffffff;
+    --surface-alt: #f7f9fc;
+    --surface-tint: #eaf3fb;
+    --surface-inverse: #0f2942;
+
+    --overlay-soft: rgba(255, 255, 255, 0.14);
+    --overlay-line: rgba(255, 255, 255, 0.26);
+    --overlay-scrim: rgba(9, 29, 51, 0.55);
+
+    --text: #0f2942;
+    --text-muted: #4a5b6e;
+    --text-inverse: #ffffff;
+
+    --border: #e3e9f0;
+    --border-strong: #c8d4e0;
+
+    --success: #047857;
+    --danger: #b91c1c;
+
+    /* --- chữ ------------------------------------------------------------ */
+    --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    /* Serif cho tiêu đề — "Nghỉ trên đồi, thức dậy giữa biển Nam Du". */
+    --font-display: 'Playfair Display', 'Times New Roman', Georgia, serif;
+
+    --text-3xl: 3.5rem;
+    --text-2xl: 2rem;
+    --text-xl: 1.375rem;
+    --text-lg: 1.0625rem;
+    --text-base: 0.9375rem;
+
+    /* --- hình khối ------------------------------------------------------ */
+    /* Thiết kế dùng thẻ bo vừa phải, không bo tròn kiểu pill cho thẻ nội dung. */
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 16px;
+
+    --shadow-sm: 0 1px 3px rgba(15, 41, 66, 0.07);
+    --shadow: 0 6px 20px rgba(15, 41, 66, 0.09);
+    --shadow-lg: 0 18px 44px rgba(15, 41, 66, 0.14);
+}

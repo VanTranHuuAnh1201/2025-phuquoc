@@ -15,6 +15,7 @@
     "@repo/theme-h2": "workspace:*",
     "@repo/theme-h3": "workspace:*",
     "@repo/theme-h4": "workspace:*",
+    "@repo/theme-h7": "workspace:*",
     "@repo/ui": "workspace:*",
     "next": "^15.5.4",
     "react": "^19.1.1",

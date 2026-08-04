@@ -3,6 +3,7 @@ import themeH1 from '@repo/theme-h1'
 import themeH2 from '@repo/theme-h2'
 import themeH3 from '@repo/theme-h3'
 import themeH4 from '@repo/theme-h4'
+import themeH7 from '@repo/theme-h7'
 
 /**
  * REGISTRY THEME — đây là file DUY NHẤT phải sửa khi thêm một mẫu mới.
@@ -58,4 +59,5 @@ export const themes: readonly AnyThemeDefinition[] = [
     themeH2 as AnyThemeDefinition,
     themeH3 as AnyThemeDefinition,
     themeH4 as AnyThemeDefinition,
+    themeH7 as AnyThemeDefinition,
 ]
