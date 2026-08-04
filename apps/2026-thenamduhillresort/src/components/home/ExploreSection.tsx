@@ -36,20 +36,20 @@ export function ExploreSection() {
   ]
 
   return (
-    <section id="explore" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+    <section id="explore" className="py-12 sm:py-16 lg:py-20 bg-white border-b border-slate-200/60">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
         
-        {/* Standardized Section Header (Mobile 16px font size per Figma) */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+        {/* Standardized Luxury Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="text-xs font-semibold text-[#1D4E89]">
-              {t('21 hòn đảo · 9,12 km²', '21 islands · 9.12 km²')}
+            <span className="text-xs font-bold text-[#F59E0B] uppercase tracking-widest block mb-1">
+              {t('21 HÒN ĐẢO · 9,12 KM²', '21 ISLANDS · 9.12 KM²')}
             </span>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mt-0.5">
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B192C] tracking-tight">
               {t('Khám phá quần đảo Nam Du', 'Explore Nam Du Archipelago')}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#6B7280] max-w-lg font-normal">
+          <p className="text-xs sm:text-sm text-slate-600 max-w-lg font-medium leading-relaxed">
             {t(
               'Sáng nào cũng có tàu gỗ rời bến ngay dưới chân đồi. Lễ tân đặt chỗ giúp từ tối hôm trước — 200.000–400.000₫ mỗi người.',
               'Wooden boats leave the pier below every morning. Reception books your seat the evening before.'
@@ -57,29 +57,29 @@ export function ExploreSection() {
           </p>
         </div>
 
-        {/* 4 Island Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 4 Island Cards Grid with Luxury Visual Depth */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {islands.map((item, idx) => (
             <Link
               key={idx}
               href="/explore"
-              className="relative aspect-[4/3] rounded-[16px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group flex items-end p-4"
+              className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_22px_50px_rgba(11,25,44,0.2)] hover:-translate-y-2 hover:border-[#FFB800] transition-all duration-300 group flex items-end p-5 border border-slate-200/50"
             >
               <img
                 src={item.image}
                 alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#101828]/90 via-[#101828]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/95 via-[#0B192C]/40 to-transparent" />
               
               <div className="relative z-10 text-white">
-                <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-1">
+                <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-widest block mb-1">
                   {item.tag}
                 </span>
-                <h3 className="font-bold text-base text-white leading-tight">
+                <h3 className="font-bold text-base sm:text-lg text-white leading-tight group-hover:text-[#FFB800] transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-xs text-white/80 font-normal mt-1 line-clamp-2">
+                <p className="text-xs text-slate-200 font-normal mt-1 line-clamp-2">
                   {item.desc}
                 </p>
               </div>
@@ -88,59 +88,59 @@ export function ExploreSection() {
         </div>
 
         {/* 3 Itinerary Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
           
           <Link
             href="/explore"
-            className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 hover:bg-white hover:shadow-md transition flex flex-col justify-between"
+            className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-6 hover:bg-white hover:border-[#FFB800] hover:shadow-[0_16px_36px_rgba(255,184,0,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
+              <span className="text-[11px] font-bold text-[#1D4E89] uppercase tracking-wider block mb-2">
                 {t('LỊCH TRÌNH · 2 NGÀY 1 ĐÊM', 'ITINERARY · 2 DAYS 1 NIGHT')}
               </span>
-              <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
+              <h3 className="font-serif font-bold text-[#0B192C] text-base leading-snug">
                 {t('Đi cuối tuần: chiều đầu đi tàu ra đảo nhỏ, sáng hôm sau chạy vòng 11 km.', 'Weekend run: island boat on first afternoon, 11 km loop on second morning.')}
               </h3>
             </div>
-            <div className="mt-4 pt-3 border-t border-[#ECECEC] flex items-baseline gap-1 text-xs">
-              <span className="font-bold text-[#0F2D52] text-sm">2,1 – 2,8tr</span>
-              <span className="text-[#6B7280]">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
+            <div className="mt-6 pt-4 border-t border-slate-200/60 flex items-baseline gap-1.5 text-xs">
+              <span className="font-extrabold text-[#0B192C] text-base">2,1 – 2,8tr</span>
+              <span className="text-slate-500 font-medium">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
             </div>
           </Link>
 
           <Link
             href="/explore"
-            className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 hover:bg-white hover:shadow-md transition flex flex-col justify-between"
+            className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-6 hover:bg-white hover:border-[#FFB800] hover:shadow-[0_16px_36px_rgba(255,184,0,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
+              <span className="text-[11px] font-bold text-[#1D4E89] uppercase tracking-wider block mb-2">
                 {t('LỊCH TRÌNH · 3 NGÀY 2 ĐÊM', 'ITINERARY · 3 DAYS 2 NIGHTS')}
               </span>
-              <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
+              <h3 className="font-serif font-bold text-[#0B192C] text-base leading-snug">
                 {t('Đi thong thả: trọn một ngày trên biển qua bốn đảo, thêm hải đăng và đền miếu.', 'Unhurried: a full day at sea across four islands, plus the lighthouse.')}
               </h3>
             </div>
-            <div className="mt-4 pt-3 border-t border-[#ECECEC] flex items-baseline gap-1 text-xs">
-              <span className="font-bold text-[#0F2D52] text-sm">2,8 – 4,0tr</span>
-              <span className="text-[#6B7280]">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
+            <div className="mt-6 pt-4 border-t border-slate-200/60 flex items-baseline gap-1.5 text-xs">
+              <span className="font-extrabold text-[#0B192C] text-base">2,8 – 4,0tr</span>
+              <span className="text-slate-500 font-medium">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
             </div>
           </Link>
 
           <Link
             href="/explore"
-            className="bg-gradient-to-br from-[#1D4E89] to-[#0F2D52] text-white rounded-[12px] p-5 shadow-md flex flex-col justify-between hover:shadow-lg transition group"
+            className="bg-gradient-to-br from-[#1D4E89] to-[#0B192C] text-white rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group border border-white/10"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-2">
+              <span className="text-[11px] font-bold text-[#FFB800] uppercase tracking-wider block mb-2">
                 {t('CẨM NANG ĐẦY ĐỦ', 'FULL GUIDE')}
               </span>
-              <h3 className="font-serif font-bold text-white text-sm leading-snug">
+              <h3 className="font-serif font-bold text-white text-base leading-snug">
                 {t('Tàu xe, giá cả, mùa đẹp nhất và những thứ cần mang theo.', 'Boats, scooters, prices, best season and packing list.')}
               </h3>
             </div>
-            <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-white group-hover:translate-x-1 transition-transform">
+            <div className="mt-6 flex items-center gap-2 text-xs sm:text-sm font-bold text-white group-hover:translate-x-1.5 transition-transform">
               <span>{t('Khám phá Nam Du', 'Explore Nam Du')}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-[#FFB800]" />
             </div>
           </Link>
         </div>

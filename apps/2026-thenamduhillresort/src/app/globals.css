@@ -5,32 +5,32 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* PA3 Primary Palette */
-  --color-primary-900: #0F2D52;
-  --color-primary-800: #163B6C;
+  --color-primary-900: #0B192C;
+  --color-primary-800: #0F2D52;
   --color-primary-700: #1D4E89;
   --color-primary-600: #2563A6;
-  --color-primary-500: #3B82C4;
+  --color-primary-500: #0284C7;
 
-  /* PA3 Secondary Gold Accent (5% usage) */
-  --color-gold-500: #C6A86A;
-  --color-gold-400: #D8BA7C;
-  --color-gold-300: #E8D5A5;
+  /* PA3 Vibrant Glowing Gold & Amber Star Accents */
+  --color-gold-500: #FFB800;
+  --color-gold-400: #FBBF24;
+  --color-gold-300: #FDE68A;
 
   /* PA3 Backgrounds & Surface */
-  --color-background: #FAFAF8;
+  --color-background: #F8FAFC;
   --color-surface: #FFFFFF;
   --color-card-bg: #FFFFFF;
-  --color-hover: #F5F7FA;
+  --color-hover: #F1F5F9;
 
   /* PA3 Borders */
-  --color-border: #E5E7EB;
-  --color-divider: #ECECEC;
+  --color-border: #E2E8F0;
+  --color-divider: #E2E8F0;
 
-  /* PA3 Text Tokens */
-  --color-[#1A1A1A]: #1A1A1A;
-  --color-[#4B5563]: #4B5563;
-  --color-[#6B7280]: #6B7280;
-  --color-[#B5B5B5]: #B5B5B5;
+  /* PA3 High Contrast Text Tokens */
+  --color-[#1A1A1A]: #0F172A;
+  --color-[#4B5563]: #334155;
+  --color-[#6B7280]: #475569;
+  --color-[#B5B5B5]: #94A3B8;
 
   /* PA3 Component Radius Tokens */
   --radius-card: 18px;

@@ -17,19 +17,19 @@ export function HostServiceSection() {
   ]
 
   return (
-    <section id="experience" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
+    <section id="experience" className="py-12 sm:py-16 lg:py-20 bg-[#FAFAF8] border-b border-slate-200/60">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-[0_16px_40px_rgba(15,45,82,0.06)] grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           {/* Left Text */}
-          <div className="space-y-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#1D4E89]">
-              {t('Chủ nhà & tiện ích đi kèm', 'Host & Amenities')}
+          <div className="space-y-4">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#F59E0B]">
+              {t('CHỦ NHÀ & TIỆN ÍCH ĐI KÈM', 'HOST & INCLUDED SERVICES')}
             </span>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] leading-snug">
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B192C] leading-tight">
               {t('Bạn được đón tận bến. Phần còn lại đã có người lo.', 'Met at the pier. The rest is taken care of.')}
             </h2>
-            <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
               {t(
                 'Xe riêng đưa đón hai chiều từ bến tàu Củ Tron miễn phí, tour cano lặn ngắm san hô Hòn Dầu – Hòn Ngang sắp xếp theo yêu cầu, và luôn có người trực máy bất kể giờ nào.',
                 'Private roundtrip car transfer from Cu Tron pier, private canoe & snorkeling tours arranged on demand, and 24/7 friendly host support.'
@@ -37,15 +37,15 @@ export function HostServiceSection() {
             </p>
 
             {/* Perks Badges */}
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2.5 pt-2">
               {perks.map((perk, idx) => {
                 const IconComp = perk.icon
                 return (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1.5 bg-white border border-[#ECECEC] text-[#0F2D52] text-xs font-medium px-3 py-1.5 rounded-full shadow-2xs"
+                    className="inline-flex items-center gap-2 bg-[#F8FAFC] border border-slate-200/80 hover:border-[#1D4E89] hover:bg-[#F0F5FA] text-[#0B192C] text-xs font-semibold px-3.5 py-2 rounded-full shadow-2xs transition-all duration-200 cursor-pointer"
                   >
-                    <IconComp className="w-3.5 h-3.5 text-[#1D4E89]" />
+                    <IconComp className="w-4 h-4 text-[#1D4E89]" />
                     <span>{perk.label}</span>
                   </span>
                 )
@@ -54,35 +54,35 @@ export function HostServiceSection() {
           </div>
 
           {/* Right Host Testimonials Stack */}
-          <div className="grid grid-cols-1 gap-3">
-            <blockquote className="bg-white rounded-[12px] p-4 border border-[#ECECEC] shadow-2xs hover:shadow-sm transition">
-              <div className="flex text-[#C6A86A] gap-0.5 mb-2">
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
+          <div className="grid grid-cols-1 gap-4">
+            <blockquote className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all duration-300">
+              <div className="flex text-[#FFB800] gap-1 mb-3">
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
               </div>
-              <p className="text-xs text-[#4B5563] italic leading-relaxed">
-                {t('“Bà chủ rất chu đáo, tận tâm với khách hàng.”', '“The host is genuinely attentive — she checked on us more than any hotel we’ve stayed at.”')}
+              <p className="text-xs sm:text-sm text-slate-700 italic leading-relaxed font-medium">
+                {t('“Bà chủ rất chu đáo, tận tâm với khách hàng. Chu đáo từng bữa ăn đến lịch trình đi đảo.”', '“The host is genuinely attentive — she checked on us more than any hotel we’ve stayed at.”')}
               </p>
-              <footer className="text-[10px] font-semibold text-[#6B7280] mt-2 uppercase tracking-wider">
+              <footer className="text-[11px] font-bold text-slate-500 mt-3 uppercase tracking-wider">
                 Ngọc Anh · TP.HCM
               </footer>
             </blockquote>
 
-            <blockquote className="bg-[#0F2D52] text-white rounded-[12px] p-4 shadow-sm">
-              <div className="flex text-[#C6A86A] gap-0.5 mb-2">
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
+            <blockquote className="bg-[#0B192C] text-white rounded-2xl p-5 shadow-lg border border-amber-400/30 hover:shadow-xl transition-all duration-300">
+              <div className="flex text-[#FFB800] gap-1 mb-3">
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
+                <Star className="w-4.5 h-4.5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
               </div>
-              <p className="text-xs text-white/95 italic leading-relaxed">
+              <p className="text-xs sm:text-sm text-white/95 italic leading-relaxed font-medium">
                 {t('“Dậy ngắm bình minh rồi ngồi luôn trên sân thượng tới lúc chợ đêm lên đèn.”', '“We woke for the sunrise and stayed on the terrace until the night market lit up.”')}
               </p>
-              <footer className="text-[10px] font-semibold text-white/70 mt-2 uppercase tracking-wider">
+              <footer className="text-[11px] font-bold text-[#FFB800] mt-3 uppercase tracking-wider">
                 Minh Trí · Cần Thơ
               </footer>
             </blockquote>

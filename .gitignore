@@ -57,3 +57,4 @@ next-env.d.ts
 
 # thung rac cua understand-anything
 .ua/.trash-*/
+resources/package

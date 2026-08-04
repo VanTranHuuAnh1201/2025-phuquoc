@@ -13,9 +13,12 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ORIGIN = "https://thenamduhill.com";
-const OUT = path.join(process.cwd(), "scripts", "crawl", "output");
+const PROJECT = "thenamduhill";
+const OUT = path.join(HERE, "output", PROJECT);
 
 const dedupe = (a) => [...new Set(a)];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -204,7 +207,7 @@ async function main() {
     const allProductIds = dedupe(pages.flatMap((p) => p.productIds));
 
     await writeFile(
-        path.join(OUT, "full-site.json"),
+        path.join(OUT, `${PROJECT}.full-site.json`),
         JSON.stringify(
             {
                 crawledAt: null, // stamp sau khi chạy nếu cần
@@ -224,7 +227,7 @@ async function main() {
             `${allProductIds.length} product-id.`
     );
     if (queue.length) console.error(`Còn ${queue.length} URL chưa cào (chạm --limit).`);
-    console.error("Ghi ra: scripts/crawl/output/full-site.json");
+    console.error(`Ghi ra: resources/scripts/crawl/output/${PROJECT}/${PROJECT}.full-site.json`);
 }
 
 main().catch((e) => {

@@ -26,36 +26,39 @@ export function WhyUsSection() {
   ]
 
   return (
-    <section className="py-5 sm:py-8 bg-white border-b border-[#ECECEC]">
+    <section className="py-12 sm:py-16 lg:py-20 bg-white border-b border-slate-200/60">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Standardized Section Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
+        {/* Standardized Luxury Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Tiện ích nổi bật', 'Featured Amenities')}
+            <span className="text-xs font-bold text-[#F59E0B] uppercase tracking-widest block mb-1">
+              {t('DỊCH VỤ & TIỆN ÍCH ĐẲNG CẤP', 'LUXURY AMENITIES & SERVICES')}
+            </span>
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B192C] tracking-tight">
+              {t('Tiện ích đặc quyền tại Resort', 'Exclusive Resort Amenities')}
             </h2>
           </div>
           <Link href="/explore">
-            <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem thêm', 'See more')}
+            <Button variant="secondary" size="md" radius="full" className="shadow-sm hover:shadow border border-slate-200 font-bold text-xs sm:text-sm text-[#0F2D52]">
+              {t('Xem tất cả dịch vụ →', 'Explore All Services →')}
             </Button>
           </Link>
         </div>
 
-        {/* 📱 MOBILE VIEW: 4 Icon Amenities Row (100% Intact) */}
-        <div className="grid grid-cols-4 gap-2 text-center md:hidden">
+        {/* 📱 MOBILE VIEW: 4 Icon Amenities Row (Interactive Cards) */}
+        <div className="grid grid-cols-4 gap-3 text-center md:hidden">
           {mobileAmenities.map((item, idx) => {
             const IconComp = item.icon
             return (
               <div
                 key={idx}
-                className="flex flex-col items-center justify-center p-2 rounded-[12px] hover:bg-[#F5F7FA] transition cursor-pointer group"
+                className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:bg-white hover:shadow-md transition-all duration-300 cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-full bg-[#F5F7FA] group-hover:bg-[#C6A86A]/15 flex items-center justify-center text-[#1D4E89] group-hover:text-[#C6A86A] transition-colors mb-1.5">
-                  <IconComp className="w-5 h-5 stroke-[1.75]" />
+                <div className="w-11 h-11 rounded-full bg-white group-hover:bg-[#FFB800] shadow-sm flex items-center justify-center text-[#1D4E89] group-hover:text-slate-950 transition-all duration-300 mb-2">
+                  <IconComp className="w-5 h-5 stroke-[2]" />
                 </div>
-                <span className="text-xs font-medium text-[#4B5563] leading-tight">
+                <span className="text-xs font-bold text-[#0F172A] leading-tight">
                   {item.label}
                 </span>
               </div>
@@ -63,22 +66,22 @@ export function WhyUsSection() {
           })}
         </div>
 
-        {/* 🖥️ DESKTOP VIEW: 6 Amenities Row with Subtitles (Figma 3-desktop.png) */}
-        <div className="hidden md:grid md:grid-cols-6 gap-4 text-center">
+        {/* 🖥️ DESKTOP VIEW: 6 Amenities Cards with Shadows and Micro-interactions */}
+        <div className="hidden md:grid md:grid-cols-6 gap-5 text-center">
           {desktopAmenities.map((item, idx) => {
             const IconComp = item.icon
             return (
               <div
                 key={idx}
-                className="flex flex-col items-center justify-center p-4 rounded-[12px] bg-[#FAFAF8] border border-[#ECECEC] hover:bg-white hover:shadow-md transition cursor-pointer group"
+                className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:bg-white hover:border-[#FFB800] hover:shadow-[0_16px_36px_rgba(255,184,0,0.2)] hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group"
               >
-                <div className="w-12 h-12 rounded-full bg-white group-hover:bg-[#C6A86A]/15 border border-[#E5E7EB] flex items-center justify-center text-[#1D4E89] group-hover:text-[#C6A86A] transition-colors mb-2">
-                  <IconComp className="w-6 h-6 stroke-[1.75]" />
+                <div className="w-14 h-14 rounded-2xl bg-white group-hover:bg-[#FFB800] border border-slate-200/80 shadow-sm flex items-center justify-center text-[#1D4E89] group-hover:text-slate-950 transition-all duration-300 mb-3 group-hover:scale-110">
+                  <IconComp className="w-6 h-6 stroke-[2]" />
                 </div>
-                <span className="text-sm font-semibold text-[#1A1A1A] leading-snug">
+                <span className="text-sm font-bold text-[#0F172A] leading-snug group-hover:text-[#1D4E89] transition-colors">
                   {item.label}
                 </span>
-                <span className="text-xs text-[#6B7280] font-normal mt-0.5">
+                <span className="text-xs text-slate-500 font-medium mt-1 leading-tight">
                   {item.desc}
                 </span>
               </div>

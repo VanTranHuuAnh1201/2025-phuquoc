@@ -1,0 +1,21 @@
+{
+  "source": "D:\\2026\\2025-phuquoc\\resources\\scripts\\crawl\\output\\full-site.json",
+  "downloadedAt": "2026-08-04T04:33:20.239Z",
+  "items": [
+    {
+      "url": "https://thenamduhill.com/image/catalog/banner/banner2.jpg",
+      "file": "D:\\2026\\2025-phuquoc\\resources\\scripts\\crawl\\output\\assets\\thenamduhill.com\\image_catalog_banner_banner2_rtcx8y.jpg",
+      "bytes": 681668
+    },
+    {
+      "url": "https://thenamduhill.com/image/catalog/banner/namdu-3.jpg",
+      "file": "D:\\2026\\2025-phuquoc\\resources\\scripts\\crawl\\output\\assets\\thenamduhill.com\\image_catalog_banner_namdu-3_158e3q5.jpg",
+      "bytes": 876268
+    },
+    {
+      "url": "https://thenamduhill.com/image/catalog/banner/namdu-2.jpg",
+      "file": "D:\\2026\\2025-phuquoc\\resources\\scripts\\crawl\\output\\assets\\thenamduhill.com\\image_catalog_banner_namdu-2_157ub4s.jpg",
+      "bytes": 919436
+    }
+  ]
+}

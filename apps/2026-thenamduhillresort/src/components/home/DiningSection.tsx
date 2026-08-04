@@ -43,85 +43,90 @@ export function DiningSection() {
   ]
 
   return (
-    <section className="py-5 sm:py-7 bg-[#FAFAF8] border-b border-[#ECECEC]">
+    <section className="py-12 sm:py-16 lg:py-20 bg-[#FAFAF8] border-b border-slate-200/60">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Standardized Section Header */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Standardized Luxury Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
+            <span className="text-xs font-bold text-[#F59E0B] uppercase tracking-widest block mb-1">
+              {t('TRẢI NGHIỆM THỰC TẾ', 'VERIFIED GUEST REVIEWS')}
+            </span>
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B192C] tracking-tight">
               {t('Khách hàng nói gì về chúng tôi', 'What Our Guests Say')}
             </h2>
-            <p className="text-xs sm:text-sm font-normal text-[#6B7280] mt-0.5">
+            <p className="text-xs sm:text-sm font-medium text-slate-600 mt-1 max-w-xl">
               {t('Bạn được đón tận bến. Phần còn lại đã có người lo.', 'You are picked up at the pier. We take care of everything else.')}
             </p>
           </div>
           <Link href="/contact">
-            <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem tất cả', 'View all')}
+            <Button variant="secondary" size="md" radius="full" className="shadow-sm hover:shadow border border-slate-200 font-bold text-xs sm:text-sm text-[#0F2D52]">
+              {t('Xem tất cả đánh giá →', 'View All Reviews →')}
             </Button>
           </Link>
         </div>
 
         {/* Content Layout: Score Card + Review Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           
-          {/* Overall Rating Box (Primary Navy #0F2D52, Card Radius 12px) */}
-          <div className="bg-[#0F2D52] text-white rounded-[12px] p-6 flex flex-col justify-center items-center text-center shadow-sm">
-            <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-              4.9<span className="text-lg font-normal text-white/60">/5</span>
+          {/* Overall Rating Box (Primary Navy #0B192C, Luxury Card Radius 24px) */}
+          <div className="bg-[#0B192C] text-white rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-[0_16px_40px_rgba(11,25,44,0.25)] border border-amber-400/30 relative overflow-hidden group">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#FFB800]/25 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+            
+            <span className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight">
+              4.9<span className="text-xl font-light text-white/60">/5</span>
             </span>
-            <div className="flex items-center gap-1 text-[#C6A86A] my-2">
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
+            <div className="flex items-center gap-1.5 text-[#FFB800] my-3">
+              <Star className="w-5 h-5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_2px_8px_rgba(255,184,0,0.8)]" />
+              <Star className="w-5 h-5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_2px_8px_rgba(255,184,0,0.8)]" />
+              <Star className="w-5 h-5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_2px_8px_rgba(255,184,0,0.8)]" />
+              <Star className="w-5 h-5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_2px_8px_rgba(255,184,0,0.8)]" />
+              <Star className="w-5 h-5 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_2px_8px_rgba(255,184,0,0.8)]" />
             </div>
-            <span className="font-bold text-sm text-white">
+            <span className="font-extrabold text-base text-[#FFB800] tracking-wide">
               {t('Tuyệt vời', 'Outstanding')}
             </span>
-            <span className="text-xs text-white/70 mt-0.5">
-              {t('Dựa trên 83 đánh giá', 'Based on 83 verified reviews')}
+            <span className="text-xs text-white/80 mt-1 font-medium">
+              {t('Dựa trên 83 đánh giá đã xác minh', 'Based on 83 verified reviews')}
             </span>
           </div>
 
-          {/* User Review Cards (3 Columns, Card Radius 12px) */}
-          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* User Review Cards (3 Columns, Card Radius 24px) */}
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
             {reviews.map((rev, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-[12px] p-4 border border-[#ECECEC] shadow-sm flex flex-col justify-between hover:shadow-md transition"
+                className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_45px_rgba(15,45,82,0.12)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
                       <img
                         src={rev.avatar}
                         alt={rev.name}
-                        className="w-8 h-8 rounded-full object-cover border border-[#ECECEC]"
+                        className="w-10 h-10 rounded-full object-cover border-2 border-amber-400/40 shadow-xs"
                       />
                       <div className="flex flex-col">
-                        <span className="text-xs font-bold text-[#1A1A1A] leading-tight">
+                        <span className="text-xs sm:text-sm font-bold text-[#0F172A] leading-tight">
                           {rev.name}
                         </span>
-                        <span className="text-[10px] text-[#6B7280]">
+                        <span className="text-[11px] text-slate-500 font-medium mt-0.5">
                           {rev.date}
                         </span>
                       </div>
                     </div>
-                    <div className="flex text-[#C6A86A] gap-0.5">
+                    <div className="flex text-[#FFB800] gap-0.5">
                       {Array.from({ length: rev.rating }).map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-[#C6A86A]" />
+                        <Star key={i} className="w-4 h-4 fill-[#FFB800] text-[#FFB800] drop-shadow-[0_1px_4px_rgba(255,184,0,0.5)]" />
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs text-[#4B5563] leading-relaxed italic">
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic font-medium">
                     &quot;{rev.comment}&quot;
                   </p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-[#ECECEC] flex items-center gap-1 text-[10px] text-emerald-600 font-semibold">
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1.5 text-[11px] text-emerald-600 font-bold tracking-wide">
                   <span>✓</span>
                   <span>{t('Đã xác minh lưu trú', 'Verified Stay')}</span>
                 </div>

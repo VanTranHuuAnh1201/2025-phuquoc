@@ -45,20 +45,20 @@ export function Footer() {
 
           <div className="space-y-2 text-xs text-white/90">
             <div className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-[#C6A86A] flex-shrink-0 mt-0.5 stroke-[1.75]" />
+              <MapPin className="w-4 h-4 text-[#FFB800] flex-shrink-0 mt-0.5 stroke-[2]" />
               <span>
                 {t('Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Kiên Giang', 'Cu Tron village, Nam Du Island, Kien Giang')}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
+              <Mail className="w-4 h-4 text-[#FFB800] flex-shrink-0 stroke-[2]" />
               <a href="mailto:thenamduhill@gmail.com" className="hover:underline">
                 thenamduhill@gmail.com
               </a>
             </div>
             <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
-              <a href="tel:0985000650" className="text-base font-bold text-white hover:text-[#C6A86A] transition">
+              <Phone className="w-4 h-4 text-[#FFB800] flex-shrink-0 stroke-[2]" />
+              <a href="tel:0985000650" className="text-base font-extrabold text-[#FFB800] hover:text-amber-300 transition">
                 0985 000 650
               </a>
             </div>
@@ -67,47 +67,47 @@ export function Footer() {
 
         {/* Column 2: Information */}
         <div className="space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
             {t('THÔNG TIN', 'INFORMATION')}
           </h3>
-          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
-          <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#" className="hover:text-white transition">{t('Chính sách bảo mật', 'Privacy Policy')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Quy định chung', 'General Terms')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn đặt phòng', 'Booking Guide')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Chính sách hoàn hủy', 'Cancellation Policy')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn thanh toán', 'Payment Options')}</a></li>
+          <div className="w-10 h-1 bg-[#FFB800] rounded-full" />
+          <ul className="space-y-2 text-xs text-slate-300 font-medium">
+            <li><a href="#" className="hover:text-[#FFB800] transition">{t('Chính sách bảo mật', 'Privacy Policy')}</a></li>
+            <li><a href="#" className="hover:text-[#FFB800] transition">{t('Quy định chung', 'General Terms')}</a></li>
+            <li><a href="#" className="hover:text-[#FFB800] transition">{t('Hướng dẫn đặt phòng', 'Booking Guide')}</a></li>
+            <li><a href="#" className="hover:text-[#FFB800] transition">{t('Chính sách hoàn hủy', 'Cancellation Policy')}</a></li>
+            <li><a href="#" className="hover:text-[#FFB800] transition">{t('Hướng dẫn thanh toán', 'Payment Options')}</a></li>
           </ul>
         </div>
 
         {/* Column 3: Explore */}
         <div className="space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
             {t('KHÁM PHÁ', 'EXPLORE')}
           </h3>
-          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
-          <ul className="space-y-2 text-xs text-white/80">
-            <li><Link href="/rooms" className="hover:text-white transition">{t('Danh sách phòng', 'Room List')}</Link></li>
-            <li><Link href="/dining" className="hover:text-white transition">{t('Nhà hàng & BBQ', 'Dining & BBQ')}</Link></li>
-            <li><Link href="/explore" className="hover:text-white transition">{t('Khám phá Nam Du', 'Explore Nam Du')}</Link></li>
-            <li><Link href="/blog" className="hover:text-white transition">{t('Cẩm nang du lịch', 'Travel Journal')}</Link></li>
-            <li><Link href="/contact" className="hover:text-white transition">{t('Liên hệ', 'Contact Us')}</Link></li>
+          <div className="w-10 h-1 bg-[#FFB800] rounded-full" />
+          <ul className="space-y-2 text-xs text-slate-300 font-medium">
+            <li><Link href="/rooms" className="hover:text-[#FFB800] transition">{t('Danh sách phòng', 'Room List')}</Link></li>
+            <li><Link href="/dining" className="hover:text-[#FFB800] transition">{t('Nhà hàng & BBQ', 'Dining & BBQ')}</Link></li>
+            <li><Link href="/explore" className="hover:text-[#FFB800] transition">{t('Khám phá Nam Du', 'Explore Nam Du')}</Link></li>
+            <li><Link href="/blog" className="hover:text-[#FFB800] transition">{t('Cẩm nang du lịch', 'Travel Journal')}</Link></li>
+            <li><Link href="/contact" className="hover:text-[#FFB800] transition">{t('Liên hệ', 'Contact Us')}</Link></li>
           </ul>
         </div>
 
         {/* Column 4: Social & Verification */}
         <div className="space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
             {t('KẾT NỐI', 'CONNECT')}
           </h3>
-          <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
+          <div className="w-10 h-1 bg-[#FFB800] rounded-full" />
           
           <div className="flex gap-2">
             <a
               href="https://facebook.com/thenamduhill"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-sm hover:bg-white/20 transition"
+              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-sm hover:bg-[#FFB800] hover:text-slate-950 transition-all duration-300"
             >
               f
             </a>
@@ -115,15 +115,15 @@ export function Footer() {
               href="https://zalo.me/0985000650"
               target="_blank"
               rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs hover:bg-white/20 transition"
+              className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs hover:bg-[#FFB800] hover:text-slate-950 transition-all duration-300"
             >
               Za
             </a>
           </div>
 
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl p-3">
-            <CheckCircle className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
-            <span className="text-[10px] font-semibold text-white/90 leading-tight">
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-amber-400/30 rounded-xl p-3">
+            <CheckCircle className="w-4 h-4 text-[#FFB800] flex-shrink-0 stroke-[2]" />
+            <span className="text-[10px] font-extrabold text-[#FFB800] leading-tight tracking-wide">
               {t('ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG', 'REGISTERED WITH MINISTRY OF COMMERCE')}
             </span>
           </div>
