@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -7,7 +9,7 @@ import { Button } from '../common/Button'
 import { MapPin, Sparkles, Send, ExternalLink } from 'lucide-react'
 
 export function ContactCtaSection() {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
@@ -26,7 +28,7 @@ export function ContactCtaSection() {
         {/* 1. Special Offer Promo Banner */}
         <div>
           <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
-            {t('Ưu đãi đặc biệt', 'Special Offers')}
+            {tx(UI.specialOffers)}
           </h2>
           <div className="relative overflow-hidden rounded-[12px] bg-gradient-to-r from-[#0F2D52] via-[#163B6C] to-[#1D4E89] text-white p-6 sm:p-8 shadow-md">
             {/* Background Decorative Graphic */}
@@ -35,18 +37,18 @@ export function ContactCtaSection() {
             <div className="relative z-10 max-w-xl space-y-3">
               <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[#C6A86A]">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>{t('ƯU ĐÃI MÙA HÈ', 'SUMMER SPECIAL')}</span>
+                <span>{tx(UI.summerSpecial)}</span>
               </div>
               <h3 className="font-serif text-xl sm:text-3xl font-bold leading-tight">
-                {t('Giảm đến 20% cho đặt phòng sớm', 'Get up to 20% off early bookings')}
+                {tx(UI.getUpTo20OffEarly)}
               </h3>
               <p className="text-xs sm:text-sm text-white/90 font-normal">
-                {t('Đặt phòng trước 14 ngày để nhận ưu đãi đặc biệt cùng xe đưa đón bến tàu miễn phí.', 'Book 14 days in advance to enjoy exclusive discounts and free pier transfer.')}
+                {tx(UI.book14DaysInAdvanceTo)}
               </p>
               <div className="pt-2">
                 <Link href="/rooms">
                   <Button variant="secondary" size="md" radius="6px">
-                    {t('Xem chi tiết', 'View details')}
+                    {tx(UI.viewDetails)}
                   </Button>
                 </Link>
               </div>
@@ -57,7 +59,7 @@ export function ContactCtaSection() {
         {/* 2. Resort Location Map Box */}
         <div>
           <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
-            {t('Vị trí của chúng tôi', 'Our Location')}
+            {tx(UI.ourLocation)}
           </h2>
           <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-sm grid grid-cols-1 md:grid-cols-3">
             {/* Map Preview Visual */}
@@ -82,10 +84,7 @@ export function ContactCtaSection() {
                   <span>The Nam Du Hill Resort</span>
                 </div>
                 <p className="text-xs text-[#4B5563] mt-2 leading-relaxed font-normal">
-                  {t(
-                    'Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Tỉnh Kiên Giang, Việt Nam',
-                    'Cu Tron Village, Nam Du Island, Kien Hai District, Kien Giang Province, Vietnam'
-                  )}
+                  {tx(UI.cuTronVillageNamDuIsland2)}
                 </p>
               </div>
 
@@ -96,7 +95,7 @@ export function ContactCtaSection() {
               >
                 <Button variant="outline" size="md" fullWidth radius="6px">
                   <span className="flex items-center justify-center gap-1.5">
-                    {t('Xem trên bản đồ', 'View on Google Maps')}
+                    {tx(UI.viewOnGoogleMaps)}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </span>
                 </Button>
@@ -108,26 +107,23 @@ export function ContactCtaSection() {
         {/* 3. Newsletter Subscription Box */}
         <div>
           <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mb-3">
-            {t('Tham gia nhận ưu đãi', 'Join for Exclusive Offers')}
+            {tx(UI.joinForExclusiveOffers)}
           </h2>
           <div className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 sm:p-7 max-w-2xl">
             <p className="text-xs sm:text-sm text-[#4B5563] mb-4 font-normal">
-              {t(
-                'Nhận thông tin ưu đãi mới nhất và bí kíp du lịch Nam Du trực tiếp qua email của bạn.',
-                'Get the latest resort promotions and travel tips directly in your email inbox.'
-              )}
+              {tx(UI.getTheLatestResortPromotionsAnd)}
             </p>
 
             {subscribed ? (
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-[8px] text-emerald-700 text-xs font-semibold">
-                ✓ {t('Cảm ơn bạn đã đăng ký! Chúng tôi sẽ gửi thông tin ưu đãi sớm nhất.', 'Thank you for subscribing!')}
+                ✓ {tx(UI.thankYouForSubscribing)}
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   required
-                  placeholder={t('Email của bạn', 'Your email address')}
+                  placeholder={tx(UI.yourEmailAddress)}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="flex-1 h-[42px] bg-white border border-[#E5E7EB] rounded-[8px] px-3.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89] shadow-sm"
@@ -135,7 +131,7 @@ export function ContactCtaSection() {
                 <Button type="submit" variant="primary" size="md" radius="6px">
                   <span className="flex items-center justify-center gap-1.5">
                     <Send className="w-3.5 h-3.5" />
-                    <span>{t('Đăng ký', 'Subscribe')}</span>
+                    <span>{tx(UI.subscribe)}</span>
                   </span>
                 </Button>
               </form>

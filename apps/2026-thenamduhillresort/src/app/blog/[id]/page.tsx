@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useParams, notFound } from 'next/navigation'
@@ -10,7 +12,7 @@ import { ImageSlot } from '../../../components/common/ImageSlot'
 export default function BlogPostDetailPage() {
   const params = useParams()
   const postId = params.id as string
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [copied, setCopied] = useState(false)
@@ -20,9 +22,9 @@ export default function BlogPostDetailPage() {
   if (!post) {
     return (
       <div style={{ paddingTop: '140px', paddingBottom: '100px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 800 }}>{t('Bài viết không tồn tại', 'Article not found')}</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 800 }}>{tx(UI.articleNotFound)}</h1>
         <p style={{ color: '#566e7d', marginBottom: '24px' }}>
-          {t('Bài viết bạn tìm kiếm có thể đã thay đổi đường dẫn hoặc bị gỡ bỏ.', 'The requested article may have been moved or removed.')}
+          {tx(UI.theRequestedArticleMayHaveBeen)}
         </p>
         <Link
           href="/blog"
@@ -35,7 +37,7 @@ export default function BlogPostDetailPage() {
             textDecoration: 'none',
           }}
         >
-          {t('Trở lại Cẩm nang', 'Back to Journal')}
+          {tx(UI.backToJournal)}
         </Link>
       </div>
     )
@@ -73,11 +75,11 @@ export default function BlogPostDetailPage() {
       <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '16px 32px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 0 16px', fontSize: '12.5px', fontWeight: 600, color: '#8fa5b3', flexWrap: 'wrap' }}>
           <Link href="/" style={{ color: '#8fa5b3', textDecoration: 'none' }}>
-            {t('Trang chủ', 'Home')}
+            {tx(UI.home)}
           </Link>
           <span>›</span>
           <Link href="/blog" style={{ color: '#8fa5b3', textDecoration: 'none' }}>
-            {t('Cẩm nang Nam Du', 'Nam Du Journal')}
+            {tx(UI.namDuJournal)}
           </Link>
           <span>›</span>
           <span style={{ color: '#0b1b26', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px' }}>
@@ -174,7 +176,7 @@ export default function BlogPostDetailPage() {
                     transition: 'background 150ms ease',
                   }}
                 >
-                  {copied ? t('Đã sao chép ✓', 'Copied ✓') : t('Sao chép liên kết', 'Copy link')}
+                  {copied ? tx(UI.copied) : tx(UI.copyLink)}
                 </button>
               </div>
             </div>
@@ -264,7 +266,7 @@ export default function BlogPostDetailPage() {
             {/* Other articles box */}
             <div style={{ border: '1px solid #e6eef4', borderRadius: '24px', boxShadow: '0 14px 40px rgba(6,40,58,0.06)', padding: '24px', background: '#ffffff' }}>
               <div style={{ fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.13em', textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '16px' }}>
-                {t('Bài viết khác', 'More from journal')}
+                {tx(UI.moreFromJournal)}
               </div>
               <div style={{ display: 'grid', gap: '12px' }}>
                 {otherPosts.map((op) => (
@@ -301,17 +303,17 @@ export default function BlogPostDetailPage() {
               </div>
               <div style={{ height: '1px', background: '#eef4f8', margin: '16px 0' }} />
               <Link href="/blog" style={{ fontSize: '13.5px', fontWeight: 700, color: '#0284c7', textDecoration: 'none' }}>
-                {t('Xem tất cả cẩm nang →', 'All journal articles →')}
+                {tx(UI.allJournalArticles)}
               </Link>
             </div>
 
             {/* Trip Booking Callout Box */}
             <div style={{ border: '1px solid #e6eef4', borderRadius: '24px', padding: '24px', background: '#f7fbfd' }}>
               <div style={{ fontSize: '16px', fontWeight: 800, letterSpacing: '-0.02em', color: '#0b1b26', marginBottom: '6px' }}>
-                {t('Đang lên kế hoạch ra đảo?', 'Planning your island trip?')}
+                {tx(UI.planningYourIslandTrip)}
               </div>
               <div style={{ fontSize: '13px', lineHeight: 1.55, color: '#566e7d', marginBottom: '16px' }}>
-                {t('Đặt trực tiếp để có giá tốt nhất, đưa đón bến tàu miễn phí và đã gồm bữa sáng.', 'Book direct for best rate, free pier transfer and breakfast included.')}
+                {tx(UI.bookDirectForBestRateFree)}
               </div>
               <div style={{ display: 'grid', gap: '8px' }}>
                 <Link
@@ -327,7 +329,7 @@ export default function BlogPostDetailPage() {
                     textDecoration: 'none',
                   }}
                 >
-                  {t('Xem 20 hạng phòng', 'See 20 room types')}
+                  {tx(UI.see20RoomTypes)}
                 </Link>
                 <a
                   href="tel:0985000650"
@@ -343,7 +345,7 @@ export default function BlogPostDetailPage() {
                     textDecoration: 'none',
                   }}
                 >
-                  {t('Gọi 0985 000 650', 'Call 0985 000 650')}
+                  {tx(UI.call0985000650)}
                 </a>
               </div>
             </div>
@@ -355,10 +357,10 @@ export default function BlogPostDetailPage() {
       <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '80px 32px 40px' }}>
         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'space-between', gap: '40px', marginBottom: '24px' }}>
           <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 800, letterSpacing: '-0.028em', color: '#0b1b26' }}>
-            {t('Đọc tiếp', 'Keep reading')}
+            {tx(UI.keepReading)}
           </h2>
           <Link href="/blog" style={{ fontSize: '14px', fontWeight: 700, color: '#0284c7', whiteSpace: 'nowrap', textDecoration: 'none' }}>
-            {t('Xem tất cả cẩm nang →', 'All articles →')}
+            {tx(UI.allJournalArticles)}
           </Link>
         </div>
 
@@ -391,7 +393,7 @@ export default function BlogPostDetailPage() {
                   {isEn ? op.ledeEn : op.ledeVi}
                 </div>
                 <div style={{ fontSize: '12px', fontWeight: 600, color: '#8fa5b3' }}>
-                  {isEn ? op.dateEn : op.dateVi} · {op.readMin} {t('phút', 'min')}
+                  {isEn ? op.dateEn : op.dateVi} · {op.readMin} {tx(UI.min)}
                 </div>
               </div>
             </Link>

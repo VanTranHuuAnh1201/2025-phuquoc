@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -9,7 +11,7 @@ interface VideoModalProps {
 }
 
 export function VideoModal({ isOpen, onClose }: VideoModalProps) {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
 
   if (!isOpen) return null
 
@@ -43,10 +45,10 @@ export function VideoModal({ isOpen, onClose }: VideoModalProps) {
         >
           <div>
             <div style={{ fontSize: '19px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
-              {t('The Nam Du Hill — phim giới thiệu', 'The Nam Du Hill — the film')}
+              {tx(UI.theNamDuHillTheFilm)}
             </div>
             <div style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.62)', marginTop: '3px' }}>
-              {t('3 phút, quay tại đỉnh đồi', '3 minutes, shot on the hill')}
+              {tx(UI.n3MinutesShotOnTheHill)}
             </div>
           </div>
           <button

@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -8,7 +10,7 @@ import { Home, Bed, Tag, MessageSquare, User } from 'lucide-react'
 
 export function MobileStickyCta() {
   const pathname = usePathname()
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
 
   // Hide global bottom navigation bar on checkout page, room detail page, and admin pages
   if (
@@ -23,27 +25,27 @@ export function MobileStickyCta() {
   const tabs = [
     {
       href: '/',
-      label: t('Trang chủ', 'Home'),
+      label: tx(UI.home),
       icon: Home,
     },
     {
       href: '/rooms',
-      label: t('Phòng', 'Rooms'),
+      label: tx(UI.rooms),
       icon: Bed,
     },
     {
       href: '/explore',
-      label: t('Ưu đãi', 'Offers'),
+      label: tx(UI.offers),
       icon: Tag,
     },
     {
       href: '/contact',
-      label: t('Đánh giá', 'Reviews'),
+      label: tx(UI.reviews2),
       icon: MessageSquare,
     },
     {
       href: '/my-bookings',
-      label: t('Đơn hàng', 'My Bookings'),
+      label: tx(UI.myBookings3),
       icon: User,
     },
   ]

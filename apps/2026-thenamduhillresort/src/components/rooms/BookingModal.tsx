@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { Room, formatVND, roomSlug } from '../../data/rooms'
@@ -11,7 +13,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ room, onClose }: BookingModalProps) {
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const today = new Date().toISOString().split('T')[0]
@@ -183,7 +185,7 @@ export function BookingModal({ room, onClose }: BookingModalProps) {
         <div style={{ padding: '16px 32px 0', display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '10px' }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '11px 14px' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8fa5b3' }}>
-              {t('Nhận phòng', 'Check in')}
+              {tx(UI.checkIn)}
             </span>
             <input
               type="date"
@@ -195,7 +197,7 @@ export function BookingModal({ room, onClose }: BookingModalProps) {
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '11px 14px' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8fa5b3' }}>
-              {t('Trả phòng', 'Check out')}
+              {tx(UI.checkOut)}
             </span>
             <input
               type="date"
@@ -207,7 +209,7 @@ export function BookingModal({ room, onClose }: BookingModalProps) {
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '11px 14px' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8fa5b3' }}>
-              {t('Số khách', 'Guests')}
+              {tx(UI.guests2)}
             </span>
             <input
               type="number"
@@ -248,7 +250,7 @@ export function BookingModal({ room, onClose }: BookingModalProps) {
           </div>
           <div>
             <div style={{ fontSize: '15px', fontWeight: 800, color: '#0b1b26', marginBottom: '6px' }}>
-              {t('Chuyển cọc 50% để giữ phòng', 'Pay a 50% deposit to confirm')}
+              {tx(UI.payA50DepositToConfirm)}
             </div>
             <div style={{ fontSize: '13px', lineHeight: 1.55, color: '#566e7d', marginBottom: '14px' }}>
               Cú pháp: <span style={{ fontWeight: 700, color: '#0284c7' }}>{syntaxText}</span>
@@ -267,14 +269,11 @@ export function BookingModal({ room, onClose }: BookingModalProps) {
                   transition: 'background 150ms ease',
                 }}
               >
-                {t('Xác nhận qua hotline 0985 000 650', 'Confirm via hotline 0985 000 650')}
+                {tx(UI.confirmViaHotline0985000650)}
               </a>
             </div>
             <div style={{ marginTop: '12px', fontSize: '11.5px', color: '#8fa5b3', lineHeight: 1.5 }}>
-              {t(
-                'Huỷ miễn phí trước 7 ngày. Thay đổi do thời tiết biển luôn được hoàn cọc.',
-                'Free cancellation up to 7 days before arrival. Sea-weather changes are always refunded.'
-              )}
+              {tx(UI.freeCancellationUpTo7Days)}
             </div>
           </div>
         </div>

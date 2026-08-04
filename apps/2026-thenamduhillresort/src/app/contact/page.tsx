@@ -1,12 +1,14 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../../components/common/Button'
 import { MapPin, Mail, Clock, Send, MessageCircle, Navigation, CheckCircle } from 'lucide-react'
 
 export default function ContactPage() {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,18 +23,15 @@ export default function ContactPage() {
         <div className="max-w-[1280px] mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-xs font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>{t('Hỗ trợ tư vấn 24/7', '24/7 Reception Support')}</span>
+            <span>{tx(UI.n247ReceptionSupport)}</span>
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F2D52] tracking-tight">
-            {t('Liên hệ & Đặt phòng', 'Contact & Reservations')}
+            {tx(UI.contactReservations)}
           </h1>
 
           <p className="text-sm sm:text-base text-[#4B5563] max-w-2xl leading-relaxed">
-            {t(
-              'Gửi yêu cầu hoặc nhắn Zalo trực tiếp để nhận báo giá ưu đãi tốt nhất. Đặt phòng trực tiếp luôn cam kết đưa đón bến tàu miễn phí.',
-              'Send a request or message on Zalo for the best rates. Direct bookings include free pier transfers.'
-            )}
+            {tx(UI.sendARequestOrMessageOn)}
           </p>
         </div>
       </section>
@@ -45,10 +44,10 @@ export default function ContactPage() {
           <div className="lg:col-span-7 bg-white border border-[#ECECEC] rounded-[12px] p-6 sm:p-8 shadow-xs space-y-6">
             <div>
               <h2 className="font-serif text-xl font-bold text-[#0F2D52]">
-                {t('Gửi yêu cầu đặt phòng nhanh', 'Quick Reservation Request')}
+                {tx(UI.quickReservationRequest)}
               </h2>
               <p className="text-xs text-[#6B7280] mt-1">
-                {t('Lễ tân resort sẽ liên hệ xác nhận trong vòng 15-30 phút.', 'Our receptionist will confirm your inquiry within 15-30 minutes.')}
+                {tx(UI.ourReceptionistWillConfirmYourInquiry)}
               </p>
             </div>
 
@@ -56,19 +55,19 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Họ và tên *', 'Full Name *')}
+                    {tx(UI.fullName)}
                   </label>
                   <input
                     required
                     type="text"
-                    placeholder={t('Nhập họ và tên', 'Enter full name')}
+                    placeholder={tx(UI.enterFullName)}
                     className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]"
                   />
                 </div>
 
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Số điện thoại (Zalo) *', 'Phone / Zalo Number *')}
+                    {tx(UI.phoneZaloNumber)}
                   </label>
                   <input
                     required
@@ -93,7 +92,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Ngày nhận phòng', 'Check-in Date')}
+                    {tx(UI.checkInDate)}
                   </label>
                   <input
                     type="date"
@@ -103,7 +102,7 @@ export default function ContactPage() {
 
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Ngày trả phòng', 'Check-out Date')}
+                    {tx(UI.checkOutDate)}
                   </label>
                   <input
                     type="date"
@@ -115,23 +114,23 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Số lượng khách', 'Number of Guests')}
+                    {tx(UI.numberOfGuests)}
                   </label>
                   <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]">
-                    <option>{t('2 khách', '2 guests')}</option>
-                    <option>{t('3 khách', '3 guests')}</option>
-                    <option>{t('4 khách', '4 guests')}</option>
-                    <option>{t('6 khách', '6 guests')}</option>
-                    <option>{t('8 khách trở lên', '8+ guests')}</option>
+                    <option>{tx(UI.n2Guests)}</option>
+                    <option>{tx(UI.n3Guests)}</option>
+                    <option>{tx(UI.n4Guests)}</option>
+                    <option>{tx(UI.n6Guests)}</option>
+                    <option>{tx(UI.n8Guests)}</option>
                   </select>
                 </div>
 
                 <div className="space-y-1">
                   <label className="block font-semibold text-[#1A1A1A]">
-                    {t('Hạng phòng quan tâm', 'Preferred Room')}
+                    {tx(UI.preferredRoom)}
                   </label>
                   <select className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89]">
-                    <option>{t('Chưa quyết — cần tư vấn', 'Need recommendation')}</option>
+                    <option>{tx(UI.needRecommendation)}</option>
                     <option>Deluxe Sea View</option>
                     <option>Rock Deluxe Sunset</option>
                     <option>Superior King Sea View</option>
@@ -142,11 +141,11 @@ export default function ContactPage() {
 
               <div className="space-y-1">
                 <label className="block font-semibold text-[#1A1A1A]">
-                  {t('Ghi chú hoặc yêu cầu đặc biệt', 'Message or Special Requests')}
+                  {tx(UI.messageOrSpecialRequests)}
                 </label>
                 <textarea
                   rows={3}
-                  placeholder={t('Ví dụ: Cần xe đón bến tàu lúc 10h, ăn chay...', 'e.g. Need pier pick-up at 10am, vegetarian...')}
+                  placeholder={tx(UI.eGNeedPierPickUp)}
                   className="w-full border border-[#D1D5DB] rounded-[6px] px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1D4E89] resize-none"
                 />
               </div>
@@ -154,7 +153,7 @@ export default function ContactPage() {
               {submitted && (
                 <div className="bg-emerald-50 border border-emerald-200 rounded-[8px] p-3 flex items-center gap-2 text-xs text-emerald-800 font-medium">
                   <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>{t('Yêu cầu đã được gửi! Lễ tân sẽ nhắn Zalo cho bạn ngay.', 'Request sent! Receptionist will message you on Zalo shortly.')}</span>
+                  <span>{tx(UI.requestSentReceptionistWillMessageYou)}</span>
                 </div>
               )}
 
@@ -167,7 +166,7 @@ export default function ContactPage() {
                   className="flex-1 py-3"
                 >
                   <Send className="w-4 h-4 mr-1.5" />
-                  {t('Gửi yêu cầu tư vấn', 'Submit Request')}
+                  {tx(UI.submitRequest)}
                 </Button>
 
                 <a
@@ -184,7 +183,7 @@ export default function ContactPage() {
                     className="w-full py-3 border-[#0068FF] text-[#0068FF] hover:bg-[#0068FF]/5"
                   >
                     <MessageCircle className="w-4 h-4 mr-1.5 text-[#0068FF]" />
-                    {t('Nhắn Zalo ngay', 'Message on Zalo')}
+                    {tx(UI.messageOnZalo)}
                   </Button>
                 </a>
               </div>
@@ -198,7 +197,7 @@ export default function ContactPage() {
             <div className="bg-[#0F2D52] text-white rounded-[12px] p-6 space-y-5 shadow-xs">
               <div className="space-y-1">
                 <span className="text-[11px] font-bold text-[#C6A86A] uppercase tracking-wider">
-                  {t('Hotline Đặt phòng', 'Reservation Hotline')}
+                  {tx(UI.reservationHotline)}
                 </span>
                 <a
                   href="tel:0985000650"
@@ -207,7 +206,7 @@ export default function ContactPage() {
                   0985 000 650
                 </a>
                 <p className="text-xs text-white/70">
-                  {t('Zalo / WhatsApp cùng số · Hỗ trợ 24/7', 'Zalo / WhatsApp available · 24/7 Service')}
+                  {tx(UI.zaloWhatsappAvailable247Service)}
                 </p>
               </div>
 
@@ -215,9 +214,9 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-[#C6A86A] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold block text-white">{t('Địa chỉ Resort:', 'Resort Address:')}</span>
+                    <span className="font-semibold block text-white">{tx(UI.resortAddress)}</span>
                     <span className="text-white/80 leading-relaxed">
-                      {t('Ấp Củ Tron, Đặc Khu Kiên Hải, tỉnh An Giang, Việt Nam', 'Cu Tron Hamlet, Kien Hai Special Zone, An Giang Province, Vietnam')}
+                      {tx(UI.cuTronHamletKienHaiSpecial)}
                     </span>
                   </div>
                 </div>
@@ -235,9 +234,9 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-[#C6A86A] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold block text-white">{t('Giờ đón khách:', 'Reception Hours:')}</span>
+                    <span className="font-semibold block text-white">{tx(UI.receptionHours)}</span>
                     <span className="text-white/80">
-                      {t('Check-in 14:00 · Check-out 12:00 (Lễ tân 24/7)', 'Check-in 14:00 · Check-out 12:00 (24/7 Desk)')}
+                      {tx(UI.checkIn1400CheckOut)}
                     </span>
                   </div>
                 </div>
@@ -248,7 +247,7 @@ export default function ContactPage() {
             <div className="bg-white border border-[#ECECEC] rounded-[12px] p-5 space-y-3 shadow-xs">
               <h3 className="font-serif text-sm font-bold text-[#0F2D52] flex items-center gap-1.5">
                 <Navigation className="w-4 h-4 text-[#1D4E89]" />
-                <span>{t('Hướng dẫn di chuyển đến Nam Du', 'Getting to Nam Du Island')}</span>
+                <span>{tx(UI.gettingToNamDuIsland)}</span>
               </h3>
 
               <div className="space-y-3 text-xs">
@@ -257,8 +256,8 @@ export default function ContactPage() {
                     1
                   </span>
                   <div>
-                    <span className="font-bold text-[#1A1A1A] block">{t('TP.HCM → Rạch Giá', 'HCMC → Rach Gia')}</span>
-                    <span className="text-[#6B7280]">{t('Xe giường nằm đêm, khoảng 7 tiếng (210k–250k).', 'Overnight sleeper coach, approx. 7 hours.')}</span>
+                    <span className="font-bold text-[#1A1A1A] block">{tx(UI.hcmcRachGia)}</span>
+                    <span className="text-[#6B7280]">{tx(UI.overnightSleeperCoachApprox7Hours)}</span>
                   </div>
                 </div>
 
@@ -267,8 +266,8 @@ export default function ContactPage() {
                     2
                   </span>
                   <div>
-                    <span className="font-bold text-[#1A1A1A] block">{t('Rạch Giá → Bến Củ Tron', 'Rach Gia → Cu Tron Pier')}</span>
-                    <span className="text-[#6B7280]">{t('Tàu cao tốc (Superdong, Phú Quốc Express), 2.5 tiếng.', 'Speedboat (Superdong, Phu Quoc Express), 2.5 hours.')}</span>
+                    <span className="font-bold text-[#1A1A1A] block">{tx(UI.rachGiaCuTronPier)}</span>
+                    <span className="text-[#6B7280]">{tx(UI.speedboatSuperdongPhuQuocExpress2)}</span>
                   </div>
                 </div>
 
@@ -277,8 +276,8 @@ export default function ContactPage() {
                     3
                   </span>
                   <div>
-                    <span className="font-bold text-emerald-800 block">{t('Bến tàu → The Nam Du Hill', 'Pier → The Nam Du Hill')}</span>
-                    <span className="text-emerald-700 font-medium">{t('Xe riêng resort đón tận bến tàu (Miễn phí 2 chiều).', 'Resort car picks you up at pier (Free 2-way).')}</span>
+                    <span className="font-bold text-emerald-800 block">{tx(UI.pierTheNamDuHill)}</span>
+                    <span className="text-emerald-700 font-medium">{tx(UI.resortCarPicksYouUpAt)}</span>
                   </div>
                 </div>
               </div>
@@ -302,14 +301,14 @@ export default function ContactPage() {
             {/* Floating Location Card */}
             <div className="absolute left-4 bottom-4 bg-white/95 backdrop-blur-md border border-[#ECECEC] rounded-[10px] p-4 shadow-lg max-w-[300px] text-xs space-y-1.5">
               <h4 className="font-serif font-bold text-[#0F2D52] text-sm">THE NAM DU HILL RESORT</h4>
-              <p className="text-[#6B7280]">{t('Ấp Củ Tron, Kiên Hải, Kiên Giang', 'Cu Tron Hamlet, Kien Hai, Kien Giang')}</p>
+              <p className="text-[#6B7280]">{tx(UI.cuTronHamletKienHaiKien)}</p>
               <a
                 href="https://www.google.com/maps/search/?api=1&amp;query=THE+NAM+DU+HILL+resort+Nam+Du"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block text-[#1D4E89] font-semibold hover:underline pt-1"
               >
-                {t('Xem trên Google Maps →', 'Open in Google Maps →')}
+                {tx(UI.openInGoogleMaps)}
               </a>
             </div>
           </div>

@@ -1,6 +1,8 @@
 'use client'
 
-import { Calendar, ChevronRight, Play, Users } from 'lucide-react'
+import { UI } from '@repo/core'
+
+import { Calendar, Play } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
@@ -21,7 +23,7 @@ function countNights(checkIn: string, checkOut: string) {
 }
 
 export function HeroSection() {
-  const { t } = useLanguage()
+  const { t, tx } = useLanguage()
   const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
@@ -102,25 +104,22 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-[1320px] mx-auto px-5 sm:px-8 pt-[96px] sm:pt-[130px] lg:pt-[160px] pb-10 sm:pb-[42px] min-h-[70vh] flex flex-col justify-end">
+      <div className="relative z-10 w-full max-w-[1320px] mx-auto px-5 sm:px-8 pt-[96px] sm:pt-[130px] lg:pt-[160px] pb-5 sm:pb-[42px] min-h-[70vh] flex flex-col justify-end">
 
         {/* Eyebrow */}
-        <div className="flex items-center gap-3 mb-4 sm:mb-[18px]">
+        <div className="flex items-center gap-3 mb-4 sm:mb-[18px] hidden md:flex">
           <span className="w-[7px] h-[7px] rounded-full bg-[#00c46a]" />
           <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white/[0.86]">
-            {t('Hilltop boutique resort · Ấp Củ Tron, Nam Du', 'Hilltop boutique resort · Cu Tron, Nam Du')}
+            {tx(UI.hilltopBoutiqueResortCuTronNam)}
           </span>
         </div>
 
         <h1 className="m-0 mb-4 sm:mb-[18px] font-bold text-white text-[clamp(32px,5vw,68px)] leading-[1.04] tracking-[-0.038em] max-w-[15ch] text-balance">
-          {t('Bình minh và hoàng hôn từ cùng một sân hiên.', 'Sunrise and sunset, from the very same terrace.')}
+          {tx(UI.sunriseAndSunsetFromTheVery)}
         </h1>
 
-        <p className="m-0 mb-5 sm:mb-[26px] text-[clamp(15px,1.3vw,17.5px)] leading-[1.6] text-white/[0.84] max-w-[58ch] line-clamp-3 sm:line-clamp-none">
-          {t(
-            'Trên ngọn đồi cao nhất Ấp Củ Tron, thung lũng mở ra ôm trọn vịnh Hòn Lớn — và về đêm, ánh đèn chợ đêm Nam Du nằm ngay dưới chân bạn.',
-            'On the highest hill of Cu Tron, the valley opens onto Hon Lon bay — and at night, the lights of the Nam Du night market sit right below you.'
-          )}
+        <p className="hidden md:flex m-0 mb-5 sm:mb-[26px] text-[clamp(15px,1.3vw,17.5px)] leading-[1.6] text-white/[0.84] max-w-[58ch] line-clamp-3 sm:line-clamp-none">
+          {tx(UI.onTheHighestHillOfCu)}
         </p>
 
         {/* CTAs + rating strip — desktop only; mobile keeps just the search card */}
@@ -130,7 +129,7 @@ export function HeroSection() {
             onClick={() => router.push('/rooms')}
             className="bg-white text-[#0b1b26] text-[15px] font-bold px-[30px] py-4 rounded-full whitespace-nowrap transition-all duration-150 hover:bg-[#00c46a] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            {t('Xem 20 hạng phòng', 'Explore 20 room types')}
+            {tx(UI.see20RoomTypes)}
           </button>
 
           <button
@@ -141,14 +140,14 @@ export function HeroSection() {
             <span className="w-[30px] h-[30px] rounded-full bg-white text-[#0b1b26] flex items-center justify-center">
               <Play className="w-3 h-3 fill-current translate-x-[1px]" />
             </span>
-            <span>{t('Xem phim giới thiệu · 3:00', 'Watch the film · 3:00')}</span>
+            <span>{tx(UI.watchTheFilm300)}</span>
           </button>
 
           <div className="flex items-center gap-5 sm:gap-[22px] flex-wrap">
             {[
-              { value: '8.5', accent: false, label: t('300+ đánh giá Booking.com', '300+ Booking.com reviews') },
-              { value: '9.1', accent: true, label: t('Nhân viên & chủ nhà', 'Staff & host care') },
-              { value: '0₫', accent: false, label: t('Đưa đón bến tàu', 'Pier transfer') },
+              { value: '8.5', accent: false, label: tx(UI.n300BookingComReviews) },
+              { value: '9.1', accent: true, label: tx(UI.staffHostCare) },
+              { value: '0₫', accent: false, label: tx(UI.pierTransfer) },
             ].map((stat) => (
               <div key={stat.label} className="flex items-baseline gap-[7px]">
                 <span
@@ -163,93 +162,65 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* 📱 MOBILE — condensed card: dates + guests on one row each, then CTA */}
+        {/* 📱 MOBILE — single compact pill: summary + CTA side by side */}
         <div
           id="booking"
-          className="md:hidden bg-white/[0.96] backdrop-blur-[18px] rounded-[16px] shadow-[0_22px_54px_rgba(5,60,72,0.34)] p-3 space-y-2"
+          className="md:hidden bg-white/[0.96] backdrop-blur-[18px] rounded-[14px] shadow-[0_14px_36px_rgba(5,60,72,0.32)] p-1.5 flex items-center gap-1.5"
         >
           <button
             type="button"
             onClick={() => setIsCalendarModalOpen(true)}
-            className="w-full min-h-[52px] bg-[#f4fbfd] border border-[#d9eff5] rounded-[10px] px-3.5 py-2 flex items-center justify-between gap-3 text-left transition-colors hover:bg-[#eefafd] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4]"
+            aria-label={tx(UI.changeDatesAndGuests)}
+            className="flex-1 min-w-0 min-h-[44px] rounded-[10px] px-2.5 py-1.5 flex items-center gap-2 text-left transition-colors hover:bg-[#eefafd] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4]"
           >
-            <span className="flex items-center gap-2.5 min-w-0">
-              <Calendar className="w-[18px] h-[18px] shrink-0 text-[#06b6d4]" />
-              <span className="flex flex-col gap-0.5 min-w-0">
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#78a3ae]">
-                  {t('Nhận phòng — Trả phòng', 'Check in — Check out')}
-                </span>
-                <span className="text-[13.5px] font-semibold text-[#0b1b26] truncate">
-                  {formatDisplayDate(checkIn)} — {formatDisplayDate(checkOut)}
-                  {nights > 0 ? (
-                    <span className="font-medium text-[#78a3ae]">
-                      {' '}· {nights} {t('đêm', nights > 1 ? 'nights' : 'night')}
-                    </span>
-                  ) : null}
-                </span>
+            <Calendar className="w-4 h-4 shrink-0 text-[#06b6d4]" />
+            <span className="flex flex-col min-w-0">
+              <span className="text-[13px] font-semibold text-[#0b1b26] leading-tight truncate">
+                {formatDisplayDate(checkIn)} — {formatDisplayDate(checkOut)}
+              </span>
+              <span className="text-[11px] font-medium text-[#78a3ae] leading-tight truncate">
+                {nights > 0 ? `${nights} ${tx(nights > 1 ? UI.nights : UI.night)} · ` : ''}
+                {guests}
               </span>
             </span>
-            <ChevronRight className="w-4 h-4 shrink-0 text-[#06b6d4]" />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsCalendarModalOpen(true)}
-            className="w-full min-h-[52px] bg-[#f4fbfd] border border-[#d9eff5] rounded-[10px] px-3.5 py-2 flex items-center justify-between gap-3 text-left transition-colors hover:bg-[#eefafd] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#06b6d4]"
-          >
-            <span className="flex items-center gap-2.5 min-w-0">
-              <Users className="w-[18px] h-[18px] shrink-0 text-[#06b6d4]" />
-              <span className="flex flex-col gap-0.5 min-w-0">
-                <span className="text-[10px] font-extrabold uppercase tracking-[0.13em] text-[#78a3ae]">
-                  {t('Số khách · Hạng phòng', 'Guests · Room type')}
-                </span>
-                <span className="text-[13.5px] font-semibold text-[#0b1b26] truncate">
-                  {guests} · {roomType}
-                </span>
-              </span>
-            </span>
-            <ChevronRight className="w-4 h-4 shrink-0 text-[#06b6d4]" />
           </button>
 
           <button
             type="button"
             onClick={handleSearch}
-            className="w-full min-h-[48px] bg-[#06b6d4] text-white text-sm font-bold rounded-[12px] shadow-[0_6px_18px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
+            className="shrink-0 h-[44px] px-4 bg-[#06b6d4] text-white text-[13px] font-bold rounded-[10px] whitespace-nowrap shadow-[0_4px_12px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
           >
-            {t('Kiểm tra phòng trống', 'Check availability')}
+            {tx(UI.search)}
           </button>
         </div>
 
         {/* 🖥️ DESKTOP — full 5-column bar; every field opens BookingCalendarModal */}
         <div className="hidden md:grid bg-white/[0.96] backdrop-blur-[18px] rounded-[22px] shadow-[0_22px_54px_rgba(5,60,72,0.34)] px-4 py-3.5 gap-1 [grid-template-columns:minmax(128px,1fr)_minmax(128px,1fr)_minmax(128px,0.8fr)_minmax(200px,1.5fr)_auto] items-stretch">
           <Field
-            label={t('Nhận phòng', 'Check in')}
+            label={tx(UI.checkIn)}
             value={formatDisplayDate(checkIn)}
           />
           <Field
-            label={t('Trả phòng', 'Check out')}
+            label={tx(UI.checkOut)}
             value={formatDisplayDate(checkOut)}
-            hint={nights > 0 ? `${nights} ${t('đêm', nights > 1 ? 'nights' : 'night')}` : undefined}
+            hint={nights > 0 ? `${nights} ${tx(nights > 1 ? UI.nights : UI.night)}` : undefined}
           />
-          <Field label={t('Số khách', 'Guests')} value={guests} />
-          <Field label={t('Chọn phòng', 'Room type')} value={roomType} divider={false} />
+          <Field label={tx(UI.guests2)} value={guests} />
+          <Field label={tx(UI.selectRoom)} value={roomType} divider={false} />
 
           <button
             type="button"
             onClick={handleSearch}
             className="bg-[#06b6d4] text-white text-sm font-bold px-[26px] py-[17px] rounded-[15px] whitespace-nowrap shadow-[0_6px_18px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
           >
-            {t('Kiểm tra phòng trống', 'Check availability')}
+            {tx(UI.checkAvailability)}
           </button>
         </div>
 
         {/* Reassurance + slide dots */}
-        <div className="mt-[18px] flex items-center justify-between gap-6 flex-wrap">
+        <div className="mt-[18px] hidden lg:flex items-center justify-between gap-6 flex-wrap">
           <span className="text-[12.5px] font-medium text-white/[0.72]">
-            {t(
-              'Cam kết giá tốt nhất khi đặt trực tiếp · Huỷ miễn phí trước 7 ngày',
-              'Best rate guaranteed when you book direct · Free cancellation up to 7 days before arrival'
-            )}
+            {tx(UI.bestRateGuaranteedWhenYouBook)}
           </span>
           <div className="flex gap-2">
             {SLIDES.map((slide, idx) => (

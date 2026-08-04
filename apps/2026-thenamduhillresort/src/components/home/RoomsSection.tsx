@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -7,7 +9,7 @@ import { Button } from '../common/Button'
 import { ROOMS, formatVND, roomSlug } from '../../data/rooms'
 
 export function RoomsSection() {
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const featuredRooms = [
@@ -61,12 +63,12 @@ export function RoomsSection() {
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Các loại phòng nổi bật', 'Featured Room Types')}
+              {tx(UI.featuredRoomTypes)}
             </h2>
           </div>
           <Link href="/rooms">
             <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem tất cả', 'See all')}
+              {tx(UI.viewAll)}
             </Button>
           </Link>
         </div>
@@ -99,7 +101,7 @@ export function RoomsSection() {
                   </h3>
                   <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1 font-normal">
                     <span>📐 {room.area}m²</span>
-                    <span>👤 {room.cap} {t('người', 'guests')}</span>
+                    <span>👤 {room.cap} {tx(UI.guests)}</span>
                   </div>
                 </div>
 
@@ -108,10 +110,10 @@ export function RoomsSection() {
                     <span className="font-bold text-sm sm:text-base text-[#0F2D52]">
                       {formatVND(room.price)}
                     </span>
-                    <span className="text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+                    <span className="text-[10px] text-[#6B7280]">/{tx(UI.nights)}</span>
                   </div>
                   <Button variant="primary" size="sm" radius="6px">
-                    {t('Xem phòng', 'View Room')}
+                    {tx(UI.viewRoom)}
                   </Button>
                 </div>
               </div>

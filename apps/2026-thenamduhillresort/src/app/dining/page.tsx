@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../../components/common/ImageSlot'
@@ -8,7 +10,7 @@ import { Button } from '../../components/common/Button'
 import { Utensils, Coffee, Flame, MessageCircle } from 'lucide-react'
 
 export default function DiningPage() {
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [activeTab, setActiveTab] = useState<'coffee' | 'tea' | 'hot'>('coffee')
@@ -29,21 +31,15 @@ export default function DiningPage() {
         <div className="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-24 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium">
             <Utensils className="w-3.5 h-3.5 text-[#C6A86A]" />
-            <span>{t('Ẩm thực biển đảo trên đỉnh đồi', 'Hilltop Oceanfront Dining')}</span>
+            <span>{tx(UI.hilltopOceanfrontDining)}</span>
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight max-w-3xl leading-tight">
-            {t(
-              'Ẩm thực hải sản Nam Du — Tươi ngon, đậm đà bản vị',
-              'Nam Du Seafood Dining — Fresh, Plain, Unmistakably Local'
-            )}
+            {tx(UI.namDuSeafoodDiningFreshPlain)}
           </h1>
 
           <p className="text-sm sm:text-base text-white/80 max-w-2xl leading-relaxed">
-            {t(
-              'Hải sản tươi mua trực tiếp từ ngư dân Nam Du trong ngày. Bữa sáng miễn phí, cà phê ngắm bình minh và tiệc nướng BBQ ngoài trời.',
-              'Seafood landed daily by Nam Du fishermen. Complimentary breakfast, sunrise coffee, and outdoor seafood BBQs.'
-            )}
+            {tx(UI.seafoodLandedDailyByNamDu)}
           </p>
         </div>
       </section>
@@ -61,7 +57,7 @@ export default function DiningPage() {
                 style={{ position: 'absolute', inset: 0 }}
               />
               <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-[#0F2D52] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-[#ECECEC]">
-                {t('CẢ NGÀY · 06:30 – 21:30', 'ALL DAY · 06:30 – 21:30')}
+                {tx(UI.allDay06302130)}
               </span>
             </div>
 
@@ -71,17 +67,14 @@ export default function DiningPage() {
                   Hilltop Restaurant
                 </h3>
                 <p className="text-xs text-[#4B5563] leading-relaxed">
-                  {t(
-                    'Không gian nhà hàng nhìn thẳng xuống biển ngọc Hòn Lớn. Thưởng thức hải sản tươi nướng sa tế, lẩu cá bớp và các món ăn đậm vị miền Tây.',
-                    'Dining room with panoramic sea views of Hon Lon. Enjoy fresh grilled seafood, cobia hotpot, and Southern specialties.'
-                  )}
+                  {tx(UI.diningRoomWithPanoramicSeaViews)}
                 </p>
               </div>
 
               <a href="https://zalo.me/0985000650" target="_blank" rel="noopener noreferrer" className="pt-2">
                 <Button variant="outline" size="sm" radius="6px" className="w-full">
                   <MessageCircle className="w-3.5 h-3.5 mr-1 text-[#0068FF]" />
-                  {t('Đặt bàn qua Zalo', 'Reserve Table on Zalo')}
+                  {tx(UI.reserveTableOnZalo)}
                 </Button>
               </a>
             </div>
@@ -96,7 +89,7 @@ export default function DiningPage() {
                 style={{ position: 'absolute', inset: 0 }}
               />
               <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-emerald-800 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-[#ECECEC]">
-                {t('06:00 – ĐẾN KHUYA', '06:00 – LATE')}
+                {tx(UI.n0600Late)}
               </span>
             </div>
 
@@ -106,17 +99,14 @@ export default function DiningPage() {
                   Sunset Café & Bar
                 </h3>
                 <p className="text-xs text-[#4B5563] leading-relaxed">
-                  {t(
-                    'Nằm tại tầng cao nhất của resort. Phục vụ cà phê phin ngắm bình minh và cocktail nhiệt đới đón hoàng hôn ngả xuống các đảo.',
-                    'Located on the top deck. Serving drip coffee at sunrise and tropical cocktails as the sun sets over the islands.'
-                  )}
+                  {tx(UI.locatedOnTheTopDeckServing)}
                 </p>
               </div>
 
               <a href="#menu" className="pt-2">
                 <Button variant="outline" size="sm" radius="6px" className="w-full">
                   <Coffee className="w-3.5 h-3.5 mr-1 text-[#1D4E89]" />
-                  {t('Xem Menu Đồ Uống', 'View Drinks Menu')}
+                  {tx(UI.viewDrinksMenu)}
                 </Button>
               </a>
             </div>
@@ -141,17 +131,14 @@ export default function DiningPage() {
                   Outdoor BBQ & Karaoke
                 </h3>
                 <p className="text-xs text-[#4B5563] leading-relaxed">
-                  {t(
-                    'Tự nướng hải sản dưới trời sao đỉnh đồi, chuẩn bị sẵn bếp nướng, than hồng và dàn karaoke giải trí cho gia đình.',
-                    'Grill fresh catch under the stars with coals, setup, sauces, and a outdoor karaoke rig for families.'
-                  )}
+                  {tx(UI.grillFreshCatchUnderTheStars)}
                 </p>
               </div>
 
               <a href="#bbq" className="pt-2">
                 <Button variant="primary" size="sm" radius="6px" className="w-full">
                   <Flame className="w-3.5 h-3.5 mr-1" />
-                  {t('Xem Giá Tiệc BBQ', 'BBQ Pricing')}
+                  {tx(UI.bbqPricing)}
                 </Button>
               </a>
             </div>
@@ -165,10 +152,10 @@ export default function DiningPage() {
         <div className="space-y-2 mb-8">
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1D4E89]">
             <Utensils className="w-4 h-4 text-[#1D4E89]" />
-            <span>{t('Hải Sản Tươi Sống Trong Ngày', 'Fresh Daily Catch')}</span>
+            <span>{tx(UI.freshDailyCatch)}</span>
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F2D52]">
-            {t('Những Món Đặc Trưng Không Thể Bỏ Qua', 'Signature Island Specialties')}
+            {tx(UI.signatureIslandSpecialties)}
           </h2>
         </div>
 
@@ -184,13 +171,13 @@ export default function DiningPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-[#0F2D52]/40 to-transparent pointer-events-none" />
             <div className="relative z-10 space-y-1.5 text-white">
               <span className="inline-block text-[10px] font-bold text-[#C6A86A] bg-[#0F2D52]/80 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-[#C6A86A]/30">
-                {t('Món Đặc Sản Số 1', 'Top Specialty')}
+                {tx(UI.topSpecialty)}
               </span>
               <h3 className="font-serif text-2xl font-bold text-white group-hover:text-[#C6A86A] transition">
                 Gỏi Cá Trích Nam Du
               </h3>
               <p className="text-xs text-white/80 leading-relaxed max-w-md">
-                {t('Cá trích tươi cuốn bánh tráng với rau rừng bản địa, dừa nạo và nước chấm đậu phộng gia truyền.', 'Fresh herring rolled in rice paper with wild island herbs, grated coconut and traditional peanut dip.')}
+                {tx(UI.freshHerringRolledInRicePaper)}
               </p>
             </div>
           </div>
@@ -205,7 +192,7 @@ export default function DiningPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-transparent to-transparent pointer-events-none" />
             <div className="relative z-10 text-white space-y-0.5">
               <h4 className="font-bold text-sm text-white group-hover:text-[#C6A86A] transition">Cháo Cá Đập Đập</h4>
-              <p className="text-[11px] text-white/80">{t('Đậm đà hương vị miền Tây', 'Rich Mekong style porridge')}</p>
+              <p className="text-[11px] text-white/80">{tx(UI.richMekongStylePorridge)}</p>
             </div>
           </div>
 
@@ -219,7 +206,7 @@ export default function DiningPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-transparent to-transparent pointer-events-none" />
             <div className="relative z-10 text-white space-y-0.5">
               <h4 className="font-bold text-sm text-white group-hover:text-[#C6A86A] transition">Lẩu Hải Sản Chua Cay</h4>
-              <p className="text-[11px] text-white/80">{t('Nồi lẩu nóng hổi cho 2–4 người', 'Hotpot for 2–4 guests')}</p>
+              <p className="text-[11px] text-white/80">{tx(UI.hotpotFor24Guests)}</p>
             </div>
           </div>
 
@@ -233,7 +220,7 @@ export default function DiningPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-transparent to-transparent pointer-events-none" />
             <div className="relative z-10 text-white space-y-0.5">
               <h4 className="font-bold text-sm text-white group-hover:text-[#C6A86A] transition">Hải Sản Nướng Sa Tế</h4>
-              <p className="text-[11px] text-white/80">{t('Ghẹ, tôm hùm, ốc vú nàng, mực trứng', 'Crabs, lobster, squid, snails')}</p>
+              <p className="text-[11px] text-white/80">{tx(UI.crabsLobsterSquidSnails)}</p>
             </div>
           </div>
 
@@ -241,9 +228,9 @@ export default function DiningPage() {
           <div className="bg-[#0F2D52] text-white rounded-[12px] p-5 flex flex-col justify-between space-y-3 border border-[#C6A86A]/20">
             <span className="font-serif text-3xl font-bold text-[#C6A86A]">100%</span>
             <div className="space-y-1">
-              <h4 className="font-bold text-sm text-white">{t('Đánh Bắt Trong Ngày', 'Landed Same Day')}</h4>
+              <h4 className="font-bold text-sm text-white">{tx(UI.landedSameDay)}</h4>
               <p className="text-[11px] text-white/70 leading-relaxed">
-                {t('Mua trực tiếp tại bến tàu Nam Du — không đông lạnh.', 'Bought straight from local fishermen — never frozen.')}
+                {tx(UI.boughtStraightFromLocalFishermenNever)}
               </p>
             </div>
           </div>
@@ -262,7 +249,7 @@ export default function DiningPage() {
                 <span>Sunset Café & Bar</span>
               </div>
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0F2D52]">
-                {t('Menu Đồ Uống Trên Đỉnh Đồi', 'Top Deck Drinks Menu')}
+                {tx(UI.topDeckDrinksMenu)}
               </h2>
             </div>
 
@@ -317,25 +304,22 @@ export default function DiningPage() {
             <div className="lg:col-span-7 space-y-4">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C6A86A]/20 text-[#C6A86A] text-xs font-semibold">
                 <Flame className="w-3.5 h-3.5 text-[#C6A86A]" />
-                <span>{t('Tiệc Nướng BBQ & Karaoke Ngoài Trời', 'Outdoor Seafood BBQ & Karaoke')}</span>
+                <span>{tx(UI.outdoorSeafoodBbqKaraoke)}</span>
               </div>
 
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-snug">
-                {t('Bạn Mua Hải Sản. Chúng Tôi Nhóm Than & Phục Vụ', 'Buy Your Catch. We Light Coals & Serve')}
+                {tx(UI.buyYourCatchWeLightCoals)}
               </h2>
 
               <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                {t(
-                  'Gửi hải sản tươi mua tại bến tàu cho lễ tân. Buổi tối resort chuẩn bị sẵn bếp nướng than hồng, gia vị chấm và dàn âm thanh hát karaoke ngắm biển đêm.',
-                  'Bring your pier seafood catch to reception. We prepare charcoal grills, dipping sauces, and a outdoor karaoke setup.'
-                )}
+                {tx(UI.bringYourPierSeafoodCatchTo)}
               </p>
 
               <div className="pt-2">
                 <a href="https://zalo.me/0985000650" target="_blank" rel="noopener noreferrer">
                   <Button variant="primary" size="md" radius="6px" className="bg-[#0068FF] hover:bg-[#0052cc]">
                     <MessageCircle className="w-4 h-4 mr-1.5" />
-                    {t('Đặt bàn BBQ qua Zalo', 'Reserve BBQ Table on Zalo')}
+                    {tx(UI.reserveBbqTableOnZalo)}
                   </Button>
                 </a>
               </div>
@@ -344,25 +328,25 @@ export default function DiningPage() {
             <div className="lg:col-span-5 space-y-3">
               <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-[10px] p-4 text-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
-                  {t('Setup Bàn BBQ (6–10 khách)', 'BBQ Table Setup (6–10 Guests)')}
+                  {tx(UI.bbqTableSetup610Guests)}
                 </span>
                 <div className="font-serif text-2xl font-bold text-white">
-                  300.000đ <span className="text-xs font-normal text-white/70">/ {t('bàn', 'table')}</span>
+                  300.000đ <span className="text-xs font-normal text-white/70">/ {tx(UI.table)}</span>
                 </div>
                 <p className="text-white/70 text-[11px]">
-                  {t('Bao gồm bếp nướng, than, chén dĩa, kẹp gắp và nước chấm đặc biệt.', 'Includes charcoal grill, plates, tongs & special dipping sauces.')}
+                  {tx(UI.includesCharcoalGrillPlatesTongsSpecial)}
                 </p>
               </div>
 
               <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-[10px] p-4 text-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
-                  {t('Phụ thu bia mang ngoài vào', 'Outside Beer Corkage')}
+                  {tx(UI.outsideBeerCorkage)}
                 </span>
                 <div className="font-serif text-2xl font-bold text-white">
-                  150.000đ <span className="text-xs font-normal text-white/70">/ {t('thùng', 'crate')}</span>
+                  150.000đ <span className="text-xs font-normal text-white/70">/ {tx(UI.crate)}</span>
                 </div>
                 <p className="text-white/70 text-[11px]">
-                  {t('Đã bao gồm thùng đá ướp lạnh suốt tiệc.', 'Includes ice bucket & ice setup.')}
+                  {tx(UI.includesIceBucketIceSetup)}
                 </p>
               </div>
             </div>
@@ -375,28 +359,28 @@ export default function DiningPage() {
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div className="bg-white border border-[#ECECEC] rounded-[12px] p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs shadow-xs">
           <div className="space-y-1">
-            <span className="font-bold text-[#0F2D52] block text-sm">{t('Bữa Sáng Sân Hiên', 'Terrace Breakfast')}</span>
+            <span className="font-bold text-[#0F2D52] block text-sm">{tx(UI.terraceBreakfast)}</span>
             <p className="text-[#6B7280]">
-              {t('Phục vụ gọi món & combo Á từ 06:30 hàng ngày.', 'Asian combo & à la carte served from 06:30 daily.')}
+              {tx(UI.asianComboALaCarteServed)}
             </p>
           </div>
 
           <div className="space-y-1 sm:border-l sm:border-[#ECECEC] sm:pl-6">
-            <span className="font-bold text-[#0F2D52] block text-sm">{t('Cà Phê Bình Minh', 'Sunrise Coffee')}</span>
+            <span className="font-bold text-[#0F2D52] block text-sm">{tx(UI.sunriseCoffee)}</span>
             <p className="text-[#6B7280]">
-              {t('Miễn phí trà & cà phê phin tại tầng cao cho khách lưu trú.', 'Free sunrise filter coffee & tea for guests.')}
+              {tx(UI.freeSunriseFilterCoffeeTeaFor)}
             </p>
           </div>
 
           <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
-            <span className="font-bold text-[#0F2D52] block text-sm">{t('Phục Vụ Đoàn Đông', 'Group Catering')}</span>
+            <span className="font-bold text-[#0F2D52] block text-sm">{tx(UI.groupCatering)}</span>
             <p className="text-[#6B7280]">
-              {t('Set menu hải sản cho đoàn 10+ khách (báo trước 1 ngày).', 'Seafood set menus for 10+ guests (1 day notice).')}
+              {tx(UI.seafoodSetMenusFor10Guests)}
             </p>
           </div>
 
           <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
-            <span className="font-bold text-[#0F2D52] block text-sm">{t('Hotline Đặt Bàn', 'Dining Hotline')}</span>
+            <span className="font-bold text-[#0F2D52] block text-sm">{tx(UI.diningHotline)}</span>
             <a href="tel:0985000650" className="font-serif text-lg font-bold text-[#1D4E89] block hover:underline">
               0985 000 650
             </a>

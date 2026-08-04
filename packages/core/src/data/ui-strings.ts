@@ -227,6 +227,8 @@ export const UI = {
     needRecommendation: t('Chưa quyết — cần tư vấn', 'Need recommendation'),
     neverBreakOrStandOnCoral: t('Tuyệt đối không bẻ hoặc giẫm đạp lên rạn san hô khi lặn biển. Mang theo rác về đất liền.', 'Never break or stand on coral reefs while snorkeling. Keep Nam Du clean and pristine.'),
     nights: t('đêm', 'nights'),
+    /** Số ít — tiếng Việt không đổi, tiếng Anh có. */
+    night: t('đêm', 'night'),
     noBookingsFound: t('Bạn chưa có đơn đặt phòng nào.', 'No bookings found.'),
     noPrepaymentRequired: t('Không cần thanh toán trước', 'No prepayment required'),
     noScooter: t('Không thuê', 'No scooter'),

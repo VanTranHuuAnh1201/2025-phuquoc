@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import { Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -12,7 +14,7 @@ interface HeaderProps {
 }
 
 export function Header({ forceSolid = false }: HeaderProps) {
-  const { language, setLanguage, t } = useLanguage()
+  const { language, setLanguage, tx } = useLanguage()
   const pathname = usePathname()
   const isHomePage = pathname === '/'
   const isCheckout = pathname === '/checkout' || pathname.startsWith('/checkout')
@@ -51,12 +53,12 @@ export function Header({ forceSolid = false }: HeaderProps) {
   const isSolid = forceSolid || !isHomePage || scrolled
 
   const navLinks = [
-    { href: '/rooms', label: t('Phòng', 'Rooms') },
-    { href: '/dining', label: t('Tiện ích', 'Amenities') },
-    { href: '/explore', label: t('Ưu đãi', 'Offers') },
-    // { href: '/my-bookings', label: t('Đơn của tôi', 'My Bookings') },
-    { href: '/blog', label: t('Về chúng tôi', 'About Us') },
-    { href: '/contact', label: t('Liên hệ', 'Contact') },
+    { href: '/rooms', label: tx(UI.rooms) },
+    { href: '/dining', label: tx(UI.amenities2) },
+    { href: '/explore', label: tx(UI.offers) },
+    // { href: '/my-bookings', label: tx(UI.myBookings2) },
+    { href: '/blog', label: tx(UI.aboutUs) },
+    { href: '/contact', label: tx(UI.contactUs) },
   ]
 
   return (
@@ -129,20 +131,18 @@ export function Header({ forceSolid = false }: HeaderProps) {
             </div>
 
             {/* User Account Dropdown Container */}
-            <div className="relative user-dropdown-container">
+            <div className="hidden md:flex relative user-dropdown-container">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${
-                  pathname === '/my-bookings' || pathname.startsWith('/admin')
-                    ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
-                    : isSolid
+                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings' || pathname.startsWith('/admin')
+                  ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
+                  : isSolid
                     ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
                     : 'border-white/40 text-white hover:bg-white/10'
-                }`}
+                  }`}
                 aria-label="User Account Menu"
               >
                 <User className="w-3.5 h-3.5 shrink-0" />
-                <span className="hidden lg:inline">{t('Tài khoản', 'Account')}</span>
               </button>
 
               {/* Dropdown Options */}
@@ -155,8 +155,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
                   >
                     <span className="text-base">📋</span>
                     <div>
-                      <div className="font-bold text-[#0F2D52]">{t('Đơn đặt của tôi', 'My Bookings')}</div>
-                      <div className="text-[10px] text-slate-500">{t('Xem lịch sử phòng đã đặt', 'View booking history')}</div>
+                      <div className="font-bold text-[#0F2D52]">{tx(UI.myBookings)}</div>
+                      <div className="text-[10px] text-slate-500">{tx(UI.viewBookingHistory)}</div>
                     </div>
                   </Link>
 
@@ -169,8 +169,8 @@ export function Header({ forceSolid = false }: HeaderProps) {
                   >
                     <span className="text-base">🏨</span>
                     <div>
-                      <div className="font-bold text-[#0F2D52]">{t('Quản lý hệ thống (Admin)', 'Admin CMS')}</div>
-                      <div className="text-[10px] text-slate-500">{t('Trang quản lý resort Nam Du', 'Resort management panel')}</div>
+                      <div className="font-bold text-[#0F2D52]">{tx(UI.adminCms)}</div>
+                      <div className="text-[10px] text-slate-500">{tx(UI.resortManagementPanel)}</div>
                     </div>
                   </Link>
                 </div>
@@ -179,7 +179,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
             <Link href="/rooms" className="hidden md:inline-block">
               <Button variant="primary" size="md" radius="6px">
-                {t('Đặt phòng', 'Book Now')}
+                {tx(UI.bookNow2)}
               </Button>
             </Link>
 
@@ -199,7 +199,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
         {/* Focused Badge on Checkout Screen */}
         {isCheckout && (
           <div className="text-xs font-semibold text-[#1D4E89] bg-[#F2F7FC] px-3 py-1 rounded-full border border-[#1D4E89]/20">
-            {t('Thanh toán an toàn', 'Secure Checkout')}
+            {tx(UI.secureCheckout)}
           </div>
         )}
       </div>
@@ -260,30 +260,28 @@ export function Header({ forceSolid = false }: HeaderProps) {
             <Link
               href="/my-bookings"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                pathname === '/my-bookings'
-                  ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
-                  : 'text-[#4B5563] hover:bg-[#F5F7FA]'
-              }`}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${pathname === '/my-bookings'
+                ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
+                : 'text-[#4B5563] hover:bg-[#F5F7FA]'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <span>📋</span>
-                <span>{t('Đơn đặt của tôi', 'My Bookings')}</span>
+                <span>{tx(UI.myBookings)}</span>
               </div>
             </Link>
 
             <Link
               href="/admin"
               onClick={() => setMenuOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                pathname.startsWith('/admin')
-                  ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
-                  : 'text-[#4B5563] hover:bg-[#F5F7FA]'
-              }`}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${pathname.startsWith('/admin')
+                ? 'bg-[#1D4E89]/10 text-[#1D4E89] font-semibold'
+                : 'text-[#4B5563] hover:bg-[#F5F7FA]'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <span>🏨</span>
-                <span>{t('Quản lý hệ thống (Admin)', 'Admin CMS')}</span>
+                <span>{tx(UI.adminCms)}</span>
               </div>
             </Link>
           </div>
@@ -291,7 +289,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
           <div className="pt-3 border-t border-[#ECECEC]">
             <Link href="/rooms" onClick={() => setMenuOpen(false)}>
               <Button variant="primary" size="lg" fullWidth radius="6px">
-                {t('Đặt phòng ngay', 'Book a Room Now')}
+                {tx(UI.bookNow)}
               </Button>
             </Link>
           </div>

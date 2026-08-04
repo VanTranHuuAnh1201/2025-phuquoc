@@ -1,12 +1,14 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { featuredPlaces } from '../../data/property'
 
 export function ExploreSection() {
-  const { t, tx } = useLanguage()
+  const { tx } = useLanguage()
 
   return (
     <section id="explore" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
@@ -16,17 +18,14 @@ export function ExploreSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
           <div>
             <span className="text-xs font-semibold text-[#1D4E89]">
-              {t('21 hòn đảo · 9,12 km²', '21 islands · 9.12 km²')}
+              {tx(UI.n21Islands912Km)}
             </span>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mt-0.5">
-              {t('Khám phá quần đảo Nam Du', 'Explore Nam Du Archipelago')}
+              {tx(UI.exploreNamDuArchipelago)}
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-[#6B7280] max-w-lg font-normal">
-            {t(
-              'Sáng nào cũng có tàu gỗ rời bến ngay dưới chân đồi. Lễ tân đặt chỗ giúp từ tối hôm trước — 200.000–400.000₫ mỗi người.',
-              'Wooden boats leave the pier below every morning. Reception books your seat the evening before.'
-            )}
+            {tx(UI.woodenBoatsLeaveThePierBelow)}
           </p>
         </div>
 
@@ -69,15 +68,15 @@ export function ExploreSection() {
           >
             <div>
               <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
-                {t('LỊCH TRÌNH · 2 NGÀY 1 ĐÊM', 'ITINERARY · 2 DAYS 1 NIGHT')}
+                {tx(UI.itinerary2Days1Night)}
               </span>
               <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
-                {t('Đi cuối tuần: chiều đầu đi tàu ra đảo nhỏ, sáng hôm sau chạy vòng 11 km.', 'Weekend run: island boat on first afternoon, 11 km loop on second morning.')}
+                {tx(UI.weekendRunIslandBoatOnFirst)}
               </h3>
             </div>
             <div className="mt-4 pt-3 border-t border-[#ECECEC] flex items-baseline gap-1 text-xs">
               <span className="font-bold text-[#0F2D52] text-sm">2,1 – 2,8tr</span>
-              <span className="text-[#6B7280]">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
+              <span className="text-[#6B7280]">{tx(UI.perPersonAllIn)}</span>
             </div>
           </Link>
 
@@ -87,15 +86,15 @@ export function ExploreSection() {
           >
             <div>
               <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
-                {t('LỊCH TRÌNH · 3 NGÀY 2 ĐÊM', 'ITINERARY · 3 DAYS 2 NIGHTS')}
+                {tx(UI.itinerary3Days2Nights)}
               </span>
               <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
-                {t('Đi thong thả: trọn một ngày trên biển qua bốn đảo, thêm hải đăng và đền miếu.', 'Unhurried: a full day at sea across four islands, plus the lighthouse.')}
+                {tx(UI.unhurriedAFullDayAtSea)}
               </h3>
             </div>
             <div className="mt-4 pt-3 border-t border-[#ECECEC] flex items-baseline gap-1 text-xs">
               <span className="font-bold text-[#0F2D52] text-sm">2,8 – 4,0tr</span>
-              <span className="text-[#6B7280]">{t('mỗi khách, trọn gói', 'per person, all in')}</span>
+              <span className="text-[#6B7280]">{tx(UI.perPersonAllIn)}</span>
             </div>
           </Link>
 
@@ -105,14 +104,14 @@ export function ExploreSection() {
           >
             <div>
               <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-2">
-                {t('CẨM NANG ĐẦY ĐỦ', 'FULL GUIDE')}
+                {tx(UI.fullGuide)}
               </span>
               <h3 className="font-serif font-bold text-white text-sm leading-snug">
-                {t('Tàu xe, giá cả, mùa đẹp nhất và những thứ cần mang theo.', 'Boats, scooters, prices, best season and packing list.')}
+                {tx(UI.boatsScootersPricesBestSeasonAnd)}
               </h3>
             </div>
             <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-white group-hover:translate-x-1 transition-transform">
-              <span>{t('Khám phá Nam Du', 'Explore Nam Du')}</span>
+              <span>{tx(UI.exploreNamDu)}</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </Link>

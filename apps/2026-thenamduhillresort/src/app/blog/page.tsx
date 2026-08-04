@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -9,7 +11,7 @@ import { Button } from '../../components/common/Button'
 import { BookOpen, Clock, ArrowRight, Sparkles, ChevronRight } from 'lucide-react'
 
 export default function BlogPage() {
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
   const [activeCategory, setActiveCategory] = useState<string>('ALL')
 
@@ -36,27 +38,24 @@ export default function BlogPage() {
         <div className="max-w-[1280px] mx-auto space-y-3">
           <div className="flex items-center gap-2 text-xs font-medium text-[#6B7280]">
             <Link href="/" className="hover:text-[#1D4E89] transition">
-              {t('Trang chủ', 'Home')}
+              {tx(UI.home)}
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB]" />
-            <span className="text-[#0F2D52] font-semibold">{t('Cẩm nang Nam Du', 'Nam Du Journal')}</span>
+            <span className="text-[#0F2D52] font-semibold">{tx(UI.namDuJournal)}</span>
           </div>
 
           <div className="space-y-2 max-w-3xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1D4E89]/10 text-[#1D4E89] text-xs font-semibold">
               <BookOpen className="w-3.5 h-3.5 text-[#1D4E89]" />
-              <span>{t('Ghi chép từ The Nam Du Hill Resort', 'Notes from The Nam Du Hill Resort')}</span>
+              <span>{tx(UI.notesFromTheNamDuHill)}</span>
             </div>
 
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F2D52] tracking-tight">
-              {t('Cẩm nang du lịch & Câu chuyện Nam Du', 'Travel Guide & Island Stories')}
+              {tx(UI.travelGuideIslandStories)}
             </h1>
 
             <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed">
-              {t(
-                'Những kinh nghiệm đúc kết từ resort: từ kinh nghiệm mua vé tàu khứ hồi, món ngon hải sản địa phương đến bí quyết lặn biển ngắm san hô.',
-                'Insights gathered over years of hosting guests: boat tickets, local seafood delicacies, and coral reef snorkeling tips.'
-              )}
+              {tx(UI.insightsGatheredOverYearsOfHosting)}
             </p>
           </div>
         </div>
@@ -74,7 +73,7 @@ export default function BlogPage() {
               </Link>
               <span className="absolute top-4 left-4 bg-[#C6A86A] text-[#0F2D52] text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                <span>{t('Nổi bật', 'Featured')}</span>
+                <span>{tx(UI.featured)}</span>
               </span>
             </div>
 
@@ -101,13 +100,13 @@ export default function BlogPage() {
                   <span className="mx-1">•</span>
                   <span className="inline-flex items-center gap-1">
                     <Clock className="w-3 h-3 text-[#1D4E89]" />
-                    {heroPost.readMin} {t('phút', 'min')}
+                    {heroPost.readMin} {tx(UI.min)}
                   </span>
                 </div>
 
                 <Link href={`/blog/${heroPost.id}`}>
                   <Button variant="primary" size="sm" radius="6px">
-                    {t('Đọc bài viết', 'Read Article')}
+                    {tx(UI.readArticle)}
                     <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Button>
                 </Link>
@@ -167,13 +166,13 @@ export default function BlogPage() {
                 <div className="pt-3 border-t border-[#ECECEC] flex items-center justify-between text-[11px] text-[#6B7280]">
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-3 h-3 text-[#1D4E89]" />
-                    <span>{post.readMin} {t('phút đọc', 'min read')}</span>
+                    <span>{post.readMin} {tx(UI.minRead)}</span>
                   </div>
                   <Link
                     href={`/blog/${post.id}`}
                     className="font-semibold text-[#1D4E89] hover:underline flex items-center gap-1"
                   >
-                    <span>{t('Chi tiết', 'Read')}</span>
+                    <span>{tx(UI.read)}</span>
                     <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>

@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -32,7 +34,7 @@ function RoomsContent() {
   const guests = searchParams.get('guests') || '2 người lớn'
   const roomType = searchParams.get('roomType')
 
-  const { t, language } = useLanguage()
+  const { t, language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [activeFilter, setActiveFilter] = useState('all')
@@ -87,19 +89,19 @@ function RoomsContent() {
             </div>
           </div>
           <Link href="/?openSearch=true" className="text-xs font-semibold text-[#1D4E89] hover:underline">
-            {t('Thay đổi', 'Change')}
+            {tx(UI.change)}
           </Link>
         </div>
 
         <div className="max-w-[1280px] mx-auto px-4 py-3.5 flex items-center justify-between">
           <span className="text-xs font-semibold text-[#4B5563]">
-            {visibleRooms.length} {t('phòng phù hợp', 'matching rooms')}
+            {visibleRooms.length} {tx(UI.matchingRooms)}
           </span>
           <button
             onClick={() => setIsFilterModalOpen(true)}
             className="flex items-center gap-1.5 bg-white border border-[#ECECEC] text-xs font-medium px-3 py-1.5 rounded-[6px] shadow-2xs hover:bg-[#F5F7FA] transition"
           >
-            <span>{t('Sắp xếp', 'Sort & Filter')}</span>
+            <span>{tx(UI.sortFilter)}</span>
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#1D4E89]" />
           </button>
         </div>
@@ -135,13 +137,13 @@ function RoomsContent() {
                     </span>
                     <span className="flex items-center gap-1">
                       <Users className="w-3 h-3 text-[#4B5563]" />
-                      1 {t('giường đôi', 'double bed')}
+                      1 {tx(UI.doubleBed)}
                     </span>
                   </div>
                   <div className="mt-1.5 space-y-0.5">
                     <div className="flex items-center gap-1 text-[10px] text-[#4B5563] font-medium">
                       <Check className="w-3 h-3 text-[#1D4E89] shrink-0" />
-                      <span>{t('Bữa sáng miễn phí', 'Free Breakfast')}</span>
+                      <span>{tx(UI.freeBreakfast)}</span>
                     </div>
                   </div>
                 </div>
@@ -151,11 +153,11 @@ function RoomsContent() {
                     <span className="font-bold text-xs text-[#0F2D52]">
                       {formatVND(r.price)}
                     </span>
-                    <span className="text-[9px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+                    <span className="text-[9px] text-[#6B7280]">/{tx(UI.nights)}</span>
                   </div>
                   <Link href={`/rooms/${roomSlug(r.code)}`} onClick={(e) => e.stopPropagation()}>
                     <Button variant="primary" size="xs" radius="6px">
-                      {t('Chọn', 'Select')}
+                      {tx(UI.select)}
                     </Button>
                   </Link>
                 </div>
@@ -172,10 +174,10 @@ function RoomsContent() {
         <div className="space-y-4">
           <div>
             <h1 className="font-serif text-3xl font-bold text-[#1A1A1A]">
-              {t('Các loại phòng', 'Room Types')}
+              {tx(UI.roomTypes)}
             </h1>
             <p className="text-sm text-[#6B7280] mt-1">
-              {t('Lựa chọn phòng phù hợp với nhu cầu của bạn', 'Select the room that best fits your needs')}
+              {tx(UI.selectTheRoomThatBestFits)}
             </p>
           </div>
 
@@ -191,7 +193,7 @@ function RoomsContent() {
               <span className="text-xs text-[#6B7280]">▼</span>
             </div>
             <Button variant="primary" size="md" radius="8px" className="px-8 bg-[#0F2D52] hover:bg-[#163B6C]">
-              {t('Tìm phòng', 'Search')}
+              {tx(UI.search)}
             </Button>
           </div>
         </div>
@@ -202,19 +204,19 @@ function RoomsContent() {
           {/* Left Sidebar Filters */}
           <div className="w-[260px] bg-white rounded-[12px] border border-[#ECECEC] p-5 space-y-6 shrink-0 shadow-sm">
             <div className="flex items-center justify-between border-b border-[#ECECEC] pb-3">
-              <h3 className="font-bold text-sm text-[#1A1A1A]">{t('Bộ lọc', 'Filters')}</h3>
+              <h3 className="font-bold text-sm text-[#1A1A1A]">{tx(UI.filters)}</h3>
               <button
                 onClick={() => setActiveFilter('all')}
                 className="text-xs font-semibold text-[#1D4E89] hover:underline"
               >
-                {t('Xóa bộ lọc', 'Clear all')}
+                {tx(UI.clearAll)}
               </button>
             </div>
 
             {/* Room Categories */}
             <div className="space-y-2.5">
               <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
-                {t('Loại phòng', 'Room Type')}
+                {tx(UI.roomType)}
               </span>
               <div className="space-y-2 text-xs">
                 {[
@@ -244,7 +246,7 @@ function RoomsContent() {
             {/* Price Range Slider */}
             <div className="space-y-2.5 border-t border-[#ECECEC] pt-4">
               <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
-                {t('Khoảng giá / đêm', 'Price Range / Night')}
+                {tx(UI.priceRangeNight)}
               </span>
               <input type="range" min="2000000" max="5000000" className="w-full accent-[#1D4E89]" />
               <div className="flex justify-between text-[11px] text-[#6B7280] font-medium">
@@ -256,7 +258,7 @@ function RoomsContent() {
             {/* Amenities Checkboxes */}
             <div className="space-y-2.5 border-t border-[#ECECEC] pt-4">
               <span className="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider block">
-                {t('Tiện nghi', 'Amenities')}
+                {tx(UI.amenities)}
               </span>
               <div className="space-y-2 text-xs">
                 {['Wi-Fi miễn phí', 'Hồ bơi', 'View biển', 'Ban công', 'Bồn tắm', 'Đưa đón sân bay'].map((item, idx) => (
@@ -275,16 +277,16 @@ function RoomsContent() {
             {/* Top Sort Header */}
             <div className="flex justify-end items-center">
               <div className="flex items-center gap-2 text-xs text-[#6B7280] font-medium">
-                <span>{t('Sắp xếp:', 'Sort by:')}</span>
+                <span>{tx(UI.sortBy2)}</span>
                 <select
                   value={activeSort}
                   onChange={(e) => setActiveSort(e.target.value)}
                   className="bg-white border border-[#ECECEC] rounded-[6px] px-3 py-1.5 text-xs font-semibold text-[#1A1A1A] focus:outline-none cursor-pointer"
                 >
-                  <option value="rec">{t('Giá thấp đến cao', 'Price: Low to High')}</option>
-                  <option value="asc">{t('Giá thấp đến cao', 'Price: Low to High')}</option>
-                  <option value="desc">{t('Giá cao đến thấp', 'Price: High to Low')}</option>
-                  <option value="area">{t('Diện tích rộng nhất', 'Largest area')}</option>
+                  <option value="rec">{tx(UI.priceLowToHigh)}</option>
+                  <option value="asc">{tx(UI.priceLowToHigh)}</option>
+                  <option value="desc">{tx(UI.priceHighToLow)}</option>
+                  <option value="area">{tx(UI.largestArea)}</option>
                 </select>
               </div>
             </div>
@@ -317,23 +319,23 @@ function RoomsContent() {
 
                       <div className="flex items-center gap-4 text-xs text-[#6B7280] mt-1 font-medium">
                         <span>📐 {r.area}m²</span>
-                        <span>👤 {r.cap} {t('người', 'guests')}</span>
-                        <span>🛏️ 1 {t('giường đôi', 'double bed')}</span>
+                        <span>👤 {r.cap} {tx(UI.guests)}</span>
+                        <span>🛏️ 1 {tx(UI.doubleBed)}</span>
                         <span>👁️ {isEn ? r.viewEn : r.view}</span>
                       </div>
 
                       <div className="mt-3 space-y-1 text-xs text-[#1D4E89] font-medium">
                         <div className="flex items-center gap-1.5">
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{t('Bữa sáng miễn phí', 'Free breakfast included')}</span>
+                          <span>{tx(UI.freeBreakfast)}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{t('Wi-Fi miễn phí', 'Free high-speed Wi-Fi')}</span>
+                          <span>{tx(UI.freeHighSpeedWiFi)}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{t('Hủy miễn phí', 'Free cancellation')}</span>
+                          <span>{tx(UI.freeCancellation)}</span>
                         </div>
                       </div>
                     </div>
@@ -345,12 +347,12 @@ function RoomsContent() {
                       <span className="font-bold text-xl text-[#0F2D52] block">
                         {formatVND(r.price)}
                       </span>
-                      <span className="text-xs text-[#6B7280]">/{t('đêm', 'night')}</span>
+                      <span className="text-xs text-[#6B7280]">/{tx(UI.nights)}</span>
                     </div>
 
                     <Link href={`/rooms/${roomSlug(r.code)}`}>
                       <Button variant="primary" size="md" radius="6px" className="bg-[#0F2D52] hover:bg-[#163B6C] px-6">
-                        {t('Xem chi tiết', 'View details')}
+                        {tx(UI.viewDetails)}
                       </Button>
                     </Link>
                   </div>
@@ -364,11 +366,11 @@ function RoomsContent() {
       {/* 4. Mobile Sticky Bottom Bar */}
       <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#ECECEC] p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-40 flex items-center justify-between sm:hidden">
         <div>
-          <span className="text-[10px] text-[#6B7280] block leading-none">{t('Từ', 'From')}</span>
+          <span className="text-[10px] text-[#6B7280] block leading-none">{tx(UI.from)}</span>
           <span className="font-bold text-base text-[#0F2D52]">
             {formatVND(minPrice)}
           </span>
-          <span className="text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+          <span className="text-[10px] text-[#6B7280]">/{tx(UI.nights)}</span>
         </div>
         <Button
           variant="primary"
@@ -378,7 +380,7 @@ function RoomsContent() {
             if (visibleRooms[0]) router.push(`/rooms/${roomSlug(visibleRooms[0].code)}`)
           }}
         >
-          {t('Xem phòng', 'View Room')}
+          {tx(UI.viewRoom)}
         </Button>
       </div>
 
@@ -394,7 +396,7 @@ function RoomsContent() {
           >
             <div className="flex items-center justify-between pb-3 border-b border-[#ECECEC]">
               <h3 className="font-serif font-bold text-base text-[#1A1A1A]">
-                {t('Sắp xếp & Bộ lọc', 'Sort & Filter')}
+                {tx(UI.sortFilter2)}
               </h3>
               <button onClick={() => setIsFilterModalOpen(false)} className="text-xs font-semibold text-[#6B7280]">
                 ✕
@@ -404,7 +406,7 @@ function RoomsContent() {
             {/* Category Filter Pills Inside Modal */}
             <div className="space-y-2">
               <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider block">
-                {t('Danh mục phòng', 'Room Category')}
+                {tx(UI.roomCategory)}
               </span>
               <div className="flex flex-wrap gap-2">
                 {FILTERS.map((f) => {
@@ -429,7 +431,7 @@ function RoomsContent() {
             {/* Sort Options */}
             <div className="space-y-2 pt-2 border-t border-[#ECECEC]">
               <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider block">
-                {t('Sắp xếp theo', 'Sort by')}
+                {tx(UI.sortBy)}
               </span>
               <div className="grid grid-cols-1 gap-1.5">
                 {SORTS.map((s) => (

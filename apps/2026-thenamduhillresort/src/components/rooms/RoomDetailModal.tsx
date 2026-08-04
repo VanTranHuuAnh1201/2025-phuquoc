@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { Room, BASE_AMENITIES, formatVND, roomSlug } from '../../data/rooms'
@@ -12,7 +14,7 @@ interface RoomDetailModalProps {
 }
 
 export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
-  const { t, language } = useLanguage()
+  const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [lightbox, setLightbox] = useState(false)
@@ -200,35 +202,35 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '10px', marginBottom: '40px' }}>
               <div style={{ border: '1px solid #e6eef4', borderRadius: '16px', padding: '16px 18px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Diện tích', 'Size')}
+                  {tx(UI.size)}
                 </div>
                 <div style={{ fontSize: '17px', fontWeight: 800, color: '#0b1b26' }}>{room.area} m²</div>
               </div>
               <div style={{ border: '1px solid #e6eef4', borderRadius: '16px', padding: '16px 18px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Sức chứa', 'Sleeps')}
+                  {tx(UI.sleeps)}
                 </div>
                 <div style={{ fontSize: '17px', fontWeight: 800, color: '#0b1b26' }}>{isEn ? `${room.cap} guests` : `${room.cap} khách`}</div>
               </div>
               <div style={{ border: '1px solid #e6eef4', borderRadius: '16px', padding: '16px 18px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Hướng nhìn', 'View')}
+                  {tx(UI.view)}
                 </div>
                 <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#0b1b26', lineHeight: 1.3 }}>{isEn ? room.viewEn : room.view}</div>
               </div>
               <div style={{ border: '1px solid #e6eef4', borderRadius: '16px', padding: '16px 18px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Giường phụ', 'Extra bed')}
+                  {tx(UI.extraBed)}
                 </div>
                 <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#0b1b26', lineHeight: 1.3 }}>
-                  {room.exPrice ? formatVND(room.exPrice) : t('Không phụ thu', 'No surcharge')}
+                  {room.exPrice ? formatVND(room.exPrice) : tx(UI.noSurcharge)}
                 </div>
               </div>
             </div>
 
             {/* Amenities Grid */}
             <h2 style={{ margin: '0 0 18px', fontSize: '22px', fontWeight: 800, color: '#0b1b26' }}>
-              {t('Trong phòng có gì', 'What is in this room')}
+              {tx(UI.whatIsInThisRoom)}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '10px 20px', marginBottom: '40px' }}>
               {allAmenities.map((item, idx) => (
@@ -243,7 +245,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
             {room.reviews && room.reviews.length > 0 && (
               <>
                 <h2 style={{ margin: '0 0 18px', fontSize: '22px', fontWeight: 800, color: '#0b1b26' }}>
-                  {t('Vì sao khách chọn phòng này', 'Why guests pick this one')}
+                  {tx(UI.whyGuestsPickThisOne)}
                 </h2>
                 <div style={{ display: 'grid', gap: '12px', marginBottom: '40px' }}>
                   {room.reviews.map((rev, idx) => (
@@ -266,23 +268,23 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
 
             {/* House Rules */}
             <h2 style={{ margin: '0 0 18px', fontSize: '22px', fontWeight: 800, color: '#0b1b26' }}>
-              {t('Quy định phòng', 'House rules')}
+              {tx(UI.houseRules)}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px' }}>
               <div style={{ background: '#f7fbfd', border: '1px solid #e6eef4', borderRadius: '18px', padding: '18px 20px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Nhận / trả phòng', 'Check-in / check-out')}
+                  {tx(UI.checkInCheckOut)}
                 </div>
                 <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0b1b26' }}>
-                  {t('Từ 14:00 · đến 12:00', 'From 14:00 · until 12:00')}
+                  {tx(UI.from1400Until1200)}
                 </div>
               </div>
               <div style={{ background: '#f7fbfd', border: '1px solid #e6eef4', borderRadius: '18px', padding: '18px 20px' }}>
                 <div style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3', marginBottom: '6px' }}>
-                  {t('Huỷ phòng', 'Cancellation')}
+                  {tx(UI.cancellation)}
                 </div>
                 <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#0b1b26' }}>
-                  {t('Miễn phí trước 7 ngày', 'Free up to 7 days before arrival')}
+                  {tx(UI.freeUpTo7DaysBefore)}
                 </div>
               </div>
             </div>
@@ -296,12 +298,12 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
                 <span style={{ fontSize: '13px', fontWeight: 600, color: '#8fa5b3' }}>/ đêm</span>
               </div>
               <div style={{ fontSize: '12.5px', fontWeight: 500, color: '#8fa5b3', marginBottom: '18px' }}>
-                {t('Đã gồm bữa sáng và đưa đón bến tàu', 'Breakfast and pier transfer included')}
+                {tx(UI.breakfastAndPierTransferIncluded)}
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px', marginBottom: '8px' }}>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '10px 12px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{t('Nhận phòng', 'Check in')}</span>
+                  <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{tx(UI.checkIn)}</span>
                   <input
                     type="date"
                     value={checkIn}
@@ -310,7 +312,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
                   />
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '10px 12px' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{t('Trả phòng', 'Check out')}</span>
+                  <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{tx(UI.checkOut)}</span>
                   <input
                     type="date"
                     value={checkOut}
@@ -321,7 +323,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
               </div>
 
               <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', border: '1px solid #dbe7ef', borderRadius: '14px', padding: '10px 12px', marginBottom: '16px' }}>
-                <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{t('Số khách', 'Guests')}</span>
+                <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#8fa5b3' }}>{tx(UI.guests2)}</span>
                 <input
                   type="number"
                   min={1}
@@ -352,7 +354,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
                 </div>
                 <div>
                   <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#0b1b26', marginBottom: '5px' }}>
-                    {t('Quét mã để cọc 50%', 'Scan to pay 50% deposit')}
+                    {tx(UI.scanToPay50Deposit)}
                   </div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#0284c7', fontFamily: 'monospace' }}>{syntaxText}</div>
                 </div>
@@ -372,7 +374,7 @@ export function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
                     textDecoration: 'none',
                   }}
                 >
-                  {t('Gọi 0985 000 650 giữ phòng', 'Call 0985 000 650 to book')}
+                  {tx(UI.call0985000650ToBook)}
                 </a>
               </div>
             </div>

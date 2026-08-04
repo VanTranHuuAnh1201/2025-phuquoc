@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import {
   Armchair,
   ArrowLeft,
@@ -49,7 +51,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
   })
   const room: Room = (foundRoom || ROOMS[0]) as Room
 
-  const { t, language } = useLanguage()
+  const { t, language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [currentSlide] = useState(1)
@@ -186,13 +188,13 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                 <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
               </div>
               <span className="font-bold text-[#1D4E89]">8.9</span>
-              <span className="text-[#6B7280]">(83 {t('đánh giá', 'reviews')})</span>
+              <span className="text-[#6B7280]">(83 {tx(UI.reviews)})</span>
             </div>
           </div>
 
           <div className="border border-[#ECECEC] rounded-[12px] p-4 bg-[#FAFAF8] space-y-3">
             <h3 className="font-serif text-sm font-bold text-[#0F2D52]">
-              {t('Quyền lợi phòng', 'Room Inclusions')}
+              {tx(UI.roomInclusions)}
             </h3>
 
             <div className="space-y-2 text-xs">
@@ -202,26 +204,26 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               </div>
               <div className="flex items-center gap-2 text-[#4B5563]">
                 <Calendar className="w-4 h-4 text-[#1D4E89] shrink-0" />
-                <span>{t('Linh động đổi ngày khi kế hoạch thay đổi', 'Flexible date changes')}</span>
+                <span>{tx(UI.flexibleDateChanges)}</span>
               </div>
               <div className="flex items-center gap-2 text-[#4B5563]">
                 <Ban className="w-4 h-4 text-[#1D4E89] shrink-0" />
-                <span className="font-medium">{t('Không hoàn tiền', 'Non-refundable')}</span>
+                <span className="font-medium">{tx(UI.nonRefundable)}</span>
               </div>
               <div className="flex items-center gap-2 text-[#4B5563]">
                 <CreditCard className="w-4 h-4 text-[#1D4E89] shrink-0" />
-                <span>{t('Thanh toán cho chỗ nghỉ trước khi đến', 'Pay before arrival')}</span>
+                <span>{tx(UI.payBeforeArrival)}</span>
               </div>
               <div className="flex items-center gap-2 text-emerald-700 font-medium">
                 <Coffee className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Bao gồm bữa sáng hàng ngày', 'Daily breakfast included')}</span>
+                <span>{tx(UI.dailyBreakfastIncluded)}</span>
               </div>
             </div>
           </div>
 
           <div className="border-t border-[#ECECEC] pt-4 space-y-1.5">
             <h2 className="font-serif text-sm font-bold text-[#1A1A1A]">
-              {t('Miêu tả phòng', 'Room Description')}
+              {tx(UI.roomDescription)}
             </h2>
             <p className="text-xs text-[#4B5563] leading-relaxed">
               {isEn
@@ -233,7 +235,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
           {/* 📱 Mobile Tiện nghi phòng (Exact match to screenshot) */}
           <div className="border-t border-[#ECECEC] pt-4 space-y-4">
             <h2 className="font-serif text-base font-bold text-[#1A1A1A]">
-              {t('Tiện nghi phòng', 'Room Amenities')}
+              {tx(UI.roomAmenities)}
             </h2>
 
             <div className="space-y-4">
@@ -313,7 +315,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
           {/* 📱 Mobile Gợi ý các phòng khác (Suggested Rooms section) */}
           <div className="border-t border-[#ECECEC] pt-4 pb-6 space-y-3">
             <h2 className="font-serif text-base font-bold text-[#1A1A1A]">
-              {t('Gợi ý các phòng khác', 'Suggested Rooms')}
+              {tx(UI.suggestedRooms)}
             </h2>
 
             <div className="space-y-3">
@@ -339,15 +341,15 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                       {isEn ? r.nameEn : r.name}
                     </h3>
                     <div className="text-[10px] text-[#6B7280] mt-0.5">
-                      📐 {r.area}m² • 👤 {r.cap} {t('người', 'guests')}
+                      📐 {r.area}m² • 👤 {r.cap} {tx(UI.guests)}
                     </div>
                     <div className="flex items-center justify-between mt-2 pt-1 border-t border-[#F5F7FA]">
                       <span className="font-bold text-xs text-[#0F2D52]">
                         {formatVND(r.price)}
-                        <span className="text-[8px] font-normal text-[#6B7280]">/{t('đêm', 'night')}</span>
+                        <span className="text-[8px] font-normal text-[#6B7280]">/{tx(UI.nights)}</span>
                       </span>
                       <Button variant="primary" size="xs" radius="6px" className="px-2 py-0.5 text-[10px]">
-                        {t('Chọn', 'Select')}
+                        {tx(UI.select)}
                       </Button>
                     </div>
                   </div>
@@ -360,17 +362,17 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
         {/* Mobile Fixed Bottom CTA Bar (Matches screenshot 100%) */}
         <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#ECECEC] px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 flex items-center justify-between">
           <div>
-            <span className="text-[11px] text-[#6B7280] block leading-none">{t('Từ', 'From')}</span>
+            <span className="text-[11px] text-[#6B7280] block leading-none">{tx(UI.from)}</span>
             <div className="flex items-baseline gap-1 mt-0.5">
               <span className="font-bold text-lg text-[#1A1A1A]">
                 {formatVND(room.price)}
               </span>
-              <span className="text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+              <span className="text-[10px] text-[#6B7280]">/{tx(UI.nights)}</span>
             </div>
           </div>
           <Link href={`/checkout?room=${encodeURIComponent(room.code)}`}>
             <Button variant="primary" size="md" radius="8px" className="bg-[#0F2D52] hover:bg-[#163B6C] px-5 py-2.5 text-sm font-bold shadow-sm">
-              {t('Chọn phòng', 'Select Room')}
+              {tx(UI.selectRoom)}
             </Button>
           </Link>
         </div>
@@ -382,11 +384,11 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
         {/* Clean Standard Breadcrumb Navigation with reduced vertical padding (py) */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[#6B7280] pt-2 pb-0">
           <Link href="/" className="hover:text-[#1D4E89] font-medium transition">
-            {t('Trang chủ', 'Home')}
+            {tx(UI.home)}
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
           <Link href="/rooms" className="hover:text-[#1D4E89] font-medium transition">
-            {t('Danh sách phòng', 'Room List')}
+            {tx(UI.roomList)}
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
           <span className="text-[#1A1A1A] font-semibold truncate max-w-[300px]">
@@ -437,8 +439,8 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               {/* Specs Row */}
               <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1.5 font-medium flex-wrap">
                 <span>📐 {room.area}m²</span>
-                <span>👤 {room.cap} {t('người', 'guests')}</span>
-                <span>🛏️ 1 {t('giường đôi', 'double bed')}</span>
+                <span>👤 {room.cap} {tx(UI.guests)}</span>
+                <span>🛏️ 1 {tx(UI.doubleBed)}</span>
                 <span>👁️ {isEn ? room.viewEn : room.view}</span>
               </div>
 
@@ -450,7 +452,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                   ))}
                 </div>
                 <span className="font-bold text-[#1D4E89]">4.9</span>
-                <span className="text-[#6B7280]">(23 {t('đánh giá', 'reviews')})</span>
+                <span className="text-[#6B7280]">(23 {tx(UI.reviews)})</span>
               </div>
             </div>
 
@@ -458,40 +460,40 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             <div className="grid grid-cols-2 gap-2 text-xs text-[#1D4E89] font-medium pt-1">
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Bữa sáng miễn phí', 'Free Breakfast')}</span>
+                <span>{tx(UI.freeBreakfast)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Ban công riêng', 'Private Balcony')}</span>
+                <span>{tx(UI.privateBalcony)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Wi-Fi miễn phí', 'Free Wi-Fi')}</span>
+                <span>{tx(UI.freeHighSpeedWiFi)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Điều hòa', 'Air conditioning')}</span>
+                <span>{tx(UI.airConditioning)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Hủy miễn phí trước 48h', 'Free Cancellation (48h)')}</span>
+                <span>{tx(UI.freeCancellation48h)}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{t('Minibar', 'Minibar')}</span>
+                <span>{tx(UI.minibar)}</span>
               </div>
             </div>
 
             {/* Description Block */}
             <div className="space-y-1.5 border-t border-[#ECECEC] pt-3">
-              <h3 className="font-bold text-sm text-[#1A1A1A]">{t('Mô tả phòng', 'Room Description')}</h3>
+              <h3 className="font-bold text-sm text-[#1A1A1A]">{tx(UI.roomDescription2)}</h3>
               <p className="text-xs text-[#4B5563] leading-relaxed">
                 {isEn
                   ? room.blurbEn || 'Spacious Deluxe Sea View room with private ocean-facing balcony, offering a tranquil sanctuary for your Nam Du getaway.'
                   : room.blurb || 'Phòng Deluxe Sea View rộng rãi với ban công riêng hướng biển, mang đến không gian thư giãn tuyệt vời cho kỳ nghỉ của bạn.'}
               </p>
               <button className="text-xs font-semibold text-[#1D4E89] hover:underline block">
-                {t('Xem thêm', 'Read more')}
+                {tx(UI.readMore)}
               </button>
             </div>
           </div>
@@ -504,10 +506,10 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                   <span className="font-bold text-2xl text-[#0F2D52]">
                     {formatVND(room.price)}
                   </span>
-                  <span className="text-xs text-[#6B7280]">/{t('đêm', 'night')}</span>
+                  <span className="text-xs text-[#6B7280]">/{tx(UI.nights)}</span>
                 </div>
                 <span className="text-[11px] text-[#6B7280] block mt-0.5">
-                  {t('Giá đã bao gồm thuế và phí', 'Taxes and fees included')}
+                  {tx(UI.taxesAndFeesIncluded)}
                 </span>
               </div>
 
@@ -515,33 +517,33 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               <div className="border border-[#ECECEC] rounded-[10px] p-2.5 space-y-1.5 bg-[#FAFAF8]">
                 <div className="flex justify-between items-center text-xs">
                   <div>
-                    <span className="text-[10px] text-[#6B7280] block">{t('Nhận phòng', 'Check-in')}</span>
+                    <span className="text-[10px] text-[#6B7280] block">{tx(UI.checkIn)}</span>
                     <span className="font-semibold text-[#1A1A1A]">15/08/2025</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-[#6B7280] block">{t('Trả phòng', 'Check-out')}</span>
+                    <span className="text-[10px] text-[#6B7280] block">{tx(UI.checkOut)}</span>
                     <span className="font-semibold text-[#1A1A1A]">17/08/2025</span>
                   </div>
                 </div>
                 <div className="text-center pt-1 border-t border-[#E5E7EB] text-[10px] font-semibold text-[#1D4E89]">
-                  2 {t('đêm', 'nights')}
+                  2 {tx(UI.nights)}
                 </div>
               </div>
 
               {/* Guest Count Box */}
               <div className="border border-[#ECECEC] rounded-[10px] p-2.5 flex justify-between items-center text-xs bg-[#FAFAF8]">
                 <div>
-                  <span className="text-[10px] text-[#6B7280] block">{t('Số khách', 'Guests')}</span>
-                  <span className="font-semibold text-[#1A1A1A] text-xs">{t('2 người lớn, 0 trẻ em', '2 adults, 0 kids')}</span>
+                  <span className="text-[10px] text-[#6B7280] block">{tx(UI.guests2)}</span>
+                  <span className="font-semibold text-[#1A1A1A] text-xs">{tx(UI.n2Adults0Kids)}</span>
                 </div>
                 <button className="text-[11px] font-semibold text-[#1D4E89] border border-[#1D4E89] px-2 py-0.5 rounded-[4px] hover:bg-[#1D4E89]/5 transition">
-                  {t('Thay đổi', 'Change')}
+                  {tx(UI.change)}
                 </button>
               </div>
 
               {/* Total Price */}
               <div className="flex justify-between items-center pt-1 border-t border-[#ECECEC]">
-                <span className="text-xs font-semibold text-[#4B5563]">{t('Tổng tiền', 'Total')}</span>
+                <span className="text-xs font-semibold text-[#4B5563]">{tx(UI.total)}</span>
                 <span className="font-bold text-lg text-[#0F2D52]">
                   {formatVND(room.price * 2)}
                 </span>
@@ -550,7 +552,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               {/* CTA Button */}
               <Link href={`/checkout?room=${encodeURIComponent(room.code)}`}>
                 <Button variant="primary" size="md" fullWidth radius="8px" className="bg-[#0F2D52] hover:bg-[#163B6C] h-[44px] text-sm font-semibold shadow-md">
-                  {t('Đặt phòng ngay', 'Book Now')}
+                  {tx(UI.bookNow)}
                 </Button>
               </Link>
 
@@ -558,11 +560,11 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
               <div className="space-y-1 pt-1 text-[11px] text-[#6B7280]">
                 <div className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{t('Xác nhận tức thì', 'Instant confirmation')}</span>
+                  <span>{tx(UI.instantConfirmation)}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{t('Không cần thanh toán trước', 'No prepayment required')}</span>
+                  <span>{tx(UI.noPrepaymentRequired)}</span>
                 </div>
               </div>
             </div>
@@ -571,7 +573,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
 
         {/* Quick Highlights Bar */}
         <div className="space-y-3 pt-6 border-t border-[#ECECEC]">
-          <h3 className="font-bold text-base text-[#1A1A1A]">{t('Tiện nghi nổi bật', 'Featured Amenities')}</h3>
+          <h3 className="font-bold text-base text-[#1A1A1A]">{tx(UI.featuredAmenities)}</h3>
           <div className="grid grid-cols-10 gap-2">
             {[
               { name: 'View biển', icon: Eye },
@@ -599,7 +601,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
         {/* Detailed Categorized Amenities (Same richness as Mobile version) */}
         <div className="space-y-4 pt-6 border-t border-[#ECECEC]">
           <h3 className="font-serif text-lg font-bold text-[#1A1A1A]">
-            {t('Chi tiết tiện nghi phòng', 'Detailed Room Amenities')}
+            {tx(UI.detailedRoomAmenities)}
           </h3>
 
           <div className="grid grid-cols-3 gap-6">
@@ -631,10 +633,10 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-serif text-xl font-bold text-[#1A1A1A]">
-                {t('Đánh giá từ khách hàng', 'Customer Reviews')}
+                {tx(UI.customerReviews)}
               </h3>
               <p className="text-xs text-[#6B7280] mt-0.5">
-                {t('Nhận xét từ các khách hàng đã lưu trú thực tế tại Nam Du Hill Resort', 'Real reviews from verified guests staying at Nam Du Hill Resort')}
+                {tx(UI.realReviewsFromVerifiedGuestsStaying)}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -645,7 +647,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                     <Star key={i} className="w-3.5 h-3.5 fill-[#C6A86A]" />
                   ))}
                 </div>
-                <span className="text-[11px] text-[#6B7280] font-medium">23 {t('đánh giá', 'reviews')}</span>
+                <span className="text-[11px] text-[#6B7280] font-medium">23 {tx(UI.reviews)}</span>
               </div>
             </div>
           </div>
@@ -654,7 +656,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
           <div className="grid grid-cols-4 gap-4 p-4 rounded-[12px] bg-[#FAFAF8] border border-[#ECECEC] text-xs">
             <div>
               <div className="flex justify-between text-[#4B5563] font-medium mb-1">
-                <span>{t('Sạch sẽ', 'Cleanliness')}</span>
+                <span>{tx(UI.cleanliness)}</span>
                 <span className="font-bold text-[#1A1A1A]">4.9/5</span>
               </div>
               <div className="w-full bg-[#E5E7EB] h-1.5 rounded-full overflow-hidden">
@@ -663,7 +665,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             </div>
             <div>
               <div className="flex justify-between text-[#4B5563] font-medium mb-1">
-                <span>{t('Vị trí & View', 'Location & View')}</span>
+                <span>{tx(UI.locationView)}</span>
                 <span className="font-bold text-[#1A1A1A]">5.0/5</span>
               </div>
               <div className="w-full bg-[#E5E7EB] h-1.5 rounded-full overflow-hidden">
@@ -672,7 +674,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             </div>
             <div>
               <div className="flex justify-between text-[#4B5563] font-medium mb-1">
-                <span>{t('Phục vụ', 'Service')}</span>
+                <span>{tx(UI.service)}</span>
                 <span className="font-bold text-[#1A1A1A]">4.9/5</span>
               </div>
               <div className="w-full bg-[#E5E7EB] h-1.5 rounded-full overflow-hidden">
@@ -681,7 +683,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             </div>
             <div>
               <div className="flex justify-between text-[#4B5563] font-medium mb-1">
-                <span>{t('Đáng giá tiền', 'Value for money')}</span>
+                <span>{tx(UI.valueForMoney)}</span>
                 <span className="font-bold text-[#1A1A1A]">4.8/5</span>
               </div>
               <div className="w-full bg-[#E5E7EB] h-1.5 rounded-full overflow-hidden">
@@ -744,7 +746,7 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                 </p>
                 <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 font-medium pt-1">
                   <Check className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span>{t('Đã lưu trú thực tế', 'Verified stay')}</span>
+                  <span>{tx(UI.verifiedStay)}</span>
                 </div>
               </div>
             ))}
@@ -755,10 +757,10 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
         <div className="space-y-5 pt-8 border-t border-[#ECECEC] pb-4">
           <div>
             <h3 className="font-serif text-xl font-bold text-[#1A1A1A]">
-              {t('Gợi ý các phòng khác', 'Other Available Rooms')}
+              {tx(UI.suggestedRooms)}
             </h3>
             <p className="text-xs text-[#6B7280] mt-0.5">
-              {t('Lựa chọn hạng phòng khác phù hợp với kỳ nghỉ của bạn', 'Explore other room types suitable for your stay')}
+              {tx(UI.exploreOtherRoomTypesSuitableFor)}
             </p>
           </div>
 
@@ -787,12 +789,12 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
 
                     <div className="flex items-center gap-3 text-xs text-[#6B7280] font-medium">
                       <span>📐 {r.area}m²</span>
-                      <span>👤 {r.cap} {t('người', 'guests')}</span>
+                      <span>👤 {r.cap} {tx(UI.guests)}</span>
                     </div>
 
                     <div className="flex items-center gap-1 text-xs text-[#1D4E89] font-medium pt-1">
                       <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>{t('Bao gồm bữa sáng hàng ngày', 'Daily breakfast included')}</span>
+                      <span>{tx(UI.dailyBreakfastIncluded)}</span>
                     </div>
                   </div>
                 </div>
@@ -802,12 +804,12 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                     <span className="font-bold text-base text-[#0F2D52]">
                       {formatVND(r.price)}
                     </span>
-                    <span className="text-[10px] text-[#6B7280]">/{t('đêm', 'night')}</span>
+                    <span className="text-[10px] text-[#6B7280]">/{tx(UI.nights)}</span>
                   </div>
 
                   <Link href={`/rooms/${roomSlug(r.code)}`}>
                     <Button variant="primary" size="xs" radius="6px" className="bg-[#0F2D52] hover:bg-[#163B6C] px-3 py-1.5">
-                      {t('Xem chi tiết', 'View details')}
+                      {tx(UI.viewDetails)}
                     </Button>
                   </Link>
                 </div>

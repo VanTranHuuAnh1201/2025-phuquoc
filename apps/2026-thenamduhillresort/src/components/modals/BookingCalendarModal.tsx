@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -22,7 +24,7 @@ export function BookingCalendarModal({
   roomType: initialRoomType,
   onSave,
 }: BookingCalendarModalProps) {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
   const [activeTab, setActiveTab] = useState<'calendar' | 'flex'>('calendar')
   const [step, setStep] = useState<'overview' | 'calendar' | 'guests'>('overview')
 
@@ -153,7 +155,7 @@ export function BookingCalendarModal({
             ✕
           </button>
           <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
-            {step === 'calendar' ? t('Chọn ngày', 'Select Dates') : t('Chỉnh sửa tìm kiếm', 'Edit Search')}
+            {step === 'calendar' ? tx(UI.selectDates) : tx(UI.editSearch)}
           </h3>
           <div style={{ width: '20px' }} />
         </div>
@@ -177,7 +179,7 @@ export function BookingCalendarModal({
                 <span style={{ fontSize: '18px' }}>📍</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>
-                    {t('Điểm đến', 'Destination')}
+                    {tx(UI.destination)}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>The Nam Du Hill (Ấp Củ Tron)</div>
                 </div>
@@ -201,13 +203,13 @@ export function BookingCalendarModal({
                 <span style={{ fontSize: '18px' }}>📅</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '10px', color: '#006ce4', fontWeight: 800, textTransform: 'uppercase' }}>
-                    {t('Ngày nhận & trả phòng', 'Check-in & Check-out')}
+                    {tx(UI.checkInCheckOut2)}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>
-                    {selCheckIn} — {selCheckOut || selCheckIn} ({calculateNights()} {t('đêm', 'night(s)')})
+                    {selCheckIn} — {selCheckOut || selCheckIn} ({calculateNights()} {tx(UI.nights)})
                   </div>
                 </div>
-                <span style={{ fontSize: '12px', color: '#006ce4', fontWeight: 700 }}>{t('Thay đổi ›', 'Change ›')}</span>
+                <span style={{ fontSize: '12px', color: '#006ce4', fontWeight: 700 }}>{tx(UI.change2)}</span>
               </div>
 
               {/* Guests & Room Box */}
@@ -227,13 +229,13 @@ export function BookingCalendarModal({
                 <span style={{ fontSize: '18px' }}>👤</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase' }}>
-                    {t('Số khách & Hạng phòng', 'Guests & Room')}
+                    {tx(UI.guestsRoom)}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>
                     {selGuests} · {selRoomType}
                   </div>
                 </div>
-                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700 }}>{t('Thay đổi ›', 'Change ›')}</span>
+                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 700 }}>{tx(UI.change2)}</span>
               </div>
             </div>
           )}
@@ -257,7 +259,7 @@ export function BookingCalendarModal({
                     cursor: 'pointer',
                   }}
                 >
-                  {t('Lịch', 'Calendar')}
+                  {tx(UI.calendar)}
                 </button>
                 <button
                   onClick={() => setActiveTab('flex')}
@@ -273,7 +275,7 @@ export function BookingCalendarModal({
                     cursor: 'pointer',
                   }}
                 >
-                  {t('Ngày linh hoạt', 'Flexible dates')}
+                  {tx(UI.flexibleDates)}
                 </button>
               </div>
 
@@ -289,10 +291,10 @@ export function BookingCalendarModal({
               </div>
 
               {/* Month 1: August 2026 */}
-              {renderMonth(2026, 7, t('tháng 8 năm 2026', 'August 2026'))}
+              {renderMonth(2026, 7, tx(UI.august2026))}
 
               {/* Month 2: September 2026 */}
-              {renderMonth(2026, 8, t('tháng 9 năm 2026', 'September 2026'))}
+              {renderMonth(2026, 8, tx(UI.september2026))}
 
               {/* Quick tolerance chips */}
               <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginTop: '12px' }}>
@@ -312,7 +314,7 @@ export function BookingCalendarModal({
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {num === 0 ? t('Ngày chính xác', 'Exact dates') : `± ${num} ${t('ngày', 'day(s)')}`}
+                    {num === 0 ? tx(UI.exactDates) : `± ${num} ${tx(UI.days)}`}
                   </button>
                 ))}
               </div>
@@ -324,7 +326,7 @@ export function BookingCalendarModal({
             <div style={{ display: 'grid', gap: '14px' }}>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
-                  {t('Số lượng khách', 'Number of Guests')}
+                  {tx(UI.numberOfGuests)}
                 </label>
                 <select
                   value={selGuests}
@@ -349,7 +351,7 @@ export function BookingCalendarModal({
 
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>
-                  {t('Hạng phòng mong muốn', 'Preferred Room Type')}
+                  {tx(UI.preferredRoomType)}
                 </label>
                 <select
                   value={selRoomType}
@@ -395,7 +397,7 @@ export function BookingCalendarModal({
               {selCheckIn} — {selCheckOut || selCheckIn}
             </div>
             <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#0f172a' }}>
-              {calculateNights()} {t('đêm', 'night(s)')} · {selGuests}
+              {calculateNights()} {tx(UI.nights)} · {selGuests}
             </div>
           </div>
 
@@ -413,7 +415,7 @@ export function BookingCalendarModal({
               boxShadow: '0 4px 14px rgba(0,108,228,0.30)',
             }}
           >
-            {step === 'calendar' ? t('Chọn ngày', 'Select dates') : t('Tìm', 'Search')}
+            {step === 'calendar' ? tx(UI.selectDates) : tx(UI.search2)}
           </button>
         </div>
       </div>

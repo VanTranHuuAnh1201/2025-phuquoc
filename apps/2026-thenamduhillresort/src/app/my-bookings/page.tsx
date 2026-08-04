@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -25,7 +27,7 @@ interface BookingItem {
 }
 
 export default function MyBookingsPage() {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
 
   const [tab, setTab] = useState<'upcoming' | 'completed'>('upcoming')
   const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null)
@@ -102,7 +104,7 @@ export default function MyBookingsPage() {
   }, [])
 
   const handleCancelBooking = (bookingId: string) => {
-    if (confirm(t('Bạn có chắc chắn muốn hủy đơn đặt phòng này?', 'Are you sure you want to cancel this booking?'))) {
+    if (confirm(tx(UI.areYouSureYouWantTo))) {
       const updated = bookings.map((b) => (b.id === bookingId ? { ...b, status: 'Đã hủy' as const } : b))
       setBookings(updated)
       try {
@@ -123,10 +125,10 @@ export default function MyBookingsPage() {
         <div className="max-w-[800px] mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-1.5 text-xs text-[#4B5563] hover:text-[#0F2D52] transition font-medium">
             <ArrowLeft className="w-4 h-4" />
-            <span>{t('Trang chủ', 'Home')}</span>
+            <span>{tx(UI.home)}</span>
           </Link>
           <h1 className="font-serif text-base font-bold text-[#0F2D52]">
-            {t('Đơn đặt của tôi', 'My Bookings')}
+            {tx(UI.myBookings)}
           </h1>
           <div className="w-12" />
         </div>
@@ -142,7 +144,7 @@ export default function MyBookingsPage() {
               tab === 'upcoming' ? 'bg-[#F2F7FC] text-[#1D4E89]' : 'text-[#6B7280]'
             }`}
           >
-            {t('Sắp tới', 'Upcoming')}
+            {tx(UI.upcoming)}
           </button>
           <button
             onClick={() => setTab('completed')}
@@ -150,7 +152,7 @@ export default function MyBookingsPage() {
               tab === 'completed' ? 'bg-[#F2F7FC] text-[#1D4E89]' : 'text-[#6B7280]'
             }`}
           >
-            {t('Đã hoàn thành', 'Completed')}
+            {tx(UI.completed)}
           </button>
         </div>
 
@@ -158,11 +160,11 @@ export default function MyBookingsPage() {
         {activeBookings.length === 0 ? (
           <div className="bg-white border border-[#ECECEC] rounded-[12px] p-8 text-center space-y-3 shadow-xs">
             <div className="text-xs text-[#6B7280]">
-              {t('Bạn chưa có đơn đặt phòng nào.', 'No bookings found.')}
+              {tx(UI.noBookingsFound)}
             </div>
             <Link href="/rooms">
               <Button variant="primary" size="sm" radius="6px">
-                {t('Khám phá danh sách phòng', 'Explore Rooms')}
+                {tx(UI.exploreRooms)}
               </Button>
             </Link>
           </div>
@@ -199,13 +201,13 @@ export default function MyBookingsPage() {
                 {/* Footer Row with 'Xem lại phòng' & 'Xem chi tiết' buttons */}
                 <div className="flex items-center justify-between pt-2 border-t border-[#ECECEC]">
                   <div className="text-xs">
-                    <span className="text-[#6B7280]">{t('Tổng tiền:', 'Total:')} </span>
+                    <span className="text-[#6B7280]">{tx(UI.totalAmount2)} </span>
                     <span className="font-bold text-[#0F2D52]">{b.totalPrice.toLocaleString('vi-VN')}đ</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Link href={`/rooms/${b.roomCode.replace('#', '').toLowerCase()}`}>
                       <Button variant="outline" size="xs" radius="6px" className="border-[#1D4E89] text-[#1D4E89] hover:bg-[#1D4E89]/5">
-                        {t('Xem màn hình phòng', 'View Room Page')}
+                        {tx(UI.viewRoomPage)}
                       </Button>
                     </Link>
                     <Button
@@ -215,7 +217,7 @@ export default function MyBookingsPage() {
                       className="bg-[#0F2D52] hover:bg-[#163B6C]"
                       onClick={() => setSelectedBooking(b)}
                     >
-                      {t('Xem chi tiết đơn', 'View Order Details')}
+                      {tx(UI.viewOrderDetails)}
                     </Button>
                   </div>
                 </div>
@@ -232,7 +234,7 @@ export default function MyBookingsPage() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#ECECEC] pb-3">
               <h2 className="font-serif text-base font-bold text-[#0F2D52]">
-                {t('Chi tiết đơn đặt', 'Booking Details')}
+                {tx(UI.bookingDetails2)}
               </h2>
               <button
                 onClick={() => setSelectedBooking(null)}
@@ -245,7 +247,7 @@ export default function MyBookingsPage() {
             {/* Code & Status */}
             <div className="flex items-center justify-between text-xs bg-[#F8F9FA] p-3 rounded-[8px]">
               <div>
-                <span className="text-[#6B7280] block">{t('Mã đặt phòng', 'Booking Code')}</span>
+                <span className="text-[#6B7280] block">{tx(UI.bookingCode)}</span>
                 <span className="font-mono font-bold text-[#1D4E89] text-sm">{selectedBooking.id}</span>
               </div>
               <span className={`px-2.5 py-1 rounded-full font-medium ${
@@ -262,7 +264,7 @@ export default function MyBookingsPage() {
             {/* Room Info */}
             <div className="space-y-2 text-xs">
               <h3 className="font-bold text-[#0F2D52] uppercase tracking-wider text-[11px]">
-                {t('Thông tin đặt phòng', 'Room Info')}
+                {tx(UI.bookingDetails)}
               </h3>
               <div className="flex gap-3">
                 <div className="w-16 h-14 rounded-[6px] overflow-hidden bg-[#F5F7FA] shrink-0">
@@ -279,23 +281,23 @@ export default function MyBookingsPage() {
             {/* Contact Info */}
             <div className="space-y-2 text-xs border-t border-[#ECECEC] pt-3">
               <h3 className="font-bold text-[#0F2D52] uppercase tracking-wider text-[11px]">
-                {t('Thông tin liên hệ', 'Contact Details')}
+                {tx(UI.contactInformation)}
               </h3>
               <div className="space-y-1 text-[#4B5563]">
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Họ và tên:', 'Name:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.guestName)}</span>
                   <span className="font-semibold text-[#1A1A1A]">{selectedBooking.contactName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Số điện thoại:', 'Phone:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.phone)}</span>
                   <span className="font-semibold text-[#1A1A1A]">{selectedBooking.contactPhone}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Email:', 'Email:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.email2)}</span>
                   <span className="font-semibold text-[#1A1A1A]">{selectedBooking.contactEmail}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Yêu cầu:', 'Notes:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.notes)}</span>
                   <span className="font-semibold text-[#1A1A1A]">{selectedBooking.notes}</span>
                 </div>
               </div>
@@ -304,15 +306,15 @@ export default function MyBookingsPage() {
             {/* Payment Details */}
             <div className="space-y-2 text-xs border-t border-[#ECECEC] pt-3">
               <h3 className="font-bold text-[#0F2D52] uppercase tracking-wider text-[11px]">
-                {t('Chi tiết thanh toán', 'Payment Details')}
+                {tx(UI.paymentDetails)}
               </h3>
               <div className="space-y-1 text-[#4B5563]">
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Tổng tiền:', 'Total Amount:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.totalAmount2)}</span>
                   <span className="font-bold text-[#0F2D52] text-sm">{selectedBooking.totalPrice.toLocaleString('vi-VN')}đ</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">{t('Phương thức:', 'Payment Method:')}</span>
+                  <span className="text-[#6B7280]">{tx(UI.paymentMethod2)}</span>
                   <span className="font-medium text-[#1A1A1A]">{selectedBooking.paymentMethod}</span>
                 </div>
               </div>
@@ -322,7 +324,7 @@ export default function MyBookingsPage() {
             <div className="pt-3 border-t border-[#ECECEC] space-y-2">
               <Link href={`/rooms/${selectedBooking.roomCode.replace('#', '').toLowerCase()}`} className="block">
                 <Button variant="outline" size="md" fullWidth radius="6px" className="border-[#0F2D52] text-[#0F2D52] hover:bg-[#0F2D52]/5 text-xs font-bold py-2.5">
-                  {t('Xem lại màn hình phòng', 'Re-view Room Screen')}
+                  {tx(UI.reViewRoomScreen)}
                 </Button>
               </Link>
 
@@ -331,7 +333,7 @@ export default function MyBookingsPage() {
                   onClick={() => handleCancelBooking(selectedBooking.id)}
                   className="w-full py-2.5 text-xs font-bold text-rose-600 border border-rose-200 bg-rose-50/50 rounded-[6px] hover:bg-rose-100 transition"
                 >
-                  {t('Hủy đặt phòng', 'Cancel Booking')}
+                  {tx(UI.cancelBooking)}
                 </button>
               )}
             </div>

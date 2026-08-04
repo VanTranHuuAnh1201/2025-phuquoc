@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -7,7 +9,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { MapPin, Mail, Phone, CheckCircle } from 'lucide-react'
 
 export function Footer() {
-  const { t } = useLanguage()
+  const { tx } = useLanguage()
   const pathname = usePathname()
 
   if (pathname?.startsWith('/checkout') || pathname?.startsWith('/admin')) {
@@ -37,17 +39,14 @@ export function Footer() {
           </div>
 
           <p className="text-xs text-white/70 leading-relaxed">
-            {t(
-              'Hộ kinh doanh THE NAM DU HILL · Đăng ký lần đầu 18/10/2021 · MST 1702244746',
-              'THE NAM DU HILL business household · Registered 18/10/2021 · Tax ID 1702244746'
-            )}
+            {tx(UI.theNamDuHillBusinessHousehold)}
           </p>
 
           <div className="space-y-2 text-xs text-white/90">
             <div className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-[#C6A86A] flex-shrink-0 mt-0.5 stroke-[1.75]" />
               <span>
-                {t('Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Kiên Giang', 'Cu Tron village, Nam Du Island, Kien Giang')}
+                {tx(UI.cuTronVillageNamDuIsland)}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -68,37 +67,37 @@ export function Footer() {
         {/* Column 2: Information */}
         <div className="space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-            {t('THÔNG TIN', 'INFORMATION')}
+            {tx(UI.information)}
           </h3>
           <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
           <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#" className="hover:text-white transition">{t('Chính sách bảo mật', 'Privacy Policy')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Quy định chung', 'General Terms')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn đặt phòng', 'Booking Guide')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Chính sách hoàn hủy', 'Cancellation Policy')}</a></li>
-            <li><a href="#" className="hover:text-white transition">{t('Hướng dẫn thanh toán', 'Payment Options')}</a></li>
+            <li><a href="#" className="hover:text-white transition">{tx(UI.privacyPolicy)}</a></li>
+            <li><a href="#" className="hover:text-white transition">{tx(UI.generalTerms)}</a></li>
+            <li><a href="#" className="hover:text-white transition">{tx(UI.bookingGuide)}</a></li>
+            <li><a href="#" className="hover:text-white transition">{tx(UI.cancellationPolicy)}</a></li>
+            <li><a href="#" className="hover:text-white transition">{tx(UI.paymentOptions)}</a></li>
           </ul>
         </div>
 
         {/* Column 3: Explore */}
         <div className="space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-            {t('KHÁM PHÁ', 'EXPLORE')}
+            {tx(UI.explore)}
           </h3>
           <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
           <ul className="space-y-2 text-xs text-white/80">
-            <li><Link href="/rooms" className="hover:text-white transition">{t('Danh sách phòng', 'Room List')}</Link></li>
-            <li><Link href="/dining" className="hover:text-white transition">{t('Nhà hàng & BBQ', 'Dining & BBQ')}</Link></li>
-            <li><Link href="/explore" className="hover:text-white transition">{t('Khám phá Nam Du', 'Explore Nam Du')}</Link></li>
-            <li><Link href="/blog" className="hover:text-white transition">{t('Cẩm nang du lịch', 'Travel Journal')}</Link></li>
-            <li><Link href="/contact" className="hover:text-white transition">{t('Liên hệ', 'Contact Us')}</Link></li>
+            <li><Link href="/rooms" className="hover:text-white transition">{tx(UI.roomList)}</Link></li>
+            <li><Link href="/dining" className="hover:text-white transition">{tx(UI.diningBbq)}</Link></li>
+            <li><Link href="/explore" className="hover:text-white transition">{tx(UI.exploreNamDu)}</Link></li>
+            <li><Link href="/blog" className="hover:text-white transition">{tx(UI.travelJournal)}</Link></li>
+            <li><Link href="/contact" className="hover:text-white transition">{tx(UI.contactUs)}</Link></li>
           </ul>
         </div>
 
         {/* Column 4: Social & Verification */}
         <div className="space-y-4">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-            {t('KẾT NỐI', 'CONNECT')}
+            {tx(UI.connect)}
           </h3>
           <div className="w-8 h-0.5 bg-[#C6A86A] rounded-full" />
           
@@ -124,7 +123,7 @@ export function Footer() {
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl p-3">
             <CheckCircle className="w-4 h-4 text-[#C6A86A] flex-shrink-0 stroke-[1.75]" />
             <span className="text-[10px] font-semibold text-white/90 leading-tight">
-              {t('ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG', 'REGISTERED WITH MINISTRY OF COMMERCE')}
+              {tx(UI.registeredWithMinistryOfCommerce)}
             </span>
           </div>
         </div>
@@ -134,7 +133,7 @@ export function Footer() {
       <div className="border-t border-white/10 py-4">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/60">
           <span>© 2026 The Nam Du Hill Resort · thenamduhill.com</span>
-          <span>{t('Giá tốt nhất khi đặt trực tiếp · Đưa đón bến tàu miễn phí', 'Best rates when booking direct')}</span>
+          <span>{tx(UI.bestRatesWhenBookingDirect)}</span>
         </div>
       </div>
     </footer>

@@ -1,12 +1,14 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { gallery } from '../../data/property'
 import { Button } from '../common/Button'
 
 export function PanoramaSection() {
-  const { t, tx } = useLanguage()
+  const { tx } = useLanguage()
 
   return (
     <section className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
@@ -16,15 +18,15 @@ export function PanoramaSection() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Khoảnh khắc tại The Nam Du Hill', 'Moments at The Nam Du Hill')}
+              {tx(UI.momentsAtTheNamDuHill)}
             </h2>
             <p className="text-xs font-normal text-[#6B7280] mt-0.5">
-              {t('Ghi lại những ký ức tuyệt đẹp trên đảo Nam Du', 'Capture unforgettable island memories')}
+              {tx(UI.captureUnforgettableIslandMemories)}
             </p>
           </div>
           <Link href="/explore">
             <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem tất cả', 'View all')}
+              {tx(UI.viewAll)}
             </Button>
           </Link>
         </div>

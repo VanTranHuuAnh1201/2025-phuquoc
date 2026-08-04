@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -8,7 +10,7 @@ import { Button } from '../common/Button'
 import { Star } from 'lucide-react'
 
 export function DiningSection() {
-  const { t, tx } = useLanguage()
+  const { tx } = useLanguage()
 
   const reviews = property.reviews ?? []
 
@@ -20,15 +22,15 @@ export function DiningSection() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Khách hàng nói gì về chúng tôi', 'What Our Guests Say')}
+              {tx(UI.whatOurGuestsSay)}
             </h2>
             <p className="text-xs sm:text-sm font-normal text-[#6B7280] mt-0.5">
-              {t('Bạn được đón tận bến. Phần còn lại đã có người lo.', 'You are picked up at the pier. We take care of everything else.')}
+              {tx(UI.youArePickedUpAtThe)}
             </p>
           </div>
           <Link href="/contact">
             <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem tất cả', 'View all')}
+              {tx(UI.viewAll)}
             </Button>
           </Link>
         </div>
@@ -49,10 +51,10 @@ export function DiningSection() {
               <Star className="w-4 h-4 fill-[#C6A86A]" />
             </div>
             <span className="font-bold text-sm text-white">
-              {t('Tuyệt vời', 'Outstanding')}
+              {tx(UI.outstanding)}
             </span>
             <span className="text-xs text-white/70 mt-0.5">
-              {t('Dựa trên 83 đánh giá', 'Based on 83 verified reviews')}
+              {tx(UI.basedOn83VerifiedReviews)}
             </span>
           </div>
 
@@ -93,7 +95,7 @@ export function DiningSection() {
 
                 <div className="mt-3 pt-2 border-t border-[#ECECEC] flex items-center gap-1 text-[10px] text-emerald-600 font-semibold">
                   <span>✓</span>
-                  <span>{t('Đã xác minh lưu trú', 'Verified Stay')}</span>
+                  <span>{tx(UI.verifiedStay2)}</span>
                 </div>
               </div>
             ))}

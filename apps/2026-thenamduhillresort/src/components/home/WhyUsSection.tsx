@@ -1,5 +1,7 @@
 'use client'
 
+import { UI } from '@repo/core'
+
 import React from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
@@ -8,7 +10,7 @@ import { iconFor } from '../../data/icons'
 import { Button } from '../common/Button'
 
 export function WhyUsSection() {
-  const { t, tx } = useLanguage()
+  const { tx } = useLanguage()
 
   return (
     <section className="py-5 sm:py-8 bg-white border-b border-[#ECECEC]">
@@ -18,12 +20,12 @@ export function WhyUsSection() {
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight">
-              {t('Tiện ích nổi bật', 'Featured Amenities')}
+              {tx(UI.featuredAmenities2)}
             </h2>
           </div>
           <Link href="/explore">
             <Button variant="secondary" size="sm" radius="6px">
-              {t('Xem thêm', 'See more')}
+              {tx(UI.readMore)}
             </Button>
           </Link>
         </div>
