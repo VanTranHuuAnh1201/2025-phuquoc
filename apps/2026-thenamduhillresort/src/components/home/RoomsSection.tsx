@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { Button } from '../common/Button'
 import { ROOMS, formatVND, roomSlug } from '../../data/rooms'
+import { Maximize2, Users } from 'lucide-react'
 
 export function RoomsSection() {
   const { language, tx } = useLanguage()
@@ -88,9 +89,6 @@ export function RoomsSection() {
                   alt={room.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-2 left-2 bg-[#1A1A1A]/70 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
-                  {room.code}
-                </div>
               </div>
 
               {/* Card Content */}
@@ -99,9 +97,15 @@ export function RoomsSection() {
                   <h3 className="font-serif font-bold text-[#1A1A1A] text-sm sm:text-base group-hover:text-[#1D4E89] transition-colors line-clamp-1">
                     {isEn ? room.title : room.titleVi}
                   </h3>
-                  <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1 font-normal">
-                    <span>📐 {room.area}m²</span>
-                    <span>👤 {room.cap} {tx(UI.guests)}</span>
+                  <div className="flex items-center gap-3 text-xs text-[#6B7280] mt-1 font-medium">
+                    <span className="flex items-center gap-1">
+                      <Maximize2 className="w-3.5 h-3.5 text-[#1D4E89]" />
+                      {room.area}m²
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users className="w-3.5 h-3.5 text-[#1D4E89]" />
+                      {room.cap} {tx(UI.guests)}
+                    </span>
                   </div>
                 </div>
 

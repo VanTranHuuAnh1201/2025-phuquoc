@@ -78,8 +78,8 @@ export default function BlogPostDetailPage() {
             {tx(UI.home)}
           </Link>
           <span>›</span>
-          <Link href="/blog" style={{ color: '#8fa5b3', textDecoration: 'none' }}>
-            {tx(UI.namDuJournal)}
+          <Link href="/explore" style={{ color: '#8fa5b3', textDecoration: 'none' }}>
+            {tx(UI.exploreNamDu)}
           </Link>
           <span>›</span>
           <span style={{ color: '#0b1b26', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px' }}>
@@ -302,8 +302,8 @@ export default function BlogPostDetailPage() {
                 ))}
               </div>
               <div style={{ height: '1px', background: '#eef4f8', margin: '16px 0' }} />
-              <Link href="/blog" style={{ fontSize: '13.5px', fontWeight: 700, color: '#0284c7', textDecoration: 'none' }}>
-                {tx(UI.allJournalArticles)}
+              <Link href="/explore" style={{ fontSize: '13.5px', fontWeight: 700, color: '#0284c7', textDecoration: 'none' }}>
+                {tx(UI.exploreNamDu)}
               </Link>
             </div>
 
@@ -359,8 +359,8 @@ export default function BlogPostDetailPage() {
           <h2 style={{ margin: 0, fontSize: '28px', fontWeight: 800, letterSpacing: '-0.028em', color: '#0b1b26' }}>
             {tx(UI.keepReading)}
           </h2>
-          <Link href="/blog" style={{ fontSize: '14px', fontWeight: 700, color: '#0284c7', whiteSpace: 'nowrap', textDecoration: 'none' }}>
-            {tx(UI.allJournalArticles)}
+          <Link href="/explore" style={{ fontSize: '14px', fontWeight: 700, color: '#0284c7', whiteSpace: 'nowrap', textDecoration: 'none' }}>
+            {tx(UI.exploreNamDu)}
           </Link>
         </div>
 

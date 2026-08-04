@@ -9,7 +9,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { ROOMS, Room, formatVND, roomSlug } from '../../data/rooms'
 import { Button } from '../../components/common/Button'
 import { BookingModal } from '../../components/rooms/BookingModal'
-import { ArrowLeft, SlidersHorizontal, Check, Maximize2, Users } from 'lucide-react'
+import { ArrowLeft, SlidersHorizontal, Check, Maximize2, Users, BedDouble, Eye } from 'lucide-react'
 
 const FILTERS = [
   { k: 'all', vi: 'Tất cả', en: 'All' },
@@ -120,9 +120,6 @@ function RoomsContent() {
                   alt={r.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <span className="absolute top-1.5 left-1.5 bg-[#1A1A1A]/80 backdrop-blur-md text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-[4px]">
-                  {r.code}
-                </span>
               </div>
 
               <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
@@ -130,13 +127,17 @@ function RoomsContent() {
                   <h2 className="font-serif text-xs font-bold text-[#1A1A1A] group-hover:text-[#1D4E89] transition-colors leading-tight truncate">
                     {isEn ? r.nameEn : r.name}
                   </h2>
-                  <div className="flex items-center gap-2.5 text-[10px] text-[#4B5563] font-normal mt-1 flex-wrap">
+                  <div className="flex items-center gap-2.5 text-[10px] text-[#4B5563] font-medium mt-1 flex-wrap">
                     <span className="flex items-center gap-1">
-                      <Maximize2 className="w-3 h-3 text-[#4B5563]" />
+                      <Maximize2 className="w-3 h-3 text-[#1D4E89]" />
                       {r.area}m²
                     </span>
                     <span className="flex items-center gap-1">
-                      <Users className="w-3 h-3 text-[#4B5563]" />
+                      <Users className="w-3 h-3 text-[#1D4E89]" />
+                      {r.cap} {tx(UI.guests)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <BedDouble className="w-3 h-3 text-[#1D4E89]" />
                       1 {tx(UI.doubleBed)}
                     </span>
                   </div>
@@ -305,9 +306,6 @@ function RoomsContent() {
                       alt={r.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-2 left-2 bg-[#1A1A1A]/80 backdrop-blur-md text-white text-xs font-semibold px-2 py-0.5 rounded-[4px]">
-                      {r.code}
-                    </span>
                   </div>
 
                   {/* Info */}
@@ -318,10 +316,22 @@ function RoomsContent() {
                       </h2>
 
                       <div className="flex items-center gap-4 text-xs text-[#6B7280] mt-1 font-medium">
-                        <span>📐 {r.area}m²</span>
-                        <span>👤 {r.cap} {tx(UI.guests)}</span>
-                        <span>🛏️ 1 {tx(UI.doubleBed)}</span>
-                        <span>👁️ {isEn ? r.viewEn : r.view}</span>
+                        <span className="flex items-center gap-1">
+                          <Maximize2 className="w-3.5 h-3.5 text-[#1D4E89]" />
+                          {r.area}m²
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5 text-[#1D4E89]" />
+                          {r.cap} {tx(UI.guests)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <BedDouble className="w-3.5 h-3.5 text-[#1D4E89]" />
+                          1 {tx(UI.doubleBed)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3.5 h-3.5 text-[#1D4E89]" />
+                          {isEn ? r.viewEn : r.view}
+                        </span>
                       </div>
 
                       <div className="mt-3 space-y-1 text-xs text-[#1D4E89] font-medium">

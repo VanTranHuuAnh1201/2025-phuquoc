@@ -20,8 +20,8 @@ export const property = getPropertySync()
  * File nằm tại `apps/2026-thenamduhillresort/public/uploads/`.
  */
 export const HERO_SLIDES = [
-    { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
     { src: '/uploads/hai-dang-Ke-Ga-2.jpg', alt: 'Vịnh Nam Du nhìn từ trên đồi' },
+    { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
     { src: '/uploads/hero-3.png', alt: 'Sân hiên The Nam Du Hill' },
     { src: '/uploads/hero-4.png', alt: 'Sân hiên lục giác nhìn từ trên cao về đêm' },
 ]

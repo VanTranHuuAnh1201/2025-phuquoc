@@ -38,17 +38,17 @@ export function DiningSection() {
         {/* Content Layout: Score Card + Review Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           
-          {/* Overall Rating Box (Primary Navy #0F2D52, Card Radius 12px) */}
-          <div className="bg-[#0F2D52] text-white rounded-[12px] p-6 flex flex-col justify-center items-center text-center shadow-sm">
+          {/* Overall Rating Box */}
+          <div className="bg-gradient-to-br from-[#0B192C] to-[#163B6C] text-white rounded-[12px] p-6 flex flex-col justify-center items-center text-center shadow-md border border-white/10">
             <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-              4.9<span className="text-lg font-normal text-white/60">/5</span>
+              4.9<span className="text-lg font-normal text-[#FFB800]">/5</span>
             </span>
-            <div className="flex items-center gap-1 text-[#C6A86A] my-2">
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
-              <Star className="w-4 h-4 fill-[#C6A86A]" />
+            <div className="flex items-center gap-1 text-[#FFB800] my-2">
+              <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+              <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+              <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+              <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+              <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
             </div>
             <span className="font-bold text-sm text-white">
               {tx(UI.outstanding)}
@@ -82,9 +82,9 @@ export function DiningSection() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex text-[#C6A86A] gap-0.5">
+                    <div className="flex text-[#FFB800] gap-0.5">
                       {Array.from({ length: rev.rating }).map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-[#C6A86A]" />
+                        <Star key={i} className="w-3 h-3 fill-[#FFB800] text-[#FFB800]" />
                       ))}
                     </div>
                   </div>

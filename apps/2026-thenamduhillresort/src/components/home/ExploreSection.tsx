@@ -14,10 +14,10 @@ export function ExploreSection() {
     <section id="explore" className="py-5 sm:py-7 bg-white border-b border-[#ECECEC]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
 
-        {/* Standardized Section Header (Mobile 16px font size per Figma) */}
+        {/* Standardized Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
           <div>
-            <span className="text-xs font-semibold text-[#1D4E89]">
+            <span className="text-xs font-extrabold text-[#FFB800] uppercase tracking-widest">
               {tx(UI.n21Islands912Km)}
             </span>
             <h2 className="font-serif text-base sm:text-xl md:text-2xl font-bold text-[#1A1A1A] tracking-tight mt-0.5">
@@ -45,7 +45,7 @@ export function ExploreSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#101828]/90 via-[#101828]/40 to-transparent" />
 
               <div className="relative z-10 text-white">
-                <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-1">
+                <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-wider block mb-1">
                   {tx(item.tag)}
                 </span>
                 <h3 className="font-bold text-base text-white leading-tight">
@@ -67,7 +67,7 @@ export function ExploreSection() {
             className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 hover:bg-white hover:shadow-md transition flex flex-col justify-between"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
+              <span className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider block mb-2">
                 {tx(UI.itinerary2Days1Night)}
               </span>
               <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
@@ -85,7 +85,7 @@ export function ExploreSection() {
             className="bg-[#FAFAF8] border border-[#ECECEC] rounded-[12px] p-5 hover:bg-white hover:shadow-md transition flex flex-col justify-between"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#1D4E89] uppercase tracking-wider block mb-2">
+              <span className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider block mb-2">
                 {tx(UI.itinerary3Days2Nights)}
               </span>
               <h3 className="font-serif font-bold text-[#1A1A1A] text-sm leading-snug">
@@ -103,7 +103,7 @@ export function ExploreSection() {
             className="bg-gradient-to-br from-[#1D4E89] to-[#0F2D52] text-white rounded-[12px] p-5 shadow-md flex flex-col justify-between hover:shadow-lg transition group"
           >
             <div>
-              <span className="text-[10px] font-semibold text-[#C6A86A] uppercase tracking-wider block mb-2">
+              <span className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider block mb-2">
                 {tx(UI.fullGuide)}
               </span>
               <h3 className="font-serif font-bold text-white text-sm leading-snug">
@@ -112,7 +112,7 @@ export function ExploreSection() {
             </div>
             <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-white group-hover:translate-x-1 transition-transform">
               <span>{tx(UI.exploreNamDu)}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-[#FFB800]" />
             </div>
           </Link>
         </div>

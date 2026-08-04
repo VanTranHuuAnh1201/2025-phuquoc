@@ -188,7 +188,7 @@ export function HeroSection() {
           <button
             type="button"
             onClick={handleSearch}
-            className="shrink-0 h-[44px] px-4 bg-[#06b6d4] text-white text-[13px] font-bold rounded-[10px] whitespace-nowrap shadow-[0_4px_12px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
+            className="shrink-0 h-[44px] px-4 bg-[#1D4E89] text-white text-[13px] font-bold rounded-[10px] whitespace-nowrap shadow-sm transition-colors duration-150 hover:bg-[#0F2D52] active:bg-[#0B192C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D4E89]"
           >
             {tx(UI.search)}
           </button>
@@ -211,7 +211,7 @@ export function HeroSection() {
           <button
             type="button"
             onClick={handleSearch}
-            className="bg-[#06b6d4] text-white text-sm font-bold px-[26px] py-[17px] rounded-[15px] whitespace-nowrap shadow-[0_6px_18px_rgba(6,182,212,0.30)] transition-colors duration-150 hover:bg-[#0891b2] active:bg-[#0e7490] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891b2]"
+            className="bg-[#1D4E89] text-white text-sm font-bold px-[26px] py-[17px] rounded-[15px] whitespace-nowrap shadow-md transition-colors duration-150 hover:bg-[#0F2D52] active:bg-[#0B192C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D4E89]"
           >
             {tx(UI.checkAvailability)}
           </button>

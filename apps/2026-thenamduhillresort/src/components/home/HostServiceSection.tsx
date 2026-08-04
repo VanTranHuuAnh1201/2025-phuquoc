@@ -47,34 +47,36 @@ export function HostServiceSection() {
 
           {/* Right Host Testimonials Stack */}
           <div className="grid grid-cols-1 gap-3">
-            <blockquote className="bg-white rounded-[12px] p-4 border border-[#ECECEC] shadow-2xs hover:shadow-sm transition">
-              <div className="flex text-[#C6A86A] gap-0.5 mb-2">
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
+            <blockquote className="bg-white rounded-[12px] p-4.5 border border-[#FFB800]/30 shadow-xs hover:shadow-md transition">
+              <div className="flex text-[#FFB800] gap-1 mb-2">
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
               </div>
-              <p className="text-xs text-[#4B5563] italic leading-relaxed">
-                {tx(UI.theHostIsGenuinelyAttentiveShe)}
+              <p className="text-xs sm:text-sm text-[#1A1A1A] font-medium italic leading-relaxed">
+                &ldquo;{tx(UI.theHostIsGenuinelyAttentiveShe)}&rdquo;
               </p>
-              <footer className="text-[10px] font-semibold text-[#6B7280] mt-2 uppercase tracking-wider">
+              <footer className="text-[10px] font-bold text-[#0F2D52] mt-2.5 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]"></span>
                 Ngọc Anh · TP.HCM
               </footer>
             </blockquote>
 
-            <blockquote className="bg-[#0F2D52] text-white rounded-[12px] p-4 shadow-sm">
-              <div className="flex text-[#C6A86A] gap-0.5 mb-2">
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
+            <blockquote className="bg-gradient-to-br from-[#0B192C] to-[#163B6C] text-white rounded-[12px] p-4.5 shadow-sm border border-white/10">
+              <div className="flex text-[#FFB800] gap-1 mb-2">
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-4 h-4 fill-[#FFB800] text-[#FFB800]" />
               </div>
-              <p className="text-xs text-white/95 italic leading-relaxed">
-                {tx(UI.weWokeForTheSunriseAnd)}
+              <p className="text-xs sm:text-sm text-white/95 font-medium italic leading-relaxed">
+                &ldquo;{tx(UI.weWokeForTheSunriseAnd)}&rdquo;
               </p>
-              <footer className="text-[10px] font-semibold text-white/70 mt-2 uppercase tracking-wider">
+              <footer className="text-[10px] font-bold text-[#FFB800] mt-2.5 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]"></span>
                 Minh Trí · Cần Thơ
               </footer>
             </blockquote>

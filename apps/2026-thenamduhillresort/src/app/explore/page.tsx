@@ -7,15 +7,37 @@ import Link from 'next/link'
 import { useLanguage } from '../../context/LanguageContext'
 import { ImageSlot } from '../../components/common/ImageSlot'
 import { SPOTS, SATELLITE_ISLANDS, TRIPS } from '../../data/explore'
+import { BLOG_POSTS } from '../../data/blog'
 import { Button } from '../../components/common/Button'
-import { Compass, Anchor, Calendar, ShieldCheck, Sun, MessageCircle } from 'lucide-react'
+import { Compass, Anchor, Calendar, ShieldCheck, Sun, MessageCircle, BookOpen, Clock, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function ExplorePage() {
   const { language, tx } = useLanguage()
   const isEn = language === 'en'
 
   const [activeTripKey, setActiveTripKey] = useState<'d2' | 'd3'>('d2')
+  const [activeCategory, setActiveCategory] = useState<string>('ALL')
+
   const currentTrip = TRIPS[activeTripKey]
+
+  const categories = [
+    { key: 'ALL', vi: 'Tất cả bài viết', en: 'All articles' },
+    { key: 'DI CHUYỂN', enKey: 'GETTING THERE', vi: 'Di chuyển', en: 'Getting there' },
+    { key: 'HẬU TRƯỜNG', enKey: 'BEHIND THE SCENES', vi: 'Hậu trường', en: 'Behind the scenes' },
+    { key: 'ẨM THỰC', enKey: 'FOOD', vi: 'Ẩm thực', en: 'Food' },
+    { key: 'LỊCH TRÌNH', enKey: 'ITINERARY', vi: 'Lịch trình', en: 'Itinerary' },
+  ]
+
+  const filteredPosts = BLOG_POSTS.filter((p) => {
+    if (activeCategory === 'ALL') return true
+    return p.categoryVi === activeCategory || p.categoryEn === activeCategory
+  })
+
+  // Map spots to blog posts where relevant
+  const getSpotArticleUrl = (spotId: string) => {
+    if (spotId === 'lighthouse') return '/blog/bi-mat-hai-dang-nam-du'
+    return '/blog/kinh-nghiem-di-nam-du-lan-dau'
+  }
 
   return (
     <main className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] pt-14 pb-20">
@@ -31,7 +53,7 @@ export default function ExplorePage() {
         
         <div className="relative w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-24 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-[#C6A86A]" />
+            <span className="w-2 h-2 rounded-full bg-[#FFB800]" />
             <span>{tx(UI.n21Islands912KmGulf)}</span>
           </div>
 
@@ -49,7 +71,7 @@ export default function ExplorePage() {
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
         <div className="bg-white border border-[#ECECEC] rounded-[12px] p-5 sm:p-6 shadow-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+            <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-wider block">
               {tx(UI.bestSeason)}
             </span>
             <div className="font-serif text-base font-bold text-[#0F2D52]">
@@ -61,7 +83,7 @@ export default function ExplorePage() {
           </div>
 
           <div className="space-y-1 sm:border-l sm:border-[#ECECEC] sm:pl-6">
-            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+            <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-wider block">
               {tx(UI.highestPeak)}
             </span>
             <div className="font-serif text-base font-bold text-[#0F2D52]">
@@ -73,7 +95,7 @@ export default function ExplorePage() {
           </div>
 
           <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
-            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+            <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-wider block">
               {tx(UI.gettingHere)}
             </span>
             <div className="font-serif text-base font-bold text-[#0F2D52]">
@@ -85,7 +107,7 @@ export default function ExplorePage() {
           </div>
 
           <div className="space-y-1 lg:border-l lg:border-[#ECECEC] lg:pl-6">
-            <span className="text-[10px] font-bold text-[#C6A86A] uppercase tracking-wider block">
+            <span className="text-[10px] font-extrabold text-[#FFB800] uppercase tracking-wider block">
               {tx(UI.mustBring)}
             </span>
             <div className="font-serif text-base font-bold text-[#0F2D52]">
@@ -98,7 +120,7 @@ export default function ExplorePage() {
         </div>
       </section>
 
-      {/* 6 Spots on Hon Lon ("Trên Hòn Lớn") */}
+      {/* 6 Spots on Hon Lon ("Trên Hòn Lớn") - Interactive Cards with Blog Detail Links */}
       <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div className="space-y-2">
@@ -117,9 +139,10 @@ export default function ExplorePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {SPOTS.map((s) => (
-            <article
+            <Link
               key={s.id}
-              className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-md transition group flex flex-col"
+              href={getSpotArticleUrl(s.id)}
+              className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 group flex flex-col cursor-pointer"
             >
               <div className="relative h-48 bg-[#F5F7FA] overflow-hidden">
                 <ImageSlot
@@ -143,10 +166,97 @@ export default function ExplorePage() {
                 </div>
                 <div className="text-[11px] font-semibold text-[#1D4E89] pt-2 border-t border-[#ECECEC] flex items-center justify-between">
                   <span>💡 {isEn ? s.tipEn : s.tipVi}</span>
+                  <span className="text-xs text-[#1D4E89] group-hover:translate-x-1 transition-transform flex items-center gap-1 font-bold">
+                    <span>Xem bài viết</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Integrated Section: Cẩm Nang & Góc Trải Nghiệm Blog/Story Articles */}
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#ECECEC] pb-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1D4E89]">
+                <BookOpen className="w-4 h-4 text-[#1D4E89]" />
+                <span>Cẩm nang & Kinh nghiệm du lịch</span>
+              </div>
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F2D52]">
+                {tx(UI.travelGuideIslandStories)}
+              </h2>
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {categories.map((c) => {
+                const active = activeCategory === c.key || activeCategory === c.enKey
+                return (
+                  <button
+                    key={c.key}
+                    onClick={() => setActiveCategory(c.key)}
+                    className={`px-3.5 py-1.5 text-xs font-bold rounded-[6px] transition whitespace-nowrap ${
+                      active
+                        ? 'bg-[#1D4E89] text-white shadow-xs'
+                        : 'bg-white border border-[#ECECEC] text-[#4B5563] hover:border-[#1D4E89] hover:text-[#1D4E89]'
+                    }`}
+                  >
+                    {isEn ? c.en : c.vi}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Grid of Articles with Direct onClick to Blog Detail View */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPosts.map((post) => (
+              <article
+                key={post.id}
+                className="bg-white border border-[#ECECEC] rounded-[12px] overflow-hidden shadow-xs hover:shadow-lg transition flex flex-col group"
+              >
+                <div className="relative h-48 bg-[#F5F7FA] overflow-hidden">
+                  <Link href={`/blog/${post.id}`} className="block absolute inset-0">
+                    <ImageSlot id={post.heroSlot} placeholder={isEn ? post.titleEn : post.titleVi} style={{ position: 'absolute', inset: 0 }} />
+                  </Link>
+                  <span className="absolute top-3 left-3 bg-[#0F2D52]/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                    {isEn ? post.categoryEn : post.categoryVi}
+                  </span>
+                </div>
+
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                  <div className="space-y-2">
+                    <h3 className="font-serif text-base font-bold text-[#0F2D52] group-hover:text-[#1D4E89] transition line-clamp-2 leading-snug">
+                      <Link href={`/blog/${post.id}`}>
+                        {isEn ? post.titleEn : post.titleVi}
+                      </Link>
+                    </h3>
+                    <p className="text-xs text-[#4B5563] line-clamp-3 leading-relaxed">
+                      {isEn ? post.ledeEn : post.ledeVi}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#ECECEC] flex items-center justify-between text-[11px] text-[#6B7280]">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-[#1D4E89]" />
+                      <span>{post.readMin} {tx(UI.minRead)}</span>
+                    </div>
+                    <Link
+                      href={`/blog/${post.id}`}
+                      className="font-bold text-[#1D4E89] hover:underline flex items-center gap-1"
+                    >
+                      <span>Chi tiết bài viết</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -169,9 +279,10 @@ export default function ExplorePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SATELLITE_ISLANDS.map((i) => (
-            <article
+            <Link
               key={i.id}
-              className="relative min-h-[320px] rounded-[12px] overflow-hidden bg-[#0F2D52] flex items-end p-5 shadow-xs group"
+              href="/blog/kinh-nghiem-di-nam-du-lan-dau"
+              className="relative min-h-[320px] rounded-[12px] overflow-hidden bg-[#0F2D52] flex items-end p-5 shadow-xs group cursor-pointer"
             >
               <ImageSlot
                 id={`ndh-island-${i.id}`}
@@ -181,17 +292,17 @@ export default function ExplorePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0F2D52] via-[#0F2D52]/40 to-transparent pointer-events-none" />
               
               <div className="relative z-10 space-y-1.5 text-white">
-                <span className="inline-block text-[10px] font-bold text-[#C6A86A] bg-[#0F2D52]/80 backdrop-blur-xs px-2 py-0.5 rounded-full border border-[#C6A86A]/30">
+                <span className="inline-block text-[10px] font-bold text-[#FFB800] bg-[#0F2D52]/80 backdrop-blur-xs px-2 py-0.5 rounded-full border border-[#FFB800]/30">
                   {isEn ? i.badgeEn : i.badgeVi}
                 </span>
-                <h3 className="font-serif text-lg font-bold text-white group-hover:text-[#C6A86A] transition">
+                <h3 className="font-serif text-lg font-bold text-white group-hover:text-[#FFB800] transition">
                   {isEn ? i.nameEn : i.nameVi}
                 </h3>
                 <p className="text-xs text-white/80 leading-relaxed">
                   {isEn ? i.textEn : i.textVi}
                 </p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

@@ -17,7 +17,7 @@ export default function HomePage() {
       <DiningSection />
       <ExploreSection />
       <HostServiceSection />
-      <ContactCtaSection />
+      {/* <ContactCtaSection /> */}
     </main>
   )
 }

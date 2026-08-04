@@ -53,12 +53,10 @@ export function Header({ forceSolid = false }: HeaderProps) {
   const isSolid = forceSolid || !isHomePage || scrolled
 
   const navLinks = [
-    { href: '/rooms', label: tx(UI.rooms) },
-    { href: '/dining', label: tx(UI.amenities2) },
-    { href: '/explore', label: tx(UI.offers) },
-    // { href: '/my-bookings', label: tx(UI.myBookings2) },
-    { href: '/blog', label: tx(UI.aboutUs) },
-    { href: '/contact', label: tx(UI.contactUs) },
+    { href: '/rooms', label: language === 'vi' ? 'Phòng' : 'Rooms' },
+    { href: '/dining', label: language === 'vi' ? 'Ẩm thực' : 'Dining' },
+    { href: '/explore', label: language === 'vi' ? 'Khám phá' : 'Explore' },
+    { href: '/contact', label: language === 'vi' ? 'Liên hệ' : 'Contact' },
   ]
 
   return (
@@ -68,7 +66,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
         : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent text-white py-3'
         }`}
     >
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-6">
 
         {/* Left Side: Authentic Resort Logo */}
         <Link href={isCheckout ? '#' : '/'} className={`flex items-center gap-2.5 group ${isCheckout ? 'cursor-default pointer-events-none' : ''}`}>
@@ -93,106 +91,107 @@ export function Header({ forceSolid = false }: HeaderProps) {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links (Disabled during checkout) */}
+        {/* Right Side Group: Navigation Links (positioned near right action controls) + Controls */}
         {!isCheckout && (
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors hover:text-[#1D4E89] relative py-1 ${isActive
-                    ? 'text-[#1D4E89] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#1D4E89] after:rounded-full'
-                    : isSolid
-                      ? 'text-[#4B5563]'
-                      : 'text-white/90 hover:text-white'
-                    }`}
+          <div className="flex items-center gap-5 sm:gap-7 lg:gap-8">
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-5 lg:gap-7">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`text-sm font-medium transition-colors hover:text-[#1D4E89] relative py-1 ${isActive
+                      ? 'text-[#1D4E89] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#1D4E89] after:rounded-full'
+                      : isSolid
+                        ? 'text-[#4B5563]'
+                        : 'text-white/90 hover:text-white'
+                      }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
+            </nav>
+
+            {/* Action Controls: Language Selector, User Account & Book Now */}
+            <div className="flex items-center gap-3">
+              {/* Desktop Language Selector */}
+              <div className="hidden md:flex items-center gap-1 text-xs font-medium cursor-pointer py-1 px-2 rounded-md hover:bg-black/5 transition">
+                <button
+                  onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
+                  className={`flex items-center gap-1 font-semibold ${isSolid ? 'text-[#1A1A1A]' : 'text-white'}`}
                 >
-                  {link.label}
-                </Link>
-              )
-            })}
-          </nav>
-        )}
+                  <span>{language === 'vi' ? 'VI' : 'EN'}</span>
+                  <span className="text-[10px] opacity-70">▾</span>
+                </button>
+              </div>
 
-        {/* Right Side Action Controls: Disabled on checkout */}
-        {!isCheckout && (
-          <div className="flex items-center gap-3">
-            {/* Desktop Language Selector */}
-            <div className="hidden md:flex items-center gap-1 text-xs font-medium cursor-pointer py-1 px-2 rounded-md hover:bg-black/5 transition">
-              <button
-                onClick={() => setLanguage(language === 'vi' ? 'en' : 'vi')}
-                className={`flex items-center gap-1 font-semibold ${isSolid ? 'text-[#1A1A1A]' : 'text-white'}`}
-              >
-                <span>{language === 'vi' ? 'VI' : 'EN'}</span>
-                <span className="text-[10px] opacity-70">▾</span>
-              </button>
-            </div>
+              {/* User Account Dropdown Container */}
+              <div className="hidden md:flex relative user-dropdown-container">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings' || pathname.startsWith('/admin')
+                    ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
+                    : isSolid
+                      ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
+                      : 'border-white/40 text-white hover:bg-white/10'
+                    }`}
+                  aria-label="User Account Menu"
+                >
+                  <User className="w-3.5 h-3.5 shrink-0" />
+                </button>
 
-            {/* User Account Dropdown Container */}
-            <div className="hidden md:flex relative user-dropdown-container">
+                {/* Dropdown Options */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#ECECEC] py-2 z-50 text-slate-800 text-xs animate-in fade-in slide-in-from-top-1 duration-150">
+                    <Link
+                      href="/my-bookings"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
+                    >
+                      <span className="text-base">📋</span>
+                      <div>
+                        <div className="font-bold text-[#0F2D52]">{tx(UI.myBookings)}</div>
+                        <div className="text-[10px] text-slate-500">{tx(UI.viewBookingHistory)}</div>
+                      </div>
+                    </Link>
+
+                    <div className="my-1 border-t border-slate-100" />
+
+                    <Link
+                      href="/admin"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
+                    >
+                      <span className="text-base">🏨</span>
+                      <div>
+                        <div className="font-bold text-[#0F2D52]">{tx(UI.adminCms)}</div>
+                        <div className="text-[10px] text-slate-500">{tx(UI.resortManagementPanel)}</div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              <Link href="/rooms" className="hidden md:inline-block">
+                <Button variant="primary" size="md" radius="6px">
+                  {tx(UI.bookNow2)}
+                </Button>
+              </Link>
+
               <button
-                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-[6px] transition border ${pathname === '/my-bookings' || pathname.startsWith('/admin')
-                  ? 'bg-[#1D4E89] text-white border-[#1D4E89]'
-                  : isSolid
-                    ? 'border-[#ECECEC] text-[#0F2D52] hover:bg-[#F5F7FA]'
-                    : 'border-white/40 text-white hover:bg-white/10'
+                onClick={() => setMenuOpen(!menuOpen)}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition shadow-[0_2px_8px_rgba(0,0,0,0.05)] focus:outline-none md:hidden ${isSolid
+                  ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
+                  : 'bg-white/90 text-[#1A1A1A] hover:bg-white'
                   }`}
-                aria-label="User Account Menu"
+                aria-label="Toggle menu"
               >
-                <User className="w-3.5 h-3.5 shrink-0" />
+                {menuOpen ? <X className="w-5 h-5 stroke-[1.75]" /> : <Menu className="w-5 h-5 stroke-[1.75]" />}
               </button>
-
-              {/* Dropdown Options */}
-              {userDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#ECECEC] py-2 z-50 text-slate-800 text-xs animate-in fade-in slide-in-from-top-1 duration-150">
-                  <Link
-                    href="/my-bookings"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
-                  >
-                    <span className="text-base">📋</span>
-                    <div>
-                      <div className="font-bold text-[#0F2D52]">{tx(UI.myBookings)}</div>
-                      <div className="text-[10px] text-slate-500">{tx(UI.viewBookingHistory)}</div>
-                    </div>
-                  </Link>
-
-                  <div className="my-1 border-t border-slate-100" />
-
-                  <Link
-                    href="/admin"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-slate-50 font-medium text-slate-700 transition"
-                  >
-                    <span className="text-base">🏨</span>
-                    <div>
-                      <div className="font-bold text-[#0F2D52]">{tx(UI.adminCms)}</div>
-                      <div className="text-[10px] text-slate-500">{tx(UI.resortManagementPanel)}</div>
-                    </div>
-                  </Link>
-                </div>
-              )}
             </div>
-
-            <Link href="/rooms" className="hidden md:inline-block">
-              <Button variant="primary" size="md" radius="6px">
-                {tx(UI.bookNow2)}
-              </Button>
-            </Link>
-
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition shadow-[0_2px_8px_rgba(0,0,0,0.05)] focus:outline-none md:hidden ${isSolid
-                ? 'bg-[#F5F7FA] text-[#1A1A1A] hover:bg-[#E5E7EB]'
-                : 'bg-white/90 text-[#1A1A1A] hover:bg-white'
-                }`}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X className="w-5 h-5 stroke-[1.75]" /> : <Menu className="w-5 h-5 stroke-[1.75]" />}
-            </button>
           </div>
         )}
 

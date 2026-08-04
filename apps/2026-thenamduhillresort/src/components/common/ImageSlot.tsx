@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const DEFAULT_FALLBACK = '/uploads/pasted-1785690604574-0.png'
 
@@ -29,11 +29,25 @@ const IMAGE_MAP: Record<string, string> = {
   'ndh-dish-nuong': 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
   'ndh-muc': 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
 
-  // Island spots
+  // Cụm đảo vệ tinh — 4 đảo trong `satelliteIslands` của core
   'ndh-island-haibodap': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
   'ndh-island-honmau': 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80',
+  // Hòn Dầu: 90% rừng nguyên sinh, dừa ngả ra mặt nước
+  'ndh-island-hondau': 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&w=800&q=80',
+  // Hòn Ngang: làng bè nổi, vùng biển êm nhất quần đảo
+  'ndh-island-honngang': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=800&q=80',
+
+  // Điểm dừng chân trên Hòn Lớn — 6 spot trong `exploreSpots` của core
   'ndh-spot-caymen': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
   'ndh-spot-haidang': 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80',
+  // Bãi Ngự & Giếng Vua: vịnh phía Tây, nước ngọt sát bờ biển
+  'ndh-spot-baingu': 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054?auto=format&fit=crop&w=800&q=80',
+  // Bãi Chệt: bến tàu chính, chợ hải sản tươi sống
+  'ndh-spot-baichet': 'https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?auto=format&fit=crop&w=800&q=80',
+  // Dinh Ông Nam Hải: đền thờ ven biển
+  'ndh-spot-dinhong': 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=800&q=80',
+  // Chợ đêm Nam Du: hải sản nướng, đèn chợ lên lúc 19 giờ
+  'ndh-spot-chodem': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
 
   // Blog
   'ndh-blog-tau-ra-nam-du-hero': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
@@ -42,6 +56,7 @@ const IMAGE_MAP: Record<string, string> = {
   'ndh-blog-phong-hang-da-b4': '/uploads/pasted-1785689827914-0.png',
   'ndh-blog-an-gi-o-nam-du-hero': 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=1200&q=80',
   'ndh-blog-ba-ngay-o-dao-hero': '/uploads/pasted-1785691965790-0.png',
+  'ndh-explore-hero': '/uploads/hai-dang-Ke-Ga-2.jpg',
 }
 
 interface ImageSlotProps {

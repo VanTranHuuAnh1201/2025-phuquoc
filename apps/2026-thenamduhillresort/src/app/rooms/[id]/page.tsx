@@ -180,12 +180,12 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             </h1>
 
             <div className="flex items-center gap-2 text-xs">
-              <div className="flex text-[#C6A86A] gap-0.5">
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
-                <Star className="w-3.5 h-3.5 fill-[#C6A86A]" />
+              <div className="flex text-[#FFB800] gap-0.5">
+                <Star className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
+                <Star className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
               </div>
               <span className="font-bold text-[#1D4E89]">8.9</span>
               <span className="text-[#6B7280]">(83 {tx(UI.reviews)})</span>
@@ -446,9 +446,9 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
 
               {/* Rating Row */}
               <div className="flex items-center gap-2 text-xs pt-2">
-                <div className="flex text-[#C6A86A] gap-0.5">
+                <div className="flex text-[#FFB800] gap-0.5">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#C6A86A]" />
+                    <Star key={i} className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
                   ))}
                 </div>
                 <span className="font-bold text-[#1D4E89]">4.9</span>
@@ -642,9 +642,9 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-[#0F2D52]">4.9</span>
               <div className="text-left">
-                <div className="flex text-[#C6A86A] gap-0.5">
+                <div className="flex text-[#FFB800] gap-0.5">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#C6A86A]" />
+                    <Star key={i} className="w-3.5 h-3.5 fill-[#FFB800] text-[#FFB800]" />
                   ))}
                 </div>
                 <span className="text-[11px] text-[#6B7280] font-medium">23 {tx(UI.reviews)}</span>
@@ -735,9 +735,9 @@ export default function RoomDetailPage({ params }: RoomDetailPageProps) {
                       <span className="text-[10px] text-[#6B7280]">{rev.origin} • {rev.date}</span>
                     </div>
                   </div>
-                  <div className="flex text-[#C6A86A] gap-0.5">
+                  <div className="flex text-[#FFB800] gap-0.5">
                     {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-[#C6A86A]" />
+                      <Star key={i} className="w-3 h-3 fill-[#FFB800] text-[#FFB800]" />
                     ))}
                   </div>
                 </div>
