@@ -537,6 +537,21 @@ Không sửa logic giá/availability trong theme. Theme chỉ nhận data từ c
 | P2 | Schema SEO cho phòng | Sau khi slug/data ổn |
 | P2 | Animation nhẹ đồng bộ | Làm cuối |
 
+### 12.1 Ticket triển khai h6
+
+> H6 là bản thực thi của v4. Làm theo ticket, không nhảy sang Rooms/RoomDetail
+> trước khi Home được review.
+
+| Ticket | Phạm vi | Kết quả kỳ vọng | Trạng thái |
+|---|---|---|---|
+| H6-00 | Chuẩn bị theme h6 | Cập nhật metadata/tokens, giữ h6 độc lập với h5 | TODO |
+| H6-01 | Home full | Header, hero, trust strip/đường ra đảo, rooms preview, dining, places, gallery, booking FAQ, contact, Zalo placeholder | TODO |
+| H6-02 | QA Home desktop/mobile | `/h6` chạy được, 375px không overflow, CTA ≥44px, không còn cảm giác u buồn | TODO |
+| H6-03 | Review checkpoint | Dừng để user xem Home trước khi làm Rooms | TODO |
+| H6-04 | Rooms page | Row comparison desktop, card mobile, sticky date bar | BLOCKED bởi review Home |
+| H6-05 | RoomDetail page | Gallery, booking panel, payment option UI, sticky bottom sheet mobile | BLOCKED bởi review Home |
+| H6-06 | Payment/Zalo thật | Thay placeholder bằng dữ liệu/cổng thật khi khách cấp | FUTURE |
+
 ---
 
 ## 13. Definition of Done
