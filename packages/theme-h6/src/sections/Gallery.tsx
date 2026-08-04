@@ -1,13 +1,14 @@
-﻿import { pick, type Locale, type PropertyData } from '@repo/core'
+import { pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
 
 /**
- * Section `gallery` — lưới bất đối xứng 7 ảnh, một ảnh 2×2, gap 8px.
+ * Section `gallery` — FILMSTRIP một hàng cuộn ngang (desktop lộ ~4 khung, mép
+ * phải cắt dở để mời cuộn) thay cho lưới mosaic các mẫu trước. Cuộn ngang có
+ * chủ đích của carousel — không phải bảng (ngoại lệ K7 hợp lệ).
  *
  * Nguồn ảnh: cover ĐƠN của các hạng phòng trong core. Cấm `sua-tam-*`
- * (poster marketing gắn logo) và hạn chế `*-full` (collage 3-trong-1) —
- * khảo sát spec §8.1.
+ * (poster marketing gắn logo) và `*-full` (collage) — khảo sát spec §9.1.
  */
 
 /** Ảnh không được phép vào gallery: poster có logo, collage ghép. */
@@ -31,26 +32,29 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
                     ? `Ảnh thật — ${pick(room.name, locale)}`
                     : `Real photo — ${pick(room.name, locale)}`,
         })
-        if (shots.length === 7) break
+        if (shots.length === 8) break
     }
 
     if (shots.length === 0) return null
 
     return (
-        <section id="gallery" style={{ padding: 'var(--space-7) 0 0' }}>
+        <section id="gallery" style={{ padding: 'var(--space-7) 0 0', overflow: 'hidden' }}>
             <div className="h6-container">
                 <p className="h6-kicker" style={{ margin: '0 0 var(--space-4)' }}>
                     {t.galleryKicker}
                 </p>
-                <div className="h6-gallery-grid">
-                    {shots.map((shot, i) => (
+            </div>
+            <div className="h6-container" style={{ overflow: 'visible' }}>
+                <div className="h6-filmstrip" role="list">
+                    {shots.map((shot) => (
                         <div
                             key={shot.src}
-                            className={i === 0 ? 'h6-gallery-big' : undefined}
+                            role="listitem"
                             style={{
                                 borderRadius: 'var(--radius-md)',
                                 overflow: 'hidden',
                                 background: 'var(--color-surface-sand)',
+                                flexShrink: 0,
                             }}
                         >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -58,7 +62,12 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
                                 src={shot.src}
                                 alt={shot.alt}
                                 loading="lazy"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                style={{
+                                    display: 'block',
+                                    height: '100%',
+                                    width: '100%',
+                                    objectFit: 'cover',
+                                }}
                             />
                         </div>
                     ))}
@@ -66,21 +75,26 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
             </div>
 
             <style>{`
-                .h6-gallery-grid {
-                    display: grid;
-                    gap: 8px;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                    grid-auto-rows: 150px;
+                .h6-filmstrip {
+                    display: flex;
+                    gap: var(--space-2);
+                    overflow-x: auto;
+                    scroll-snap-type: x proximity;
+                    padding-bottom: var(--space-2);
+                    -webkit-overflow-scrolling: touch;
                 }
-                @media (min-width: 900px) {
-                    .h6-gallery-grid {
-                        grid-template-columns: repeat(4, minmax(0, 1fr));
-                        grid-auto-rows: 180px;
-                    }
-                    .h6-gallery-big { grid-column: span 2; grid-row: span 2; }
+                .h6-filmstrip > div {
+                    width: 300px;
+                    height: 240px;
+                    scroll-snap-align: start;
+                }
+                /* Nhịp rộng–hẹp xen kẽ cho hàng ảnh vuông 1000×1000 crawl. */
+                .h6-filmstrip > div:nth-child(3n + 2) { width: 400px; }
+                @media (max-width: 899.98px) {
+                    .h6-filmstrip > div { width: 240px; height: 200px; }
+                    .h6-filmstrip > div:nth-child(3n + 2) { width: 300px; }
                 }
             `}</style>
         </section>
     )
 }
-

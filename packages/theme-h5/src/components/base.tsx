@@ -143,6 +143,10 @@ export function BaseCss() {
 }
 .h5-card:hover { box-shadow: var(--shadow-2); border-color: var(--color-border-default); }
 
+/* Anchor không chui dưới header cố định. */
+[data-theme='h5'] section[id],
+[data-theme='h5'] footer[id] { scroll-margin-top: 76px; }
+
 /* Nội dung chỉ dành cho screen reader. */
 .h5-sr {
     position: absolute;

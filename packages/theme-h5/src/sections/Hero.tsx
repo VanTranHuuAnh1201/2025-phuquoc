@@ -136,30 +136,6 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                         </a>
                     </p>
 
-                    {/* Widget desktop — nổi đè mép dưới hero. */}
-                    <div
-                        className="h5-hero-widget"
-                        style={{
-                            background: 'var(--color-surface-raised)',
-                            borderRadius: 'var(--radius-xl)',
-                            boxShadow: 'var(--shadow-2)',
-                            padding: 'var(--space-4)',
-                            color: 'var(--color-text-primary)',
-                        }}
-                    >
-                        <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
-                            <SearchFields
-                                locale={locale}
-                                value={search}
-                                onChange={setSearch}
-                                columns
-                            />
-                            <a className="h5-btn h5-btn-primary h5-hero-cta" href={findHref}>
-                                {t.ctaMain}
-                            </a>
-                        </div>
-                    </div>
-
                     {/* Mobile: một nút mở bottom-sheet. */}
                     <button
                         type="button"
@@ -168,6 +144,37 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                     >
                         {t.searchSheetOpen}
                     </button>
+                </div>
+            </div>
+
+            {/* Widget desktop — MỘT hàng, đậu vắt qua mép hero và band cát của
+                `about` phía dưới (margin âm hai chiều): đây là mô liên kết giữa
+                hero và phần thân trang, chữa cảm giác "card trôi giữa trắng". */}
+            <div
+                className="h5-container h5-hero-widget"
+                style={{ position: 'relative', zIndex: 5 }}
+            >
+                <div
+                    style={{
+                        display: 'grid',
+                        gap: 'var(--space-3)',
+                        alignItems: 'end',
+                        background: 'var(--color-surface-raised)',
+                        borderRadius: 'var(--radius-xl)',
+                        boxShadow: 'var(--shadow-2)',
+                        padding: 'var(--space-4)',
+                        color: 'var(--color-text-primary)',
+                    }}
+                    className="h5-hero-widget-row"
+                >
+                    <SearchFields locale={locale} value={search} onChange={setSearch} columns />
+                    <a
+                        className="h5-btn h5-btn-primary h5-hero-cta"
+                        href={findHref}
+                        style={{ whiteSpace: 'nowrap' }}
+                    >
+                        {t.ctaMain}
+                    </a>
                 </div>
             </div>
 
@@ -296,14 +303,14 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
             )}
 
             <style>{`
-                .h5-hero-cta { justify-self: end; min-width: 240px; }
                 .h5-hero-cta-mobile { display: none; width: 100%; }
                 @media (min-width: 900px) {
-                    .h5-hero-widget {
-                        transform: translateY(var(--space-5));
-                        margin-top: calc(-1 * var(--space-3));
+                    /* Widget đậu 50/50 giữa ảnh hero và band cát kế tiếp. */
+                    .h5-hero-widget { margin-top: -60px; margin-bottom: -60px; }
+                    .h5-hero-widget-row {
+                        grid-template-columns: 1.1fr 1.1fr 0.6fr 0.6fr auto;
                     }
-                    .h5-hero { margin-bottom: var(--space-6); }
+                    .h5-hero-inner { padding-bottom: calc(var(--space-6) + 60px) !important; }
                 }
                 @media (max-width: 899.98px) {
                     .h5-hero { min-height: 92vh; }

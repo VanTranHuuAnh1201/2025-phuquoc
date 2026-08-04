@@ -55,7 +55,11 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
             </div>
 
             {faq.length > 0 && (
-                <div className="h5-container" style={{ paddingTop: 'var(--space-5)', maxWidth: 820 }}>
+                <div style={{ background: 'var(--color-surface-sand)' }}>
+                <div
+                    className="h5-container"
+                    style={{ paddingTop: 'var(--space-5)', paddingBottom: 'var(--space-5)' }}
+                >
                     <h3
                         className="h5-display"
                         style={{ fontSize: 'var(--font-size-xl)', margin: '0 0 var(--space-3)' }}
@@ -65,7 +69,7 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
                     {faq.map((item, i) => (
                         <details
                             key={i}
-                            style={{ borderBottom: '1px solid var(--color-border-muted)' }}
+                            style={{ borderBottom: '1px solid var(--color-border-default)', maxWidth: 820 }}
                         >
                             <summary
                                 style={{
@@ -97,6 +101,7 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
                             </p>
                         </details>
                     ))}
+                </div>
                 </div>
             )}
 

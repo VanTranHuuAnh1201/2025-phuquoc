@@ -1,14 +1,16 @@
 import { pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
+import { SectionHead } from '../components/SectionHead'
 import { IconFerry, IconHill, IconShuttle } from '../components/icons'
 
 /**
- * Section `about` — khối "Đường ra đảo" (nền cát) + giới thiệu + dải facts.
+ * Section `about` — mở đầu bằng BAND CÁT FULL-WIDTH "Đường ra đảo" dính liền
+ * mép hero (widget tìm phòng đậu vắt lên band này — mô liên kết của trang),
+ * rồi tới khối giới thiệu ảnh trái · chữ phải + dải facts.
  *
- * Trust bằng chi tiết thật: nói rõ tàu ~2h và đường đồi 1,8km (điều bất lợi)
- * thay vì slogan — spec §3.1. Nền cát `--color-surface-sand` phá trang trắng
- * tuyền (K3), bố cục khác hẳn hero liền trước (K4).
+ * Trust bằng chi tiết thật: tàu ~2h, đường đồi 1,8km (nói cả điều bất lợi) —
+ * spec §3.1.
  */
 
 export function About({ data, locale }: { data: PropertyData; locale: Locale }) {
@@ -21,23 +23,14 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
     ]
 
     return (
-        <section id="about" style={{ padding: 'var(--space-7) 0 0' }}>
-            {/* ---- Đường ra đảo ---- */}
-            <div className="h5-container">
-                <div
-                    style={{
-                        background: 'var(--color-surface-sand)',
-                        borderRadius: 'var(--radius-xl)',
-                        padding: 'var(--space-5) var(--space-5)',
-                    }}
-                >
+        <section id="about">
+            {/* ---- band cát: Đường ra đảo ---- */}
+            <div style={{ background: 'var(--color-surface-sand)' }}>
+                <div className="h5-container h5-way-inner">
                     <p className="h5-kicker" style={{ margin: '0 0 var(--space-4)' }}>
                         {t.wayKicker}
                     </p>
-                    <div
-                        className="h5-way-grid"
-                        style={{ display: 'grid', gap: 'var(--space-4)' }}
-                    >
+                    <div className="h5-way-grid" style={{ display: 'grid', gap: 'var(--space-4)' }}>
                         {ways.map((way, i) => (
                             <div
                                 key={i}
@@ -58,6 +51,7 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                                         placeItems: 'center',
                                         background: 'var(--color-surface-raised)',
                                         color: 'var(--color-brand)',
+                                        boxShadow: 'var(--shadow-1)',
                                         flexShrink: 0,
                                     }}
                                 >
@@ -85,7 +79,7 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                     display: 'grid',
                     gap: 'var(--space-6)',
                     alignItems: 'center',
-                    paddingTop: 'var(--space-6)',
+                    paddingTop: 'var(--space-7)',
                 }}
             >
                 <div
@@ -93,7 +87,7 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                     style={{
                         borderRadius: 'var(--radius-xl)',
                         overflow: 'hidden',
-                        aspectRatio: '3 / 4',
+                        aspectRatio: '4 / 5',
                         background: 'var(--color-surface-sand)',
                     }}
                 >
@@ -112,19 +106,10 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                 </div>
 
                 <div>
-                    <p className="h5-kicker" style={{ margin: '0 0 var(--space-3)' }}>
-                        {t.aboutKicker}
-                    </p>
-                    <h2
-                        className="h5-display"
-                        style={{
-                            fontSize: 'var(--font-size-3xl)',
-                            margin: '0 0 var(--space-4)',
-                            maxWidth: '20ch',
-                        }}
-                    >
-                        {pick(data.about.title, locale)}
-                    </h2>
+                    <SectionHead
+                        kicker={t.aboutKicker}
+                        title={pick(data.about.title, locale)}
+                    />
                     {data.about.body.map((paragraph, i) => (
                         <p
                             key={i}
@@ -177,7 +162,13 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
 
             <style>{`
                 .h5-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                .h5-way-inner { padding-top: var(--space-5); padding-bottom: var(--space-5); }
                 @media (min-width: 900px) {
+                    /* Chừa chỗ cho widget hero đang đậu 60px lên band này. */
+                    .h5-way-inner {
+                        padding-top: calc(var(--space-5) + 60px);
+                        padding-bottom: var(--space-5);
+                    }
                     .h5-way-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
                     .h5-about-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
                     .h5-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }

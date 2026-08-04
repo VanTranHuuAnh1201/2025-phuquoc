@@ -20,6 +20,7 @@ import { fill, fitFor, ui } from '../strings'
 import { BaseCss } from '../components/base'
 import { IconCheck } from '../components/icons'
 import { ZaloFab } from '../components/ZaloFab'
+import { roomCover } from '../components/photos'
 import { SearchFields } from '../components/SearchWidget'
 import { searchQuery, shortDate, toGuestCount, useStaySearch } from '../components/search'
 import { Header } from '../sections/Header'
@@ -208,10 +209,10 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                         aria-label={pick(room.name, locale)}
                                         style={{ display: 'block', background: 'var(--color-surface-sand)' }}
                                     >
-                                        {room.images?.[0] && (
+                                        {roomCover(room) && (
                                             // eslint-disable-next-line @next/next/no-img-element
                                             <img
-                                                src={room.images[0]}
+                                                src={roomCover(room)}
                                                 alt={pick(room.name, locale)}
                                                 loading="lazy"
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}

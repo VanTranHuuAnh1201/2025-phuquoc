@@ -1,116 +1,29 @@
-﻿import { pick, type Locale, type PropertyData } from '@repo/core'
+import { pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
-import { IconFerry, IconHill, IconShuttle } from '../components/icons'
 
 /**
- * Section `about` — khối "Đường ra đảo" (nền cát) + giới thiệu + dải facts.
+ * Section `about` — spec v4 §4.2: "Đường ra đảo + câu chuyện resort trên đồi
+ * Củ Tron", dựng theo ngôn ngữ DÒNG chứ không card:
  *
- * Trust bằng chi tiết thật: nói rõ tàu ~2h và đường đồi 1,8km (điều bất lợi)
- * thay vì slogan — spec §3.1. Nền cát `--color-surface-sand` phá trang trắng
- * tuyền (K3), bố cục khác hẳn hero liền trước (K4).
+ *   trái: câu chuyện (serif) + dải facts kẻ dọc
+ *   phải: BẢNG CHẶNG ĐƯỜNG RA ĐẢO — 4 chặng thật với phương tiện + giá thật
+ *         từ `core.transport` (chi tiết thật = trust, spec §2.1)
+ *
+ * Nói thẳng cả điều bất lợi (tàu 2–3 giờ, xe đêm) thay vì slogan — người đọc
+ * thấy resort hiểu hành trình của họ.
  */
 
 export function About({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui(locale)
 
-    const ways = [
-        { icon: <IconFerry size={26} />, text: t.wayFerry },
-        { icon: <IconShuttle size={26} />, text: t.wayPickup },
-        { icon: <IconHill size={26} />, text: t.wayHill },
-    ]
-
     return (
         <section id="about" style={{ padding: 'var(--space-7) 0 0' }}>
-            {/* ---- Đường ra đảo ---- */}
-            <div className="h6-container">
-                <div
-                    style={{
-                        background: 'var(--color-surface-sand)',
-                        borderRadius: 'var(--radius-xl)',
-                        padding: 'var(--space-5) var(--space-5)',
-                    }}
-                >
-                    <p className="h6-kicker" style={{ margin: '0 0 var(--space-4)' }}>
-                        {t.wayKicker}
-                    </p>
-                    <div
-                        className="h6-way-grid"
-                        style={{ display: 'grid', gap: 'var(--space-4)' }}
-                    >
-                        {ways.map((way, i) => (
-                            <div
-                                key={i}
-                                style={{
-                                    display: 'flex',
-                                    gap: 'var(--space-3)',
-                                    alignItems: 'flex-start',
-                                    color: 'var(--color-text-primary)',
-                                }}
-                            >
-                                <span
-                                    aria-hidden="true"
-                                    style={{
-                                        width: 48,
-                                        height: 48,
-                                        borderRadius: 999,
-                                        display: 'grid',
-                                        placeItems: 'center',
-                                        background: 'var(--color-surface-raised)',
-                                        color: 'var(--color-brand)',
-                                        flexShrink: 0,
-                                    }}
-                                >
-                                    {way.icon}
-                                </span>
-                                <p
-                                    style={{
-                                        margin: 0,
-                                        fontSize: 'var(--font-size-base)',
-                                        lineHeight: 1.55,
-                                    }}
-                                >
-                                    {way.text}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* ---- giới thiệu: ảnh dọc trái + chữ phải ---- */}
             <div
                 className="h6-container h6-about-grid"
-                style={{
-                    display: 'grid',
-                    gap: 'var(--space-6)',
-                    alignItems: 'center',
-                    paddingTop: 'var(--space-6)',
-                }}
+                style={{ display: 'grid', gap: 'var(--space-6)', alignItems: 'start' }}
             >
-                <div
-                    className="h6-about-photo"
-                    style={{
-                        borderRadius: 'var(--radius-xl)',
-                        overflow: 'hidden',
-                        aspectRatio: '3 / 4',
-                        background: 'var(--color-surface-sand)',
-                    }}
-                >
-                    {/* Ảnh crawl — DEV-ONLY theo R9, thay bằng ảnh khách chụp (spec §8.3). */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src="https://thenamduhill.com/image/catalog/banner/namdu-2.jpg"
-                        alt={
-                            locale === 'vi'
-                                ? 'Góc nghỉ tại The Nam Du Hill nhìn ra biển'
-                                : 'A corner of The Nam Du Hill facing the sea'
-                        }
-                        loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                </div>
-
+                {/* ---- câu chuyện + facts ---- */}
                 <div>
                     <p className="h6-kicker" style={{ margin: '0 0 var(--space-3)' }}>
                         {t.aboutKicker}
@@ -120,7 +33,7 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                         style={{
                             fontSize: 'var(--font-size-3xl)',
                             margin: '0 0 var(--space-4)',
-                            maxWidth: '20ch',
+                            maxWidth: '22ch',
                         }}
                     >
                         {pick(data.about.title, locale)}
@@ -131,26 +44,35 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                             style={{
                                 margin: '0 0 var(--space-3)',
                                 color: 'var(--color-text-secondary)',
-                                maxWidth: '60ch',
+                                maxWidth: '58ch',
                             }}
                         >
                             {pick(paragraph, locale)}
                         </p>
                     ))}
 
-                    {/* dải facts — 21 đảo · 309m · 9,12km² · T12–T3 */}
+                    {/* dải facts — số serif xanh, kẻ dọc ngăn cách */}
                     <dl
                         className="h6-facts"
                         style={{
-                            display: 'grid',
-                            gap: 'var(--space-4)',
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 'var(--space-3) 0',
                             margin: 'var(--space-5) 0 0',
-                            paddingTop: 'var(--space-4)',
-                            borderTop: '1px solid var(--color-border-muted)',
                         }}
                     >
                         {data.facts.map((fact, i) => (
-                            <div key={i}>
+                            <div
+                                key={i}
+                                style={{
+                                    paddingRight: 'var(--space-4)',
+                                    marginRight: 'var(--space-4)',
+                                    borderRight:
+                                        i < data.facts.length - 1
+                                            ? '1px solid var(--color-border-default)'
+                                            : 'none',
+                                }}
+                            >
                                 <dt
                                     className="h6-display"
                                     style={{
@@ -173,21 +95,108 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                         ))}
                     </dl>
                 </div>
+
+                {/* ---- bảng chặng đường ra đảo ---- */}
+                <div
+                    style={{
+                        background: 'var(--color-surface-raised)',
+                        border: '1px solid var(--color-border-muted)',
+                        borderRadius: 'var(--radius-lg)',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <p
+                        className="h6-kicker"
+                        style={{
+                            margin: 0,
+                            padding: 'var(--space-3) var(--space-4)',
+                            background: 'var(--color-surface-sand)',
+                        }}
+                    >
+                        {t.wayKicker}
+                    </p>
+                    <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                        {data.transport.map((leg, i) => (
+                            <li
+                                key={i}
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '24px minmax(0, 1fr) auto',
+                                    gap: '2px var(--space-3)',
+                                    padding: 'var(--space-3) var(--space-4)',
+                                    borderTop: i > 0 ? '1px solid var(--color-border-muted)' : 'none',
+                                }}
+                            >
+                                <span
+                                    aria-hidden="true"
+                                    style={{
+                                        gridRow: '1 / span 2',
+                                        width: 24,
+                                        height: 24,
+                                        borderRadius: 999,
+                                        display: 'grid',
+                                        placeItems: 'center',
+                                        background: 'var(--color-info-bg)',
+                                        color: 'var(--color-brand)',
+                                        fontSize: 'var(--font-size-xs)',
+                                        fontWeight: 'var(--font-weight-bold)' as never,
+                                        marginTop: 2,
+                                    }}
+                                >
+                                    {i + 1}
+                                </span>
+                                <span
+                                    style={{
+                                        fontWeight: 'var(--font-weight-bold)' as never,
+                                        fontSize: 'var(--font-size-sm)',
+                                    }}
+                                >
+                                    {pick(leg.leg, locale)}
+                                </span>
+                                <span
+                                    style={{
+                                        fontSize: 'var(--font-size-sm)',
+                                        fontWeight: 'var(--font-weight-medium)' as never,
+                                        color: 'var(--color-text-primary)',
+                                        fontVariantNumeric: 'tabular-nums',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {pick(leg.price, locale)}
+                                </span>
+                                <span
+                                    style={{
+                                        gridColumn: 2,
+                                        fontSize: 'var(--font-size-sm)',
+                                        color: 'var(--color-text-secondary)',
+                                    }}
+                                >
+                                    {pick(leg.mode, locale)}
+                                </span>
+                            </li>
+                        ))}
+                    </ol>
+                    {/* Chốt chặng cuối bằng lời hứa thật của resort. */}
+                    <p
+                        style={{
+                            margin: 0,
+                            padding: 'var(--space-3) var(--space-4)',
+                            borderTop: '1px solid var(--color-border-muted)',
+                            fontSize: 'var(--font-size-sm)',
+                            color: 'var(--color-brand)',
+                            fontWeight: 'var(--font-weight-medium)' as never,
+                        }}
+                    >
+                        {t.trustShuttle} · {t.weatherLine}
+                    </p>
+                </div>
             </div>
 
             <style>{`
-                .h6-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
                 @media (min-width: 900px) {
-                    .h6-way-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-                    .h6-about-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
-                    .h6-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-                }
-                @media (max-width: 899.98px) {
-                    /* K7: ảnh lên trước chữ, facts lưới 2×2, không cuộn ngang. */
-                    .h6-about-photo { max-width: 420px; }
+                    .h6-about-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
                 }
             `}</style>
         </section>
     )
 }
-

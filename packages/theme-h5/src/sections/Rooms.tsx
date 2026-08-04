@@ -2,6 +2,8 @@ import { formatPrice, pick, themePath, type Locale, type PropertyData } from '@r
 
 import { meta } from '../meta'
 import { fill, fitFor, ui } from '../strings'
+import { SectionHead } from '../components/SectionHead'
+import { roomCover } from '../components/photos'
 
 /**
  * Section `rooms` — 3 card đầu + link "Xem tất cả N hạng phòng".
@@ -21,28 +23,15 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
     return (
         <section id="rooms" style={{ padding: 'var(--space-7) 0 0' }}>
             <div className="h5-container">
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        justifyContent: 'space-between',
-                        gap: 'var(--space-4)',
-                        flexWrap: 'wrap',
-                        marginBottom: 'var(--space-5)',
-                    }}
-                >
-                    <div>
-                        <p className="h5-kicker" style={{ margin: '0 0 var(--space-2)' }}>
-                            {t.roomsKicker}
-                        </p>
-                        <h2 className="h5-display" style={{ fontSize: 'var(--font-size-3xl)' }}>
-                            {t.roomsTitle}
-                        </h2>
-                    </div>
-                    <a className="h5-link" href={roomsHref} style={{ minHeight: 24 }}>
-                        {fill(t.viewAllRooms, { n: data.rooms.length })} →
-                    </a>
-                </div>
+                <SectionHead
+                    kicker={t.roomsKicker}
+                    title={t.roomsTitle}
+                    aside={
+                        <a className="h5-btn h5-btn-ghost" href={roomsHref}>
+                            {fill(t.viewAllRooms, { n: data.rooms.length })} →
+                        </a>
+                    }
+                />
             </div>
 
             <div className="h5-container h5-rooms-rail">
@@ -65,10 +54,10 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                                 overflow: 'hidden',
                             }}
                         >
-                            {room.images?.[0] && (
+                            {roomCover(room) && (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
-                                    src={room.images[0]}
+                                    src={roomCover(room)}
                                     alt={pick(room.name, locale)}
                                     loading="lazy"
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -126,6 +115,7 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                 @media (min-width: 900px) {
                     .h5-rooms-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
                 }
+                .h5-room-card, .h5-room-card h3 { text-decoration: none; }
                 @media (max-width: 899.98px) {
                     .h5-rooms-rail {
                         grid-auto-flow: column;

@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./tokens.fresh.css": "./src/tokens.fresh.css"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

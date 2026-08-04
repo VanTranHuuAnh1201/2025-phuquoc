@@ -28,10 +28,9 @@ export function SearchFields({
     const today = todayKey()
 
     return (
-        <div
-            className={columns ? 'h5-sf h5-sf-columns' : 'h5-sf'}
-            style={{ display: 'grid', gap: 'var(--space-3)' }}
-        >
+        // Bố cục do class quyết định (không inline `display`): chế độ `columns`
+        // cần `display: contents` để field hoà vào grid một hàng của widget cha.
+        <div className={columns ? 'h5-sf h5-sf-columns' : 'h5-sf'}>
             <div className="h5-field">
                 <label htmlFor={`${idBase}-in`}>{t.checkIn}</label>
                 <input
@@ -140,12 +139,12 @@ export function SearchFields({
             )}
 
             <style>{`
+                .h5-sf { display: grid; gap: var(--space-3); }
                 .h5-sf-ages { grid-column: 1 / -1; }
                 @media (min-width: 900px) {
-                    .h5-sf-columns {
-                        grid-template-columns: 1.1fr 1.1fr 0.7fr 0.7fr;
-                        align-items: end;
-                    }
+                    /* Chế độ 1 hàng: field hoà vào grid của widget cha (display:
+                       contents) để CTA đứng cùng hàng — booking bar cổ điển. */
+                    .h5-sf-columns { display: contents; }
                 }
             `}</style>
         </div>

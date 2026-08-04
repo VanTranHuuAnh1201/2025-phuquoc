@@ -1,19 +1,16 @@
 import { pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
+import { SectionHead } from '../components/SectionHead'
+import { roomCover } from '../components/photos'
 
 /**
- * Section `gallery` — lưới bất đối xứng 7 ảnh, một ảnh 2×2, gap 8px.
+ * Section `gallery` — lưới bất đối xứng 9 ảnh (1 ảnh 2×2 + 8 ảnh đơn = đúng
+ * 3 hàng × 4 cột, không để lỗ hổng), gap 8px.
  *
- * Nguồn ảnh: cover ĐƠN của các hạng phòng trong core. Cấm `sua-tam-*`
- * (poster marketing gắn logo) và hạn chế `*-full` (collage 3-trong-1) —
- * khảo sát spec §8.1.
+ * Nguồn ảnh: cover ĐƠN của các hạng phòng trong core, qua bộ lọc chung
+ * `roomCover()` — cấm poster `sua-tam-*` và collage (spec §8.1).
  */
-
-/** Ảnh không được phép vào gallery: poster có logo, collage ghép. */
-function usableInGallery(src: string): boolean {
-    return !src.includes('sua-tam') && !src.includes('-full') && !src.includes('_full')
-}
 
 export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui(locale)
@@ -21,7 +18,7 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
     const shots: { src: string; alt: string }[] = []
     const seen = new Set<string>()
     for (const room of data.rooms) {
-        const src = room.images?.find(usableInGallery)
+        const src = roomCover(room)
         if (!src || seen.has(src)) continue
         seen.add(src)
         shots.push({
@@ -31,7 +28,7 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
                     ? `Ảnh thật — ${pick(room.name, locale)}`
                     : `Real photo — ${pick(room.name, locale)}`,
         })
-        if (shots.length === 7) break
+        if (shots.length === 9) break
     }
 
     if (shots.length === 0) return null
@@ -39,9 +36,10 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
     return (
         <section id="gallery" style={{ padding: 'var(--space-7) 0 0' }}>
             <div className="h5-container">
-                <p className="h5-kicker" style={{ margin: '0 0 var(--space-4)' }}>
-                    {t.galleryKicker}
-                </p>
+                <SectionHead
+                    kicker={locale === 'vi' ? 'Thư viện ảnh' : 'Gallery'}
+                    title={t.galleryKicker}
+                />
                 <div className="h5-gallery-grid">
                     {shots.map((shot, i) => (
                         <div

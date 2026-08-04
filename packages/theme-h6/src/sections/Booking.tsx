@@ -48,9 +48,22 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
                     >
                         {t.bookingTitle}
                     </h2>
-                    <a className="h6-btn h6-btn-primary h6-booking-cta" href={roomsHref}>
-                        {t.bookingCta}
-                    </a>
+                    <div className="h6-booking-cta">
+                        <a className="h6-btn h6-btn-primary" href={roomsHref} style={{ width: '100%' }}>
+                            {t.bookingCta}
+                        </a>
+                        {/* Spec §6.4: dòng tàu hoãn phải nằm SÁT CTA đặt phòng. */}
+                        <p
+                            style={{
+                                margin: 'var(--space-2) 0 0',
+                                fontSize: 'var(--font-size-sm)',
+                                opacity: 0.88,
+                                textAlign: 'center',
+                            }}
+                        >
+                            {t.weatherLine}
+                        </p>
+                    </div>
                 </div>
             </div>
 

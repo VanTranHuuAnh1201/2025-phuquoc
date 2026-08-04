@@ -1,6 +1,7 @@
 import { pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
+import { SectionHead } from '../components/SectionHead'
 
 /**
  * Section `dining` — chữ trái (danh sách 4 mục kèm giờ mở cụ thể) · ảnh phải.
@@ -15,20 +16,17 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
         <section id="dining" style={{ padding: 'var(--space-7) 0 0' }}>
             <div
                 className="h5-container h5-dining-grid"
-                style={{ display: 'grid', gap: 'var(--space-6)', alignItems: 'center' }}
+                style={{ display: 'grid', gap: 'var(--space-6)', alignItems: 'stretch' }}
             >
                 <div>
-                    <p className="h5-kicker" style={{ margin: '0 0 var(--space-2)' }}>
-                        {t.diningKicker}
-                    </p>
-                    <h2
-                        className="h5-display"
-                        style={{ fontSize: 'var(--font-size-3xl)', margin: '0 0 var(--space-4)' }}
-                    >
-                        {locale === 'vi'
-                            ? 'Ăn ngay tại resort, không phải xuống núi'
-                            : 'Eat well without leaving the hill'}
-                    </h2>
+                    <SectionHead
+                        kicker={t.diningKicker}
+                        title={
+                            locale === 'vi'
+                                ? 'Ăn ngay tại resort, không phải xuống núi'
+                                : 'Eat well without leaving the hill'
+                        }
+                    />
 
                     <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                         {data.dining.map((item) => (
@@ -82,12 +80,13 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
                     </ul>
                 </div>
 
+                {/* Ảnh kéo đủ chiều cao cột chữ — tránh khoảng trắng lửng dưới ảnh. */}
                 <div
                     className="h5-dining-photo"
                     style={{
                         borderRadius: 'var(--radius-xl)',
                         overflow: 'hidden',
-                        aspectRatio: '4 / 3',
+                        minHeight: 380,
                         background: 'var(--color-surface-sand)',
                     }}
                 >

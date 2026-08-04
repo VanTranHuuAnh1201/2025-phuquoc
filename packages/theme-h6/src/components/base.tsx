@@ -63,6 +63,12 @@ export function BaseCss() {
 }
 .h6-btn-primary:hover { filter: brightness(0.95); box-shadow: var(--shadow-2); }
 .h6-btn-primary:active { filter: brightness(0.88); }
+.h6-btn-brand {
+    background: var(--color-brand);
+    color: var(--color-text-inverse);
+}
+.h6-btn-brand:hover { filter: brightness(0.92); box-shadow: var(--shadow-2); }
+.h6-btn-brand:active { filter: brightness(0.85); }
 .h6-btn-ghost {
     background: transparent;
     color: var(--color-text-primary);

@@ -22,7 +22,6 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
         <footer
             id="contact"
             style={{
-                marginTop: 'var(--space-7)',
                 background: 'var(--color-surface-strong)',
                 color: 'var(--color-text-inverse)',
             }}

@@ -1,104 +1,95 @@
-﻿import { formatPrice, pick, type Locale, type PropertyData } from '@repo/core'
+import { formatPrice, pick, type Locale, type PropertyData } from '@repo/core'
 
 import { ui } from '../strings'
 
 /**
- * Section `places` — nhịp nghỉ của trang: full-bleed 60vh + MỘT câu đè.
- * Dưới: hàng địa danh + 2 tour dạng dòng kẻ (code · tên · giá).
- * Dữ liệu tour hiển thị gọn ở đây vì Home mẫu 06 bỏ section `tours`
- * (bỏ bớt hợp lệ theo R7, không đổi tên id).
+ * Section `places` — "Nam Du nên đi đâu" (spec §4.2): một ảnh khổ rộng đóng
+ * khung trong container (không full-bleed — trang giữ nền sáng ≥85%), dưới là
+ * 3 CỘT CHỮ editorial kẻ dọc cho 3 điểm đến, chốt bằng 2 tour dạng dòng giá.
+ * Dữ liệu tour gọn ở đây vì Home mẫu 06 bỏ section `tours` (hợp lệ theo R7).
  */
 
 export function Places({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui(locale)
-    const oneLine =
-        locale === 'vi'
-            ? 'Bãi Cây Mến — hàng dừa nghiêng ra mép nước, 15 phút tàu từ resort.'
-            : 'Cay Men beach — leaning coconut palms at the waterline, 15 minutes by boat.'
+    const places = data.places.slice(0, 3)
 
     return (
         <section id="places" style={{ padding: 'var(--space-7) 0 0' }}>
-            <div className="h6-places-hero" style={{ position: 'relative', minHeight: '60vh' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={data.hero.images?.[1] ?? '/hero-2.jpg'}
-                    alt={
-                        locale === 'vi'
-                            ? 'Bãi biển Nam Du nhìn từ trên cao'
-                            : 'A Nam Du beach seen from above'
-                    }
-                    loading="lazy"
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                    }}
-                />
-                <div
-                    aria-hidden="true"
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background:
-                            'linear-gradient(180deg, rgba(20,34,44,0) 45%, rgba(20,34,44,0.55) 100%)',
-                    }}
-                />
-                <p
-                    className="h6-display h6-places-line"
-                    style={{
-                        position: 'absolute',
-                        left: 0,
-                        right: 0,
-                        bottom: 'var(--space-5)',
-                        margin: 0,
-                        textAlign: 'center',
-                        padding: '0 var(--space-4)',
-                        fontSize: 'var(--font-size-2xl)',
-                        color: 'var(--color-text-inverse)',
-                    }}
-                >
-                    {oneLine}
-                </p>
-            </div>
-            {/* K7: mobile câu chuyển XUỐNG DƯỚI ảnh. */}
-            <p
-                className="h6-display h6-places-line-mobile"
-                style={{
-                    display: 'none',
-                    margin: 'var(--space-4) 0 0',
-                    padding: '0 var(--space-4)',
-                    fontSize: 'var(--font-size-xl)',
-                    textAlign: 'center',
-                }}
-            >
-                {oneLine}
-            </p>
-
-            <div className="h6-container" style={{ paddingTop: 'var(--space-5)' }}>
-                <p className="h6-kicker" style={{ margin: '0 0 var(--space-3)' }}>
+            <div className="h6-container">
+                <p className="h6-kicker" style={{ margin: '0 0 var(--space-2)' }}>
                     {t.placesKicker}
                 </p>
-                <p
+                <h2
+                    className="h6-display"
+                    style={{ fontSize: 'var(--font-size-3xl)', margin: '0 0 var(--space-5)' }}
+                >
+                    {locale === 'vi' ? 'Nam Du nên đi đâu' : 'Where to go on Nam Du'}
+                </h2>
+
+                <div
                     style={{
-                        margin: '0 0 var(--space-5)',
-                        color: 'var(--color-text-secondary)',
-                        maxWidth: '72ch',
+                        borderRadius: 'var(--radius-xl)',
+                        overflow: 'hidden',
+                        aspectRatio: '21 / 9',
+                        background: 'var(--color-surface-sand)',
                     }}
                 >
-                    {data.places.map((place, i) => (
-                        <span key={place.id}>
-                            <strong style={{ color: 'var(--color-text-primary)' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={data.hero.images?.[1] ?? '/hero-2.jpg'}
+                        alt={
+                            locale === 'vi'
+                                ? 'Bãi biển Nam Du nhìn từ trên cao'
+                                : 'A Nam Du beach seen from above'
+                        }
+                        loading="lazy"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                </div>
+
+                <div
+                    className="h6-places-cols"
+                    style={{
+                        display: 'grid',
+                        gap: 'var(--space-4)',
+                        paddingTop: 'var(--space-5)',
+                    }}
+                >
+                    {places.map((place) => (
+                        <div key={place.id} className="h6-place-col">
+                            <h3
+                                className="h6-display"
+                                style={{ fontSize: 'var(--font-size-xl)', margin: '0 0 4px' }}
+                            >
                                 {pick(place.name, locale)}
-                            </strong>
-                            {i < data.places.length - 1 ? ' · ' : ''}
-                        </span>
+                            </h3>
+                            <p
+                                style={{
+                                    margin: '0 0 var(--space-2)',
+                                    fontSize: 'var(--font-size-xs)',
+                                    fontWeight: 'var(--font-weight-bold)' as never,
+                                    letterSpacing: '0.08em',
+                                    textTransform: 'uppercase',
+                                    color: 'var(--color-brand)',
+                                }}
+                            >
+                                {pick(place.tag, locale)}
+                            </p>
+                            <p
+                                style={{
+                                    margin: 0,
+                                    fontSize: 'var(--font-size-sm)',
+                                    color: 'var(--color-text-secondary)',
+                                }}
+                            >
+                                {pick(place.desc, locale)}
+                            </p>
+                        </div>
                     ))}
-                </p>
+                </div>
 
                 {data.tours.length > 0 && (
-                    <div>
+                    <div style={{ paddingTop: 'var(--space-5)' }}>
                         <p
                             style={{
                                 margin: '0 0 var(--space-2)',
@@ -152,13 +143,14 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
             </div>
 
             <style>{`
-                @media (max-width: 899.98px) {
-                    .h6-places-hero { min-height: 50vh; }
-                    .h6-places-line { display: none; }
-                    .h6-places-line-mobile { display: block !important; }
+                @media (min-width: 900px) {
+                    .h6-places-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+                    .h6-place-col + .h6-place-col {
+                        border-left: 1px solid var(--color-border-default);
+                        padding-left: var(--space-4);
+                    }
                 }
             `}</style>
         </section>
     )
 }
-

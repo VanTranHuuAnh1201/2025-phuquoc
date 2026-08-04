@@ -45,8 +45,9 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                     alignItems: 'center',
                     gap: 'var(--space-4)',
                     minHeight: 68,
-                    /* Chừa chỗ cho SiteOverlay (đăng nhập + chuông) của app ở góc phải. */
-                    paddingRight: 170,
+                    /* Chừa chỗ cho SiteOverlay (Đặt phòng + VI/EN + tài khoản) của app
+                       ở góc phải — đo thật ~250px, chừa 260 để không cắt nav. */
+                    paddingRight: 260,
                 }}
             >
                 <a
@@ -89,7 +90,9 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         overflow: 'hidden',
                     }}
                 >
-                    {nav.map((item) => (
+                    {/* Logo đã là link về trang chủ — bỏ mục '#top' cho nav gọn,
+                        không bị cắt chữ khi chung hàng với overlay của app. */}
+                    {nav.filter((item) => item.href !== '#top').map((item) => (
                         <a
                             key={item.href}
                             href={themeHref(SLUG, item.href, true)}
@@ -141,45 +144,7 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                         <span className="h5-header-tel-num">{brand.phone}</span>
                     </a>
 
-                    <span
-                        style={{
-                            display: 'inline-flex',
-                            gap: 2,
-                            fontSize: 'var(--font-size-xs)',
-                            fontWeight: 'var(--font-weight-bold)' as never,
-                        }}
-                    >
-                        <a
-                            href="?lang=vi"
-                            aria-label="Tiếng Việt"
-                            aria-current={locale === 'vi' ? 'true' : undefined}
-                            style={{
-                                padding: 6,
-                                minWidth: 24,
-                                textAlign: 'center',
-                                textDecoration: locale === 'vi' ? 'underline' : 'none',
-                                textUnderlineOffset: 4,
-                                color: linkColor,
-                            }}
-                        >
-                            VI
-                        </a>
-                        <a
-                            href="?lang=en"
-                            aria-label="English"
-                            aria-current={locale === 'en' ? 'true' : undefined}
-                            style={{
-                                padding: 6,
-                                minWidth: 24,
-                                textAlign: 'center',
-                                textDecoration: locale === 'en' ? 'underline' : 'none',
-                                textUnderlineOffset: 4,
-                                color: linkColor,
-                            }}
-                        >
-                            EN
-                        </a>
-                    </span>
+                    {/* VI/EN đã có trong SiteOverlay của app — không lặp lại ở đây. */}
                 </div>
             </div>
 

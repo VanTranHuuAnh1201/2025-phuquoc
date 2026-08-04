@@ -1,26 +1,21 @@
-﻿'use client'
-
 import { pick, telHref, themeHref, themeRoot, type Locale, type PropertyData } from '@repo/core'
-import { useScrolled } from '@repo/ui'
 
 import { meta } from '../meta'
 import { IconPhone } from '../components/icons'
 
 /**
- * Header mẫu 06 — sáng, phẳng, không dải tối.
+ * Header mẫu 06 — nền ngà ĐẶC từ pixel đầu tiên (spec v4 §2.1: sáng, sạch,
+ * chính chủ). Không transparent-trên-hero như các mẫu trước: một website
+ * booking đáng tin trông như quầy lễ tân, không như poster.
  *
- * Trong suốt trên hero (chữ ngà), cuộn quá 60px chuyển nền ngà mờ + viền cát.
- * Icon đăng nhập/chuông do `SiteOverlay` của app render (chức năng sản phẩm,
- * không phải hình thức mẫu — luật R1), nên header này chừa khoảng phải.
+ * Hairline xanh brand 3px trên cùng là dấu nhận diện duy nhất. Icon đăng
+ * nhập/chuông do `SiteOverlay` của app render, header chừa khoảng phải.
  */
 
 const SLUG = meta.slug
 
 export function Header({ data, locale }: { data: PropertyData; locale: Locale }) {
-    const scrolled = useScrolled()
     const { brand, nav } = data
-
-    const linkColor = scrolled ? 'var(--color-text-secondary)' : 'var(--color-text-inverse)'
 
     return (
         <header
@@ -30,12 +25,9 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                 left: 0,
                 right: 0,
                 zIndex: 60,
-                background: scrolled ? 'rgba(253, 252, 248, 0.94)' : 'transparent',
-                backdropFilter: scrolled ? 'blur(12px)' : undefined,
-                borderBottom: scrolled
-                    ? '1px solid var(--color-border-muted)'
-                    : '1px solid transparent',
-                transition: 'background var(--motion-fast) ease, border-color var(--motion-fast) ease',
+                background: 'var(--color-surface-base)',
+                borderTop: '3px solid var(--color-brand)',
+                borderBottom: '1px solid var(--color-border-muted)',
             }}
         >
             <div
@@ -44,7 +36,7 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                     display: 'flex',
                     alignItems: 'center',
                     gap: 'var(--space-4)',
-                    minHeight: 68,
+                    minHeight: 64,
                     /* Chừa chỗ cho SiteOverlay (đăng nhập + chuông) của app ở góc phải. */
                     paddingRight: 170,
                 }}
@@ -63,15 +55,14 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                     <img
                         src={brand.logo || '/OP5.png'}
                         alt={`${brand.name} ${brand.suffix}`}
-                        style={{ height: 38, width: 'auto', objectFit: 'contain' }}
+                        style={{ height: 36, width: 'auto', objectFit: 'contain' }}
                     />
                     <span
                         className="h6-display"
                         style={{
                             fontSize: 'var(--font-size-lg)',
-                            color: scrolled ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
+                            color: 'var(--color-text-primary)',
                             whiteSpace: 'nowrap',
-                            transition: 'color var(--motion-fast) ease',
                         }}
                     >
                         {brand.name}
@@ -97,7 +88,7 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                                 padding: '10px 12px',
                                 fontSize: 'var(--font-size-sm)',
                                 fontWeight: 'var(--font-weight-medium)' as never,
-                                color: linkColor,
+                                color: 'var(--color-text-secondary)',
                                 textDecoration: 'none',
                                 whiteSpace: 'nowrap',
                                 borderRadius: 'var(--radius-sm)',
@@ -131,10 +122,11 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                             gap: 8,
                             fontSize: 'var(--font-size-sm)',
                             fontWeight: 'var(--font-weight-bold)' as never,
-                            color: linkColor,
+                            color: 'var(--color-brand)',
                             textDecoration: 'none',
                             whiteSpace: 'nowrap',
                             minHeight: 24,
+                            fontVariantNumeric: 'tabular-nums',
                         }}
                     >
                         <IconPhone size={16} />
@@ -159,7 +151,10 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                                 textAlign: 'center',
                                 textDecoration: locale === 'vi' ? 'underline' : 'none',
                                 textUnderlineOffset: 4,
-                                color: linkColor,
+                                color:
+                                    locale === 'vi'
+                                        ? 'var(--color-text-primary)'
+                                        : 'var(--color-text-tertiary)',
                             }}
                         >
                             VI
@@ -174,7 +169,10 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                                 textAlign: 'center',
                                 textDecoration: locale === 'en' ? 'underline' : 'none',
                                 textUnderlineOffset: 4,
-                                color: linkColor,
+                                color:
+                                    locale === 'en'
+                                        ? 'var(--color-text-primary)'
+                                        : 'var(--color-text-tertiary)',
                             }}
                         >
                             EN
@@ -195,4 +193,3 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
         </header>
     )
 }
-

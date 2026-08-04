@@ -21,6 +21,7 @@ import { fill, fitFor, ui } from '../strings'
 import { BaseCss } from '../components/base'
 import { IconCheck, IconClose, IconFerry } from '../components/icons'
 import { ZaloFab } from '../components/ZaloFab'
+import { roomCover, roomGallery } from '../components/photos'
 import { SearchFields } from '../components/SearchWidget'
 import {
     searchQuery,
@@ -89,7 +90,7 @@ export function RoomDetailPage({
 
     if (!room) return null
 
-    const images = (room.images ?? []).slice(0, 5)
+    const images = roomGallery(room, 5)
     const others = data.rooms.filter((r) => r.id !== room.id).slice(0, 3)
     const zaloContext = `${pick(room.name, locale)} · ${shortDate(search.checkIn, locale)}–${shortDate(search.checkOut, locale)}`
 
@@ -374,10 +375,10 @@ export function RoomDetailPage({
                                         flexShrink: 0,
                                     }}
                                 >
-                                    {other.images?.[0] && (
+                                    {roomCover(other) && (
                                         // eslint-disable-next-line @next/next/no-img-element
                                         <img
-                                            src={other.images[0]}
+                                            src={roomCover(other)}
                                             alt=""
                                             loading="lazy"
                                             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}

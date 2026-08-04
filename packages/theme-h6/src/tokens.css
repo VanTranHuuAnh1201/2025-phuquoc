@@ -1,16 +1,17 @@
-﻿/**
- * Mẫu 06 — "Tropical Bright" (spec v3, 2026-08-04).
+/**
+ * Mẫu 06 — "Sunlit Booking", Option A "Sunlit Coastal Booking" (spec v4, 2026-08-04).
  *
- * Point of view: buổi sáng rực nắng trên đảo — nền trắng ngà ngập sáng, xanh
- * biển tươi của logo làm xương sống, MỘT chấm vàng duy nhất mỗi màn hình.
+ * Point of view: buổi sáng trên đảo — sáng, rõ, có nắng, đáng tin. Nền trắng
+ * ngà ≥85% diện tích, xanh biển từ logo `OP5.png` làm xương sống, MỘT chấm
+ * vàng duy nhất mỗi viewport.
  *
- * Ba luật riêng của mẫu (spec §2.1):
+ * Ba luật riêng của mẫu (spec v4 §2.1):
  *   1. Vàng `--color-accent` CHỈ dành cho CTA chính — không badge, không icon.
  *   2. Dải đậm (`--color-surface-strong`) tối đa 2 lần/trang: booking + footer.
  *   3. Không hex nào ngoài file này (luật D0).
  *
- * Option B "Sunset Coral" nằm ở `tokens.sunset.css` — đổi 1 dòng import trong
- * layout của app khi demo cho khách so; layout không sửa một dòng nào.
+ * Option B "Fresh Island Editorial" nằm ở `tokens.fresh.css` — đổi 1 dòng
+ * import trong layout của app khi demo cho khách so; layout không sửa gì khác.
  *
  * Tương phản ước tính trong spec §2.1 — PHẢI đo lại bằng công cụ trước khi
  * chốt PR, đặc biệt cặp #1173B8/#FDFCF8 (~4.9:1, sát ngưỡng AA).
