@@ -11,8 +11,14 @@
  *     vàng đạt ~9.2:1, và đúng với bản thiết kế.
  *   - Tiêu đề dùng serif, thân bài dùng sans — tạo chất nghỉ dưỡng.
  *
- * File này ghi đè hợp đồng token ở `@repo/ui/tokens.css`. Chỉ khai báo biến —
- * không viết selector cho component của `ui` (đó là vi phạm ranh giới).
+ * File này ghi đè hợp đồng token ở `@repo/styling-css/contract.css`. Chỉ khai
+ * báo biến — không viết selector cho component của `ui` (vi phạm ranh giới).
+ *
+ * HAI LỚP TÊN, MỘT NGUỒN GIÁ TRỊ:
+ *   - tên ngắn (`--brand`, `--text`)      hợp đồng của `styling-css`
+ *   - tên D1   (`--color-brand`, …)       hợp đồng của `styling-tailwind`
+ * Lớp D1 ở cuối file chỉ alias lại, không nhân đôi mã màu — sửa màu vẫn chỉ
+ * sửa một chỗ.
  */
 
 [data-theme='h2'] {
@@ -68,4 +74,66 @@
     --shadow-sm: 0 1px 3px rgba(15, 41, 66, 0.07);
     --shadow: 0 6px 20px rgba(15, 41, 66, 0.09);
     --shadow-lg: 0 18px 44px rgba(15, 41, 66, 0.14);
+
+    /* --- alias sang hợp đồng D1 (cho `@repo/styling-tailwind`) -------------
+       Cầu nối `@theme inline` đọc bộ tên D1 để sinh ra `bg-brand`,
+       `text-text-primary`… Alias ở đây để cùng một nguồn màu phục vụ cả hai
+       engine — không nhân đôi giá trị (luật D1/R14). */
+    --color-brand: var(--brand);
+    --color-accent: var(--accent);
+
+    --color-text-primary: var(--text);
+    --color-text-secondary: var(--text-muted);
+    --color-text-tertiary: #7387a0;
+    --color-text-inverse: var(--text-inverse);
+
+    --color-surface-base: var(--surface-alt);
+    --color-surface-raised: var(--surface);
+    --color-surface-strong: var(--surface-inverse);
+
+    --color-border-default: var(--border);
+    --color-border-muted: #eef2f7;
+
+    --color-success: var(--success);
+    --color-success-bg: #e6f4ee;
+    --color-warning: #92610a;
+    --color-warning-bg: #fdf3dc;
+    --color-danger: var(--danger);
+    --color-danger-bg: #fbeaea;
+    --color-info: var(--brand);
+    --color-info-bg: var(--surface-tint);
+
+    --font-family-primary: var(--font-body);
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-base: var(--text-base);
+    --font-size-lg: var(--text-lg);
+    --font-size-xl: var(--text-xl);
+    --font-size-2xl: var(--text-2xl);
+    --font-size-3xl: var(--text-3xl);
+    --font-size-4xl: 4rem;
+    --font-weight-base: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    --line-height-base: 1.65;
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 40px;
+    --space-6: 64px;
+    --space-7: 96px;
+    --space-8: 140px;
+
+    --radius-xs: 2px;
+    --radius-md: var(--radius);
+    --radius-xl: 24px;
+
+    --shadow-1: var(--shadow-sm);
+    --shadow-2: var(--shadow);
+
+    --motion-instant: 120ms;
+    --motion-fast: 220ms;
+    --motion-normal: 400ms;
 }

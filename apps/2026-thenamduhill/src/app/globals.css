@@ -1,3 +1,39 @@
+/**
+ * THỨ TỰ IMPORT LÀ CÓ CHỦ ĐÍCH — đừng đổi.
+ *
+ *   1. tailwindcss          preflight + utility engine
+ *   2. styling-tailwind     cầu nối @theme: utility trỏ vào biến của theme
+ *
+ * Hợp đồng token (`@repo/styling-css/contract.css`) và `tokens.css` của từng
+ * theme nạp ở `layout.tsx` — chúng phải vào SAU preflight của Tailwind nhưng
+ * là biến CSS nên không tranh chấp với utility.
+ *
+ * Theme nào không dùng Tailwind vẫn chạy bình thường: nó đọc thẳng
+ * `var(--…)` từ contract, không phụ thuộc file này (luật R14).
+ */
+
+@import 'tailwindcss';
+@import '@repo/styling-tailwind/theme.css';
+
+/**
+ * QUÉT CLASS Ở CÁC PACKAGE WORKSPACE.
+ *
+ * Tailwind mặc định BỎ QUA `node_modules`. Trong pnpm workspace, mọi package
+ * `@repo/*` đều là symlink nằm trong đó — nên không khai `@source` thì class
+ * viết trong theme/ui/domain KHÔNG được sinh ra, và trang mất sạch style dù
+ * build vẫn xanh.
+ *
+ * Đường dẫn tính từ file CSS này. Thêm package mới có class Tailwind thì thêm
+ * một dòng ở đây.
+ */
+@source '../../../../packages/theme-h1/src';
+@source '../../../../packages/theme-h2/src';
+@source '../../../../packages/ui/src';
+@source '../../../../packages/ui-layout/src';
+@source '../../../../packages/domain-hotel/src';
+
+/* ------------------------------------------------------------------ reset */
+
 *,
 *::before,
 *::after {
