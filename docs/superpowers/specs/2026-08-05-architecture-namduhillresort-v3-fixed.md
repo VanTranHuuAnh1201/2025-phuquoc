@@ -73,36 +73,103 @@
 
 ---
 
-## 3. Cấu trúc Trang & Phễu Chuyển đổi V3 Fixed
+## 3. Cấu trúc Trang & Phễu Chuyển đổi V3 Fixed (Chi tiết Thành phần)
 
-### 3.1 HOME (Trang Chủ Flagship)
-- **Section `top` (Hero):** Split View / Container Card chữ màu `#21323C` đè mỏng lên góc ảnh drone. H1: *"Nghỉ trên đồi, thức dậy giữa biển Nam Du"*. Widget nổi 4 vùng đè 50% mép dưới Hero.
-- **Dòng Định danh & Trust:** *"Resort chính chủ trên đồi Củ Tron · Hotline 0985 000 650 · Tàu hoãn dời ngày miễn phí"*.
-- **Section `about` (Đường ra đảo):** Khối 3 cột icon giải đáp nỗi sợ đi lại (Tàu cao tốc 2h, xe đón bến tàu).
-- **Section `rooms` (Hạng phòng):** 3 card phòng nổi bật + nút *"Xem tất cả 7 hạng phòng"*.
-- **Section `places` & `gallery`:** Lưới ảnh đẹp đồng nhất giờ nắng, full-bleed Bãi Cây Mến.
-- **Section `booking` & `contact`:** FAQ 4 câu + Footer đầy đủ MST & Hotline.
+### 3.1 HOME (`/h1` hoặc `/h5`) — 6 Section chuẩn Editorial CRO
 
-### 3.2 ROOMS (`/h5/rooms` hoặc `/h1/rooms`)
-- Hàng ngang so sánh (Desktop) & Thẻ dọc (Mobile).
-- Mỗi thẻ: Ảnh 3:2 + Tên phòng + Sức chứa + Diện tích + Chính sách hủy 1 dòng + Giá nổi bật + Nút *"Chọn phòng"*.
+#### Section 1: Hero Split-Container & Booking Widget
+- **Visual Structure:** Desktop Split View 60/40. Khối chữ nằm trên thẻ nền ngà đè mỏng (`--color-surface-base`), bên phải là ảnh drone `hero-drone.jpg` rực nắng.
+- **Typography (WCAG AAA P15):** 
+  - Subtitle: *"THE NAM DU HILL RESORT · ĐỒI CỦ TRON"* (Màu `--color-brand: #1173B8`, bold 14px, tracking rộng).
+  - Heading 1: *"Nghỉ trên đồi, thức dậy giữa biển Nam Du"* (Font *Lora*, `--color-text-primary: #21323C`, font-size 48px, tương phản 12.9:1).
+  - Body: *"Khu nghỉ dưỡng chính chủ sở hữu tầm nhìn 360° ôm trọn quần đảo Nam Du. Đón bình minh biển Đông và hoàng hôn hòn Hàng Bè ngay từ ban công phòng."*
+- **Booking Widget (CRO Engine):** Đặt nổi đè 50% ở mép dưới Hero. 4 vùng tương tác:
+  1. *Ngày nhận phòng* (Calendar Picker)
+  2. *Ngày trả phòng* (Calendar Picker)
+  3. *Số khách* (Dropdown 1-8 khách)
+  4. *Nút CTA:* **[Xem giá & Đặt phòng]** (Màu Vàng Accent `--color-accent: #F6B21B`, chữ xanh đen `#21323C` bold).
+- **Trust & Objection Handler (Dưới nút CTA):** 
+  - *"📞 Hotline chính chủ: 0985 000 650 (Tel link bấm gọi ngay)"*
+  - *"⛴ Tàu hoãn do thời tiết: Dời ngày miễn phí 100%"*
 
-### 3.3 ROOM DETAIL (`/h5/rooms/[id]` hoặc `/h1/rooms/[id]`)
-- Gallery lightbox + Sticky Booking Panel bên phải.
-- Tự động tính tiền cọc 50%, dòng *"Tàu hoãn do thời tiết: Dời ngày miễn phí"* nằm trong panel sát nút Đặt.
+#### Section 2: Trust & Identity Bar (Định danh Chính chủ)
+- **Background:** Nền Cát Ấm (`--color-surface-sand: #F7F0E4`).
+- **3 Cột Tín nhiệm:**
+  1. *Chính chủ sở hữu:* "Resort xây dựng & quản lý trực tiếp bởi người bản địa Nam Du — không qua trung gian."
+  2. *Hỗ trợ di chuyển:* "Xe điện đón tận bến tàu Nam Du + Hỗ trợ mua vé tàu cao tốc Rạch Giá – Nam Du."
+  3. *Cam kết hoàn hủy:* "Chính sách linh hoạt 100% khi thời tiết xấu tàu không vận hành."
+
+#### Section 3: Section `rooms` (Hạng phòng Nổi bật)
+- **Header:** Subtitle *"HẠNG PHÒNG NỔI BẬT"* + Heading *"Không gian nghỉ dưỡng hòa mình với thiên nhiên"*.
+- **Grid:** 3 Card phòng nổi bật đại diện 3 nhóm nhu cầu:
+  - Card 1: *Phòng Lục Giác Tiêu Chuẩn (2 khách)* ➔ `room-luc-giac.jpg` ➔ Từ 1.250.000đ/đêm.
+  - Card 2: *Phòng Đôi Ban Công View Biển (2-3 khách)* ➔ `room-double-balcony.jpg` ➔ Từ 1.546.000đ/đêm.
+  - Card 3: *Suite Gia Đình 6 Khách (6-8 khách)* ➔ `room-suite-6.jpg` ➔ Từ 2.800.000đ/đêm.
+- **Card Format:** Tỷ lệ ảnh 3:2 + Badge Sức chứa + Tên phòng (*Lora*) + Diện tích m² + Chính sách hủy 1 dòng + Giá nổi bật + Nút *"Chọn phòng"*.
+- **Footer Section:** Nút outline *"Xem tất cả 7 hạng phòng & bảng giá"* dẫn sang `/rooms`.
+
+#### Section 4: Section `about` (Kể chuyện & Trải nghiệm Amanoi Style)
+- **Visual:** Layout 2 cột xen kẽ (Image left 50% · Text right 50%).
+- **Nội dung:** Kể câu chuyện vị thế đồi cao Củ Tron, không khí trong lành, hồ bơi vô cực ngắm biển và trải nghiệm ẩm thực hải sản tươi sống bến tàu.
+
+#### Section 5: Section `places` & `gallery` (Khám phá đảo Nam Du)
+- Full-bleed image Bãi Cây Mến (`place-cay-men.png`) + Lưới 4 ảnh trải nghiệm (Tàu câu mực night-tour, Bãi Ngự, Hòn Dầu, BBQ hải sản).
+
+#### Section 6: FAQ & Footer
+- FAQ 4 câu giải đáp ngắn gọn: Giờ tàu chạy, Thủ tục nhận phòng, Ăn uống tại resort, Cách đặt cọc 50%.
+- Footer đầy đủ MST, Địa chỉ đồi Củ Tron, Bản đồ Google Maps link, Zalo OA chính thức.
 
 ---
 
-## 4. Quy trình Nghiệm thu Bắt buộc bằng AI Agents mới
+### 3.2 ROOMS (`/h1/rooms` hoặc `/h5/rooms`)
+
+- **Header:** Banner mỏng `banner-rooms.jpg` + Thanh lọc hạng phòng (Tất cả · Cặp đôi · Gia đình · View biển).
+- **Layout Hàng Ngang So Sánh (Desktop P5):**
+  - Trái: Ảnh phòng 3:2 với Lightbox slider 3 tấm.
+  - Giữa: Tên phòng, Tiện nghi chính (Điều hòa, Wifi, Ban công, WC riêng), Sức chứa ("2 người lớn + 1 trẻ em"), Diện tích (28m²).
+  - Phải: Thẻ giá + Dòng *"Cọc trước 50%"* + Nút CTA Vàng **[Đặt phòng này]**.
+- **Mobile Layout (P9):** Đổi tự động thành Thẻ dọc xếp lớp, nút đặt phòng cố định góc phải bên dưới thẻ.
+
+---
+
+### 3.3 ROOM DETAIL (`/h1/rooms/[id]`)
+
+- **Hero Gallery:** Grid 5 ảnh (1 tấm lớn bên trái, 4 tấm nhỏ bên phải) hoặc Slider Full View.
+- **Sticky Booking Panel (Phải Desktop):**
+  - Khối trắng nổi (`--color-surface-raised`), bo góc 12px, shadow nhẹ.
+  - Hiển thị: Giá/đêm + Form chọn ngày + Tính tổng tiền + Tính tiền cọc 50%.
+  - Dòng cam kết sát nút CTA: *"Chính sách dời ngày miễn phí khi tàu hoãn"*.
+  - Nút CTA Vàng Accent: **[Xác nhận đặt phòng ngay]**.
+- **Tabs Nội dung (Trái Desktop):**
+  - Tab 1: Tổng quan & Tiện nghi (Icon SVG chuẩn).
+  - Tab 2: Chính sách nhận/trả phòng (Check-in 14:00 · Check-out 12:00).
+  - Tab 3: Chính sách hủy phòng & Thời tiết xấu (Rõ ràng 3 bậc).
+
+---
+
+## 4. Quy định Kỹ thuật Mobile 375px (Mobile-First P9)
+
+1. **Above the Fold (Màn hình 1):**
+   - H1 Title + Subtitle + Widget Tìm phòng phải nằm **TRỌN VẸN 100% trong Viewport 375px × 812px**. Không bắt người dùng cuộn mới thấy chỗ nhập ngày.
+2. **Sticky Bottom Action Bar:**
+   - Khi cuộn qua Hero, xuất hiện thanh cố định ở đáy màn hình di động:
+   - Left: *"Từ 1.546.000đ/đêm"* (Chữ đậm 14px).
+   - Right: Nút CTA **[Đặt phòng]** (Màu Vàng Accent, padding 10px 20px).
+3. **Menu Hamburger Mobile:**
+   - Drawer trượt từ phải sang, chứa Nút gọi Hotline cấp cứu + Link Chọn phòng nhanh + Ngôn ngữ VI/EN.
+
+---
+
+## 5. Quy trình Nghiệm thu Bắt buộc bằng AI Agents mới
 
 > **YÊU CẦU BẮT BUỘC:** AI thực thi không được báo hoàn thành nếu chưa đi qua 2 Agent chuyên trách dưới đây:
 
-### 4.1 Agent Tuyển chọn & Phân tích Sắc độ Ảnh (`image-curator.md`)
+### 5.1 Agent Tuyển chọn & Phân tích Sắc độ Ảnh (`image-curator.md`)
 - Kích hoạt agent `image-curator` kết hợp Vision AI để quét toàn bộ thư mục ảnh crawl/assets.
 - Chỉ chọn các ảnh đáp ứng chuẩn **Tropical Bright** (ngập nắng ban ngày, biển xanh trong, không nhòe, không dán logo/watermark rác).
 - Tự động phân tích vùng an toàn (Text Safe Area) để đặt tiêu đề không che chủ thể.
 
-### 4.2 Agent Thẩm định Thị giác & Chụp ảnh Tự động (`visual-auditor.md`)
+### 5.2 Agent Thẩm định Thị giác & Chụp ảnh Tự động (`visual-auditor.md`)
 - BẮT BUỘC khởi động `visual-auditor` tự động chụp 2 giao diện thật từ Dev Server:
   - **Desktop Viewport:** 1440px × 900px.
   - **Mobile Viewport:** 375px × 812px (Chuẩn Mobile-first P9).
@@ -118,19 +185,14 @@
 resources/scripts/crawl/output/thenamduhill/assets/thenamduhill.com/
 ```
 
-### 6.2 Quy tắc Tuyển chọn & Copy sang `public/`:
-1. **Copy theo Nhu cầu:** Chỉ copy những tấm ảnh được Agent `image-curator` tuyển chọn và phê duyệt từ thư mục nguồn sang `apps/2026-thenamduhill/public/property/`.
-2. **Bảng Map tên file Chuẩn hóa (DEV-ONLY R9):**
-   - **Hero Drone (Home):** Copy `image_catalog_banner_banner2_rtcx8y.jpg` ➔ `public/property/hero-drone.jpg`
-   - **Rooms Banner:** Copy `image_catalog_banner_rooms_1voizus.jpg` ➔ `public/property/banner-rooms.jpg`
-   - **Card Phòng Lục Giác:** Copy `image_catalog_room-suite_5-phong-tieu-chuan-luc-giac_full_16cunr8.jpg` ➔ `public/property/room-luc-giac.jpg`
-   - **Card Phòng Suite 6 Khách:** Copy `image_catalog_room-suite_10-11-suite-6-khach_cover_mchup8.jpg` ➔ `public/property/room-suite-6.jpg`
-   - **Card Phòng Đôi Ban Công:** Copy `image_catalog_room-suite_12-phong-giuong-doi-co-ban-cong_cover12_1jkvrit.jpg` ➔ `public/property/room-double-balcony.jpg`
-   - **Full-bleed Bãi Cây Mến (Places):** Copy `image_catalog_news_news-4_1frvmd1.png` ➔ `public/property/place-cay-men.jpg`
-   - **About Section:** Copy `image_catalog_about_about_1wsv2q2.png` ➔ `public/property/about-resort.jpg`
-3. **CẤM BẮT BUỘC:** 
-   - ❌ CẤM copy/dùng 19 ảnh poster rác `image_catalog_gallery_sua-tam-*`.
-   - ❌ CẤM dùng nguyên trạng ảnh ghép 3-trong-1 (`*-full_*`) cho card phòng đơn.
+### 6.2 Bảng Map tên file Chuẩn hóa đã copy sang `public/property/`:
+- **Hero Drone (Home):** `public/property/hero-drone.jpg` (681KB)
+- **About Section:** `public/property/about-resort.png` (1.7MB)
+- **Rooms Banner:** `public/property/banner-rooms.jpg` (380KB)
+- **Card Phòng Lục Giác:** `public/property/room-luc-giac.jpg` (248KB)
+- **Card Phòng Suite 6 Khách:** `public/property/room-suite-6.jpg` (641KB)
+- **Card Phòng Đôi Ban Công:** `public/property/room-double-balcony.jpg` (114KB)
+- **Full-bleed Bãi Cây Mến (Places):** `public/property/place-cay-men.png` (1.5MB)
 
 ---
 
@@ -141,5 +203,6 @@ resources/scripts/crawl/output/thenamduhill/assets/thenamduhill.com/
 - [x] Đạt 100% Cổng Chất lượng P0–P15 trong `premium-quality-gate.md`.
 - [x] Tương phản WCAG AA ≥ 4.5:1 trên 100% khối chữ (Chuẩn P15).
 - [x] Nút CTA chính màu Accent Vàng duy nhất mỗi viewport (Chuẩn P2).
+
 
 

@@ -2,11 +2,15 @@
 
 import React from 'react'
 import { Star } from 'lucide-react'
-import { useLanguage } from '../../context/LanguageContext'
-import type { Testimonial } from '../../data/property'
+import { pick, type Locale, type Review } from '@repo/core'
 
 /**
  * Các cột đánh giá cuộn vô hạn.
+ *
+ * VÌ SAO NHẬN `Review` CỦA CORE CHỨ KHÔNG PHẢI TYPE RIÊNG: bản ở app khai một
+ * interface `Testimonial` rồi ánh xạ `Review` sang nó — một lớp trung gian chỉ
+ * để đổi tên trường. Theme không được định nghĩa type dữ liệu (luật R4), nên
+ * ở đây đọc thẳng `Review`: `comment` thay cho `quote`, `from` optional.
  *
  * VÌ SAO CHIA CỘT CHỨ KHÔNG PHẢI MỘT DANH SÁCH DÀI: ba cột chạy lệch tốc độ và
  * lệch chiều tạo cảm giác chuyển động sống, trong khi một cột duy nhất trông
@@ -19,25 +23,40 @@ import type { Testimonial } from '../../data/property'
  *
  * VÌ SAO CSS THUẦN: đây là một phép tịnh tiến tuyến tính lặp vô hạn. CSS chạy
  * nó trên compositor, không tốn main thread và không cần thêm dependency nào.
- * Keyframes nằm ở `globals.css`.
+ * Keyframes nằm ở `tokens.css` của chính mẫu này.
  */
 
-/** Nền avatar — xoay vòng theo index để hai card cạnh nhau không trùng màu. */
-const AVATAR_TONES = ['bg-[#1D4E89]', 'bg-[#0F2D52]', 'bg-[#2563A6]'] as const
+/**
+ * Nền avatar — xoay vòng theo index để hai card cạnh nhau không trùng màu.
+ *
+ * Ba tông đều là bậc của cùng một màu navy, đọc thẳng từ token. Bản gốc viết
+ * ba hex thô; ở đây trỏ vào biến nên đổi bảng màu là ba tông đổi theo.
+ */
+const AVATAR_TONES = [
+    'bg-[var(--brand)]',
+    'bg-[var(--brand-dark)]',
+    'bg-[var(--brand-light)]',
+] as const
 
 const toneAt = (i: number) => AVATAR_TONES[i % AVATAR_TONES.length] ?? AVATAR_TONES[0]
 
-function TestimonialCard({ item, tone }: { item: Testimonial; tone: string }) {
-    const { language } = useLanguage()
-
+function TestimonialCard({
+    item,
+    tone,
+    locale,
+}: {
+    item: Review
+    tone: string
+    locale: Locale
+}) {
     return (
-        <figure className="bg-white border border-[#ECECEC] rounded-[12px] p-3.5 shadow-2xs">
+        <figure className="bg-surface-raised border-border-muted rounded-md border p-3.5 shadow-1">
             {/* Sao — số sao đọc được bằng chữ ở `aria-label`, không chỉ bằng màu (luật D4) */}
             <div
-                className="flex gap-0.5 mb-2"
+                className="mb-2 flex gap-0.5"
                 role="img"
                 aria-label={
-                    language === 'vi'
+                    locale === 'vi'
                         ? `${item.rating} trên 5 sao`
                         : `${item.rating} out of 5 stars`
                 }
@@ -48,31 +67,33 @@ function TestimonialCard({ item, tone }: { item: Testimonial; tone: string }) {
                         aria-hidden="true"
                         className={
                             i < item.rating
-                                ? 'w-3 h-3 fill-[#FFB800] text-[#FFB800]'
-                                : 'w-3 h-3 text-[#E5E7EB]'
+                                ? 'fill-accent text-accent h-3 w-3'
+                                : 'text-border-default h-3 w-3'
                         }
                     />
                 ))}
             </div>
 
-            <blockquote className="text-[11px] sm:text-xs text-[#1A1A1A] leading-relaxed font-normal">
-                &ldquo;{item.quote[language]}&rdquo;
+            <blockquote className="text-text-primary text-[11px] leading-relaxed font-normal sm:text-xs">
+                &ldquo;{pick(item.comment, locale)}&rdquo;
             </blockquote>
 
-            <figcaption className="flex items-center gap-2 mt-2.5">
+            <figcaption className="mt-2.5 flex items-center gap-2">
                 {/* Chữ cái đầu thay ảnh: review demo, không dựng mặt người thật */}
                 <span
                     aria-hidden="true"
-                    className={`w-6 h-6 rounded-full ${tone} text-white text-[10px] font-bold flex items-center justify-center shrink-0`}
+                    className={`h-6 w-6 rounded-full ${tone} text-text-inverse flex shrink-0 items-center justify-center text-[10px] font-bold`}
                 >
                     {item.name.charAt(0)}
                 </span>
-                <span className="text-[10px] font-bold text-[#0F2D52] uppercase tracking-wider leading-tight">
+                <span className="text-surface-strong text-[10px] leading-tight font-bold tracking-wider uppercase">
                     {item.name}
-                    <span className="text-[#6B7280] font-medium normal-case tracking-normal">
-                        {' · '}
-                        {item.from[language]}
-                    </span>
+                    {item.from && (
+                        <span className="text-text-tertiary font-medium tracking-normal normal-case">
+                            {' · '}
+                            {pick(item.from, locale)}
+                        </span>
+                    )}
                 </span>
             </figcaption>
         </figure>
@@ -89,25 +110,27 @@ function TestimonialCard({ item, tone }: { item: Testimonial; tone: string }) {
 function ScrollingColumn({
     items,
     duration,
+    locale,
     reverse = false,
     className = '',
 }: {
-    items: Testimonial[]
+    items: Review[]
     duration: number
+    locale: Locale
     reverse?: boolean
     className?: string
 }) {
     return (
-        <div className={`testimonial-viewport ${className}`}>
+        <div className={`h3-testimonial-viewport ${className}`}>
             <div
-                className={`testimonial-track flex flex-col gap-3 ${reverse ? 'testimonial-track--reverse' : ''}`}
-                style={{ '--testimonial-duration': `${duration}s` } as React.CSSProperties}
+                className={`h3-testimonial-track flex flex-col gap-3 ${reverse ? 'h3-testimonial-track--reverse' : ''}`}
+                style={{ '--h3-testimonial-duration': `${duration}s` } as React.CSSProperties}
             >
                 {[0, 1].map((copy) => (
                     <React.Fragment key={copy}>
                         {items.map((item, i) => (
                             <div key={`${copy}-${item.id}`} aria-hidden={copy === 1 || undefined}>
-                                <TestimonialCard item={item} tone={toneAt(i)} />
+                                <TestimonialCard item={item} tone={toneAt(i)} locale={locale} />
                             </div>
                         ))}
                     </React.Fragment>
@@ -124,7 +147,7 @@ function ScrollingColumn({
  * Tốc độ ba cột cố ý lệch nhau (nguyên tố cùng nhau) để chu kỳ không trùng khớp
  * và mắt không bắt được quy luật lặp.
  */
-export function TestimonialColumns({ items }: { items: Testimonial[] }) {
+export function TestimonialColumns({ items, locale }: { items: Review[]; locale: Locale }) {
     const size = Math.ceil(items.length / 3)
     const [first = [], second = [], third = []] = [
         items.slice(0, size),
@@ -135,15 +158,26 @@ export function TestimonialColumns({ items }: { items: Testimonial[] }) {
     return (
         <div
             className="
-                grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3
-                h-[300px] sm:h-[340px] lg:h-[360px] overflow-hidden
+                grid h-[300px] grid-cols-1 gap-3 overflow-hidden
                 [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
                 [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
+                sm:h-[340px] sm:grid-cols-2 lg:h-[360px] lg:grid-cols-3
             "
         >
-            <ScrollingColumn items={first} duration={38} />
-            <ScrollingColumn items={second} duration={47} reverse className="hidden sm:block" />
-            <ScrollingColumn items={third} duration={43} className="hidden lg:block" />
+            <ScrollingColumn items={first} duration={38} locale={locale} />
+            <ScrollingColumn
+                items={second}
+                duration={47}
+                locale={locale}
+                reverse
+                className="hidden sm:block"
+            />
+            <ScrollingColumn
+                items={third}
+                duration={43}
+                locale={locale}
+                className="hidden lg:block"
+            />
         </div>
     )
 }

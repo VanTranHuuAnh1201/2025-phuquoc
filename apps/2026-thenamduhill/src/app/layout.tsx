@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro, Lora } from 'next/font/google'
 import '@repo/styling-css/contract.css'
 import '@repo/theme-h1/tokens.css'
 import '@repo/theme-h2/tokens.css'
+import '@repo/theme-h3/tokens.css'
 import './globals.css'
 
 /**

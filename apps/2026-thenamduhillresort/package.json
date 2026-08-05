@@ -17,6 +17,7 @@
     "@repo/styling-tailwind": "workspace:*",
     "@repo/domain-hotel": "workspace:*",
     "@repo/theme-h2": "workspace:*",
+    "@repo/theme-h3": "workspace:*",
     "@repo/ui": "workspace:*",
     "lucide-react": "^0.544.0",
     "next": "^15.5.4",

@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
         '@repo/domain-hotel',
         '@repo/theme-h1',
         '@repo/theme-h2',
+        '@repo/theme-h3',
     ],
 
     images: {

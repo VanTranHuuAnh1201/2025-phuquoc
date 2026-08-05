@@ -15,6 +15,7 @@
 @source '../../../../packages/ui-layout/src';
 @source '../../../../packages/domain-hotel/src';
 @source '../../../../packages/theme-h2/src';
+@source '../../../../packages/theme-h3/src';
 
 @theme {
   --font-serif: 'Playfair Display', Georgia, serif;

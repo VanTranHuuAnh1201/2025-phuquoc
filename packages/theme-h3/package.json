@@ -1,0 +1,30 @@
+{
+  "name": "@repo/theme-h3",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:*",
+    "@repo/domain-hotel": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@repo/ui-layout": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "lucide-react": "^0.544.0"
+  },
+  "devDependencies": {
+    "@repo/tsconfig": "workspace:*",
+    "@types/react": "^19",
+    "react": "^19.1.1",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  }
+}

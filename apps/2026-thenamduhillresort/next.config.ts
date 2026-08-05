@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     '@repo/ui-layout',
     '@repo/domain-hotel',
     '@repo/theme-h2',
+    '@repo/theme-h3',
   ],
 
   images: {

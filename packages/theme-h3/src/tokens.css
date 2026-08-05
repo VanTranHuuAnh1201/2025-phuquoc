@@ -1,0 +1,215 @@
+/**
+ * Mẫu 03 — Coastal Navy (bảng màu PA3 của app resort).
+ *
+ * Nguồn giá trị: khối `@theme` trong
+ * `apps/2026-thenamduhillresort/src/app/globals.css`. Bản đó khai token dưới
+ * `:root` nên khoá cứng cả app vào một bảng màu — thêm mẫu thứ hai là đụng
+ * nhau. Ở đây khai dưới `[data-theme='h3']` để N mẫu sống chung một trang
+ * (luật R5/R14).
+ *
+ * ĐỔI TÊN THEO VAI TRÒ, KHÔNG THEO MÀU (luật D1): bản gốc có
+ * `--color-gold-500`, `--color-primary-700`. Tên đó thành nói dối ngay khi một
+ * mẫu đổi sang xanh lá. Ở đây `#1D4E89` là `--brand`, `#FFB800` là `--accent`.
+ *
+ * HAI LỚP TÊN, MỘT NGUỒN GIÁ TRỊ — giống hệt `theme-h2`:
+ *   - tên ngắn (`--brand`, `--text`)   hợp đồng của `@repo/styling-css`
+ *   - tên D1   (`--color-brand`, …)    hợp đồng của `@repo/styling-tailwind`
+ * Lớp D1 ở cuối file chỉ alias lại, không nhân đôi mã màu — sửa màu vẫn chỉ
+ * sửa một chỗ.
+ */
+
+[data-theme='h3'] {
+    /* --- màu ------------------------------------------------------------ */
+    /* PA3 primary: navy. 700 là bậc dùng cho mọi CTA và link. */
+    --brand: #1d4e89;
+    --brand-dark: #0f2d52;
+    --brand-darker: #0b192c;
+    --brand-mid: #163b6c;
+    --brand-light: #2563a6;
+    --brand-lighter: #3b82c4;
+
+    /* Vàng — accent 5% theo bảng PA3. Chỉ dùng cho sao đánh giá và eyebrow. */
+    --accent: #ffb800;
+    --accent-light: #ffc837;
+    --accent-lighter: #ffe082;
+
+    /* Xanh mòng két của hero: nền lót sau ảnh và màu focus của thanh tìm kiếm.
+       Tách riêng khỏi `--brand` vì hero có bảng màu lạnh hơn phần thân trang. */
+    --hero-base: #0b4f5e;
+    --hero-tint: #eefafd;
+    --hero-line: #d9eff5;
+    --hero-focus: #06b6d4;
+    --hero-label: #78a3ae;
+    --hero-dot: #00c46a;
+
+    --surface: #ffffff;
+    --surface-alt: #fafaf8;
+    --surface-hover: #f5f7fa;
+    --surface-inverse: #0f2d52;
+
+    /* Lớp phủ hero — gradient bốn chặng của bản thiết kế gốc. Khai thành một
+       biến để section không phải nhúng hex vào `style` (luật D0). */
+    --hero-scrim: linear-gradient(
+        180deg,
+        rgba(4, 70, 86, 0.44) 0%,
+        rgba(6, 140, 160, 0.1) 34%,
+        rgba(4, 90, 108, 0.3) 64%,
+        rgba(4, 74, 90, 0.72) 100%
+    );
+    --hero-card: rgba(255, 255, 255, 0.96);
+
+    --text: #1a1a1a;
+    --text-muted: #4b5563;
+    --text-soft: #6b7280;
+    --text-faint: #b5b5b5;
+    --text-inverse: #ffffff;
+    --text-on-hero: #0b1b26;
+
+    --border: #e5e7eb;
+    --border-muted: #ececec;
+
+    --success: #047857;
+    --danger: #b91c1c;
+
+    /* --- chữ ------------------------------------------------------------ */
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+
+    --text-3xl: 1.5rem;
+    --text-2xl: 1.25rem;
+    --text-xl: 1rem;
+    --text-lg: 0.9375rem;
+    --text-base: 0.875rem;
+
+    /* --- hình khối ------------------------------------------------------ */
+    /* Bản gốc có bốn radius theo VAI TRÒ component (card/image/input/modal).
+       Ở đây gộp về thang 5 bậc của hợp đồng D1 — bốn giá trị cho cùng một vai
+       trò là dấu hiệu chưa có hệ thống (luật P0). */
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 16px;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+    /* Bóng của thẻ tìm kiếm nổi trên ảnh hero — sâu và ám xanh, không phải
+       bóng xám của thẻ nội dung. */
+    --shadow-hero: 0 22px 54px rgba(5, 60, 72, 0.34);
+    --shadow-hero-sm: 0 14px 36px rgba(5, 60, 72, 0.32);
+
+    /* --- alias sang hợp đồng D1 (cho `@repo/styling-tailwind`) -------------
+       Cầu nối `@theme inline` đọc bộ tên D1 để sinh ra `bg-brand`,
+       `text-text-primary`… Alias ở đây để cùng một nguồn màu phục vụ cả hai
+       engine — không nhân đôi giá trị (luật D1/R14). */
+    --color-brand: var(--brand);
+    --color-accent: var(--accent);
+
+    --color-text-primary: var(--text);
+    --color-text-secondary: var(--text-muted);
+    --color-text-tertiary: var(--text-soft);
+    --color-text-inverse: var(--text-inverse);
+
+    --color-surface-base: var(--surface-alt);
+    --color-surface-raised: var(--surface);
+    --color-surface-strong: var(--surface-inverse);
+
+    --color-border-default: var(--border);
+    --color-border-muted: var(--border-muted);
+
+    --color-success: var(--success);
+    --color-success-bg: #e6f4ee;
+    --color-warning: #92610a;
+    --color-warning-bg: #fdf3dc;
+    --color-danger: var(--danger);
+    --color-danger-bg: #fbeaea;
+    --color-info: var(--brand);
+    --color-info-bg: #eaf1f9;
+
+    --font-family-primary: var(--font-body);
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-base: var(--text-base);
+    --font-size-lg: var(--text-lg);
+    --font-size-xl: var(--text-xl);
+    --font-size-2xl: var(--text-2xl);
+    --font-size-3xl: var(--text-3xl);
+    --font-size-4xl: 2.25rem;
+    --font-weight-base: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    --line-height-base: 1.6;
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 40px;
+    --space-6: 64px;
+    --space-7: 96px;
+    --space-8: 140px;
+
+    --radius-xs: 2px;
+    --radius-md: var(--radius);
+    --radius-xl: 24px;
+
+    --shadow-1: var(--shadow-sm);
+    --shadow-2: var(--shadow);
+
+    --motion-instant: 150ms;
+    --motion-fast: 300ms;
+    --motion-normal: 700ms;
+}
+
+/* ---------------------------------------------------------------------------
+   Cột đánh giá cuộn vô hạn — dùng ở section `about` (HostService).
+
+   VÌ SAO KEYFRAMES Ở ĐÂY CHỨ KHÔNG Ở `globals.css` CỦA APP: chúng chỉ phục vụ
+   một component của MẪU NÀY. Để ở app thì app thứ hai dùng theme-h3 phải nhớ
+   chép sang — đúng thứ luật R5 cấm. Theme mang theo hình thức của chính nó.
+
+   CÁCH HOẠT ĐỘNG: danh sách card render HAI lần liên tiếp trong cùng track.
+   Track chạy từ 0 tới -50% rồi lặp — đúng lúc bản sao thứ hai về đúng vị trí
+   bản đầu, nên mắt không thấy điểm nối.
+
+   VÌ SAO KHÔNG DÙNG THƯ VIỆN: đây là một phép tịnh tiến tuyến tính lặp vô hạn,
+   thứ CSS làm gọn hơn JS và chạy trên compositor nên không tốn main thread.
+--------------------------------------------------------------------------- */
+@keyframes h3-testimonial-scroll-up {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(0, -50%, 0);
+    }
+}
+
+@keyframes h3-testimonial-scroll-down {
+    from {
+        transform: translate3d(0, -50%, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+[data-theme='h3'] .h3-testimonial-track {
+    animation: h3-testimonial-scroll-up var(--h3-testimonial-duration, 40s) linear infinite;
+    will-change: transform;
+}
+
+[data-theme='h3'] .h3-testimonial-track--reverse {
+    animation-name: h3-testimonial-scroll-down;
+}
+
+/* Dừng khi người dùng rê chuột vào để đọc — cuộn mà không đọc kịp là vô dụng */
+[data-theme='h3'] .h3-testimonial-viewport:hover .h3-testimonial-track,
+[data-theme='h3'] .h3-testimonial-viewport:focus-within .h3-testimonial-track {
+    animation-play-state: paused;
+}
+
+/* WCAG 2.2 — 2.3.3 Animation from Interactions */
+@media (prefers-reduced-motion: reduce) {
+    [data-theme='h3'] .h3-testimonial-track {
+        animation: none;
+    }
+}
