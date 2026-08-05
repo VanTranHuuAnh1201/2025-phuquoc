@@ -1,6 +1,6 @@
 'use client'
 
-import { namDuHill, pick, UI } from '@repo/core'
+import { namDuHill, pick, UI, type I18nText } from '@repo/core'
 
 import { Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
@@ -62,7 +62,7 @@ export function Header({ forceSolid = false }: HeaderProps) {
 
   const navLinks = namDuHill.nav
     .filter((item: { href: string }) => item.href !== '#tours')
-    .map((item: { href: string; label: any }) => ({
+    .map((item: { href: string; label: I18nText }) => ({
       href: hrefMap[item.href] || item.href,
       label: pick(item.label, language as 'vi' | 'en'),
     }))

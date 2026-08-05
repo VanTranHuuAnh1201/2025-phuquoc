@@ -184,7 +184,7 @@ export default function CustomersManagement() {
               </div>
 
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700 leading-relaxed">
-                "{inq.message}"
+                &ldquo;{inq.message}&rdquo;
               </div>
 
               <div className="flex justify-end gap-2 pt-1">

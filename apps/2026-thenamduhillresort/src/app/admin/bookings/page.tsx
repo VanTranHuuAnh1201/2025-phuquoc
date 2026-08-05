@@ -2,12 +2,38 @@
 
 import { useState } from 'react'
 
+/**
+ * Một đơn trong bảng quản trị — dữ liệu demo, chưa nối `Booking` của core.
+ *
+ * Khai tường minh thay vì `any`: `selectedBooking` được lan ra khắp modal chi
+ * tiết, `any` ở đây là mất kiểm tra kiểu cho cả file.
+ */
+interface AdminBooking {
+  id: string
+  customer: string
+  phone: string
+  email: string
+  roomCode: string
+  roomName: string
+  checkIn: string
+  checkOut: string
+  nights: number
+  /** Một số đơn seed thiếu trường này. */
+  guests?: number
+  amount: number
+  depositAmount: number
+  paymentStatus: string
+  status: string
+  notes: string
+  createdAt: string
+}
+
 export default function BookingsManagement() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [selectedBooking, setSelectedBooking] = useState<any | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<AdminBooking | null>(null)
 
-  const [bookings, setBookings] = useState([
+  const [bookings, setBookings] = useState<AdminBooking[]>([
     {
       id: '#NDH-8821',
       customer: 'Nguyễn Văn Minh',

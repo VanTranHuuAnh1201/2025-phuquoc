@@ -5,7 +5,9 @@ import Link from 'next/link'
 
 export default function AnalyticsPage() {
   const [dataMode, setDataMode] = useState<'detailed' | 'empty'>('detailed')
-  const [timeRange, setTimeRange] = useState<'this_month' | 'last_month' | 'quarter' | 'year'>('this_month')
+  type TimeRange = 'this_month' | 'last_month' | 'quarter' | 'year'
+
+  const [timeRange, setTimeRange] = useState<TimeRange>('this_month')
 
   // Detailed sample data
   const monthlyData = [
@@ -130,7 +132,7 @@ export default function AnalyticsPage() {
           {/* Time Filter */}
           <select
             value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as any)}
+            onChange={(e) => setTimeRange(e.target.value as TimeRange)}
             className="text-xs font-semibold bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-[#0F2D52]"
           >
             <option value="this_month">Tháng này (T8/2026)</option>

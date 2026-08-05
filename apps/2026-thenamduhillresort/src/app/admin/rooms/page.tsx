@@ -13,7 +13,7 @@ export default function RoomsManagement() {
   )
   const [selectedGroup, setSelectedGroup] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [editingRoom, setEditingRoom] = useState<any | null>(null)
+  const [editingRoom, setEditingRoom] = useState<(typeof roomList)[number] | null>(null)
 
   const filteredRooms = roomList.filter((r) => {
     const matchesGroup = selectedGroup === 'all' || r.group === selectedGroup
