@@ -951,37 +951,94 @@ export const namDuHill: PropertyData = {
 
     reviews: [
         {
-            id: 'review-1',
-            name: 'Nguyễn Minh Tuấn',
-            date: '12/06/2025',
+            id: 'review-ngoc-anh',
+            name: 'Ngọc Anh (TP.HCM)',
+            date: '2026-05',
             rating: 5,
             comment: t(
-                'View đẹp, phòng sạch sẽ, nhân viên nhiệt tình. Sẽ quay lại lần sau!',
-                'Stunning view, clean rooms, extremely friendly staff. Will definitely come back!',
+                'Chủ nhà nhắn tin trước một ngày hỏi chuyến tàu mấy giờ, rồi có người chờ sẵn ở bến. Đi đảo mà không phải lo khâu nào.',
+                'The host messaged a day ahead to ask which ferry we were on, then someone was waiting at the pier. Nothing left for us to arrange.',
             ),
-            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
         },
         {
-            id: 'review-2',
-            name: 'Trần Hồng Anh',
-            date: '05/06/2025',
+            id: 'review-minh-tri',
+            name: 'Minh Trí (Cần Thơ)',
+            date: '2026-05',
             rating: 5,
             comment: t(
-                'Không gian yên tĩnh, phù hợp nghỉ dưỡng cùng gia đình. Rất hài lòng.',
-                'Peaceful ambience, perfect for family vacations. Extremely satisfied.',
+                'Dậy sớm ngồi ngoài hiên xem mặt trời lên khỏi mặt biển. Hai đêm ở đây đáng giá hơn cả tuần nghỉ ở chỗ đông người.',
+                'We got up early and watched the sun come off the water from the terrace. Two nights here beat a whole week somewhere crowded.',
             ),
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
         },
         {
-            id: 'review-3',
-            name: 'Lê Quốc Bảo',
-            date: '01/06/2025',
+            id: 'review-thu-ha',
+            name: 'Thu Hà (Hà Nội)',
+            date: '2026-04',
             rating: 5,
             comment: t(
-                'Đồ ăn ngon, hải sản tươi, bể bơi view biển cực chill!',
-                'Delicious food, fresh seafood, the infinity ocean view pool is super relaxing!',
+                'Phòng nhìn thẳng ra vịnh, sáng mở cửa là thấy biển. Đúng như ảnh, không có chuyện ảnh một đằng phòng một nẻo.',
+                'The room looks straight onto the bay — you open the door in the morning and there it is. Exactly like the photos, no surprises.',
             ),
-            avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
+        },
+        {
+            id: 'review-quoc-bao',
+            name: 'Quốc Bảo (Đà Nẵng)',
+            date: '2026-04',
+            rating: 5,
+            comment: t(
+                'Đi bốn người, thuê xe máy ngay tại resort rồi chạy vòng đảo. Chủ nhà chỉ đường tới mấy bãi vắng mà Google Maps không có.',
+                'Four of us rented bikes right at the resort and rode around the island. The host pointed us to quiet beaches Google Maps does not show.',
+            ),
+        },
+        {
+            id: 'review-lan-phuong',
+            name: 'Lan Phương (Bình Dương)',
+            date: '2026-03',
+            rating: 5,
+            comment: t(
+                'Bữa sáng ăn ngoài nhà hàng nhìn ra biển, cá mới đánh về nên ngọt. Bé nhà mình ăn hết cả phần người lớn.',
+                'Breakfast at the seaside restaurant, with fish caught that morning. Our little one finished an adult portion.',
+            ),
+        },
+        {
+            id: 'review-duc-huy',
+            name: 'Đức Huy (Nha Trang)',
+            date: '2026-03',
+            rating: 4,
+            comment: t(
+                'Hồ bơi vắng, chiều nào cũng gần như của riêng mình. Buổi tối ra bàn bi-a ngồi với mấy nhóm khách khác, vui.',
+                'The pool was quiet — most afternoons we had it to ourselves. Evenings we played pool with the other guests.',
+            ),
+        },
+        {
+            id: 'review-kim-oanh',
+            name: 'Kim Oanh (Rạch Giá)',
+            date: '2026-02',
+            rating: 5,
+            comment: t(
+                'Lần đầu ra đảo nên khá lo. Nhắn gì cũng được trả lời trong vài phút, kể cả lúc mười giờ đêm hỏi chuyện tàu về.',
+                'It was our first island trip and we were nervous. Every message got an answer within minutes, even asking about the return ferry at ten at night.',
+            ),
+        },
+        {
+            id: 'review-thanh-tung',
+            name: 'Thanh Tùng (Vũng Tàu)',
+            date: '2026-02',
+            rating: 5,
+            comment: t(
+                'Đưa cả nhà ba thế hệ đi, ông bà đi lại thoải mái vì phòng gần khu ăn uống. Chuyện nhỏ nhưng chỗ khác ít khi tính tới.',
+                'We came as three generations. My parents got around easily because the rooms sit close to the dining area — a small thing most places overlook.',
+            ),
+        },
+        {
+            id: 'review-hai-yen',
+            name: 'Hải Yến (Huế)',
+            date: '2026-01',
+            rating: 5,
+            comment: t(
+                'Đi lặn ngắm san hô theo tour chủ nhà giới thiệu, nước trong tới mức nhìn thấy đáy. Về tới nơi đã có nước ấm sẵn để tắm.',
+                'We joined the snorkelling trip the host recommended — the water was clear to the bottom. Hot water was ready for us when we got back.',
+            ),
         },
     ],
 }
