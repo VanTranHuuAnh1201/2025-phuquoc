@@ -17,6 +17,31 @@
  * sang các prop đó — đó là công việc của tầng domain.
  */
 
+/**
+ * Khung trang đầy đủ — bản gộp từ header/footer của app resort, là bản có
+ * nhiều tính năng nhất. Mọi mẫu và mọi app nên dùng bộ này.
+ */
+export { SiteHeader } from './SiteHeader'
+export type {
+    SiteHeaderProps,
+    SiteHeaderBrand,
+    SiteHeaderStrings,
+    HeaderNavItem,
+    AccountMenuItem,
+} from './SiteHeader'
+
+export { SiteFooter } from './SiteFooter'
+export type {
+    SiteFooterProps,
+    SiteFooterBrand,
+    FooterColumn,
+    FooterLink,
+} from './SiteFooter'
+
+/**
+ * Bộ cũ — giữ cho tới khi mọi nơi chuyển sang `SiteHeader`/`SiteFooter`.
+ * Code mới đừng dùng.
+ */
 export {
     PageBody,
     PageHeader,

@@ -28,7 +28,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#FAFAFA] text-[#344054] font-sans antialiased">
+      {/*
+        * `data-theme` là BẮT BUỘC, không phải trang trí.
+        *
+        * `@repo/theme-h2/tokens.css` khai mọi biến trong `[data-theme='h2']`.
+        * Thiếu thuộc tính này thì cả trang rơi về bộ dự phòng xám của
+        * `@repo/styling-css/contract.css` — header và footer dùng chung sẽ mất
+        * hết màu thương hiệu dù build vẫn xanh.
+        *
+        * Màu nền và chữ đọc từ token thay vì hex cứng, để đổi mẫu chỉ cần đổi
+        * dòng import `tokens.css` ở trên (luật D0).
+        */}
+      <body
+        data-theme="h2"
+        className="bg-surface-base font-primary text-text-primary antialiased"
+      >
         <LanguageProvider>
           <Header />
           {/*

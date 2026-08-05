@@ -1,6 +1,15 @@
 import { pick, type Locale } from '@repo/utils'
-import { themeHref, themePath, themeRoot, type PropertyData } from '@repo/core'
-import type { BrandInfo, NavItem, ShellStrings } from '@repo/ui-layout'
+import { UI, themeHref, themePath, themeRoot, type PropertyData } from '@repo/core'
+import type {
+    AccountMenuItem,
+    BrandInfo,
+    FooterColumn,
+    NavItem,
+    ShellStrings,
+    SiteFooterBrand,
+    SiteHeaderBrand,
+    SiteHeaderStrings,
+} from '@repo/ui-layout'
 
 import type { PageStrings } from './pages/strings'
 
@@ -72,5 +81,145 @@ export function shellPropsOf(
         strings: toShellStrings(t),
         homeHref: themeRoot(slug),
         ctaHref: themePath(slug, 'rooms'),
+    }
+}
+
+// ==================================================== khung trang đầy đủ (mới)
+//
+// Bộ dưới đây cấp prop cho `SiteHeader`/`SiteFooter` — bản gộp từ app resort,
+// đầy đủ tính năng hơn `PageHeader`/`PageFooter` cũ. Mẫu mới nên dùng bộ này.
+
+/**
+ * Đường dẫn của các mục tài khoản.
+ *
+ * Khác nhau giữa hai app: app resort có domain riêng nên dùng đường dẫn gốc
+ * (`/my-bookings`), app hub gắn slug của mẫu. Nơi gọi truyền vào.
+ */
+export interface AccountRoutes {
+    myOrders: string
+    admin?: string
+}
+
+export function toSiteHeaderBrand(data: PropertyData, locale: Locale): SiteHeaderBrand {
+    const { brand } = data
+    return {
+        name: brand.name,
+        tagline: pick(UI.cuTronVillageNamDuIsland, locale),
+        logo: brand.logo,
+    }
+}
+
+export function toSiteHeaderStrings(locale: Locale): SiteHeaderStrings {
+    return {
+        bookNow: pick(UI.bookNow2, locale),
+        openMenu: pick(UI.openMenu, locale),
+        closeMenu: pick(UI.closeMenu, locale),
+        accountMenu: pick(UI.accountMenu, locale),
+    }
+}
+
+/** Menu tài khoản — hai mục cố định của sản phẩm booking. */
+export function toAccountMenu(locale: Locale, routes: AccountRoutes): AccountMenuItem[] {
+    const items: AccountMenuItem[] = [
+        {
+            label: pick(UI.myBookings, locale),
+            hint: pick(UI.viewBookingHistory, locale),
+            href: routes.myOrders,
+        },
+    ]
+    if (routes.admin) {
+        items.push({
+            label: pick(UI.adminCms, locale),
+            hint: pick(UI.resortManagementPanel, locale),
+            href: routes.admin,
+        })
+    }
+    return items
+}
+
+export function toSiteFooterBrand(data: PropertyData, locale: Locale): SiteFooterBrand {
+    const { brand } = data
+    return {
+        name: brand.name,
+        tagline: brand.suffix,
+        logo: brand.logo,
+        address: pick(brand.address, locale),
+        email: brand.email,
+        phone: brand.phone,
+    }
+}
+
+/**
+ * Hai cột liên kết của chân trang: chính sách và khám phá.
+ *
+ * `policyHrefs` để trống thì cột chính sách bị bỏ — chưa có trang chính sách
+ * thật thì đừng render link chết (bản resort đang trỏ `href="#"`, là lỗi).
+ */
+export function toFooterColumns(
+    locale: Locale,
+    hrefs: {
+        rooms: string
+        dining: string
+        explore: string
+        blog: string
+        contact: string
+        policy?: {
+            privacy: string
+            terms: string
+            guide: string
+            cancellation: string
+            payment: string
+        }
+    },
+): FooterColumn[] {
+    const columns: FooterColumn[] = []
+
+    if (hrefs.policy) {
+        columns.push({
+            title: pick(UI.information, locale),
+            links: [
+                { label: pick(UI.privacyPolicy, locale), href: hrefs.policy.privacy },
+                { label: pick(UI.generalTerms, locale), href: hrefs.policy.terms },
+                { label: pick(UI.bookingGuide, locale), href: hrefs.policy.guide },
+                { label: pick(UI.cancellationPolicy, locale), href: hrefs.policy.cancellation },
+                { label: pick(UI.paymentOptions, locale), href: hrefs.policy.payment },
+            ],
+        })
+    }
+
+    columns.push({
+        title: pick(UI.explore, locale),
+        links: [
+            { label: pick(UI.roomList, locale), href: hrefs.rooms },
+            { label: pick(UI.diningBbq, locale), href: hrefs.dining },
+            { label: pick(UI.exploreNamDu, locale), href: hrefs.explore },
+            { label: pick(UI.travelJournal, locale), href: hrefs.blog },
+            { label: pick(UI.contactUs, locale), href: hrefs.contact },
+        ],
+    })
+
+    return columns
+}
+
+/** Gói trọn prop chân trang cho một mẫu trong app hub. */
+export function siteFooterPropsOf(data: PropertyData, locale: Locale, slug: string) {
+    return {
+        brand: toSiteFooterBrand(data, locale),
+        intro: pick(UI.theNamDuHillBusinessHousehold, locale),
+        columns: toFooterColumns(locale, {
+            rooms: themePath(slug, 'rooms'),
+            dining: themePath(slug, 'dining'),
+            explore: themePath(slug, 'tours'),
+            blog: themePath(slug, 'blog'),
+            contact: themePath(slug, 'contact'),
+        }),
+        socialTitle: pick(UI.connect, locale),
+        social: [
+            { label: 'f', href: data.brand.site, external: true },
+            { label: 'Za', href: `https://zalo.me/${data.brand.phone.replace(/\s/g, '')}`, external: true },
+        ],
+        badge: { label: pick(UI.registeredWithMinistryOfCommerce, locale) },
+        copyright: `© 2026 ${data.brand.name} ${data.brand.suffix} · ${data.brand.site.replace(/^https?:\/\//, '')}`,
+        note: pick(UI.bestRatesWhenBookingDirect, locale),
     }
 }

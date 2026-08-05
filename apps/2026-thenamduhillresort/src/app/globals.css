@@ -1,4 +1,20 @@
 @import "tailwindcss";
+@import "@repo/styling-tailwind/theme.css";
+
+/**
+ * QUÉT CLASS Ở CÁC PACKAGE WORKSPACE.
+ *
+ * Tailwind mặc định BỎ QUA `node_modules`. Trong pnpm workspace mọi package
+ * `@repo/*` đều là symlink nằm trong đó — không khai `@source` thì class viết
+ * trong `SiteHeader`/`SiteFooter` và các trang của `domain-hotel` KHÔNG được
+ * sinh ra, và trang mất style dù build vẫn xanh.
+ *
+ * Đường dẫn tính từ file CSS này.
+ */
+@source '../../../../packages/ui/src';
+@source '../../../../packages/ui-layout/src';
+@source '../../../../packages/domain-hotel/src';
+@source '../../../../packages/theme-h2/src';
 
 @theme {
   --font-serif: 'Playfair Display', Georgia, serif;

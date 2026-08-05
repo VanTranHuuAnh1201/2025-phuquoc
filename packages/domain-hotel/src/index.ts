@@ -22,7 +22,15 @@ export {
     toBrandInfo,
     toNavItems,
     toShellStrings,
+    // khung trang đầy đủ — bản gộp từ app resort
+    toSiteHeaderBrand,
+    toSiteHeaderStrings,
+    toAccountMenu,
+    toSiteFooterBrand,
+    toFooterColumns,
+    siteFooterPropsOf,
 } from './shell-adapter'
+export type { AccountRoutes } from './shell-adapter'
 
 // -------------------------------------------------------------- chuỗi giao diện
 export type { UiStrings, UiStringSet } from './strings'
