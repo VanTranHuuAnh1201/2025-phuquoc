@@ -8,7 +8,7 @@
  * Mọi chuỗi khách nhìn thấy đều song ngữ (luật R6).
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 import type {
     ChildPolicy,
     Promotion,

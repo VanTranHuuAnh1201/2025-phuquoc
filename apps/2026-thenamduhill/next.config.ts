@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
      * nên Next phải tự transpile. Thêm theme mới thì thêm vào đây.
      */
     transpilePackages: [
+        '@repo/utils',
         '@repo/core',
         '@repo/ui',
         '@repo/theme-h1',

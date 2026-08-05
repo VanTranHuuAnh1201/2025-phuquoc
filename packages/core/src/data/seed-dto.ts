@@ -9,8 +9,7 @@
  * Không JSX, không CSS, chạy được trong Node thuần (luật R2).
  */
 
-import { t } from '../i18n'
-import type { I18nText } from '../i18n'
+import { t, type I18nText } from '@repo/utils'
 import type { PropertyData, Room, RoomExtra } from '../types'
 import { roomBusinessInfo } from './room-business'
 

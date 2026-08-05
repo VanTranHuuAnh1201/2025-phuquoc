@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
-    "@repo/ui": "workspace:*"
+    "@repo/ui": "workspace:*",
+    "@repo/utils": "workspace:*"
   },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",

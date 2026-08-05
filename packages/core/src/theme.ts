@@ -9,7 +9,7 @@
  * React và không chứa JSX — `core` phải chạy được trong Node thuần (luật R2).
  */
 
-import type { I18nText } from './i18n'
+import type { I18nText } from '@repo/utils'
 import type { ThemeSectionId } from './types'
 
 /** Thẻ mô tả một mẫu, dùng cho trang hub liệt kê các giao diện. */

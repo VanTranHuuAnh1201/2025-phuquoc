@@ -5,8 +5,27 @@
  * Phép thử: package này phải chạy được trong Node thuần.
  */
 
-export * from './i18n'
-export * from './env'
+// Tầng nền — nằm ở `@repo/utils`, re-export ở đây để nơi tiêu thụ không phải
+// sửa import cùng lúc với việc tách package. Code MỚI nên import thẳng
+// `@repo/utils` cho đúng đồ thị phụ thuộc (luật R15).
+export {
+    LOCALES,
+    DEFAULT_LOCALE,
+    t,
+    isLocale,
+    pick,
+    formatPrice,
+    telHref,
+    formatDate,
+    readEnv,
+    isProduction,
+    ASSET_DIR,
+    BRAND_ASSETS,
+    previewPath,
+    type Locale,
+    type I18nText,
+} from '@repo/utils'
+
 export * from './types'
 export * from './theme'
 export * from './navigation'

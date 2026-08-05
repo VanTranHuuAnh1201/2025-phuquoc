@@ -22,7 +22,7 @@
 import { namDuHill } from './nam-du-hill'
 import { namDuHillSeed } from './nam-du-hill.seed.generated'
 import { mergeSeed } from './seed-dto'
-import { readEnv } from '../env'
+import { readEnv } from '@repo/utils'
 import type { PropertyData } from '../types'
 
 export type { SeedData, SeedRoomType, SeedPolicies } from './seed-dto'

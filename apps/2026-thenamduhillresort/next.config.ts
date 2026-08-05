@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
    * `@repo/ui` và `@repo/theme-h2` được import trong `app/layout.tsx`
    * (tokens.css) nên bắt buộc phải có mặt ở đây.
    */
-  transpilePackages: ['@repo/core', '@repo/ui', '@repo/theme-h2'],
+  transpilePackages: ['@repo/utils', '@repo/core', '@repo/ui', '@repo/theme-h2'],
 
   images: {
     remotePatterns: [

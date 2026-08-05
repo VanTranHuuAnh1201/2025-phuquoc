@@ -17,7 +17,7 @@
  * resort; từ nay sửa tay.
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 
 export const UI = {
     theHostIsGenuinelyAttentiveShe: t('“Bà chủ rất chu đáo, tận tâm với khách hàng.”', '“The host is genuinely attentive — she checked on us more than any hotel we’ve stayed at.”'),

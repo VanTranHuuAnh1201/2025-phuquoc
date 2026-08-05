@@ -3,7 +3,7 @@
  * Không JSX, không CSS, không mã màu (luật R2).
  */
 
-import type { I18nText } from './i18n'
+import type { I18nText } from '@repo/utils'
 
 // ---------------------------------------------------------------- thương hiệu
 

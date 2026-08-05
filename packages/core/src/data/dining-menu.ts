@@ -7,7 +7,7 @@
  * Mọi chuỗi song ngữ `{ vi, en }` theo luật R6.
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 import type { MenuCategory } from '../types'
 
 export const diningMenu: Record<string, MenuCategory> = {

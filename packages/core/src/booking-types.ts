@@ -9,7 +9,7 @@
  * Chi tiết nghiệp vụ: `.claude/rules/booking-domain.md`.
  */
 
-import type { I18nText } from './i18n'
+import type { I18nText } from '@repo/utils'
 
 // ============================================================ phòng: 2 thực thể
 

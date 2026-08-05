@@ -9,7 +9,7 @@
  * Khớp theo id — id đổi thì phải cập nhật bảng này.
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 import type { RoomGroup, RoomReview } from '../types'
 
 export interface RoomBusinessInfo {

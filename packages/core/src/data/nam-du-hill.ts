@@ -8,7 +8,7 @@
  * Trước khi lên production phải thay bằng nội dung của khách hàng.
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 import type { PropertyData } from '../types'
 
 export const namDuHill: PropertyData = {

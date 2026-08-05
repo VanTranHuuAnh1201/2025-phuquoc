@@ -1,5 +1,5 @@
 {
-  "name": "@repo/core",
+  "name": "@repo/utils",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,12 +9,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@repo/utils": "workspace:*"
-  },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",
-    "@types/node": "^20",
     "typescript": "^5"
   }
 }

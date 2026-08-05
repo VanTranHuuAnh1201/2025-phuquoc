@@ -4,7 +4,7 @@
  * Mọi chuỗi song ngữ `{ vi, en }` theo luật R6. Không JSX, không CSS (luật R2).
  */
 
-import { t } from '../i18n'
+import { t } from '@repo/utils'
 import type { BlogPost } from '../types'
 
 export const blogPosts: BlogPost[] = [
