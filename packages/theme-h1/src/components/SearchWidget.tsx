@@ -29,8 +29,13 @@ export function SearchFields({
 
     return (
         <div
-            className={columns ? 'h6-sf h6-sf-columns' : 'h6-sf'}
-            style={{ display: 'grid', gap: 'var(--space-3)' }}
+            className={[
+                'grid gap-3',
+                // 900px là ngưỡng riêng của mẫu, không phải md/lg mặc định.
+                columns
+                    ? 'min-[900px]:grid-cols-[1.1fr_1.1fr_0.7fr_0.7fr] min-[900px]:items-end'
+                    : '',
+            ].join(' ')}
         >
             <div className="h6-field">
                 <label htmlFor={`${idBase}-in`}>{t.checkIn}</label>
@@ -104,15 +109,10 @@ export function SearchFields({
                 </select>
             </div>
 
+            {/* `col-[1/-1]` cho khối tuổi chiếm trọn hàng của lưới cha, để nó
+                không chen vào 4 cột Nhận · Trả · Người lớn · Trẻ em. */}
             {value.childAges.length > 0 && (
-                <div
-                    className="h6-sf-ages"
-                    style={{
-                        display: 'grid',
-                        gap: 'var(--space-2)',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
-                    }}
-                >
+                <div className="col-[1/-1] grid grid-cols-[repeat(auto-fit,minmax(90px,1fr))] gap-2">
                     {value.childAges.map((age, index) => (
                         <div className="h6-field" key={index}>
                             <label htmlFor={`${idBase}-age-${index}`}>
@@ -138,16 +138,6 @@ export function SearchFields({
                     ))}
                 </div>
             )}
-
-            <style>{`
-                .h6-sf-ages { grid-column: 1 / -1; }
-                @media (min-width: 900px) {
-                    .h6-sf-columns {
-                        grid-template-columns: 1.1fr 1.1fr 0.7fr 0.7fr;
-                        align-items: end;
-                    }
-                }
-            `}</style>
         </div>
     )
 }

@@ -15,6 +15,11 @@ import { pageUi } from './strings'
  *
  * Kích thước bám sát prototype: header min-height 66px, topbar 44px, container
  * 1200px, hero 420px (Rooms/Tours) · 400px (Gallery) · 380px (Contact).
+ *
+ * STYLE: Tailwind v4 đọc token của theme qua cầu nối `@repo/styling-tailwind`.
+ * Biến nằm ngoài hợp đồng D1 (`--container`, `--radius-pill`, `--surface-*`…)
+ * viết dạng arbitrary trỏ thẳng vào biến — không bao giờ ghi mã hex ở đây
+ * (luật D0).
  */
 
 // ==================================================================== header
@@ -51,148 +56,72 @@ export function PageHeader({
     const scrolled = useScrolled()
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60 }}>
-            {/* Thanh trên: địa chỉ + hotline. Thu lại khi cuộn quá 60px. */}
+        <div className="fixed inset-x-0 top-0 z-[60]">
+            {/* Thanh trên: địa chỉ + hotline. Thu lại khi cuộn quá 60px.
+                `maxHeight`/`opacity` vẫn ở inline style vì chúng phụ thuộc state
+                `scrolled` — đây là giá trị động, không phải token. */}
             <div
+                className="overflow-hidden bg-[var(--surface-inverse)] text-text-inverse [transition:max-height_260ms_ease,opacity_200ms_ease]"
                 style={{
-                    background: 'var(--surface-inverse)',
-                    color: 'var(--text-inverse)',
-                    overflow: 'hidden',
                     maxHeight: scrolled ? 0 : 44,
                     opacity: scrolled ? 0 : 0.7,
-                    transition: 'max-height 260ms ease, opacity 200ms ease',
                 }}
             >
-                <div
-                    style={{
-                        maxWidth: 'var(--container)',
-                        margin: '0 auto',
-                        padding: '8px 24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 16,
-                        flexWrap: 'wrap',
-                        fontSize: 12.5,
-                    }}
-                >
+                <div className="mx-auto flex max-w-[var(--container)] flex-wrap items-center justify-between gap-3 px-4 py-2 text-[12.5px]">
                     <span>{pick(brand.address, locale)}</span>
-                    <a href={telHref(brand.phone)} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <a href={telHref(brand.phone)} className="text-inherit no-underline">
                         Hotline / Zalo: {brand.phone}
                     </a>
                 </div>
             </div>
 
             <header
-                style={{
-                    background: 'rgba(255,255,255,0.96)',
-                    backdropFilter: 'blur(14px)',
-                    borderBottom: '1px solid var(--border)',
-                    boxShadow: scrolled ? 'var(--shadow-sm)' : undefined,
-                    transition: 'box-shadow 240ms ease',
-                }}
+                className={[
+                    'border-b border-border-default bg-[rgb(255_255_255/0.96)] backdrop-blur-[14px]',
+                    '[transition:box-shadow_240ms_ease]',
+                    scrolled ? 'shadow-1' : '',
+                ].join(' ')}
             >
-                <div
-                    style={{
-                        maxWidth: 'var(--container)',
-                        margin: '0 auto',
-                        padding: '10px 24px',
-                        minHeight: 66,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 20,
-                    }}
-                >
-                    <a
-                        href="/h7"
-                        style={{
-                            flexShrink: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10,
-                            textDecoration: 'none',
-                        }}
-                    >
+                <div className="mx-auto flex min-h-[66px] max-w-[var(--container)] items-center gap-[20px] px-4 py-[10px]">
+                    <a href="/h7" className="flex shrink-0 items-center gap-[10px] no-underline">
                         <img
                             src={brand.logo || '/OP5.png'}
                             alt={brand.name}
-                            style={{ height: 36, width: 36, borderRadius: '50%', objectFit: 'contain', background: '#fff', padding: 2 }}
+                            className="h-[36px] w-[36px] rounded-[50%] bg-[var(--surface)] object-contain p-[2px]"
                         />
-                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
-                            <span
-                                style={{
-                                    fontSize: '14px',
-                                    fontWeight: 700,
-                                    fontFamily: 'var(--font-serif, Georgia, serif)',
-                                    color: 'var(--text)',
-                                    letterSpacing: '-0.01em',
-                                }}
-                            >
+                        <div className="flex flex-col leading-[1.1]">
+                            {/* `--font-serif` không có trong hợp đồng token —
+                                giá trị thật luôn rơi về fallback Georgia. Giữ
+                                nguyên chuỗi cũ để diện mạo không đổi. */}
+                            <span className="text-[14px] font-bold tracking-[-0.01em] text-text-primary [font-family:var(--font-serif,Georgia,serif)]">
                                 {brand.name || 'The Nam Du Hill'}
                             </span>
-                            <span
-                                style={{
-                                    fontSize: '10.5px',
-                                    fontWeight: 500,
-                                    color: 'var(--text-muted)',
-                                    marginTop: 2,
-                                }}
-                            >
+                            <span className="mt-[2px] text-[10.5px] font-medium text-text-secondary">
                                 Nam Du, Kiên Giang
                             </span>
                         </div>
                     </a>
 
-                    <nav
-                        style={{
-                            display: 'flex',
-                            gap: 4,
-                            marginLeft: 'auto',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                            minWidth: 0,
-                            overflow: 'hidden',
-                        }}
-                    >
+                    <nav className="ml-auto flex min-w-0 flex-wrap items-center gap-1 overflow-hidden">
                         {nav
                             .filter((item) => item.href !== '#top' && item.href !== '/')
                             .map((item) => (
                             <a
                                 key={item.href}
                                 href={navHref(item.href)}
-                                style={{
-                                    padding: '8px 12px',
-                                    borderRadius: 8,
-                                    fontSize: 13.5,
-                                    fontWeight: 500,
-                                    whiteSpace: 'nowrap',
-                                    flexShrink: 0,
-                                    color: 'var(--text-muted)',
-                                    textDecoration: 'none',
-                                }}
+                                className="shrink-0 rounded-[8px] px-[12px] py-2 text-[13.5px] font-medium whitespace-nowrap text-text-secondary no-underline"
                             >
                                 {pick(item.label, locale)}
                             </a>
                         ))}
                     </nav>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-                        {extra && <div style={{ display: 'flex', alignItems: 'center' }}>{extra}</div>}
+                    <div className="flex shrink-0 items-center gap-[10px]">
+                        {extra && <div className="flex items-center">{extra}</div>}
 
                         <a
                             href="/h7/rooms"
-                            style={{
-                                padding: '10px 20px',
-                                borderRadius: 'var(--radius-pill)',
-                                fontSize: 13.5,
-                                fontWeight: 600,
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                                background: 'var(--accent)',
-                                color: 'var(--text-inverse)',
-                                boxShadow: 'var(--shadow-sm)',
-                                textDecoration: 'none',
-                            }}
+                            className="shrink-0 rounded-[var(--radius-pill)] bg-accent px-[20px] py-[10px] text-[13.5px] font-semibold whitespace-nowrap text-text-inverse no-underline shadow-1"
                         >
                             {t.bookNow}
                         </a>
@@ -224,70 +153,34 @@ export function PageHero({
     image?: string
 }) {
     return (
+        // `height` là prop số do gọi bên ngoài quyết định → phải giữ inline.
         <section
-            style={{
-                position: 'relative',
-                height,
-                background: 'var(--surface-inverse)',
-                overflow: 'hidden',
-            }}
+            className="relative overflow-hidden bg-[var(--surface-inverse)]"
+            style={{ height }}
         >
             {image && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                     src={image}
                     alt=""
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                    }}
+                    className="absolute inset-0 h-full w-full object-cover"
                 />
             )}
             <div
                 aria-hidden="true"
-                style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background:
-                        'linear-gradient(180deg, rgba(15,23,41,0.66) 0%, rgba(15,23,41,0.34) 50%, rgba(15,23,41,0.8) 100%)',
-                    pointerEvents: 'none',
-                }}
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,41,0.66)_0%,rgba(15,23,41,0.34)_50%,rgba(15,23,41,0.8)_100%)]"
             />
-            <div
-                style={{
-                    position: 'relative',
-                    height: '100%',
-                    maxWidth: 'var(--container)',
-                    margin: '0 auto',
-                    padding: '130px 24px 48px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-end',
-                }}
-            >
-                <nav
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        fontSize: 13,
-                        color: 'rgba(255,255,255,0.75)',
-                        marginBottom: 14,
-                        flexWrap: 'wrap',
-                    }}
-                >
+            <div className="relative mx-auto flex h-full max-w-[var(--container)] flex-col justify-end px-4 pt-[130px] pb-[48px]">
+                <nav className="mb-[14px] flex flex-wrap items-center gap-2 text-[13px] text-[rgb(255_255_255/0.75)]">
                     {crumbs.map((crumb, index) => (
-                        <span key={index} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span key={index} className="flex items-center gap-2">
                             {index > 0 && <span aria-hidden="true">/</span>}
                             {crumb.href ? (
-                                <a href={crumb.href} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                <a href={crumb.href} className="text-inherit no-underline">
                                     {crumb.label}
                                 </a>
                             ) : (
-                                <span style={{ color: '#FFFFFF' }} aria-current="page">
+                                <span className="text-text-inverse" aria-current="page">
                                     {crumb.label}
                                 </span>
                             )}
@@ -295,28 +188,10 @@ export function PageHero({
                     ))}
                 </nav>
 
-                <h1
-                    style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 46,
-                        lineHeight: 1.1,
-                        fontWeight: 800,
-                        color: '#FFFFFF',
-                        margin: '0 0 12px',
-                        letterSpacing: '-0.03em',
-                    }}
-                >
+                <h1 className="m-0 mb-[12px] font-display text-[46px] leading-[1.1] font-extrabold tracking-[-0.03em] text-text-inverse">
                     {title}
                 </h1>
-                <p
-                    style={{
-                        fontSize: 16,
-                        lineHeight: 1.6,
-                        color: 'rgba(255,255,255,0.85)',
-                        margin: 0,
-                        maxWidth: 570,
-                    }}
-                >
+                <p className="m-0 max-w-[570px] text-[16px] leading-[1.6] text-[rgb(255_255_255/0.85)]">
                     {sub}
                 </p>
             </div>
@@ -330,29 +205,17 @@ export function PageHero({
  */
 export function LightCrumbs({ crumbs }: { crumbs: Crumb[] }) {
     return (
-        <section style={{ background: 'var(--surface-alt)', padding: '118px 24px 0' }}>
-            <div
-                style={{
-                    maxWidth: 'var(--container)',
-                    margin: '0 auto',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontSize: 13,
-                    color: 'var(--text-muted)',
-                    padding: '16px 0 18px',
-                    flexWrap: 'wrap',
-                }}
-            >
+        <section className="bg-surface-base px-4 pt-[118px]">
+            <div className="mx-auto flex max-w-[var(--container)] flex-wrap items-center gap-2 pt-[16px] pb-[18px] text-[13px] text-text-secondary">
                 {crumbs.map((crumb, index) => (
-                    <span key={index} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span key={index} className="flex items-center gap-2">
                         {index > 0 && <span aria-hidden="true">/</span>}
                         {crumb.href ? (
-                            <a href={crumb.href} style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <a href={crumb.href} className="text-inherit no-underline">
                                 {crumb.label}
                             </a>
                         ) : (
-                            <span style={{ color: 'var(--text)', fontWeight: 600 }} aria-current="page">
+                            <span className="font-semibold text-text-primary" aria-current="page">
                                 {crumb.label}
                             </span>
                         )}
@@ -370,59 +233,35 @@ export function PageFooter({ data, locale }: { data: PropertyData; locale: Local
     const { brand, nav } = data
 
     return (
-        <footer
-            style={{
-                background: 'var(--surface-alt)',
-                borderTop: '1px solid var(--border)',
-                padding: '52px 24px 26px',
-            }}
-        >
-            <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-                <div
-                    className="h7-footer-grid"
-                    style={{
-                        display: 'grid',
-                        gap: 40,
-                        paddingBottom: 34,
-                        borderBottom: '1px solid var(--border)',
-                    }}
-                >
+        <footer className="border-t border-border-default bg-surface-base px-4 pt-[52px] pb-[26px]">
+            <div className="mx-auto max-w-[var(--container)]">
+                {/* Lưới 4 cột từ 900px — khai bằng `md:` không đủ (breakpoint mặc
+                    định 768px), nên giữ media query riêng ở `<style>` cuối file. */}
+                <div className="h7-footer-grid grid gap-5 border-b border-border-default pb-[34px]">
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+                        <div className="mb-[14px] flex items-center gap-[10px]">
+                            <span className="text-[15px] font-bold text-text-primary">
                                 {brand.name} {brand.suffix}
                             </span>
                         </div>
-                        <p
-                            style={{
-                                fontSize: 13.5,
-                                lineHeight: 1.7,
-                                color: 'var(--text-muted)',
-                                margin: '0 0 14px',
-                                maxWidth: 320,
-                            }}
-                        >
+                        <p className="m-0 mb-[14px] max-w-[320px] text-[13.5px] leading-[1.7] text-text-secondary">
                             {t.footerAbout}
                         </p>
-                        <div style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                        <div className="text-[13.5px] leading-[1.7] text-text-secondary">
                             {pick(brand.address, locale)}
                         </div>
                     </div>
 
                     <div>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text)', marginBottom: 14 }}>
+                        <div className="mb-[14px] text-[12.5px] font-bold text-text-primary">
                             {t.footerNav}
                         </div>
-                        <div style={{ display: 'grid', gap: 9 }}>
+                        <div className="grid gap-[9px]">
                             {nav.map((item) => (
                                 <a
                                     key={item.href}
                                     href={navHref(item.href)}
-                                    style={{
-                                        fontSize: 13.5,
-                                        color: 'var(--text-muted)',
-                                        textDecoration: 'none',
-                                    }}
+                                    className="text-[13.5px] text-text-secondary no-underline"
                                 >
                                     {pick(item.label, locale)}
                                 </a>
@@ -431,36 +270,29 @@ export function PageFooter({ data, locale }: { data: PropertyData; locale: Local
                     </div>
 
                     <div>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text)', marginBottom: 14 }}>
+                        <div className="mb-[14px] text-[12.5px] font-bold text-text-primary">
                             {t.footerContact}
                         </div>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gap: 9,
-                                fontSize: 13.5,
-                                color: 'var(--text-muted)',
-                            }}
-                        >
-                            <a href={telHref(brand.phone)} style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <div className="grid gap-[9px] text-[13.5px] text-text-secondary">
+                            <a href={telHref(brand.phone)} className="text-inherit no-underline">
                                 {brand.phone}
                             </a>
-                            <a href={`mailto:${brand.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <a href={`mailto:${brand.email}`} className="text-inherit no-underline">
                                 {brand.email}
                             </a>
                         </div>
                     </div>
 
                     <div>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text)', marginBottom: 14 }}>
+                        <div className="mb-[14px] text-[12.5px] font-bold text-text-primary">
                             {t.footerFollow}
                         </div>
-                        <div style={{ display: 'grid', gap: 9, fontSize: 13.5 }}>
+                        <div className="grid gap-[9px] text-[13.5px]">
                             {['Facebook', 'Instagram', 'Google Maps'].map((label) => (
                                 <a
                                     key={label}
                                     href={brand.site}
-                                    style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
+                                    className="text-text-secondary no-underline"
                                 >
                                     {label}
                                 </a>
@@ -469,25 +301,17 @@ export function PageFooter({ data, locale }: { data: PropertyData; locale: Local
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        paddingTop: 20,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 16,
-                        flexWrap: 'wrap',
-                        fontSize: 12.5,
-                        color: 'var(--text-muted)',
-                    }}
-                >
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-[20px] text-[12.5px] text-text-secondary">
                     <span>© 2026 {brand.name} {brand.suffix}</span>
-                    <a href="/" style={{ color: 'var(--border-strong)', textDecoration: 'none' }}>
+                    <a href="/" className="text-[var(--border-strong)] no-underline">
                         ← Về trang tổng
                     </a>
                 </div>
             </div>
 
+            {/* GIỮ `<style>`: breakpoint 900px không có trong thang mặc định của
+                Tailwind, và đây là `grid-template-columns` không đều
+                (1.4fr + 3×1fr) — arbitrary variant sẽ dài hơn và khó đọc hơn. */}
             <style>{`
                 @media (min-width: 900px) {
                     .h7-footer-grid {

@@ -528,7 +528,15 @@ const FOOTER_LINK: CSSProperties = {
  *
  * `data-theme` là BẮT BUỘC, không phải trang trí: `tokens.css` của mỗi mẫu khai
  * biến trong `[data-theme='hN']`, nên thiếu thuộc tính này thì cả trang rơi về
- * bộ dự phòng xám của `@repo/ui` và mọi mẫu trông y hệt nhau.
+ * bộ dự phòng xám của `@repo/styling-css` và mọi mẫu trông y hệt nhau.
+ *
+ * `overflow-x: clip` chứ KHÔNG phải `hidden` — đây là chỗ dễ sai nhất vì hàm
+ * này bọc MỌI trang con. Spec CSS: khi một trục là `hidden` còn trục kia
+ * `visible`, trình duyệt âm thầm đổi trục `visible` thành `auto`. Nên `hidden`
+ * biến phần tử này thành scroll container, và mọi `position: sticky` bên trong
+ * dính vào NÓ thay vì vào viewport — thanh tóm tắt giá ở trang Rooms và
+ * Checkout trôi mất khi cuộn. `clip` chặn tràn ngang y hệt mà không tạo scroll
+ * container.
  */
 export function PageBody({
     theme,
@@ -544,7 +552,7 @@ export function PageBody({
                 fontFamily: 'var(--font-body)',
                 color: 'var(--text)',
                 background: 'var(--surface)',
-                overflowX: 'hidden',
+                overflowX: 'clip',
                 minHeight: '100vh',
             }}
         >

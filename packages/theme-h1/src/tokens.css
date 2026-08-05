@@ -142,6 +142,7 @@
     --shadow: var(--shadow-2);
     --shadow-lg: 0 20px 48px rgba(33, 50, 60, 0.14);
 
+
     /* Spec §3.1: khung nội dung 1200px. */
     --container: 1200px;
 }

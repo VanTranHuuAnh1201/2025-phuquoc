@@ -26,33 +26,20 @@ const HERO_IMAGES = ['/hero-1.jpg', '/hero-2.jpg']
  *
  * Form hiện là vỏ tĩnh; nối vào luồng đặt phòng thật ở bước sau. Không tính
  * giá tại đây (luật R8) — bấm nút là sang `/h7/rooms`.
+ *
+ * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
+ * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.
  */
 
-const FIELD: React.CSSProperties = {
-    display: 'grid',
-    gap: 3,
-    alignContent: 'center',
-    minWidth: 0,
-    padding: '8px 16px',
-}
+/** Một ô nhập của form tra cứu. Desktop bỏ nền, ngăn nhau bằng vạch dọc. */
+const FIELD =
+    'grid content-center gap-[3px] min-w-0 rounded-sm bg-[var(--surface-alt)] px-3 py-2 ' +
+    'min-[960px]:rounded-none min-[960px]:bg-transparent ' +
+    'min-[960px]:border-r min-[960px]:border-border-default'
 
-const INPUT: React.CSSProperties = {
-    width: '100%',
-    border: 'none',
-    background: 'transparent',
-    fontSize: '15px',
-    fontWeight: 700,
-    color: 'var(--text)',
-    outline: 'none',
-    padding: 0,
-    fontFamily: 'inherit',
-}
+const INPUT = 'w-full p-0 text-[15px] font-bold text-text-primary'
 
-const LABEL: React.CSSProperties = {
-    fontSize: '11.5px',
-    fontWeight: 500,
-    color: 'var(--text-muted)',
-}
+const LABEL = 'text-[11.5px] font-medium text-text-secondary'
 
 function IconCalendar() {
     return (
@@ -80,9 +67,12 @@ function Assurances({ locale }: { locale: Locale }) {
             : ['Resort pickup at the pier', '50% deposit to hold your room', 'Weather delays: free date change']
 
     return (
-        <div className="h7-assure">
+        <div className="grid gap-[10px] px-[6px] pt-3 pb-[2px] min-[960px]:grid-cols-3 min-[960px]:gap-0 min-[960px]:border-t min-[960px]:border-border-default min-[960px]:p-0">
             {items.map((label) => (
-                <span key={label} className="h7-assure-item">
+                <span
+                    key={label}
+                    className="flex items-center gap-2 text-[12.5px] font-semibold text-text-primary min-[960px]:justify-center min-[960px]:border-r min-[960px]:border-border-default min-[960px]:px-3 min-[960px]:py-[13px] min-[960px]:last:border-r-0"
+                >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <circle cx="12" cy="12" r="9" stroke="var(--brand)" strokeWidth="1.7" />
                         <path d="M8 12.4l2.6 2.6L16 9.6" stroke="var(--brand)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -132,96 +122,103 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
     }
 
     return (
-        <section id="top" className="h7-hero">
+        <section
+            id="top"
+            className="relative flex min-h-[620px] flex-col justify-end overflow-hidden bg-[var(--surface-inverse)] pt-[88px] min-[960px]:min-h-[min(100vh,780px)] min-[960px]:pt-[96px]"
+        >
             {heroImages.map((src, idx) => (
                 <div
                     key={src}
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        opacity: idx === currentSlide ? 1 : 0,
-                        transition: 'opacity 1200ms ease-in-out',
-                        backgroundImage: `url(${src})`,
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                    }}
+                    className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[1200ms] ease-in-out ${
+                        idx === currentSlide ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{ backgroundImage: `url(${src})` }}
                 />
             ))}
 
             {/* Lớp phủ giữ chữ trắng đọc được mà không làm ảnh xỉn màu. */}
-            <div
-                style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background:
-                        'linear-gradient(100deg, rgba(9,29,51,0.62) 0%, rgba(9,29,51,0.34) 42%, rgba(9,29,51,0.06) 72%)',
-                    pointerEvents: 'none',
-                }}
-            />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,var(--overlay-scrim)_0%,color-mix(in_srgb,var(--overlay-scrim)_55%,transparent)_42%,transparent_72%)]" />
 
-            <div className="h7-hero-inner">
+            <div className="relative z-10 mx-auto w-full max-w-[var(--container)] px-4 pt-[32px] pb-5 min-[960px]:px-6 min-[960px]:pt-[48px] min-[960px]:pb-[28px]">
                 {/* Badge pill — bản mobile đặt badge lên trên tiêu đề. */}
                 {hero.kicker && (
-                    <span className="h7-hero-badge">{pick(hero.kicker, locale)}</span>
+                    <span className="mb-3 inline-block rounded-full border border-[var(--overlay-line)] bg-[var(--overlay-soft)] px-4 py-[7px] text-[12.5px] font-semibold text-text-inverse [backdrop-filter:blur(10px)]">
+                        {pick(hero.kicker, locale)}
+                    </span>
                 )}
 
-                <h1 className="h7-hero-title">{pick(hero.title, locale)}</h1>
+                <h1 className="mt-0 mb-[14px] max-w-[15ch] font-display text-[clamp(2rem,6.2vw,3.5rem)] leading-[1.14] font-semibold tracking-[-0.01em] text-balance text-text-inverse [text-shadow:0_3px_24px_var(--overlay-scrim)] min-[960px]:max-w-[18ch]">
+                    {pick(hero.title, locale)}
+                </h1>
 
-                <p className="h7-hero-sub">{pick(hero.sub, locale)}</p>
+                <p className="m-0 max-w-[46ch] text-[clamp(0.95rem,2vw,1.05rem)] leading-[1.6] text-text-inverse/95 [text-shadow:0_2px_12px_var(--overlay-scrim)]">
+                    {pick(hero.sub, locale)}
+                </p>
             </div>
 
             {/* ---------- FORM TRA CỨU ---------- */}
-            <div className="h7-searchwrap">
-                <form className="h7-search" onSubmit={(e) => e.preventDefault()}>
-                    <div className="h7-search-fields" onClick={() => setIsCalendarModalOpen(true)} style={{ cursor: 'pointer' }}>
-                        <div style={FIELD} className="h7-field">
-                            <div style={LABEL}>
-                                {t.checkIn}
-                            </div>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="relative z-10 mx-auto w-full max-w-[var(--container)] px-4 pb-[28px] min-[960px]:px-6 min-[960px]:pb-[56px]">
+                <form
+                    className="grid gap-[10px] rounded-md bg-surface-raised p-[10px] shadow-[var(--shadow-lg)] min-[960px]:grid-cols-[1fr_auto] min-[960px]:items-center min-[960px]:gap-3 min-[960px]:rounded-b-none min-[960px]:py-[10px] min-[960px]:pr-[10px] min-[960px]:pl-1"
+                    onSubmit={(e) => e.preventDefault()}
+                >
+                    <div
+                        className="grid cursor-pointer grid-cols-2 gap-2 min-[960px]:grid-cols-4 min-[960px]:gap-0"
+                        onClick={() => setIsCalendarModalOpen(true)}
+                    >
+                        <div className={FIELD}>
+                            <div className={LABEL}>{t.checkIn}</div>
+                            <span className="flex items-center gap-2">
                                 <IconCalendar />
-                                <div style={INPUT}>{formatDisplayDate(cart.checkIn)}</div>
+                                <div className={INPUT}>{formatDisplayDate(cart.checkIn)}</div>
                             </span>
                         </div>
 
-                        <div style={FIELD} className="h7-field">
-                            <div style={LABEL}>
-                                {t.checkOut}
-                            </div>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className={FIELD}>
+                            <div className={LABEL}>{t.checkOut}</div>
+                            <span className="flex items-center gap-2">
                                 <IconCalendar />
-                                <div style={INPUT}>{formatDisplayDate(cart.checkOut)}</div>
+                                <div className={INPUT}>{formatDisplayDate(cart.checkOut)}</div>
                             </span>
                         </div>
 
-                        <div style={FIELD} className="h7-field">
-                            <div style={LABEL}>
-                                {adultsLabel}
-                            </div>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className={FIELD}>
+                            <div className={LABEL}>{adultsLabel}</div>
+                            <span className="flex items-center gap-2">
                                 <IconUser />
-                                <div style={INPUT}>{cart.guests.adults}</div>
+                                <div className={INPUT}>{cart.guests.adults}</div>
                             </span>
                         </div>
 
-                        <div style={FIELD} className="h7-field h7-field-last">
-                            <div style={LABEL}>
-                                {childrenLabel}
-                            </div>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {/* Ô cuối không có vạch ngăn bên phải. */}
+                        <div className={`${FIELD} min-[960px]:border-r-0`}>
+                            <div className={LABEL}>{childrenLabel}</div>
+                            <span className="flex items-center gap-2">
                                 <IconUser />
-                                <div style={INPUT}>{cart.guests.children?.length || 0}</div>
+                                <div className={INPUT}>{cart.guests.children?.length || 0}</div>
                             </span>
                         </div>
                     </div>
 
-                    <a href={themePath(SLUG, 'rooms')} className="h7-search-cta">
+                    <a
+                        href={themePath(SLUG, 'rooms')}
+                        className={[
+                            'block rounded-sm px-6 py-[15px] text-center text-[15px] font-bold whitespace-nowrap no-underline',
+                            // Navy trên vàng ≈ 9.2:1. Trắng trên vàng chỉ 1.9:1 — trượt AA.
+                            'bg-[var(--accent)] text-[var(--on-accent)]',
+                            'transition-[background,transform] duration-200 ease-out',
+                            'hover:bg-[var(--accent-dark)] active:translate-y-px',
+                            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                            'min-[960px]:px-[30px]',
+                        ].join(' ')}
+                    >
                         {ctaLabel}
                     </a>
                 </form>
 
-                <div className="h7-assure-wrap">
+                {/* Mobile: dải cam kết là một thẻ riêng luồn xuống dưới form (z-index
+                    âm để mép bo của form nằm trên). Desktop: nằm liền trong cùng thẻ. */}
+                <div className="relative z-[-1] mx-[10px] mt-[-10px] rounded-b-md bg-surface-raised px-[10px] pb-2 shadow-[var(--shadow-lg)] min-[960px]:z-auto min-[960px]:m-0 min-[960px]:p-0">
                     <Assurances locale={locale} />
                 </div>
             </div>
@@ -236,176 +233,6 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                 locale={locale}
                 onSave={handleSave}
             />
-
-            <style>{`
-                .h7-hero {
-                    position: relative;
-                    overflow: hidden;
-                    background: var(--surface-inverse);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-end;
-                    min-height: 620px;
-                    padding-top: 88px;
-                }
-                .h7-hero-inner {
-                    position: relative;
-                    z-index: 10;
-                    width: 100%;
-                    max-width: var(--container);
-                    margin: 0 auto;
-                    padding: 32px var(--space-4) 20px;
-                }
-                .h7-hero-badge {
-                    display: inline-block;
-                    padding: 7px 16px;
-                    border-radius: 999px;
-                    background: rgba(255,255,255,0.16);
-                    border: 1px solid rgba(255,255,255,0.4);
-                    backdrop-filter: blur(10px);
-                    font-size: 12.5px;
-                    font-weight: 600;
-                    color: #fff;
-                    margin-bottom: 16px;
-                }
-                .h7-hero-title {
-                    font-family: var(--font-display);
-                    font-size: clamp(2rem, 6.2vw, 3.5rem);
-                    line-height: 1.14;
-                    font-weight: 600;
-                    letter-spacing: -0.01em;
-                    color: #fff;
-                    margin: 0 0 14px;
-                    max-width: 15ch;
-                    text-wrap: balance;
-                    text-shadow: 0 3px 24px rgba(0,0,0,0.4);
-                }
-                .h7-hero-sub {
-                    font-size: clamp(0.95rem, 2vw, 1.05rem);
-                    line-height: 1.6;
-                    color: rgba(255,255,255,0.95);
-                    margin: 0;
-                    max-width: 46ch;
-                    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
-                }
-
-                /* ---- form: khung chung ---- */
-                .h7-searchwrap {
-                    position: relative;
-                    z-index: 10;
-                    width: 100%;
-                    max-width: var(--container);
-                    margin: 0 auto;
-                    padding: 0 var(--space-4) 28px;
-                }
-                .h7-search {
-                    background: var(--surface);
-                    border-radius: var(--radius);
-                    box-shadow: var(--shadow-lg);
-                    padding: 10px;
-                    display: grid;
-                    gap: 10px;
-                }
-                .h7-search-fields { display: grid; gap: 8px; }
-                .h7-field { border-radius: var(--radius-sm); background: var(--surface-alt); }
-                .h7-search-cta {
-                    display: block;
-                    padding: 15px 24px;
-                    border-radius: var(--radius-sm);
-                    background: var(--accent);
-                    /* Navy trên vàng ≈ 9.2:1. Trắng trên vàng chỉ 1.9:1 — trượt AA. */
-                    color: var(--on-accent);
-                    font-size: 15px;
-                    font-weight: 700;
-                    text-align: center;
-                    text-decoration: none;
-                    transition: background 200ms ease, transform 150ms ease;
-                }
-                .h7-search-cta:hover  { background: var(--accent-dark); }
-                .h7-search-cta:active { transform: translateY(1px); }
-                .h7-search-cta:focus-visible {
-                    outline: 2px solid var(--brand);
-                    outline-offset: 2px;
-                }
-
-                /* ---- dải cam kết ---- */
-                .h7-assure {
-                    display: grid;
-                    gap: 10px;
-                    padding: 14px 6px 2px;
-                }
-                .h7-assure-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 12.5px;
-                    font-weight: 600;
-                    color: var(--text);
-                }
-                .h7-assure-wrap {
-                    background: var(--surface);
-                    border-radius: 0 0 var(--radius) var(--radius);
-                    margin: -10px 10px 0;
-                    padding: 0 10px 8px;
-                    box-shadow: var(--shadow-lg);
-                    position: relative;
-                    z-index: -1;
-                }
-
-                /* ---- MOBILE: hai ô ngày cạnh nhau, hai ô khách cạnh nhau ---- */
-                @media (max-width: 959px) {
-                    .h7-search-fields {
-                        grid-template-columns: 1fr 1fr;
-                    }
-                }
-
-                /* ---- DESKTOP: một hàng ngang, cam kết nằm trong cùng thẻ ---- */
-                @media (min-width: 960px) {
-                    .h7-hero { min-height: min(100vh, 780px); padding-top: 96px; }
-                    .h7-hero-inner { padding: 48px var(--space-6) 28px; }
-                    .h7-hero-title { max-width: 18ch; }
-
-                    .h7-searchwrap { padding: 0 var(--space-6) 56px; }
-                    .h7-search {
-                        padding: 10px 10px 10px 4px;
-                        grid-template-columns: 1fr auto;
-                        align-items: center;
-                        gap: 12px;
-                        border-radius: var(--radius) var(--radius) 0 0;
-                    }
-                    .h7-search-fields {
-                        grid-template-columns: repeat(4, minmax(0, 1fr));
-                        gap: 0;
-                    }
-                    .h7-field {
-                        background: transparent;
-                        border-right: 1px solid var(--border);
-                        border-radius: 0;
-                    }
-                    .h7-field-last { border-right: none; }
-                    .h7-search-cta { padding: 15px 30px; white-space: nowrap; }
-
-                    .h7-assure-wrap {
-                        margin: 0;
-                        padding: 0;
-                        border-radius: 0 0 var(--radius) var(--radius);
-                        box-shadow: var(--shadow-lg);
-                        z-index: auto;
-                    }
-                    .h7-assure {
-                        grid-template-columns: repeat(3, 1fr);
-                        gap: 0;
-                        padding: 0;
-                        border-top: 1px solid var(--border);
-                    }
-                    .h7-assure-item {
-                        justify-content: center;
-                        padding: 13px 12px;
-                        border-right: 1px solid var(--border);
-                    }
-                    .h7-assure-item:last-child { border-right: none; }
-                }
-            `}</style>
         </section>
     )
 }

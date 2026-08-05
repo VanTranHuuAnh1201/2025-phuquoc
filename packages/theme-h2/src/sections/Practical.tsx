@@ -11,154 +11,59 @@ import { ui } from '../strings'
  * luật R7, mà là phần bổ trợ cho `#booking` ngay bên dưới.
  */
 
+/** Tiêu đề của hai cột — cùng một dáng chữ nên gom lại một chỗ. */
+const COL_HEADING =
+    'mt-0 mb-2 font-display text-xl leading-[1.2] font-extrabold tracking-[-0.03em] text-text-primary'
+
+/** Câu dẫn dưới mỗi tiêu đề cột. */
+const COL_SUB = 'mt-0 mb-[var(--space-6)] text-base text-text-secondary'
+
 export function Practical({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui[locale]
 
     return (
-        <section
-            style={{
-                background: 'var(--surface-alt)',
-                padding: 'var(--space-16) var(--space-6) var(--space-20)',
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: 'var(--container)',
-                    margin: '0 auto',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
-                    gap: 'var(--space-12)',
-                    alignItems: 'start',
-                }}
-            >
+        <section className="bg-surface-base px-6 pt-[var(--space-16)] pb-[var(--space-20)]">
+            <div className="mx-auto grid max-w-[var(--container)] grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-[var(--space-12)]">
                 <div>
-                    <h2
-                        style={{
-                            fontFamily: 'var(--font-display)',
-                            fontSize: 'var(--text-xl)',
-                            lineHeight: 1.2,
-                            fontWeight: 800,
-                            letterSpacing: '-0.03em',
-                            color: 'var(--text)',
-                            margin: '0 0 var(--space-2)',
-                        }}
-                    >
-                        {t.transportTitle}
-                    </h2>
-                    <p
-                        style={{
-                            fontSize: 'var(--text-base)',
-                            color: 'var(--text-muted)',
-                            margin: '0 0 var(--space-6)',
-                        }}
-                    >
-                        {t.transportSub}
-                    </p>
+                    <h2 className={COL_HEADING}>{t.transportTitle}</h2>
+                    <p className={COL_SUB}>{t.transportSub}</p>
 
-                    <div
-                        style={{
-                            background: 'var(--surface)',
-                            border: '1px solid var(--border)',
-                            borderRadius: 'var(--radius-lg)',
-                            overflow: 'hidden',
-                        }}
-                    >
+                    <div className="overflow-hidden rounded-lg border border-border-default bg-surface-raised">
                         {data.transport.map((leg, index) => (
                             <div
                                 key={leg.leg.en}
-                                style={{
-                                    padding: '18px var(--space-5)',
-                                    borderBottom:
-                                        index === data.transport.length - 1
-                                            ? 'none'
-                                            : '1px solid var(--border)',
-                                    display: 'grid',
-                                    gridTemplateColumns: 'minmax(0,1fr) auto',
-                                    gap: 'var(--space-4)',
-                                    alignItems: 'center',
-                                }}
+                                className={[
+                                    'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4',
+                                    'px-[var(--space-5)] py-[18px]',
+                                    // Chặng cuối không kẻ đáy — viền của khối bao
+                                    // ngoài đã đóng lại rồi.
+                                    index === data.transport.length - 1
+                                        ? ''
+                                        : 'border-b border-border-default',
+                                ].join(' ')}
                             >
                                 <div>
-                                    <div
-                                        style={{
-                                            fontSize: 'var(--text-base)',
-                                            fontWeight: 700,
-                                            color: 'var(--text)',
-                                            marginBottom: 4,
-                                        }}
-                                    >
+                                    <div className="mb-1 text-base font-bold text-text-primary">
                                         {pick(leg.leg, locale)}
                                     </div>
-                                    <div
-                                        style={{
-                                            fontSize: 'var(--text-sm)',
-                                            color: 'var(--text-muted)',
-                                            lineHeight: 1.55,
-                                        }}
-                                    >
+                                    <div className="text-sm leading-[1.55] text-text-secondary">
                                         {pick(leg.mode, locale)}
                                     </div>
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: 'var(--text-sm)',
-                                        fontWeight: 700,
-                                        color: 'var(--brand)',
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
+                                <div className="text-sm font-bold whitespace-nowrap text-brand">
                                     {pick(leg.price, locale)}
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    <div
-                        style={{
-                            marginTop: 'var(--space-5)',
-                            padding: 'var(--space-5)',
-                            borderRadius: 'var(--radius-lg)',
-                            background: 'var(--surface-tint)',
-                            border: '1px solid var(--border)',
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: 'var(--text-sm)',
-                                fontWeight: 700,
-                                color: 'var(--brand)',
-                                marginBottom: 'var(--space-2)',
-                            }}
-                        >
-                            {t.notesTitle}
-                        </div>
-                        <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                    <div className="mt-[var(--space-5)] rounded-lg border border-border-default bg-[var(--surface-tint)] p-[var(--space-5)]">
+                        <div className="mb-2 text-sm font-bold text-brand">{t.notesTitle}</div>
+                        <div className="grid gap-2">
                             {data.notes.map((note) => (
-                                <div
-                                    key={note.en}
-                                    style={{
-                                        display: 'flex',
-                                        gap: 'var(--space-2)',
-                                        alignItems: 'flex-start',
-                                    }}
-                                >
-                                    <span
-                                        style={{
-                                            width: 5,
-                                            height: 5,
-                                            borderRadius: 'var(--radius-pill)',
-                                            background: 'var(--accent)',
-                                            marginTop: 7,
-                                            flexShrink: 0,
-                                        }}
-                                    />
-                                    <span
-                                        style={{
-                                            fontSize: 'var(--text-sm)',
-                                            lineHeight: 1.6,
-                                            color: 'var(--brand-dark)',
-                                        }}
-                                    >
+                                <div key={note.en} className="flex items-start gap-2">
+                                    <span className="mt-[7px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
+                                    <span className="text-sm leading-[1.6] text-[var(--brand-dark)]">
                                         {pick(note, locale)}
                                     </span>
                                 </div>
@@ -168,28 +73,8 @@ export function Practical({ data, locale }: { data: PropertyData; locale: Locale
                 </div>
 
                 <div>
-                    <h2
-                        style={{
-                            fontFamily: 'var(--font-display)',
-                            fontSize: 'var(--text-xl)',
-                            lineHeight: 1.2,
-                            fontWeight: 800,
-                            letterSpacing: '-0.03em',
-                            color: 'var(--text)',
-                            margin: '0 0 var(--space-2)',
-                        }}
-                    >
-                        {t.faqTitle}
-                    </h2>
-                    <p
-                        style={{
-                            fontSize: 'var(--text-base)',
-                            color: 'var(--text-muted)',
-                            margin: '0 0 var(--space-6)',
-                        }}
-                    >
-                        {t.faqSub}
-                    </p>
+                    <h2 className={COL_HEADING}>{t.faqTitle}</h2>
+                    <p className={COL_SUB}>{t.faqSub}</p>
 
                     <Accordion
                         items={data.faq.map((item) => ({

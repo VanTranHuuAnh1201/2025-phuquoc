@@ -21,6 +21,11 @@ import { LightCrumbs, PageFooter, PageHeader } from './PageShell'
  *
  * Đây là màn mà nút "Đặt phòng" trên thẻ phòng phải dẫn tới — khách xem đúng
  * phòng vừa bấm rồi chọn ngày ngay tại đây, không phải chọn lại ở màn khác.
+ *
+ * STYLE: Tailwind v4 qua cầu nối token `@repo/styling-tailwind`. Các hằng
+ * `*Class` ở cuối file là bộ class dùng lại nhiều chỗ — thay cho các object
+ * `React.CSSProperties` trước đây. Biến ngoài hợp đồng D1 viết arbitrary trỏ
+ * vào biến, không bao giờ ghi mã hex (luật D0).
  */
 
 export function RoomDetailPage({
@@ -73,9 +78,12 @@ export function RoomDetailPage({
     const images = room.images ?? []
 
     return (
+        // `overflow-x-clip` chứ KHÔNG phải `hidden`: `hidden` trên một trục biến
+        // trục kia thành scroll container, làm `position: sticky` của sidebar
+        // đặt phòng dính vào div này thay vì vào viewport. Xem `globals.css`.
         <div
             data-theme="h7"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--text)', overflowX: 'hidden' }}
+            className="overflow-x-clip font-primary text-text-primary"
         >
             <PageHeader data={data} locale={locale} />
 
@@ -88,102 +96,45 @@ export function RoomDetailPage({
             />
 
             {/* ---- dải ảnh ---- */}
-            <section style={{ background: 'var(--surface-alt)', padding: '0 24px 40px' }}>
-                <div
-                    className="h7-detail-gallery"
-                    style={{ maxWidth: 'var(--container)', margin: '0 auto', display: 'grid', gap: 12 }}
-                >
+            <section className="bg-surface-base px-4 pb-5">
+                <div className="h7-detail-gallery mx-auto grid max-w-[var(--container)] gap-[12px]">
                     <GalleryTile src={images[0]} alt={pick(room.name, locale)} span2 />
                     <GalleryTile src={images[1]} alt={pick(room.name, locale)} />
                     <GalleryTile src={images[2]} alt={pick(room.name, locale)} />
                 </div>
             </section>
 
-            <section style={{ background: 'var(--surface)', padding: '44px 24px 88px' }}>
-                <div
-                    className="h7-detail-layout"
-                    style={{
-                        maxWidth: 'var(--container)',
-                        margin: '0 auto',
-                        display: 'grid',
-                        gap: 40,
-                        alignItems: 'start',
-                    }}
-                >
+            <section className="bg-surface-raised px-4 pt-[44px] pb-[88px]">
+                <div className="h7-detail-layout mx-auto grid max-w-[var(--container)] items-start gap-5">
                     {/* ============================ cột trái ============================ */}
                     <div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+                        <div className="mb-[14px] flex flex-wrap gap-[6px]">
                             {room.tags.map((tag, i) => (
-                                <span key={i} style={tagStyle}>
+                                <span key={i} className={tagClass}>
                                     {pick(tag, locale)}
                                 </span>
                             ))}
                         </div>
 
-                        <h1
-                            style={{
-                                fontFamily: 'var(--font-display)',
-                                fontSize: 38,
-                                lineHeight: 1.14,
-                                fontWeight: 800,
-                                color: 'var(--text)',
-                                margin: '0 0 12px',
-                                letterSpacing: '-0.03em',
-                            }}
-                        >
+                        <h1 className="m-0 mb-[12px] font-display text-[38px] leading-[1.14] font-extrabold tracking-[-0.03em] text-text-primary">
                             {pick(room.name, locale)}
                         </h1>
 
-                        <p
-                            style={{
-                                fontSize: 16,
-                                lineHeight: 1.7,
-                                color: 'var(--text-muted)',
-                                margin: '0 0 24px',
-                                maxWidth: 640,
-                            }}
-                        >
+                        <p className="m-0 mb-4 max-w-[640px] text-[16px] leading-[1.7] text-text-secondary">
                             {pick(room.desc, locale)}
                         </p>
 
                         {/* bảng thông số 4 ô, ngăn cách bằng gap 1px trên nền viền */}
-                        <div
-                            className="h7-spec-grid"
-                            style={{
-                                display: 'grid',
-                                gap: 1,
-                                background: 'var(--border)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius-lg)',
-                                overflow: 'hidden',
-                                marginBottom: 34,
-                            }}
-                        >
+                        <div className="h7-spec-grid mb-[34px] grid gap-px overflow-hidden rounded-lg border border-border-default bg-border-default">
                             {specs.map((spec) => (
                                 <div
                                     key={spec.label}
-                                    style={{ background: 'var(--surface)', padding: '18px 20px' }}
+                                    className="bg-surface-raised px-[20px] py-[18px]"
                                 >
-                                    <div
-                                        style={{
-                                            fontSize: 11.5,
-                                            fontWeight: 700,
-                                            letterSpacing: '0.08em',
-                                            textTransform: 'uppercase',
-                                            color: 'var(--brand)',
-                                            marginBottom: 6,
-                                        }}
-                                    >
+                                    <div className="mb-[6px] text-[11.5px] font-bold tracking-[0.08em] uppercase text-brand">
                                         {spec.label}
                                     </div>
-                                    <div
-                                        style={{
-                                            fontSize: 14.5,
-                                            fontWeight: 600,
-                                            color: 'var(--text)',
-                                            lineHeight: 1.45,
-                                        }}
-                                    >
+                                    <div className="text-[14.5px] leading-[1.45] font-semibold text-text-primary">
                                         {spec.value}
                                     </div>
                                 </div>
@@ -201,26 +152,16 @@ export function RoomDetailPage({
                         {extra && extra.amenities.length > 0 && (
                             <>
                                 <SectionTitle>{t.amenitiesTitle}</SectionTitle>
-                                <div
-                                    className="h7-amenity-grid"
-                                    style={{ display: 'grid', gap: 10, marginBottom: 36 }}
-                                >
+                                <div className="h7-amenity-grid mb-[36px] grid gap-[10px]">
                                     {extra.amenities.map((amenity, i) => (
                                         <div
                                             key={i}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'flex-start',
-                                                gap: 11,
-                                                padding: '12px 16px',
-                                                borderRadius: 12,
-                                                background: 'var(--surface-alt)',
-                                            }}
+                                            className="flex items-start gap-[11px] rounded-md bg-surface-base px-3 py-[12px]"
                                         >
-                                            <span aria-hidden="true" style={checkStyle}>
+                                            <span aria-hidden="true" className={checkClass}>
                                                 ✓
                                             </span>
-                                            <span style={{ fontSize: 14, lineHeight: 1.5, color: 'var(--text)' }}>
+                                            <span className="text-[14px] leading-[1.5] text-text-primary">
                                                 {pick(amenity, locale)}
                                             </span>
                                         </div>
@@ -229,33 +170,24 @@ export function RoomDetailPage({
                             </>
                         )}
 
-                        <div
-                            className="h7-two-col"
-                            style={{ display: 'grid', gap: 20, marginBottom: 36 }}
-                        >
-                            <div style={outlineCardStyle}>
-                                <h3 style={subTitleStyle}>{t.viewTitle}</h3>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11 }}>
-                                    <span aria-hidden="true" style={{ ...dotStyle, marginTop: 8 }} />
-                                    <span style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-muted)' }}>
+                        <div className="h7-two-col mb-[36px] grid gap-[20px]">
+                            <div className={outlineCardClass}>
+                                <h3 className={subTitleClass}>{t.viewTitle}</h3>
+                                <div className="flex items-start gap-[11px]">
+                                    <span aria-hidden="true" className={`${dotClass} mt-2`} />
+                                    <span className="text-[14px] leading-[1.6] text-text-secondary">
                                         {extra ? pick(extra.view, locale) : t.viewDefault}
                                     </span>
                                 </div>
                             </div>
 
-                            <div style={outlineCardStyle}>
-                                <h3 style={subTitleStyle}>{t.conditionsTitle}</h3>
-                                <div style={{ display: 'grid', gap: 8 }}>
+                            <div className={outlineCardClass}>
+                                <h3 className={subTitleClass}>{t.conditionsTitle}</h3>
+                                <div className="grid gap-2">
                                     {(extra?.conditions ?? []).map((condition, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 11 }}>
-                                            <span aria-hidden="true" style={{ ...dotStyle, marginTop: 8 }} />
-                                            <span
-                                                style={{
-                                                    fontSize: 14,
-                                                    lineHeight: 1.6,
-                                                    color: 'var(--text-muted)',
-                                                }}
-                                            >
+                                        <div key={i} className="flex items-start gap-[11px]">
+                                            <span aria-hidden="true" className={`${dotClass} mt-2`} />
+                                            <span className="text-[14px] leading-[1.6] text-text-secondary">
                                                 {pick(condition, locale)}
                                             </span>
                                         </div>
@@ -265,52 +197,29 @@ export function RoomDetailPage({
                         </div>
 
                         <SectionTitle>{t.otherRooms}</SectionTitle>
-                        <div className="h7-other-grid" style={{ display: 'grid', gap: 18 }}>
+                        <div className="h7-other-grid grid gap-[18px]">
                             {others.map((other) => (
                                 <a
                                     key={other.id}
                                     href={`/h7/rooms/${other.id}`}
-                                    className="h7-other-card"
-                                    style={{
-                                        display: 'block',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: 'var(--radius-lg)',
-                                        overflow: 'hidden',
-                                        background: 'var(--surface)',
-                                        color: 'inherit',
-                                        textDecoration: 'none',
-                                    }}
+                                    className="h7-other-card block overflow-hidden rounded-lg border border-border-default bg-surface-raised text-inherit no-underline"
                                 >
-                                    <div
-                                        style={{
-                                            position: 'relative',
-                                            height: 140,
-                                            background: 'var(--surface-alt)',
-                                        }}
-                                    >
+                                    <div className="relative h-[140px] bg-surface-base">
                                         {other.images?.[0] && (
                                             // eslint-disable-next-line @next/next/no-img-element
                                             <img
                                                 src={other.images[0]}
                                                 alt={pick(other.name, locale)}
                                                 loading="lazy"
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                className="h-full w-full object-cover"
                                             />
                                         )}
                                     </div>
-                                    <div style={{ padding: '14px 16px 16px' }}>
-                                        <div
-                                            style={{
-                                                fontSize: 14.5,
-                                                fontWeight: 700,
-                                                color: 'var(--text)',
-                                                marginBottom: 6,
-                                                lineHeight: 1.4,
-                                            }}
-                                        >
+                                    <div className="px-3 pt-[14px] pb-3">
+                                        <div className="mb-[6px] text-[14.5px] leading-[1.4] font-bold text-text-primary">
                                             {pick(other.name, locale)}
                                         </div>
-                                        <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                                        <div className="text-[13px] text-text-secondary">
                                             {other.area} · {formatPrice(other.price, locale)}
                                         </div>
                                     </div>
@@ -322,119 +231,70 @@ export function RoomDetailPage({
                     {/* ========================= sidebar đặt phòng ========================= */}
                     <aside
                         id="book"
-                        className="h7-detail-aside"
-                        style={{ display: 'grid', gap: 16, alignContent: 'start' }}
+                        className="h7-detail-aside grid content-start gap-3"
                     >
-                        <div
-                            style={{
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius-lg)',
-                                boxShadow: 'var(--shadow)',
-                                padding: 24,
-                                background: 'var(--surface)',
-                            }}
-                        >
-                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 4 }}>
-                                <span
-                                    style={{
-                                        fontSize: 28,
-                                        fontWeight: 800,
-                                        color: 'var(--text)',
-                                        letterSpacing: '-0.03em',
-                                    }}
-                                >
+                        <div className="rounded-lg border border-border-default bg-surface-raised p-4 shadow-2">
+                            <div className="mb-1 flex items-baseline gap-2">
+                                <span className="text-[28px] font-extrabold tracking-[-0.03em] text-text-primary">
                                     {formatPrice(room.price, locale)}
                                 </span>
-                                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                                <span className="text-[13px] text-text-secondary">
                                     / {t.perNight}
                                 </span>
                             </div>
-                            <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 20 }}>
+                            <div className="mb-[20px] text-[12.5px] text-text-secondary">
                                 {room.guests} {t.guestsWord}
                                 {maxGuests > room.guests ? ` · tối đa ${maxGuests}` : ''}
                             </div>
 
-                            <div style={{ display: 'grid', gap: 12, marginBottom: 18 }}>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                            <div className="mb-[18px] grid gap-[12px]">
+                                <div className="grid grid-cols-2 gap-[10px]">
                                     <DateField id="rd-in" label={t.checkIn} />
                                     <DateField id="rd-out" label={t.checkOut} />
                                 </div>
 
-                                <div style={{ display: 'grid', gap: 6 }}>
-                                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
+                                <div className="grid gap-[6px]">
+                                    <span className="text-[12px] font-semibold text-text-secondary">
                                         {t.guests}
                                     </span>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            padding: '8px 12px',
-                                            border: '1px solid var(--border)',
-                                            borderRadius: 8,
-                                            background: 'var(--surface-alt)',
-                                        }}
-                                    >
+                                    <div className="flex items-center justify-between rounded-[8px] border border-border-default bg-surface-base px-[12px] py-2">
                                         <button
                                             type="button"
                                             onClick={() => setGuests((g) => Math.max(1, g - 1))}
                                             aria-label="Giảm số khách"
-                                            style={stepperStyle}
+                                            className={stepperClass}
                                         >
                                             −
                                         </button>
-                                        <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text)' }}>
+                                        <span className="text-[14.5px] font-bold text-text-primary">
                                             {guests} {t.guestsWord}
                                         </span>
                                         <button
                                             type="button"
                                             onClick={() => setGuests((g) => Math.min(maxGuests, g + 1))}
                                             aria-label="Tăng số khách"
-                                            style={stepperStyle}
+                                            className={stepperClass}
                                         >
                                             +
                                         </button>
                                     </div>
                                     {extraBeds > 0 && (
-                                        <span style={{ fontSize: 12, color: 'var(--brand)' }}>
+                                        <span className="text-[12px] text-brand">
                                             {t.extraBedNote}
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            <div
-                                style={{
-                                    paddingTop: 16,
-                                    borderTop: '1px solid var(--border)',
-                                    display: 'grid',
-                                    gap: 8,
-                                    marginBottom: 18,
-                                }}
-                            >
+                            <div className="mb-[18px] grid gap-2 border-t border-border-default pt-[16px]">
                                 <SumRow label={t.roomPrice} value={formatPrice(room.price, locale)} />
                                 <SumRow label={t.extraBedLabel} value={formatPrice(extraBedTotal, locale)} />
                                 <SumRow label={t.addonsTotal} value={formatPrice(addonsSubtotal, locale)} />
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        paddingTop: 12,
-                                        borderTop: '1px solid var(--border)',
-                                    }}
-                                >
-                                    <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
+                                <div className="flex items-center justify-between border-t border-border-default pt-[12px]">
+                                    <span className="text-[14px] font-bold text-text-primary">
                                         {t.total}
                                     </span>
-                                    <span
-                                        style={{
-                                            fontSize: 22,
-                                            fontWeight: 800,
-                                            color: 'var(--brand)',
-                                            letterSpacing: '-0.02em',
-                                        }}
-                                    >
+                                    <span className="text-[22px] font-extrabold tracking-[-0.02em] text-brand">
                                         {formatPrice(total, locale)}
                                     </span>
                                 </div>
@@ -442,61 +302,25 @@ export function RoomDetailPage({
 
                             <a
                                 href={telHref(data.brand.phone)}
-                                style={{
-                                    display: 'block',
-                                    textAlign: 'center',
-                                    padding: 14,
-                                    borderRadius: 'var(--radius-pill)',
-                                    background: 'var(--accent)',
-                                    color: 'var(--text-inverse)',
-                                    fontSize: 14.5,
-                                    fontWeight: 700,
-                                    textDecoration: 'none',
-                                }}
+                                className="block rounded-[var(--radius-pill)] bg-accent p-[14px] text-center text-[14.5px] font-bold text-text-inverse no-underline"
                             >
                                 {pageUi[locale].confirmBooking}
                             </a>
                             <a
                                 href="/h7/rooms"
-                                style={{
-                                    display: 'block',
-                                    textAlign: 'center',
-                                    marginTop: 10,
-                                    padding: 12,
-                                    borderRadius: 'var(--radius-pill)',
-                                    border: '1px solid var(--border-strong)',
-                                    color: 'var(--text)',
-                                    fontSize: 13.5,
-                                    fontWeight: 600,
-                                    textDecoration: 'none',
-                                }}
+                                className="mt-[10px] block rounded-[var(--radius-pill)] border border-[var(--border-strong)] p-[12px] text-center text-[13.5px] font-semibold text-text-primary no-underline"
                             >
                                 {t.backToRooms}
                             </a>
                         </div>
 
-                        <div
-                            style={{
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius-lg)',
-                                padding: '22px 24px',
-                                background: 'var(--surface)',
-                            }}
-                        >
-                            <div style={kickerStyle}>{t.addonsTitle}</div>
-                            <div style={{ display: 'grid', gap: 10 }}>
+                        <div className="rounded-lg border border-border-default bg-surface-raised px-4 py-[22px]">
+                            <div className={kickerClass}>{t.addonsTitle}</div>
+                            <div className="grid gap-[10px]">
                                 {data.addons.map((addon) => (
                                     <label
                                         key={addon.id}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'flex-start',
-                                            gap: 11,
-                                            cursor: 'pointer',
-                                            padding: '11px 12px',
-                                            borderRadius: 12,
-                                            background: 'var(--surface-alt)',
-                                        }}
+                                        className="flex cursor-pointer items-start gap-[11px] rounded-md bg-surface-base px-[12px] py-[11px]"
                                     >
                                         <input
                                             type="checkbox"
@@ -507,25 +331,13 @@ export function RoomDetailPage({
                                                     [addon.id]: !prev[addon.id],
                                                 }))
                                             }
-                                            style={{
-                                                margin: '3px 0 0',
-                                                width: 16,
-                                                height: 16,
-                                                accentColor: 'var(--accent)',
-                                                flexShrink: 0,
-                                            }}
+                                            className="mt-[3px] h-4 w-4 shrink-0 accent-[var(--accent)]"
                                         />
-                                        <span style={{ display: 'grid', gap: 2, flex: 1 }}>
-                                            <span
-                                                style={{
-                                                    fontSize: 13.5,
-                                                    fontWeight: 600,
-                                                    color: 'var(--text)',
-                                                }}
-                                            >
+                                        <span className="grid flex-1 gap-[2px]">
+                                            <span className="text-[13.5px] font-semibold text-text-primary">
                                                 {pick(addon.name, locale)}
                                             </span>
-                                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                            <span className="text-[12px] text-text-secondary">
                                                 {addon.price
                                                     ? `${formatPrice(addon.price, locale)} / ${pick(addon.unit, locale)}`
                                                     : pick(addon.unit, locale)}
@@ -541,6 +353,10 @@ export function RoomDetailPage({
 
             <PageFooter data={data} locale={locale} />
 
+            {/* GIỮ `<style>`: dải ảnh là lưới hai hàng 200px cố định với ô đầu
+                span 2 hàng, và các breakpoint 720/980/640px không có trong thang
+                mặc định của Tailwind. `:not(:first-child)` để ẩn hai ô phụ trên
+                mobile cũng không có utility tương đương. */}
             <style>{`
                 .h7-detail-gallery {
                     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -577,20 +393,17 @@ export function RoomDetailPage({
 function GalleryTile({ src, alt, span2 }: { src?: string; alt: string; span2?: boolean }) {
     return (
         <div
-            style={{
-                position: 'relative',
-                gridRow: span2 ? 'span 2' : undefined,
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden',
-                background: 'var(--surface-alt)',
-            }}
+            className={[
+                'relative overflow-hidden rounded-lg bg-surface-base',
+                span2 ? 'row-span-2' : '',
+            ].join(' ')}
         >
             {src && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                     src={src}
                     alt={alt}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    className="h-full w-full object-cover"
                 />
             )}
         </div>
@@ -599,16 +412,7 @@ function GalleryTile({ src, alt, span2 }: { src?: string; alt: string; span2?: b
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
     return (
-        <h2
-            style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 22,
-                fontWeight: 800,
-                color: 'var(--text)',
-                margin: '0 0 16px',
-                letterSpacing: '-0.02em',
-            }}
-        >
+        <h2 className="m-0 mb-[16px] font-display text-[22px] font-extrabold tracking-[-0.02em] text-text-primary">
             {children}
         </h2>
     )
@@ -617,12 +421,10 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 function Paragraph({ children, last }: { children: React.ReactNode; last?: boolean }) {
     return (
         <p
-            style={{
-                fontSize: 15.5,
-                lineHeight: 1.85,
-                color: 'var(--text-muted)',
-                margin: last ? '0 0 36px' : '0 0 14px',
-            }}
+            className={[
+                'm-0 text-[15.5px] leading-[1.85] text-text-secondary',
+                last ? 'mb-[36px]' : 'mb-[14px]',
+            ].join(' ')}
         >
             {children}
         </p>
@@ -631,24 +433,14 @@ function Paragraph({ children, last }: { children: React.ReactNode; last?: boole
 
 function DateField({ id, label }: { id: string; label: string }) {
     return (
-        <div style={{ display: 'grid', gap: 6 }}>
-            <label htmlFor={id} style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
+        <div className="grid gap-[6px]">
+            <label htmlFor={id} className="text-[12px] font-semibold text-text-secondary">
                 {label}
             </label>
             <input
                 id={id}
                 type="date"
-                style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    border: '1px solid var(--border)',
-                    borderRadius: 8,
-                    fontSize: 13.5,
-                    fontWeight: 500,
-                    fontFamily: 'var(--font-body)',
-                    background: 'var(--surface-alt)',
-                    color: 'var(--text)',
-                }}
+                className="w-full rounded-[8px] border border-border-default bg-surface-base px-[12px] py-[10px] font-primary text-[13.5px] font-medium text-text-primary"
             />
         </div>
     )
@@ -656,88 +448,31 @@ function DateField({ id, label }: { id: string; label: string }) {
 
 function SumRow({ label, value }: { label: string; value: string }) {
     return (
-        <div
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: 13.5,
-                color: 'var(--text-muted)',
-            }}
-        >
+        <div className="flex items-center justify-between text-[13.5px] text-text-secondary">
             <span>{label}</span>
-            <span style={{ fontWeight: 700, color: 'var(--text)' }}>{value}</span>
+            <span className="font-bold text-text-primary">{value}</span>
         </div>
     )
 }
 
 // ==================================================================== style
 
-const tagStyle: React.CSSProperties = {
-    padding: '5px 12px',
-    borderRadius: 'var(--radius-pill)',
-    background: 'var(--surface-tint)',
-    color: 'var(--brand)',
-    fontSize: 12,
-    fontWeight: 600,
-}
+const tagClass =
+    'rounded-[var(--radius-pill)] bg-[var(--surface-tint)] px-[12px] py-[5px] text-[12px] font-semibold text-brand'
 
-const dotStyle: React.CSSProperties = {
-    width: 5,
-    height: 5,
-    borderRadius: 'var(--radius-pill)',
-    background: 'var(--accent)',
-    flexShrink: 0,
-}
+const dotClass = 'h-[5px] w-[5px] shrink-0 rounded-[var(--radius-pill)] bg-accent'
 
-const checkStyle: React.CSSProperties = {
-    width: 18,
-    height: 18,
-    borderRadius: 'var(--radius-pill)',
-    background: 'var(--surface-tint)',
-    color: 'var(--brand)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 11,
-    fontWeight: 800,
-    flexShrink: 0,
-    marginTop: 1,
-}
+const checkClass =
+    'mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[var(--radius-pill)] bg-[var(--surface-tint)] text-[11px] font-extrabold text-brand'
 
-const outlineCardStyle: React.CSSProperties = {
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-lg)',
-    padding: '22px 24px',
-}
+const outlineCardClass =
+    'rounded-lg border border-border-default px-4 py-[22px]'
 
-const subTitleStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-display)',
-    fontSize: 16,
-    fontWeight: 800,
-    color: 'var(--text)',
-    margin: '0 0 12px',
-    letterSpacing: '-0.015em',
-}
+const subTitleClass =
+    'm-0 mb-[12px] font-display text-[16px] font-extrabold tracking-[-0.015em] text-text-primary'
 
-const kickerStyle: React.CSSProperties = {
-    fontSize: 12,
-    fontWeight: 700,
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    color: 'var(--brand)',
-    marginBottom: 14,
-}
+const kickerClass =
+    'mb-[14px] text-[12px] font-bold tracking-[0.08em] uppercase text-brand'
 
-const stepperStyle: React.CSSProperties = {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
-    border: 'none',
-    background: 'var(--surface)',
-    cursor: 'pointer',
-    fontSize: 16,
-    fontWeight: 700,
-    color: 'var(--brand)',
-    fontFamily: 'var(--font-body)',
-}
+const stepperClass =
+    'h-[30px] w-[30px] cursor-pointer rounded-[8px] border-none bg-surface-raised font-primary text-[16px] font-bold text-brand'

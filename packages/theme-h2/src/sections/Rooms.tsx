@@ -22,11 +22,15 @@ const SLUG = meta.slug
  * Desktop — lưới 4 thẻ đều nhau.
  * Mobile  — băng cuộn ngang, thẻ rộng 78vw để lộ mép thẻ kế tiếp, báo cho
  *           người dùng biết còn cuộn được. Đây là điểm khác biệt lớn nhất
- *           giữa hai bản thiết kế, và làm hoàn toàn bằng CSS: cùng một cây
- *           JSX, chỉ đổi grid-auto-flow + scroll-snap.
+ *           giữa hai bản thiết kế, và làm hoàn toàn bằng utility Tailwind:
+ *           cùng một cây JSX, chỉ đổi grid-auto-flow + scroll-snap theo
+ *           breakpoint.
  *
  * Giá lấy qua `formatPrice` của core — theme KHÔNG tự định dạng hay tính lại,
  * nhờ vậy N giao diện luôn hiện cùng một con số (luật R8).
+ *
+ * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
+ * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.
  */
 
 function IconGuests() {
@@ -67,19 +71,45 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
               }
 
     return (
-        <section id="rooms" className="h7-rooms">
-            <div className="h7-rooms-inner">
+        <section
+            id="rooms"
+            className="bg-surface-raised pt-[34px] pb-[10px] [scroll-margin-top:80px] min-[960px]:pt-[48px] min-[960px]:pb-3"
+        >
+            <div className="mx-auto max-w-[var(--container)]">
                 <ScrollRail
-                    className="h7-rooms-rail"
+                    className={[
+                        // MOBILE: băng cuộn ngang, lộ mép thẻ kế tiếp.
+                        'grid grid-flow-col [grid-auto-columns:78vw] gap-[12px]',
+                        'overflow-x-auto [scroll-snap-type:x_mandatory]',
+                        'pt-1 px-4 pb-[18px]',
+                        '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
+                        '[&::-webkit-scrollbar]:hidden',
+                        // Máy tính bảng: thẻ hẹp lại, vẫn một hàng.
+                        'sm:[grid-auto-columns:42vw]',
+                        // DESKTOP: vẫn MỘT hàng, chỉ đổi bề rộng thẻ. Bốn thẻ vừa
+                        // khít container; phòng thứ 5 trở đi thì cuộn tiếp —
+                        // không bao giờ xuống hàng thứ hai.
+                        'min-[960px]:[grid-auto-columns:calc((var(--container)-var(--space-6)*2-20px*3)/4)]',
+                        'min-[960px]:gap-[20px] min-[960px]:px-6',
+                    ].join(' ')}
                     labels={railLabels}
                     head={(nav) => (
-                        <div className="h7-sec-head">
-                            <h2 className="h7-sec-title">{sectionTitle}</h2>
+                        <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
+                            {/* Tiêu đề đẩy cụm nút + link về sát mép phải. Dùng
+                                mr-auto thay cho justify-between vì header có BA
+                                phần tử — justify-between sẽ dàn đều và ném cụm
+                                nút ra giữa. */}
+                            <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                                {sectionTitle}
+                            </h2>
                             {/* Nút cuộn đứng TRƯỚC link: nó điều khiển tại chỗ,
                                 còn "Xem tất cả" là điều hướng rời trang nên
                                 nằm cuối, sát mép. */}
                             {nav}
-                            <a href={themePath(slug, 'rooms')} className="h7-sec-link">
+                            <a
+                                href={themePath(slug, 'rooms')}
+                                className="inline-flex items-center gap-[6px] text-[13px] font-semibold whitespace-nowrap text-brand no-underline hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                            >
                                 {t.viewAll}
                                 <span aria-hidden="true">→</span>
                             </a>
@@ -87,8 +117,11 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                     )}
                 >
                     {data.rooms.map((room) => (
-                        <article key={room.id} className="h7-room">
-                            <div className="h7-room-media">
+                        <article
+                            key={room.id}
+                            className="flex flex-col overflow-hidden rounded-md border border-border-default bg-surface-raised [scroll-snap-align:start] transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-[3px] hover:shadow-2"
+                        >
+                            <div className="relative">
                                 <ImageSlot
                                     placeholder={pick(room.name, locale)}
                                     src={room.images?.[0]}
@@ -96,35 +129,50 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                                     style={{ borderRadius: 0 }}
                                 />
                                 {room.tags[0] && (
-                                    <span className="h7-room-tag">{pick(room.tags[0], locale)}</span>
+                                    <span className="absolute top-[10px] left-[10px] rounded-sm bg-brand px-[11px] py-[5px] text-[11.5px] font-bold text-text-inverse">
+                                        {pick(room.tags[0], locale)}
+                                    </span>
                                 )}
                             </div>
 
-                            <div className="h7-room-body">
-                                <h3 className="h7-room-name">{pick(room.name, locale)}</h3>
+                            <div className="flex flex-1 flex-col px-[15px] pt-3 pb-[15px]">
+                                <h3 className="mt-0 mb-[9px] text-[15px] leading-[1.38] font-bold text-text-primary">
+                                    {pick(room.name, locale)}
+                                </h3>
 
-                                <div className="h7-room-specs">
-                                    <span className="h7-room-spec">
+                                <div className="mb-2 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center gap-[5px] text-[12.5px] text-text-secondary">
                                         <IconGuests />
                                         {room.guests} {t.guestsWord}
                                     </span>
-                                    <span className="h7-room-spec">
+                                    <span className="inline-flex items-center gap-[5px] text-[12.5px] text-text-secondary">
                                         <IconArea />
                                         {room.area}
                                     </span>
                                 </div>
 
-                                <p className="h7-room-desc">{pick(room.desc, locale)}</p>
+                                <p className="mt-0 mb-3 flex-1 text-[12.5px] leading-[1.55] text-text-secondary">
+                                    {pick(room.desc, locale)}
+                                </p>
 
-                                <div className="h7-room-price">
-                                    <span className="h7-room-from">{fromLabel}</span>
-                                    <span className="h7-room-amount">{formatPrice(room.price, locale)}</span>
-                                    <span className="h7-room-per">/ {t.perNight}</span>
+                                <div className="mb-3 flex items-baseline gap-[5px]">
+                                    <span className="text-[12.5px] text-text-secondary">{fromLabel}</span>
+                                    <span className="text-[17px] font-extrabold tracking-[-0.01em] text-text-primary tabular-nums">
+                                        {formatPrice(room.price, locale)}
+                                    </span>
+                                    <span className="text-[12px] text-text-secondary">/ {t.perNight}</span>
                                 </div>
 
                                 <a
                                     href={roomPath(slug, room.id)}
-                                    className="h7-room-cta"
+                                    className={[
+                                        'block rounded-sm px-3 py-[11px] text-center text-[13.5px] font-bold no-underline',
+                                        // Navy trên vàng ≈ 9.2:1 — trắng trên vàng trượt AA.
+                                        'bg-[var(--accent)] text-[var(--on-accent)]',
+                                        'transition-[background,transform] duration-200 ease-out',
+                                        'hover:bg-[var(--accent-dark)] active:translate-y-px',
+                                        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                                    ].join(' ')}
                                     aria-label={`${detailLabel} — ${pick(room.name, locale)}`}
                                 >
                                     {detailLabel}
@@ -134,170 +182,6 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                     ))}
                 </ScrollRail>
             </div>
-
-            <style>{`
-                .h7-rooms {
-                    background: var(--surface);
-                    padding: 34px 0 10px;
-                    scroll-margin-top: 80px;
-                }
-                .h7-rooms-inner { max-width: var(--container); margin: 0 auto; }
-
-                .h7-sec-head {
-                    display: flex;
-                    align-items: center;
-                    gap: 16px;
-                    padding: 0 var(--space-4);
-                    margin-bottom: 16px;
-                }
-                /* Tiêu đề đẩy cụm nút + link về sát mép phải. Dùng margin-left
-                   auto thay cho space-between vì header có BA phần tử —
-                   space-between sẽ dàn đều và ném cụm nút ra giữa. */
-                .h7-sec-title {
-                    font-size: 15px;
-                    font-weight: 700;
-                    letter-spacing: 0.07em;
-                    text-transform: uppercase;
-                    color: var(--text);
-                    margin: 0 auto 0 0;
-                }
-                .h7-sec-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    font-size: 13px;
-                    font-weight: 600;
-                    color: var(--brand);
-                    text-decoration: none;
-                    white-space: nowrap;
-                }
-                .h7-sec-link:hover { text-decoration: underline; }
-                .h7-sec-link:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-                /* ---- MOBILE: băng cuộn ngang, lộ mép thẻ kế tiếp ---- */
-                .h7-rooms-rail {
-                    display: grid;
-                    grid-auto-flow: column;
-                    grid-auto-columns: 78vw;
-                    gap: 12px;
-                    overflow-x: auto;
-                    scroll-snap-type: x mandatory;
-                    padding: 4px var(--space-4) 18px;
-                    -webkit-overflow-scrolling: touch;
-                    scrollbar-width: none;
-                }
-                .h7-rooms-rail::-webkit-scrollbar { display: none; }
-
-                .h7-room {
-                    scroll-snap-align: start;
-                    display: flex;
-                    flex-direction: column;
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                    transition: box-shadow 200ms ease, transform 200ms ease;
-                }
-                .h7-room:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
-
-                .h7-room-media { position: relative; }
-                .h7-room-tag {
-                    position: absolute;
-                    top: 10px;
-                    left: 10px;
-                    padding: 5px 11px;
-                    border-radius: var(--radius-sm);
-                    background: var(--brand);
-                    color: #fff;
-                    font-size: 11.5px;
-                    font-weight: 700;
-                }
-
-                .h7-room-body {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                    padding: 14px 15px 15px;
-                }
-                .h7-room-name {
-                    font-size: 15px;
-                    font-weight: 700;
-                    color: var(--text);
-                    line-height: 1.38;
-                    margin: 0 0 9px;
-                }
-                .h7-room-specs {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 14px;
-                    margin-bottom: 8px;
-                }
-                .h7-room-spec {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
-                    font-size: 12.5px;
-                    color: var(--text-muted);
-                }
-                .h7-room-desc {
-                    font-size: 12.5px;
-                    line-height: 1.55;
-                    color: var(--text-muted);
-                    margin: 0 0 12px;
-                    flex: 1;
-                }
-                .h7-room-price {
-                    display: flex;
-                    align-items: baseline;
-                    gap: 5px;
-                    margin-bottom: 12px;
-                }
-                .h7-room-from { font-size: 12.5px; color: var(--text-muted); }
-                .h7-room-amount {
-                    font-size: 17px;
-                    font-weight: 800;
-                    color: var(--text);
-                    letter-spacing: -0.01em;
-                    font-variant-numeric: tabular-nums;
-                }
-                .h7-room-per { font-size: 12px; color: var(--text-muted); }
-
-                .h7-room-cta {
-                    display: block;
-                    padding: 11px 16px;
-                    border-radius: var(--radius-sm);
-                    background: var(--accent);
-                    /* Navy trên vàng ≈ 9.2:1 — trắng trên vàng trượt AA. */
-                    color: var(--on-accent);
-                    font-size: 13.5px;
-                    font-weight: 700;
-                    text-align: center;
-                    text-decoration: none;
-                    transition: background 180ms ease, transform 150ms ease;
-                }
-                .h7-room-cta:hover  { background: var(--accent-dark); }
-                .h7-room-cta:active { transform: translateY(1px); }
-                .h7-room-cta:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-                /* ---- Máy tính bảng: thẻ hẹp lại, vẫn một hàng ---- */
-                @media (min-width: 640px) {
-                    .h7-rooms-rail { grid-auto-columns: 42vw; }
-                }
-
-                /* ---- DESKTOP: vẫn MỘT hàng, chỉ đổi bề rộng thẻ ---- */
-                @media (min-width: 960px) {
-                    .h7-rooms { padding: 48px 0 16px; }
-                    .h7-sec-head { padding: 0 var(--space-6); margin-bottom: 20px; }
-                    .h7-sec-title { font-size: 16px; }
-                    .h7-rooms-rail {
-                        /* Bốn thẻ vừa khít container; phòng thứ 5 trở đi thì
-                           cuộn tiếp — không bao giờ xuống hàng thứ hai. */
-                        grid-auto-columns: calc((var(--container) - var(--space-6) * 2 - 20px * 3) / 4);
-                        gap: 20px;
-                        padding: 4px var(--space-6) 18px;
-                    }
-                }
-            `}</style>
         </section>
     )
 }

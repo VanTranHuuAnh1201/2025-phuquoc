@@ -9,9 +9,9 @@ const SLUG = meta.slug
  * Ẩm thực — bốn điểm ăn uống trong resort.
  *
  * Desktop: lưới 4 cột, mỗi thẻ ảnh trên · tên · giờ mở cửa · mô tả.
- * Mobile : băng cuộn ngang cùng cơ chế với Rooms (dùng chung lớp `.h7-rail`
- *          khai ở đây và ở Places — mỗi section tự khai để không phụ thuộc
- *          thứ tự render, nhưng cùng một quy tắc thị giác).
+ * Mobile : băng cuộn ngang cùng cơ chế với Rooms — cùng một quy tắc thị giác
+ *          (grid-flow-col + snap + ẩn thanh cuộn), khai tại chỗ bằng utility
+ *          nên không phụ thuộc thứ tự render của section nào khác.
  */
 
 export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
@@ -19,96 +19,63 @@ export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; loca
     const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
     return (
-        <section id="dining" className="h7-dining">
-            <div className="h7-dining-inner">
-                <div className="h7-sec-head">
-                    <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href={themePath(slug, 'dining')} className="h7-sec-link">
+        <section
+            id="dining"
+            className="bg-surface-raised pt-[26px] pb-2 [scroll-margin-top:80px] min-[960px]:pt-[36px] min-[960px]:pb-3"
+        >
+            <div className="mx-auto max-w-[var(--container)]">
+                <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
+                    <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                        {sectionTitle}
+                    </h2>
+                    <a
+                        href={themePath(slug, 'dining')}
+                        className="inline-flex items-center gap-[6px] text-[13px] font-semibold whitespace-nowrap text-brand no-underline hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                    >
                         {linkLabel}
                         <span aria-hidden="true">→</span>
                     </a>
                 </div>
 
-                <div className="h7-dining-rail">
+                <div
+                    className={[
+                        // MOBILE: băng cuộn ngang, lộ mép thẻ kế tiếp.
+                        'grid grid-flow-col [grid-auto-columns:68vw] gap-[12px]',
+                        'overflow-x-auto [scroll-snap-type:x_mandatory]',
+                        'pt-1 px-4 pb-[18px]',
+                        '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
+                        '[&::-webkit-scrollbar]:hidden',
+                        // Máy tính bảng: 2 cột, hết cuộn.
+                        'sm:grid-flow-row sm:grid-cols-2 sm:[grid-auto-columns:auto] sm:overflow-x-visible',
+                        // DESKTOP: 4 cột dàn đều.
+                        'min-[960px]:grid-cols-4 min-[960px]:gap-[20px]',
+                        'min-[960px]:px-6 min-[960px]:pb-2',
+                    ].join(' ')}
+                >
                     {data.dining.map((venue) => (
-                        <article key={venue.id} className="h7-dine">
+                        <article
+                            key={venue.id}
+                            className="min-w-0 [scroll-snap-align:start]"
+                        >
                             <ImageSlot
                                 src={venue.image}
                                 placeholder={pick(venue.name, locale)}
                                 height={160}
                                 style={{ borderRadius: 'var(--radius)' }}
                             />
-                            <h3 className="h7-dine-name">{pick(venue.name, locale)}</h3>
-                            <p className="h7-dine-note">{pick(venue.note, locale)}</p>
-                            <p className="h7-dine-desc">{pick(venue.desc, locale)}</p>
+                            <h3 className="mt-[11px] mb-1 text-[14.5px] leading-[1.4] font-bold text-text-primary">
+                                {pick(venue.name, locale)}
+                            </h3>
+                            <p className="mt-0 mb-[5px] text-[12.5px] font-semibold text-brand">
+                                {pick(venue.note, locale)}
+                            </p>
+                            <p className="m-0 text-[12.5px] leading-[1.6] text-text-secondary">
+                                {pick(venue.desc, locale)}
+                            </p>
                         </article>
                     ))}
                 </div>
             </div>
-
-            <style>{`
-                .h7-dining {
-                    background: var(--surface);
-                    padding: 26px 0 8px;
-                    scroll-margin-top: 80px;
-                }
-                .h7-dining-inner { max-width: var(--container); margin: 0 auto; }
-
-                .h7-dining-rail {
-                    display: grid;
-                    grid-auto-flow: column;
-                    grid-auto-columns: 68vw;
-                    gap: 12px;
-                    overflow-x: auto;
-                    scroll-snap-type: x mandatory;
-                    padding: 4px var(--space-4) 18px;
-                    -webkit-overflow-scrolling: touch;
-                    scrollbar-width: none;
-                }
-                .h7-dining-rail::-webkit-scrollbar { display: none; }
-
-                .h7-dine { scroll-snap-align: start; min-width: 0; }
-                .h7-dine-name {
-                    font-size: 14.5px;
-                    font-weight: 700;
-                    color: var(--text);
-                    line-height: 1.4;
-                    margin: 11px 0 4px;
-                }
-                .h7-dine-note {
-                    font-size: 12.5px;
-                    font-weight: 600;
-                    color: var(--brand);
-                    margin: 0 0 5px;
-                }
-                .h7-dine-desc {
-                    font-size: 12.5px;
-                    line-height: 1.6;
-                    color: var(--text-muted);
-                    margin: 0;
-                }
-
-                @media (min-width: 960px) {
-                    .h7-dining { padding: 36px 0 12px; }
-                    .h7-dining-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(4, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        gap: 20px;
-                        overflow-x: visible;
-                        padding: 4px var(--space-6) 8px;
-                    }
-                }
-
-                @media (min-width: 640px) and (max-width: 959px) {
-                    .h7-dining-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(2, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        overflow-x: visible;
-                    }
-                }
-            `}</style>
         </section>
     )
 }

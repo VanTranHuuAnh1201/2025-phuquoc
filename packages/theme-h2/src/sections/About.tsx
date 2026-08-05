@@ -16,6 +16,9 @@ import { ImageSlot } from '@repo/ui'
  *
  * Icon vẽ tại chỗ bằng SVG — luật D5 cấm emoji làm icon ở sản phẩm mới.
  * Nội dung lấy từ `data.facts` / `data.about` của core (luật R8).
+ *
+ * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
+ * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.
  */
 
 const USP_ICONS: readonly (() => React.ReactElement)[] = [
@@ -81,16 +84,30 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
     return (
         <>
             {/* ---------- DẢI CAM KẾT ---------- */}
-            <section className="h7-usp-section">
-                <div className="h7-usp">
+            <section className="bg-surface-raised px-4 pt-[22px] min-[960px]:px-6 min-[960px]:pt-[34px]">
+                {/* Mobile: thẻ trắng có viền + bóng. Desktop: bỏ viền/bóng, bốn
+                    cột ngăn bằng vạch dọc trên từng ô. */}
+                <div className="mx-auto grid max-w-[var(--container)] grid-cols-2 gap-x-0 gap-y-1 rounded-md border border-border-default bg-surface-raised px-[6px] py-3 shadow-1 min-[960px]:grid-cols-4 min-[960px]:border-none min-[960px]:px-0 min-[960px]:py-2 min-[960px]:shadow-none">
                     {facts.slice(0, 4).map((fact, idx) => {
                         const Icon = USP_ICONS[idx % USP_ICONS.length] ?? IconShield
                         return (
-                            <div key={fact.label.en} className="h7-usp-item">
+                            <div
+                                key={fact.label.en}
+                                className={[
+                                    'grid justify-items-center gap-[7px] px-2 py-3 text-center',
+                                    'min-[960px]:grid-cols-[auto_1fr] min-[960px]:items-center min-[960px]:justify-items-start',
+                                    'min-[960px]:gap-3 min-[960px]:px-[26px] min-[960px]:py-[10px] min-[960px]:text-left',
+                                    'min-[960px]:border-r min-[960px]:border-border-default min-[960px]:last:border-r-0',
+                                ].join(' ')}
+                            >
                                 <Icon />
-                                <div className="h7-usp-text">
-                                    <div className="h7-usp-title">{fact.value}</div>
-                                    <div className="h7-usp-sub">{pick(fact.label, locale)}</div>
+                                <div>
+                                    <div className="text-[13px] leading-[1.35] font-bold text-text-primary min-[960px]:text-[14.5px]">
+                                        {fact.value}
+                                    </div>
+                                    <div className="mt-[2px] text-[12px] leading-[1.45] text-text-secondary">
+                                        {pick(fact.label, locale)}
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -99,31 +116,15 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
             </section>
 
             {/* ---------- GIỚI THIỆU ---------- */}
-            <section id="about" className="h7-about">
-                <div className="h7-about-grid">
-                    <div className="h7-about-media">
+            <section
+                id="about"
+                className="bg-surface-raised px-4 pt-[40px] pb-2 [scroll-margin-top:80px] min-[960px]:px-6 min-[960px]:pt-[56px] min-[960px]:pb-3"
+            >
+                <div className="mx-auto grid max-w-[var(--container)] items-center gap-[26px] min-[960px]:grid-cols-[minmax(0,1.02fr)_minmax(0,1fr)] min-[960px]:gap-[52px]">
+                    <div className="relative min-h-[220px] min-[960px]:min-h-[340px]">
                         {showVideo ? (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    width: '100%',
-                                    height: '100%',
-                                    borderRadius: 'var(--radius)',
-                                    overflow: 'hidden',
-                                    background: '#000000',
-                                }}
-                            >
-                                <video
-                                    controls
-                                    autoPlay
-                                    playsInline
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                    }}
-                                >
+                            <div className="absolute inset-0 h-full w-full overflow-hidden rounded-md bg-[var(--surface-inverse)]">
+                                <video controls autoPlay playsInline className="h-full w-full object-cover">
                                     <source src="/video/8102936365457.mp4" type="video/mp4" />
                                 </video>
                             </div>
@@ -137,11 +138,23 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                                 />
                                 <button
                                     type="button"
-                                    className="h7-video-btn"
+                                    className={[
+                                        'absolute bottom-[14px] left-[14px] inline-flex items-center gap-[9px]',
+                                        'rounded-full border-none py-[9px] pr-3 pl-[9px]',
+                                        // Nền trắng mờ 94% + blur để chữ đọc được
+                                        // trên ảnh. Lấy alpha từ token surface,
+                                        // không viết rgba thô (luật D0).
+                                        'bg-surface-raised/94 [backdrop-filter:blur(6px)]',
+                                        'font-[inherit] text-[13px] font-semibold text-text-primary',
+                                        'cursor-pointer shadow-2',
+                                        'transition-[background,transform] duration-200 ease-out',
+                                        'hover:bg-surface-raised active:translate-y-px',
+                                        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                                    ].join(' ')}
                                     aria-label={videoLabel}
                                     onClick={() => setShowVideo(true)}
                                 >
-                                    <span className="h7-video-dot">
+                                    <span className="grid h-[30px] w-[30px] place-items-center rounded-full bg-[var(--surface-tint)]">
                                         <IconPlay />
                                     </span>
                                     {videoLabel}
@@ -151,19 +164,29 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                     </div>
 
                     <div>
-                        <p className="h7-about-kicker">{pick(about.kicker, locale)}</p>
+                        <p className="mt-0 mb-[10px] text-[12px] font-bold tracking-[0.09em] text-brand uppercase">
+                            {pick(about.kicker, locale)}
+                        </p>
 
-                        <h2 className="h7-about-title">{pick(about.title, locale)}</h2>
+                        <h2 className="mt-0 mb-3 font-display text-[clamp(1.6rem,4.4vw,2.1rem)] leading-[1.22] font-semibold text-balance text-text-primary">
+                            {pick(about.title, locale)}
+                        </h2>
 
                         {about.body.map((paragraph) => (
-                            <p key={paragraph.en} className="h7-about-body">
+                            <p
+                                key={paragraph.en}
+                                className="mt-0 mb-3 text-base leading-[1.78] text-pretty text-text-secondary"
+                            >
                                 {pick(paragraph, locale)}
                             </p>
                         ))}
 
-                        <ul className="h7-about-services">
+                        <ul className="mt-[22px] mb-3 grid list-none grid-cols-2 gap-3 p-0 min-[960px]:gap-x-[22px] min-[960px]:gap-y-4">
                             {about.services.slice(0, 4).map((service) => (
-                                <li key={service.en} className="h7-about-service">
+                                <li
+                                    key={service.en}
+                                    className="flex items-center gap-2 text-[13px] leading-[1.4] font-semibold text-text-primary"
+                                >
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                         <circle cx="12" cy="12" r="9" stroke="var(--brand)" strokeWidth="1.5" />
                                         <path d="M8.2 12.3l2.5 2.5 5.1-5.2" stroke="var(--brand)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -173,187 +196,23 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                             ))}
                         </ul>
 
-                        <a href="#rooms" className="h7-about-more">
+                        <a
+                            href="#rooms"
+                            className={[
+                                'inline-flex items-center gap-2 rounded-sm px-[22px] py-3',
+                                'border border-[var(--border-strong)] bg-surface-raised',
+                                'text-[14px] font-semibold text-text-primary no-underline',
+                                'transition-[border-color,background] duration-200 ease-out',
+                                'hover:border-brand hover:bg-[var(--surface-tint)]',
+                                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                            ].join(' ')}
+                        >
                             {moreLabel}
                             <span aria-hidden="true">→</span>
                         </a>
                     </div>
                 </div>
             </section>
-
-            <style>{`
-                .h7-usp-section {
-                    background: var(--surface);
-                    padding: 22px var(--space-4) 0;
-                }
-                .h7-usp {
-                    max-width: var(--container);
-                    margin: 0 auto;
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 4px 0;
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    padding: 14px 6px;
-                    box-shadow: var(--shadow-sm);
-                }
-                .h7-usp-item {
-                    display: grid;
-                    justify-items: center;
-                    text-align: center;
-                    gap: 7px;
-                    padding: 12px 8px;
-                }
-                .h7-usp-title {
-                    font-size: 13px;
-                    font-weight: 700;
-                    color: var(--text);
-                    line-height: 1.35;
-                }
-                .h7-usp-sub {
-                    font-size: 12px;
-                    color: var(--text-muted);
-                    line-height: 1.45;
-                    margin-top: 2px;
-                }
-
-                .h7-about {
-                    background: var(--surface);
-                    padding: 40px var(--space-4) 8px;
-                    scroll-margin-top: 80px;
-                }
-                .h7-about-grid {
-                    max-width: var(--container);
-                    margin: 0 auto;
-                    display: grid;
-                    gap: 26px;
-                    align-items: center;
-                }
-                .h7-about-media { position: relative; min-height: 220px; }
-                .h7-video-btn {
-                    position: absolute;
-                    left: 14px;
-                    bottom: 14px;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 9px;
-                    padding: 9px 16px 9px 9px;
-                    border: none;
-                    border-radius: 999px;
-                    background: rgba(255,255,255,0.94);
-                    backdrop-filter: blur(6px);
-                    font-family: inherit;
-                    font-size: 13px;
-                    font-weight: 600;
-                    color: var(--text);
-                    cursor: pointer;
-                    box-shadow: var(--shadow);
-                    transition: background 180ms ease, transform 150ms ease;
-                }
-                .h7-video-btn:hover  { background: #fff; }
-                .h7-video-btn:active { transform: translateY(1px); }
-                .h7-video-btn:focus-visible {
-                    outline: 2px solid var(--brand);
-                    outline-offset: 2px;
-                }
-                .h7-video-dot {
-                    width: 30px; height: 30px;
-                    display: grid; place-items: center;
-                    border-radius: 999px;
-                    background: var(--surface-tint);
-                }
-
-                .h7-about-kicker {
-                    font-size: 12px;
-                    font-weight: 700;
-                    letter-spacing: 0.09em;
-                    text-transform: uppercase;
-                    color: var(--brand);
-                    margin: 0 0 10px;
-                }
-                .h7-about-title {
-                    font-family: var(--font-display);
-                    font-size: clamp(1.6rem, 4.4vw, 2.1rem);
-                    line-height: 1.22;
-                    font-weight: 600;
-                    color: var(--text);
-                    margin: 0 0 14px;
-                    text-wrap: balance;
-                }
-                .h7-about-body {
-                    font-size: var(--text-base);
-                    line-height: 1.78;
-                    color: var(--text-muted);
-                    margin: 0 0 var(--space-3);
-                    text-wrap: pretty;
-                }
-                .h7-about-services {
-                    list-style: none;
-                    padding: 0;
-                    margin: 22px 0 24px;
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 14px;
-                }
-                .h7-about-service {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 13px;
-                    font-weight: 600;
-                    color: var(--text);
-                    line-height: 1.4;
-                }
-                .h7-about-more {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 12px 22px;
-                    border: 1px solid var(--border-strong);
-                    border-radius: var(--radius-sm);
-                    background: var(--surface);
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: var(--text);
-                    text-decoration: none;
-                    transition: border-color 180ms ease, background 180ms ease;
-                }
-                .h7-about-more:hover { border-color: var(--brand); background: var(--surface-tint); }
-                .h7-about-more:focus-visible {
-                    outline: 2px solid var(--brand);
-                    outline-offset: 2px;
-                }
-
-                @media (min-width: 960px) {
-                    .h7-usp-section { padding: 34px var(--space-6) 0; }
-                    .h7-usp {
-                        grid-template-columns: repeat(4, 1fr);
-                        border: none;
-                        box-shadow: none;
-                        padding: 8px 0;
-                    }
-                    .h7-usp-item {
-                        grid-template-columns: auto 1fr;
-                        justify-items: start;
-                        text-align: left;
-                        align-items: center;
-                        gap: 14px;
-                        padding: 10px 26px;
-                        border-right: 1px solid var(--border);
-                    }
-                    .h7-usp-item:last-child { border-right: none; }
-                    .h7-usp-title { font-size: 14.5px; }
-
-                    .h7-about { padding: 56px var(--space-6) 16px; }
-                    .h7-about-grid {
-                        grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
-                        gap: 52px;
-                    }
-                    .h7-about-media { min-height: 340px; }
-                    .h7-about-services { gap: 16px 22px; }
-                }
-            `}</style>
         </>
     )
 }

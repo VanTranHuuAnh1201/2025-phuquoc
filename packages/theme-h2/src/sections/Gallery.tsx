@@ -27,19 +27,45 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
     const images = data.rooms.flatMap((room) => room.images ?? [])
 
     return (
-        <section id="gallery" className="h7-gallery">
-            <div className="h7-gallery-inner">
-                <div className="h7-sec-head">
-                    <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href="#contact" className="h7-sec-link">
+        <section
+            id="gallery"
+            className="bg-surface-raised pt-[26px] pb-2 [scroll-margin-top:80px] min-[960px]:pt-[36px] min-[960px]:pb-3"
+        >
+            <div className="mx-auto max-w-[var(--container)]">
+                <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
+                    <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                        {sectionTitle}
+                    </h2>
+                    <a
+                        href="#contact"
+                        className="inline-flex items-center gap-[6px] text-[13px] font-semibold whitespace-nowrap text-brand no-underline hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                    >
                         {linkLabel}
                         <span aria-hidden="true">→</span>
                     </a>
                 </div>
 
-                <div className="h7-gallery-rail">
+                <div
+                    className={[
+                        // MOBILE: băng cuộn ngang, lộ mép ô kế tiếp.
+                        'grid grid-flow-col [grid-auto-columns:52vw] gap-[10px]',
+                        'overflow-x-auto [scroll-snap-type:x_mandatory]',
+                        'pt-1 px-4 pb-[18px]',
+                        // Ẩn thanh cuộn: đây là carousel có chủ đích, thanh cuộn
+                        // hệ thống làm vỡ nhịp ảnh.
+                        '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
+                        '[&::-webkit-scrollbar]:hidden',
+                        // DESKTOP: năm ô dàn đều hết chiều ngang, hết cuộn.
+                        'min-[960px]:grid-flow-row min-[960px]:grid-cols-5',
+                        'min-[960px]:[grid-auto-columns:auto] min-[960px]:gap-[14px]',
+                        'min-[960px]:overflow-x-visible min-[960px]:px-6 min-[960px]:pb-2',
+                    ].join(' ')}
+                >
                     {TILES.map((tile, index) => (
-                        <div key={tile.en} className="h7-gtile">
+                        <div
+                            key={tile.en}
+                            className="h-[120px] overflow-hidden rounded-md [scroll-snap-align:start] min-[960px]:h-[150px]"
+                        >
                             <ImageSlot
                                 placeholder={tile[locale]}
                                 src={images[index]}
@@ -50,48 +76,6 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
                     ))}
                 </div>
             </div>
-
-            <style>{`
-                .h7-gallery {
-                    background: var(--surface);
-                    padding: 26px 0 8px;
-                    scroll-margin-top: 80px;
-                }
-                .h7-gallery-inner { max-width: var(--container); margin: 0 auto; }
-
-                .h7-gallery-rail {
-                    display: grid;
-                    grid-auto-flow: column;
-                    grid-auto-columns: 52vw;
-                    gap: 10px;
-                    overflow-x: auto;
-                    scroll-snap-type: x mandatory;
-                    padding: 4px var(--space-4) 18px;
-                    -webkit-overflow-scrolling: touch;
-                    scrollbar-width: none;
-                }
-                .h7-gallery-rail::-webkit-scrollbar { display: none; }
-
-                .h7-gtile {
-                    scroll-snap-align: start;
-                    height: 120px;
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                }
-
-                @media (min-width: 960px) {
-                    .h7-gallery { padding: 36px 0 12px; }
-                    .h7-gallery-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(5, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        gap: 14px;
-                        overflow-x: visible;
-                        padding: 4px var(--space-6) 8px;
-                    }
-                    .h7-gtile { height: 150px; }
-                }
-            `}</style>
         </section>
     )
 }

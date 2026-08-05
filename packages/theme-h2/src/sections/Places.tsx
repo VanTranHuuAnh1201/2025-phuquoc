@@ -22,50 +22,104 @@ export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; loca
     const tours = data.tours.slice(0, 2)
 
     return (
-        <section id="places" className="h7-places">
-            <div className="h7-places-inner">
-                <div className="h7-sec-head">
-                    <h2 className="h7-sec-title">{sectionTitle}</h2>
-                    <a href={themePath(slug, 'blog')} className="h7-sec-link">
+        <section
+            id="places"
+            className="bg-surface-raised pt-[26px] pb-2 [scroll-margin-top:80px] min-[960px]:pt-[36px] min-[960px]:pb-3"
+        >
+            <div className="mx-auto max-w-[var(--container)]">
+                <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
+                    <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                        {sectionTitle}
+                    </h2>
+                    <a
+                        href={themePath(slug, 'blog')}
+                        className="inline-flex items-center gap-[6px] text-[13px] font-semibold whitespace-nowrap text-brand no-underline hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                    >
                         {linkLabel}
                         <span aria-hidden="true">→</span>
                     </a>
                 </div>
 
-                <div className="h7-places-grid">
-                    <div className="h7-places-rail">
+                <div
+                    className={[
+                        'grid gap-[14px]',
+                        // DESKTOP: điểm đến rộng ~2.15 phần, cột combo 1 phần.
+                        'min-[960px]:grid-cols-[minmax(0,2.15fr)_minmax(0,1fr)]',
+                        'min-[960px]:items-start min-[960px]:gap-5 min-[960px]:px-6',
+                    ].join(' ')}
+                >
+                    <div
+                        className={[
+                            // MOBILE: băng cuộn ngang, lộ mép thẻ kế tiếp.
+                            'grid grid-flow-col [grid-auto-columns:68vw] gap-3',
+                            'overflow-x-auto [scroll-snap-type:x_mandatory]',
+                            'pt-1 px-4 pb-[6px]',
+                            '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
+                            '[&::-webkit-scrollbar]:hidden',
+                            // Từ 640px trở lên: ba thẻ dàn đều, hết cuộn.
+                            'sm:grid-flow-row sm:grid-cols-3 sm:[grid-auto-columns:auto] sm:overflow-x-visible',
+                            'min-[960px]:gap-[18px] min-[960px]:px-0 min-[960px]:pb-0',
+                        ].join(' ')}
+                    >
                         {places.map((place) => (
-                            <article key={place.id} className="h7-place">
-                                <div className="h7-place-media">
+                            <article key={place.id} className="min-w-0 [scroll-snap-align:start]">
+                                <div className="relative">
                                     <ImageSlot
                                         placeholder={pick(place.name, locale)}
                                         src={place.image}
                                         height={150}
                                         style={{ borderRadius: 'var(--radius)' }}
                                     />
-                                    <span className="h7-place-tag">{pick(place.tag, locale)}</span>
+                                    <span className="absolute bottom-[9px] left-[9px] rounded-sm bg-surface-raised/90 px-[10px] py-1 text-[11px] font-bold text-text-primary">
+                                        {pick(place.tag, locale)}
+                                    </span>
                                 </div>
-                                <h3 className="h7-place-name">{pick(place.name, locale)}</h3>
-                                <p className="h7-place-desc">{pick(place.desc, locale)}</p>
+                                <h3 className="mt-[10px] mb-1 text-[14.5px] leading-[1.4] font-bold text-text-primary">
+                                    {pick(place.name, locale)}
+                                </h3>
+                                <p className="m-0 text-[12.5px] leading-[1.6] text-text-secondary">
+                                    {pick(place.desc, locale)}
+                                </p>
                             </article>
                         ))}
                     </div>
 
                     {/* Cột combo — thẻ ngang, ảnh trái, tên + giá phải. */}
-                    <div className="h7-combos">
+                    <div
+                        className={[
+                            'grid gap-[10px] px-4 pb-3',
+                            // Máy tính bảng: hai combo nằm cạnh nhau cho đỡ trống.
+                            'sm:grid-cols-2',
+                            'min-[960px]:grid-cols-1 min-[960px]:gap-[14px] min-[960px]:px-0 min-[960px]:pt-1 min-[960px]:pb-1',
+                        ].join(' ')}
+                    >
                         {tours.map((tour) => (
-                            <a key={tour.id} href={tourPath(slug, tour.id)} className="h7-combo">
-                                <span className="h7-combo-media">
+                            <a
+                                key={tour.id}
+                                href={tourPath(slug, tour.id)}
+                                className={[
+                                    'grid grid-cols-[92px_1fr] items-center gap-[11px] p-2',
+                                    'rounded-md border border-border-default bg-surface-raised no-underline',
+                                    'transition-[border-color,box-shadow] duration-200 ease-out',
+                                    'hover:border-brand hover:shadow-1',
+                                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+                                ].join(' ')}
+                            >
+                                <span className="relative block">
                                     <ImageSlot
                                         placeholder={pick(tour.name, locale)}
                                         height={78}
                                         style={{ borderRadius: 'var(--radius-sm)' }}
                                     />
-                                    <span className="h7-combo-badge">{tour.code}</span>
+                                    <span className="absolute top-[6px] left-[6px] rounded-xs bg-surface-raised/90 px-[7px] py-[2px] text-[10px] font-bold text-text-primary">
+                                        {tour.code}
+                                    </span>
                                 </span>
-                                <span className="h7-combo-body">
-                                    <span className="h7-combo-name">{pick(tour.name, locale)}</span>
-                                    <span className="h7-combo-price">
+                                <span className="grid min-w-0 gap-[6px]">
+                                    <span className="text-[13.5px] leading-[1.4] font-semibold text-text-primary">
+                                        {pick(tour.name, locale)}
+                                    </span>
+                                    <span className="text-[15px] font-extrabold text-text-primary tabular-nums">
                                         {formatPrice(tour.price, locale)}
                                     </span>
                                 </span>
@@ -74,130 +128,6 @@ export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; loca
                     </div>
                 </div>
             </div>
-
-            <style>{`
-                .h7-places {
-                    background: var(--surface);
-                    padding: 26px 0 8px;
-                    scroll-margin-top: 80px;
-                }
-                .h7-places-inner { max-width: var(--container); margin: 0 auto; }
-                .h7-places-grid { display: grid; gap: 14px; }
-
-                .h7-places-rail {
-                    display: grid;
-                    grid-auto-flow: column;
-                    grid-auto-columns: 68vw;
-                    gap: 12px;
-                    overflow-x: auto;
-                    scroll-snap-type: x mandatory;
-                    padding: 4px var(--space-4) 6px;
-                    -webkit-overflow-scrolling: touch;
-                    scrollbar-width: none;
-                }
-                .h7-places-rail::-webkit-scrollbar { display: none; }
-
-                .h7-place { scroll-snap-align: start; min-width: 0; }
-                .h7-place-media { position: relative; }
-                .h7-place-tag {
-                    position: absolute;
-                    left: 9px;
-                    bottom: 9px;
-                    padding: 4px 10px;
-                    border-radius: var(--radius-sm);
-                    background: rgba(255,255,255,0.92);
-                    font-size: 11px;
-                    font-weight: 700;
-                    color: var(--text);
-                }
-                .h7-place-name {
-                    font-size: 14.5px;
-                    font-weight: 700;
-                    color: var(--text);
-                    margin: 10px 0 4px;
-                    line-height: 1.4;
-                }
-                .h7-place-desc {
-                    font-size: 12.5px;
-                    line-height: 1.6;
-                    color: var(--text-muted);
-                    margin: 0;
-                }
-
-                .h7-combos {
-                    display: grid;
-                    gap: 10px;
-                    padding: 0 var(--space-4) 12px;
-                }
-                .h7-combo {
-                    display: grid;
-                    grid-template-columns: 92px 1fr;
-                    gap: 11px;
-                    align-items: center;
-                    padding: 8px;
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    background: var(--surface);
-                    text-decoration: none;
-                    transition: border-color 180ms ease, box-shadow 180ms ease;
-                }
-                .h7-combo:hover { border-color: var(--brand); box-shadow: var(--shadow-sm); }
-                .h7-combo:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-                .h7-combo-media { position: relative; display: block; }
-                .h7-combo-badge {
-                    position: absolute;
-                    left: 6px;
-                    top: 6px;
-                    padding: 2px 7px;
-                    border-radius: 4px;
-                    background: rgba(255,255,255,0.92);
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: var(--text);
-                }
-                .h7-combo-body { display: grid; gap: 6px; min-width: 0; }
-                .h7-combo-name {
-                    font-size: 13.5px;
-                    font-weight: 600;
-                    color: var(--text);
-                    line-height: 1.4;
-                }
-                .h7-combo-price {
-                    font-size: 15px;
-                    font-weight: 800;
-                    color: var(--text);
-                    font-variant-numeric: tabular-nums;
-                }
-
-                @media (min-width: 960px) {
-                    .h7-places { padding: 36px 0 12px; }
-                    .h7-places-grid {
-                        grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
-                        gap: 20px;
-                        padding: 0 var(--space-6);
-                        align-items: start;
-                    }
-                    .h7-places-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(3, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        gap: 18px;
-                        overflow-x: visible;
-                        padding: 4px 0;
-                    }
-                    .h7-combos { padding: 4px 0; gap: 14px; }
-                }
-
-                @media (min-width: 640px) and (max-width: 959px) {
-                    .h7-places-rail {
-                        grid-auto-flow: row;
-                        grid-template-columns: repeat(3, minmax(0, 1fr));
-                        grid-auto-columns: auto;
-                        overflow-x: visible;
-                    }
-                    .h7-combos { grid-template-columns: 1fr 1fr; }
-                }
-            `}</style>
         </section>
     )
 }

@@ -15,6 +15,10 @@ const SLUG = meta.slug
  *
  * Đây là section duy nhất của mẫu 07 cần trạng thái, nên chỉ file này là
  * client component; phần còn lại của trang vẫn render trên server.
+ *
+ * LƯU Ý: không đặt `overflow-x-hidden` lên bất kỳ phần tử cha nào của thẻ giá
+ * — sticky sẽ dính vào phần tử đó thay vì vào viewport. Cần cắt tràn thì dùng
+ * `overflow-x-clip`.
  */
 
 export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) {
@@ -27,13 +31,9 @@ export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) 
     return (
         <section
             id="tours"
-            style={{
-                background: 'var(--surface)',
-                padding: 'var(--space-16) var(--space-6) var(--space-20)',
-                scrollMarginTop: '80px',
-            }}
+            className="bg-surface-raised px-6 pt-[var(--space-16)] pb-[var(--space-20)] [scroll-margin-top:80px]"
         >
-            <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <div className="mx-auto max-w-[var(--container)]">
                 <SectionHeader
                     kicker={t.toursKicker}
                     title={t.toursTitle}
@@ -41,15 +41,7 @@ export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) 
                     align="center"
                 />
 
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: 'var(--space-2)',
-                        marginBottom: 'var(--space-8)',
-                        flexWrap: 'wrap',
-                    }}
-                >
+                <div className="mb-[var(--space-8)] flex flex-wrap justify-center gap-2">
                     {data.tours.map((tour, index) => {
                         const selected = index === current
                         return (
@@ -58,18 +50,15 @@ export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) 
                                 type="button"
                                 onClick={() => setCurrent(index)}
                                 aria-pressed={selected}
-                                style={{
-                                    padding: '11px 24px',
-                                    borderRadius: 'var(--radius-pill)',
-                                    border: `1px solid ${selected ? 'var(--surface-inverse)' : 'var(--border)'}`,
-                                    background: selected ? 'var(--surface-inverse)' : 'var(--surface)',
-                                    color: selected ? 'var(--text-inverse)' : 'var(--text-muted)',
-                                    cursor: 'pointer',
-                                    fontSize: 'var(--text-sm)',
-                                    fontWeight: 600,
-                                    fontFamily: 'var(--font-body)',
-                                    transition: 'background var(--duration) var(--ease)',
-                                }}
+                                className={[
+                                    'cursor-pointer rounded-full border px-6 py-[11px]',
+                                    'font-primary text-sm font-semibold',
+                                    'transition-colors duration-200 ease-out',
+                                    'motion-reduce:transition-none',
+                                    selected
+                                        ? 'border-surface-strong bg-surface-strong text-text-inverse'
+                                        : 'border-border-default bg-surface-raised text-text-secondary',
+                                ].join(' ')}
                             >
                                 {pick(tour.name, locale)}
                             </button>
@@ -77,89 +66,27 @@ export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) 
                     })}
                 </div>
 
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
-                        gap: 'var(--space-8)',
-                        alignItems: 'start',
-                    }}
-                >
-                    <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] items-start gap-[var(--space-8)]">
+                    <div className="grid gap-4">
                         {active.days.map((day, index) => (
                             <div
                                 key={day.label.en}
-                                style={{
-                                    background: 'var(--surface)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: 'var(--radius-lg)',
-                                    padding: 'var(--space-6)',
-                                }}
+                                className="rounded-lg border border-border-default bg-surface-raised p-[var(--space-6)]"
                             >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 'var(--space-3)',
-                                        marginBottom: 'var(--space-4)',
-                                    }}
-                                >
-                                    <span
-                                        style={{
-                                            width: 30,
-                                            height: 30,
-                                            borderRadius: 'var(--radius-pill)',
-                                            background: 'var(--accent)',
-                                            color: 'var(--text-inverse)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: 'var(--text-sm)',
-                                            fontWeight: 700,
-                                            flexShrink: 0,
-                                        }}
-                                    >
+                                <div className="mb-4 flex items-center gap-3">
+                                    <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-text-inverse">
                                         {index + 1}
                                     </span>
-                                    <h3
-                                        style={{
-                                            fontSize: 'var(--text-lg)',
-                                            fontWeight: 700,
-                                            color: 'var(--text)',
-                                            margin: 0,
-                                        }}
-                                    >
+                                    <h3 className="m-0 text-lg font-bold text-text-primary">
                                         {pick(day.label, locale)}
                                     </h3>
                                 </div>
 
-                                <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
+                                <div className="grid gap-3">
                                     {day.items.map((item) => (
-                                        <div
-                                            key={item.en}
-                                            style={{
-                                                display: 'flex',
-                                                gap: 'var(--space-3)',
-                                                alignItems: 'flex-start',
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    width: 6,
-                                                    height: 6,
-                                                    borderRadius: 'var(--radius-pill)',
-                                                    background: 'var(--accent)',
-                                                    marginTop: 8,
-                                                    flexShrink: 0,
-                                                }}
-                                            />
-                                            <span
-                                                style={{
-                                                    fontSize: 'var(--text-base)',
-                                                    lineHeight: 1.65,
-                                                    color: 'var(--text-muted)',
-                                                }}
-                                            >
+                                        <div key={item.en} className="flex items-start gap-3">
+                                            <span className="mt-2 h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+                                            <span className="text-base leading-[1.65] text-text-secondary">
                                                 {pick(item, locale)}
                                             </span>
                                         </div>
@@ -169,103 +96,30 @@ export function Tours({ data, locale }: { data: PropertyData; locale: Locale }) 
                         ))}
                     </div>
 
-                    <aside
-                        style={{
-                            background: 'var(--surface-inverse)',
-                            borderRadius: 'var(--radius-lg)',
-                            padding: 'var(--space-6)',
-                            position: 'sticky',
-                            top: 96,
-                            maxWidth: 360,
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: 'var(--text-xs)',
-                                fontWeight: 600,
-                                color: 'var(--brand-light)',
-                                marginBottom: 'var(--space-2)',
-                            }}
-                        >
+                    <aside className="sticky top-24 max-w-[360px] rounded-lg bg-surface-strong p-[var(--space-6)]">
+                        <div className="mb-2 text-xs font-semibold text-[var(--brand-light)]">
                             {active.code}
                         </div>
-                        <div
-                            style={{
-                                fontFamily: 'var(--font-display)',
-                                fontSize: 'var(--text-xl)',
-                                fontWeight: 700,
-                                color: 'var(--text-inverse)',
-                                marginBottom: 'var(--space-2)',
-                                lineHeight: 1.3,
-                            }}
-                        >
+                        <div className="mb-2 font-display text-xl leading-[1.3] font-bold text-text-inverse">
                             {pick(active.name, locale)}
                         </div>
-                        <p
-                            style={{
-                                fontSize: 'var(--text-sm)',
-                                lineHeight: 1.65,
-                                color: 'var(--text-inverse)',
-                                opacity: 0.66,
-                                margin: '0 0 var(--space-5)',
-                            }}
-                        >
+                        <p className="mt-0 mb-[var(--space-5)] text-sm leading-[1.65] text-text-inverse opacity-[0.66]">
                             {pick(active.summary, locale)}
                         </p>
 
-                        <div
-                            style={{
-                                padding: 'var(--space-4) 0',
-                                borderTop: '1px solid var(--overlay-line)',
-                                borderBottom: '1px solid var(--overlay-line)',
-                                marginBottom: 'var(--space-5)',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    fontSize: 'var(--text-xs)',
-                                    color: 'var(--text-inverse)',
-                                    opacity: 0.5,
-                                    marginBottom: 4,
-                                }}
-                            >
+                        <div className="mb-[var(--space-5)] border-t border-b border-[var(--overlay-line)] py-4">
+                            <div className="mb-1 text-xs text-text-inverse opacity-50">
                                 {t.fromPrice}
                             </div>
-                            <div
-                                style={{
-                                    fontFamily: 'var(--font-display)',
-                                    fontSize: '26px',
-                                    fontWeight: 800,
-                                    color: 'var(--text-inverse)',
-                                    letterSpacing: '-0.02em',
-                                }}
-                            >
+                            <div className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-text-inverse">
                                 {formatPrice(active.price, locale)}
                             </div>
-                            <div
-                                style={{
-                                    fontSize: 'var(--text-xs)',
-                                    color: 'var(--text-inverse)',
-                                    opacity: 0.5,
-                                }}
-                            >
-                                {t.perGuest}
-                            </div>
+                            <div className="text-xs text-text-inverse opacity-50">{t.perGuest}</div>
                         </div>
 
                         <a
                             href={themePath(SLUG, 'tours')}
-                            style={{
-                                display: 'block',
-                                textAlign: 'center',
-                                padding: 'var(--space-3)',
-                                borderRadius: 'var(--radius-pill)',
-                                background: 'var(--accent)',
-                                color: 'var(--text-inverse)',
-                                fontSize: 'var(--text-base)',
-                                fontWeight: 700,
-                                textDecoration: 'none',
-                            }}
+                            className="block rounded-full bg-accent p-3 text-center text-base font-bold text-text-inverse no-underline"
                         >
                             {t.bookTour}
                         </a>

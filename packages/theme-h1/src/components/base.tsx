@@ -7,6 +7,25 @@
  *
  * Không có hex nào ở đây — mọi màu đọc từ token (luật D0). Hover/active đổi
  * bằng filter/shadow nên không cần thêm bậc màu ngoài bảng.
+ *
+ * VÌ SAO FILE NÀY KHÔNG MIGRATE SANG TAILWIND CLASS — dù phần còn lại của theme
+ * đã chuyển:
+ *
+ *   `.h6-btn`, `.h6-input`, `.h6-field`, `.h6-display`, `.h6-container`,
+ *   `.h6-kicker`, `.h6-link` là HỢP ĐỒNG CLASS TOÀN CỤC của mẫu — 9 file
+ *   section khác gọi chúng bằng TÊN (`className="h6-btn h6-btn-primary"`).
+ *   Đây là chỗ ĐỊNH NGHĨA, không phải chỗ tiêu thụ. Đổi sang utility ở đây
+ *   không xoá được lời gọi bên kia, chỉ làm chúng trỏ vào hư không.
+ *
+ *   Ngoài ra phần lớn quy tắc dưới đây Tailwind không biểu diễn được trong một
+ *   `<style>` runtime: `@keyframes`, `::after` của trạng thái loading,
+ *   `[aria-busy]` / `[aria-disabled]`, `@media (prefers-reduced-motion)`,
+ *   và `.h6-sr` (clip rect cho screen reader).
+ *
+ *   `.h6-input-error` / `.h6-error-text` hiện chưa có section nào gọi, nhưng
+ *   GIỮ LẠI: chúng là trạng thái `error` của hợp đồng 7 trạng thái D3 — xoá đi
+ *   là form nào thêm sau cũng thiếu bậc lỗi. `.h6-card` và `.h6-sr` giữ vì
+ *   cùng lý do (primitive dùng lại).
  */
 
 export function BaseCss() {

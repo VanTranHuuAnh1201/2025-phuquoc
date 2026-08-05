@@ -1,4 +1,4 @@
-﻿import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
+import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
 
 import { meta } from '../meta'
 import { ui } from '../strings'
@@ -20,47 +20,17 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
     const faq = data.faq.slice(0, 4)
 
     return (
-        <section id="booking" style={{ padding: 'var(--space-7) 0 0' }}>
-            <div
-                style={{
-                    background: 'var(--color-surface-strong)',
-                    color: 'var(--color-text-inverse)',
-                    padding: 'var(--space-6) 0',
-                }}
-            >
-                <div
-                    className="h6-container h6-booking-band"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 'var(--space-5)',
-                        flexWrap: 'wrap',
-                    }}
-                >
-                    <h2
-                        className="h6-display"
-                        style={{
-                            fontSize: 'var(--font-size-2xl)',
-                            maxWidth: '26ch',
-                            margin: 0,
-                        }}
-                    >
-                        {t.bookingTitle}
-                    </h2>
-                    <div className="h6-booking-cta">
-                        <a className="h6-btn h6-btn-primary" href={roomsHref} style={{ width: '100%' }}>
+        <section id="booking" className="pt-7">
+            <div className="bg-surface-strong py-6 text-text-inverse">
+                <div className="h6-container flex flex-wrap items-center justify-between gap-5">
+                    <h2 className="h6-display m-0 max-w-[26ch] text-2xl">{t.bookingTitle}</h2>
+                    {/* Dưới 640px CTA chiếm trọn bề ngang để ngón cái không phải nhắm. */}
+                    <div className="w-full sm:w-auto">
+                        <a className="h6-btn h6-btn-primary w-full" href={roomsHref}>
                             {t.bookingCta}
                         </a>
                         {/* Spec §6.4: dòng tàu hoãn phải nằm SÁT CTA đặt phòng. */}
-                        <p
-                            style={{
-                                margin: 'var(--space-2) 0 0',
-                                fontSize: 'var(--font-size-sm)',
-                                opacity: 0.88,
-                                textAlign: 'center',
-                            }}
-                        >
+                        <p className="mt-2 mb-0 text-center text-sm opacity-[0.88]">
                             {t.weatherLine}
                         </p>
                     </div>
@@ -68,44 +38,29 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
             </div>
 
             {faq.length > 0 && (
-                <div className="h6-container" style={{ paddingTop: 'var(--space-5)', maxWidth: 820 }}>
-                    <h3
-                        className="h6-display"
-                        style={{ fontSize: 'var(--font-size-xl)', margin: '0 0 var(--space-3)' }}
-                    >
-                        {t.faqTitle}
-                    </h3>
+                <div className="h6-container max-w-[820px] pt-5">
+                    <h3 className="h6-display mt-0 mb-3 text-xl">{t.faqTitle}</h3>
                     {faq.map((item, i) => (
-                        <details
-                            key={i}
-                            style={{ borderBottom: '1px solid var(--color-border-muted)' }}
-                        >
+                        <details key={i} className="group border-b border-border-muted">
                             <summary
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 'var(--space-3)',
-                                    minHeight: 44,
-                                    padding: 'var(--space-2) 0',
-                                    cursor: 'pointer',
-                                    fontWeight: 'var(--font-weight-medium)' as never,
-                                    listStyle: 'none',
-                                }}
+                                className={[
+                                    'flex min-h-[44px] cursor-pointer list-none items-center',
+                                    'justify-between gap-3 py-2 font-medium',
+                                ].join(' ')}
                             >
                                 {pick(item.q, locale)}
-                                <span aria-hidden="true" style={{ color: 'var(--color-text-tertiary)' }}>
+                                <span
+                                    aria-hidden="true"
+                                    className={[
+                                        'text-text-tertiary',
+                                        'transition-transform duration-[var(--motion-instant)] ease-out',
+                                        'group-open:rotate-180',
+                                    ].join(' ')}
+                                >
                                     <IconChevronDown size={18} />
                                 </span>
                             </summary>
-                            <p
-                                style={{
-                                    margin: '0 0 var(--space-3)',
-                                    fontSize: 'var(--font-size-sm)',
-                                    color: 'var(--color-text-secondary)',
-                                    maxWidth: '68ch',
-                                }}
-                            >
+                            <p className="mt-0 mb-3 max-w-[68ch] text-sm text-text-secondary">
                                 {pick(item.a, locale)}
                             </p>
                         </details>
@@ -113,15 +68,12 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
                 </div>
             )}
 
+            {/* GIỮ NGUYÊN: `::-webkit-details-marker` là pseudo-element riêng của
+                WebKit, Tailwind không có variant cho nó. `list-none` ở trên đã xử
+                lý Firefox/Chromium mới, dòng này dọn nốt Safari cũ. */}
             <style>{`
                 #booking summary::-webkit-details-marker { display: none; }
-                #booking details[open] summary span[aria-hidden] { transform: rotate(180deg); }
-                #booking summary span[aria-hidden] { transition: transform var(--motion-instant) ease; }
-                @media (max-width: 639.98px) {
-                    .h6-booking-cta { width: 100%; }
-                }
             `}</style>
         </section>
     )
 }
-

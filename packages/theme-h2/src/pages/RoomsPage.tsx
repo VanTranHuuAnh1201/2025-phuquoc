@@ -22,6 +22,11 @@ import { PageFooter, PageHeader, PageHero } from './PageShell'
  *
  * Chọn nhiều phòng là hành vi của prototype, không phải tôi thêm vào: sidebar
  * cộng dồn tiền phòng của mọi phòng đã chọn.
+ *
+ * STYLE: Tailwind v4 qua cầu nối token `@repo/styling-tailwind`. Các hằng
+ * `*Class` ở cuối file là bộ class dùng lại nhiều chỗ — thay cho các object
+ * `React.CSSProperties` trước đây. Biến ngoài hợp đồng D1 viết arbitrary trỏ
+ * vào biến, không bao giờ ghi mã hex (luật D0).
  */
 
 type SortKey = 'rec' | 'asc' | 'desc'
@@ -67,9 +72,12 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
         setPicked((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
 
     return (
+        // `overflow-x-clip` chứ KHÔNG phải `hidden`: `hidden` trên một trục biến
+        // trục kia thành scroll container, làm `position: sticky` của sidebar
+        // dính vào div này thay vì vào viewport. Xem chú thích ở `globals.css`.
         <div
             data-theme="h7"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--text)', overflowX: 'hidden' }}
+            className="overflow-x-clip font-primary text-text-primary"
         >
             <PageHeader data={data} locale={locale} />
 
@@ -79,23 +87,10 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                 crumbs={[{ label: t.home, href: '/h7' }, { label: t.roomsPage }]}
             />
 
-            <section id="list" style={{ background: 'var(--surface-alt)', padding: '32px 24px 88px' }}>
-                <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <section id="list" className="bg-surface-base px-4 pt-[32px] pb-[88px]">
+                <div className="mx-auto max-w-[var(--container)]">
                     {/* ---- thanh lọc ---- */}
-                    <div
-                        className="h7-rooms-filter"
-                        style={{
-                            background: 'var(--surface)',
-                            border: '1px solid var(--border)',
-                            borderRadius: 'var(--radius-lg)',
-                            boxShadow: 'var(--shadow)',
-                            padding: '18px 20px',
-                            display: 'grid',
-                            gap: 14,
-                            alignItems: 'end',
-                            marginBottom: 26,
-                        }}
-                    >
+                    <div className="h7-rooms-filter mb-[26px] grid items-end gap-[14px] rounded-lg border border-border-default bg-surface-raised px-[20px] py-[18px] shadow-2">
                         <FilterDate id="rm-in" label={t.checkIn} />
                         <FilterDate id="rm-out" label={t.checkOut} />
 
@@ -104,7 +99,7 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                 id="rm-guests"
                                 value={minGuests}
                                 onChange={(e) => setMinGuests(Number(e.target.value) || 0)}
-                                style={controlStyle}
+                                className={controlClass}
                             >
                                 <option value={0}>{t.anyGuests}</option>
                                 {[2, 4, 6, 8].map((n) => (
@@ -120,7 +115,7 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                 id="rm-sort"
                                 value={sort}
                                 onChange={(e) => setSort(e.target.value as SortKey)}
-                                style={controlStyle}
+                                className={controlClass}
                             >
                                 <option value="rec">{t.sortRec}</option>
                                 <option value="asc">{t.sortAsc}</option>
@@ -128,25 +123,14 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                             </select>
                         </FilterField>
 
-                        <span
-                            style={{
-                                padding: '12px 22px',
-                                borderRadius: 'var(--radius-pill)',
-                                background: 'var(--surface-tint)',
-                                color: 'var(--brand)',
-                                fontSize: 13.5,
-                                fontWeight: 700,
-                                whiteSpace: 'nowrap',
-                                textAlign: 'center',
-                            }}
-                        >
+                        <span className="rounded-[var(--radius-pill)] bg-[var(--surface-tint)] px-[22px] py-[12px] text-center text-[13.5px] font-bold whitespace-nowrap text-brand">
                             {rooms.length} {t.countLabel}
                         </span>
                     </div>
 
                     {/* ---- list + sidebar ---- */}
-                    <div className="h7-rooms-layout" style={{ display: 'grid', gap: 26, alignItems: 'start' }}>
-                        <div style={{ display: 'grid', gap: 18 }}>
+                    <div className="h7-rooms-layout grid items-start gap-[26px]">
+                        <div className="grid gap-[18px]">
                             {rooms.map((room) => {
                                 const extra = data.roomExtras[room.id]
                                 const isPicked = picked.includes(room.id)
@@ -154,114 +138,43 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                 return (
                                     <article
                                         key={room.id}
-                                        className="h7-room-card"
-                                        style={{
-                                            background: 'var(--surface)',
-                                            border: '1px solid var(--border)',
-                                            borderRadius: 'var(--radius-lg)',
-                                            padding: 14,
-                                            display: 'grid',
-                                            gap: 22,
-                                        }}
+                                        className="h7-room-card grid gap-[22px] rounded-lg border border-border-default bg-surface-raised p-[14px]"
                                     >
-                                        <div style={{ position: 'relative' }}>
-                                            <div
-                                                style={{
-                                                    position: 'relative',
-                                                    height: '100%',
-                                                    minHeight: 210,
-                                                    borderRadius: 12,
-                                                    overflow: 'hidden',
-                                                    background: 'var(--surface-alt)',
-                                                }}
-                                            >
+                                        <div className="relative">
+                                            <div className="relative h-full min-h-[210px] overflow-hidden rounded-md bg-surface-base">
                                                 {room.images?.[0] && (
                                                     // eslint-disable-next-line @next/next/no-img-element
                                                     <img
                                                         src={room.images[0]}
                                                         alt={pick(room.name, locale)}
                                                         loading="lazy"
-                                                        style={{
-                                                            width: '100%',
-                                                            height: '100%',
-                                                            objectFit: 'cover',
-                                                        }}
+                                                        className="h-full w-full object-cover"
                                                     />
                                                 )}
                                             </div>
-                                            <span
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: 12,
-                                                    left: 12,
-                                                    padding: '5px 12px',
-                                                    borderRadius: 'var(--radius-pill)',
-                                                    background: 'rgba(15,23,41,0.78)',
-                                                    color: '#FFFFFF',
-                                                    fontSize: 11.5,
-                                                    fontWeight: 700,
-                                                }}
-                                            >
+                                            <span className="absolute top-[12px] left-[12px] rounded-[var(--radius-pill)] bg-[rgb(15_23_41/0.78)] px-[12px] py-[5px] text-[11.5px] font-bold text-text-inverse">
                                                 {room.area}
                                             </span>
                                         </div>
 
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                padding: '6px 8px 8px 0',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexWrap: 'wrap',
-                                                    gap: 6,
-                                                    marginBottom: 10,
-                                                }}
-                                            >
+                                        <div className="flex flex-col pt-[6px] pr-2 pb-2">
+                                            <div className="mb-[10px] flex flex-wrap gap-[6px]">
                                                 {room.tags.map((tag, i) => (
-                                                    <span key={i} style={tagStyle}>
+                                                    <span key={i} className={tagClass}>
                                                         {pick(tag, locale)}
                                                     </span>
                                                 ))}
                                             </div>
 
-                                            <h2
-                                                style={{
-                                                    fontFamily: 'var(--font-display)',
-                                                    fontSize: 19,
-                                                    fontWeight: 800,
-                                                    color: 'var(--text)',
-                                                    margin: '0 0 8px',
-                                                    letterSpacing: '-0.02em',
-                                                }}
-                                            >
+                                            <h2 className="m-0 mb-2 font-display text-[19px] font-extrabold tracking-[-0.02em] text-text-primary">
                                                 {pick(room.name, locale)}
                                             </h2>
 
-                                            <p
-                                                style={{
-                                                    fontSize: 14,
-                                                    lineHeight: 1.65,
-                                                    color: 'var(--text-muted)',
-                                                    margin: '0 0 12px',
-                                                }}
-                                            >
+                                            <p className="m-0 mb-[12px] text-[14px] leading-[1.65] text-text-secondary">
                                                 {pick(room.desc, locale)}
                                             </p>
 
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexWrap: 'wrap',
-                                                    gap: 16,
-                                                    fontSize: 13,
-                                                    color: 'var(--text-muted)',
-                                                    marginBottom: 14,
-                                                }}
-                                            >
+                                            <div className="mb-[14px] flex flex-wrap gap-3 text-[13px] text-text-secondary">
                                                 <span>
                                                     {extra?.maxGuests
                                                         ? `${room.guests}–${extra.maxGuests}`
@@ -272,76 +185,47 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                                 <span>{extra ? pick(extra.view, locale) : t.viewDefault}</span>
                                             </div>
 
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexWrap: 'wrap',
-                                                    gap: 8,
-                                                    marginBottom: 16,
-                                                    paddingBottom: 14,
-                                                    borderBottom: '1px solid var(--surface-alt)',
-                                                }}
-                                            >
+                                            <div className="mb-[16px] flex flex-wrap gap-2 border-b border-surface-base pb-[14px]">
                                                 {(extra?.amenities.slice(0, 4).map((a) => pick(a, locale)) ??
                                                     t.perksDefault).map((perk, i) => (
                                                     <span
                                                         key={i}
-                                                        style={{
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                            gap: 7,
-                                                            fontSize: 12.5,
-                                                            color: 'var(--text-muted)',
-                                                        }}
+                                                        className="inline-flex items-center gap-[7px] text-[12.5px] text-text-secondary"
                                                     >
-                                                        <span aria-hidden="true" style={dotStyle} />
+                                                        <span aria-hidden="true" className={dotClass} />
                                                         {perk}
                                                     </span>
                                                 ))}
                                             </div>
 
-                                            <div
-                                                style={{
-                                                    marginTop: 'auto',
-                                                    display: 'flex',
-                                                    alignItems: 'flex-end',
-                                                    justifyContent: 'space-between',
-                                                    gap: 14,
-                                                    flexWrap: 'wrap',
-                                                }}
-                                            >
+                                            <div className="mt-auto flex flex-wrap items-end justify-between gap-[14px]">
                                                 <div>
-                                                    <div
-                                                        style={{
-                                                            fontSize: 22,
-                                                            fontWeight: 800,
-                                                            color: 'var(--text)',
-                                                            letterSpacing: '-0.02em',
-                                                        }}
-                                                    >
+                                                    <div className="text-[22px] font-extrabold tracking-[-0.02em] text-text-primary">
                                                         {formatPrice(room.price, locale)}
                                                     </div>
-                                                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                                                    <div className="text-[11.5px] text-text-secondary">
                                                         {t.perNight}
                                                     </div>
                                                 </div>
 
-                                                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                                                <div className="flex flex-wrap gap-[10px]">
                                                     <a
                                                         href={`/h7/rooms/${room.id}`}
-                                                        style={ghostButtonStyle}
+                                                        className={ghostButtonClass}
                                                     >
                                                         {t.viewDetail}
                                                     </a>
                                                     <button
                                                         type="button"
                                                         onClick={() => toggleRoom(room.id)}
-                                                        style={{
-                                                            ...solidButtonStyle,
-                                                            background: isPicked
-                                                                ? 'var(--surface-inverse)'
-                                                                : 'var(--accent)',
-                                                        }}
+                                                        className={[
+                                                            solidButtonClass,
+                                                            // Đã chọn thì nút chuyển sang navy đậm để
+                                                            // phân biệt với trạng thái mời chọn (vàng).
+                                                            isPicked
+                                                                ? 'bg-[var(--surface-inverse)]'
+                                                                : 'bg-accent',
+                                                        ].join(' ')}
                                                     >
                                                         {isPicked ? t.selected : t.select}
                                                     </button>
@@ -354,47 +238,25 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                         </div>
 
                         {/* ---- sidebar ---- */}
-                        <aside
-                            className="h7-rooms-aside"
-                            style={{ display: 'grid', gap: 16, alignContent: 'start' }}
-                        >
-                            <div style={cardStyle}>
-                                <div style={kickerStyle}>{t.yourSelection}</div>
+                        <aside className="h7-rooms-aside grid content-start gap-3">
+                            <div className={cardClass}>
+                                <div className={kickerClass}>{t.yourSelection}</div>
 
                                 {picked.length > 0 ? (
-                                    <div style={{ display: 'grid', gap: 10, marginBottom: 16 }}>
+                                    <div className="mb-[16px] grid gap-[10px]">
                                         {picked.map((id) => {
                                             const room = roomById[id]
                                             if (!room) return null
                                             return (
                                                 <div
                                                     key={id}
-                                                    style={{
-                                                        display: 'flex',
-                                                        alignItems: 'flex-start',
-                                                        justifyContent: 'space-between',
-                                                        gap: 12,
-                                                        paddingBottom: 10,
-                                                        borderBottom: '1px solid var(--surface-alt)',
-                                                    }}
+                                                    className="flex items-start justify-between gap-[12px] border-b border-surface-base pb-[10px]"
                                                 >
                                                     <div>
-                                                        <div
-                                                            style={{
-                                                                fontSize: 13.5,
-                                                                fontWeight: 700,
-                                                                color: 'var(--text)',
-                                                                lineHeight: 1.4,
-                                                            }}
-                                                        >
+                                                        <div className="text-[13.5px] leading-[1.4] font-bold text-text-primary">
                                                             {pick(room.name, locale)}
                                                         </div>
-                                                        <div
-                                                            style={{
-                                                                fontSize: 12,
-                                                                color: 'var(--text-muted)',
-                                                            }}
-                                                        >
+                                                        <div className="text-[12px] text-text-secondary">
                                                             {room.area} · {room.guests} {t.guestsWord}
                                                         </div>
                                                     </div>
@@ -402,15 +264,7 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                                         type="button"
                                                         onClick={() => toggleRoom(id)}
                                                         aria-label={`Bỏ ${pick(room.name, locale)}`}
-                                                        style={{
-                                                            background: 'transparent',
-                                                            border: 'none',
-                                                            cursor: 'pointer',
-                                                            fontSize: 16,
-                                                            lineHeight: 1,
-                                                            color: 'var(--border-strong)',
-                                                            padding: '2px 4px',
-                                                        }}
+                                                        className="cursor-pointer border-none bg-transparent px-1 py-[2px] text-[16px] leading-none text-[var(--border-strong)]"
                                                     >
                                                         ×
                                                     </button>
@@ -419,94 +273,45 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                         })}
                                     </div>
                                 ) : (
-                                    <p
-                                        style={{
-                                            fontSize: 13.5,
-                                            lineHeight: 1.65,
-                                            color: 'var(--text-muted)',
-                                            margin: '0 0 16px',
-                                        }}
-                                    >
+                                    <p className="m-0 mb-[16px] text-[13.5px] leading-[1.65] text-text-secondary">
                                         {t.emptySelection}
                                     </p>
                                 )}
 
-                                <div style={{ display: 'grid', gap: 8, paddingTop: 4 }}>
+                                <div className="grid gap-2 pt-1">
                                     <SumRow label={t.roomsTotal} value={formatPrice(roomsSubtotal, locale)} />
                                     <SumRow label={t.addonsTotal} value={formatPrice(addonsSubtotal, locale)} />
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            paddingTop: 12,
-                                            marginTop: 4,
-                                            borderTop: '1px solid var(--border)',
-                                        }}
-                                    >
-                                        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
+                                    <div className="mt-1 flex items-center justify-between border-t border-border-default pt-[12px]">
+                                        <span className="text-[14px] font-bold text-text-primary">
                                             {t.total}
                                         </span>
-                                        <span
-                                            style={{
-                                                fontSize: 22,
-                                                fontWeight: 800,
-                                                color: 'var(--brand)',
-                                                letterSpacing: '-0.02em',
-                                            }}
-                                        >
+                                        <span className="text-[22px] font-extrabold tracking-[-0.02em] text-brand">
                                             {formatPrice(roomsSubtotal + addonsSubtotal, locale)}
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                                    <div className="text-[11.5px] text-text-secondary">
                                         {t.totalNote}
                                     </div>
                                 </div>
 
                                 <a
                                     href={telHref(data.brand.phone)}
-                                    style={{
-                                        display: 'block',
-                                        textAlign: 'center',
-                                        marginTop: 18,
-                                        padding: 14,
-                                        borderRadius: 'var(--radius-pill)',
-                                        background: 'var(--accent)',
-                                        color: 'var(--text-inverse)',
-                                        fontSize: 14.5,
-                                        fontWeight: 700,
-                                        textDecoration: 'none',
-                                    }}
+                                    className="mt-[18px] block rounded-[var(--radius-pill)] bg-accent p-[14px] text-center text-[14.5px] font-bold text-text-inverse no-underline"
                                 >
                                     {t.confirmBooking}
                                 </a>
                             </div>
 
-                            <div style={cardStyle}>
-                                <div style={kickerStyle}>{t.addonsTitle}</div>
-                                <p
-                                    style={{
-                                        fontSize: 12.5,
-                                        lineHeight: 1.6,
-                                        color: 'var(--text-muted)',
-                                        margin: '0 0 16px',
-                                    }}
-                                >
+                            <div className={cardClass}>
+                                <div className={kickerClass}>{t.addonsTitle}</div>
+                                <p className="m-0 mb-[16px] text-[12.5px] leading-[1.6] text-text-secondary">
                                     {t.addonsSub}
                                 </p>
-                                <div style={{ display: 'grid', gap: 10 }}>
+                                <div className="grid gap-[10px]">
                                     {data.addons.map((addon) => (
                                         <label
                                             key={addon.id}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'flex-start',
-                                                gap: 11,
-                                                cursor: 'pointer',
-                                                padding: '11px 12px',
-                                                borderRadius: 12,
-                                                background: 'var(--surface-alt)',
-                                            }}
+                                            className="flex cursor-pointer items-start gap-[11px] rounded-md bg-surface-base px-[12px] py-[11px]"
                                         >
                                             <input
                                                 type="checkbox"
@@ -517,25 +322,13 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                                         [addon.id]: !prev[addon.id],
                                                     }))
                                                 }
-                                                style={{
-                                                    margin: '3px 0 0',
-                                                    width: 16,
-                                                    height: 16,
-                                                    accentColor: 'var(--accent)',
-                                                    flexShrink: 0,
-                                                }}
+                                                className="mt-[3px] h-4 w-4 shrink-0 accent-[var(--accent)]"
                                             />
-                                            <span style={{ display: 'grid', gap: 2, flex: 1 }}>
-                                                <span
-                                                    style={{
-                                                        fontSize: 13.5,
-                                                        fontWeight: 600,
-                                                        color: 'var(--text)',
-                                                    }}
-                                                >
+                                            <span className="grid flex-1 gap-[2px]">
+                                                <span className="text-[13.5px] font-semibold text-text-primary">
                                                     {pick(addon.name, locale)}
                                                 </span>
-                                                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                                <span className="text-[12px] text-text-secondary">
                                                     {addon.price
                                                         ? `${formatPrice(addon.price, locale)} / ${pick(addon.unit, locale)}`
                                                         : pick(addon.unit, locale)}
@@ -546,35 +339,15 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
                                 </div>
                             </div>
 
-                            <div
-                                style={{
-                                    background: 'var(--surface-tint)',
-                                    border: '1px solid var(--brand-light)',
-                                    borderRadius: 'var(--radius-lg)',
-                                    padding: '20px 22px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        fontSize: 12.5,
-                                        fontWeight: 700,
-                                        color: 'var(--brand)',
-                                        marginBottom: 10,
-                                    }}
-                                >
+                            <div className="rounded-lg border border-[var(--brand-light)] bg-[var(--surface-tint)] px-[22px] py-[20px]">
+                                <div className="mb-[10px] text-[12.5px] font-bold text-brand">
                                     {t.notesTitle}
                                 </div>
-                                <div style={{ display: 'grid', gap: 8 }}>
+                                <div className="grid gap-2">
                                     {data.notes.map((note, i) => (
-                                        <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                                            <span aria-hidden="true" style={{ ...dotStyle, marginTop: 7 }} />
-                                            <span
-                                                style={{
-                                                    fontSize: 12.5,
-                                                    lineHeight: 1.6,
-                                                    color: 'var(--brand-dark)',
-                                                }}
-                                            >
+                                        <div key={i} className="flex items-start gap-[10px]">
+                                            <span aria-hidden="true" className={`${dotClass} mt-[7px]`} />
+                                            <span className="text-[12.5px] leading-[1.6] text-[var(--brand-dark)]">
                                                 {pick(note, locale)}
                                             </span>
                                         </div>
@@ -588,6 +361,10 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
 
             <PageFooter data={data} locale={locale} />
 
+            {/* GIỮ `<style>`: ba breakpoint 900/720px không nằm trong thang mặc
+                định của Tailwind, và `grid-template-columns` ở đây là các track
+                không đều (`minmax(150px, 268px)`…). Hover đổ bóng cũng giữ ở đây
+                cho gọn — một khai báo thay vì hai class arbitrary. */}
             <style>{`
                 @media (min-width: 900px) {
                     .h7-rooms-filter {
@@ -625,8 +402,8 @@ function FilterField({
     children: React.ReactNode
 }) {
     return (
-        <div style={{ display: 'grid', gap: 6, minWidth: 0 }}>
-            <label htmlFor={id} style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
+        <div className="grid min-w-0 gap-[6px]">
+            <label htmlFor={id} className="text-[12px] font-semibold text-text-secondary">
                 {label}
             </label>
             {children}
@@ -637,94 +414,38 @@ function FilterField({
 function FilterDate({ id, label }: { id: string; label: string }) {
     return (
         <FilterField id={id} label={label}>
-            <input id={id} type="date" style={controlStyle} />
+            <input id={id} type="date" className={controlClass} />
         </FilterField>
     )
 }
 
 function SumRow({ label, value }: { label: string; value: string }) {
     return (
-        <div
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: 13.5,
-                color: 'var(--text-muted)',
-            }}
-        >
+        <div className="flex items-center justify-between text-[13.5px] text-text-secondary">
             <span>{label}</span>
-            <span style={{ fontWeight: 700, color: 'var(--text)' }}>{value}</span>
+            <span className="font-bold text-text-primary">{value}</span>
         </div>
     )
 }
 
 // ==================================================================== style
 
-const controlStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '10px 12px',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
-    fontSize: 14,
-    fontWeight: 500,
-    fontFamily: 'var(--font-body)',
-    background: 'var(--surface-alt)',
-    color: 'var(--text)',
-}
+const controlClass =
+    'w-full rounded-[8px] border border-border-default bg-surface-base px-[12px] py-[10px] font-primary text-[14px] font-medium text-text-primary'
 
-const tagStyle: React.CSSProperties = {
-    padding: '4px 10px',
-    borderRadius: 'var(--radius-pill)',
-    background: 'var(--surface-tint)',
-    color: 'var(--brand)',
-    fontSize: 11.5,
-    fontWeight: 600,
-}
+const tagClass =
+    'rounded-[var(--radius-pill)] bg-[var(--surface-tint)] px-[10px] py-1 text-[11.5px] font-semibold text-brand'
 
-const dotStyle: React.CSSProperties = {
-    width: 5,
-    height: 5,
-    borderRadius: 'var(--radius-pill)',
-    background: 'var(--accent)',
-    flexShrink: 0,
-}
+const dotClass = 'h-[5px] w-[5px] shrink-0 rounded-[var(--radius-pill)] bg-accent'
 
-const cardStyle: React.CSSProperties = {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-lg)',
-    padding: '22px 24px',
-}
+const cardClass =
+    'rounded-lg border border-border-default bg-surface-raised px-4 py-[22px]'
 
-const kickerStyle: React.CSSProperties = {
-    fontSize: 12,
-    fontWeight: 700,
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    color: 'var(--brand)',
-    marginBottom: 14,
-}
+const kickerClass =
+    'mb-[14px] text-[12px] font-bold tracking-[0.08em] uppercase text-brand'
 
-const ghostButtonStyle: React.CSSProperties = {
-    padding: '11px 20px',
-    borderRadius: 'var(--radius-pill)',
-    border: '1px solid var(--border-strong)',
-    color: 'var(--text)',
-    fontSize: 13.5,
-    fontWeight: 600,
-    whiteSpace: 'nowrap',
-    textDecoration: 'none',
-}
+const ghostButtonClass =
+    'rounded-[var(--radius-pill)] border border-[var(--border-strong)] px-[20px] py-[11px] text-[13.5px] font-semibold whitespace-nowrap text-text-primary no-underline'
 
-const solidButtonStyle: React.CSSProperties = {
-    padding: '11px 22px',
-    borderRadius: 'var(--radius-pill)',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: 13.5,
-    fontWeight: 700,
-    fontFamily: 'var(--font-body)',
-    whiteSpace: 'nowrap',
-    color: 'var(--text-inverse)',
-}
+const solidButtonClass =
+    'cursor-pointer rounded-[var(--radius-pill)] border-none px-[22px] py-[11px] font-primary text-[13.5px] font-bold whitespace-nowrap text-text-inverse'

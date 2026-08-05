@@ -32,6 +32,28 @@ function IconChevron({ dir }: { dir: 'left' | 'right' }) {
     )
 }
 
+/**
+ * Class của một nút cuộn.
+ *
+ * `aria-disabled` thay cho thuộc tính `disabled`: screen reader vẫn đọc được
+ * và thứ tự Tab không bị nhảy cóc. Đổi lại, mọi hiệu ứng hover phải tự tay
+ * huỷ ở trạng thái vô hiệu — trình duyệt không làm hộ như với `disabled`.
+ */
+const RAIL_BTN = [
+    'inline-flex items-center justify-center',
+    // 32px — vượt ngưỡng target chạm 24px của WCAG 2.2 §2.5.8.
+    'h-8 w-8 p-0',
+    'rounded-full border border-border-default bg-surface-raised text-text-primary',
+    'cursor-pointer',
+    'transition-[background-color,color,border-color,transform] duration-150 ease-out',
+    'motion-reduce:transition-none',
+    'hover:bg-brand hover:border-brand hover:text-text-inverse',
+    'active:translate-y-px',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+    'aria-disabled:cursor-not-allowed aria-disabled:opacity-[0.38]',
+    'aria-disabled:hover:bg-surface-raised aria-disabled:hover:border-border-default aria-disabled:hover:text-text-primary',
+].join(' ')
+
 export function ScrollRail({
     children,
     className = '',
@@ -98,10 +120,12 @@ export function ScrollRail({
     }
 
     const nav = (
-        <div className="h7-rail-nav">
+        // Cụm nút — CHỈ desktop. Mobile đã vuốt chạm được, và mép thẻ kế tiếp
+        // lộ ra sẵn nên không cần tín hiệu thêm.
+        <div className="hidden gap-2 min-[960px]:inline-flex">
             <button
                 type="button"
-                className="h7-rail-btn"
+                className={RAIL_BTN}
                 onClick={() => scrollBy(-1)}
                 aria-disabled={atStart}
                 aria-label={labels.prev}
@@ -110,7 +134,7 @@ export function ScrollRail({
             </button>
             <button
                 type="button"
-                className="h7-rail-btn"
+                className={RAIL_BTN}
                 onClick={() => scrollBy(1)}
                 aria-disabled={atEnd}
                 aria-label={labels.next}
@@ -124,7 +148,7 @@ export function ScrollRail({
         <>
             {head(nav)}
 
-            <div className="h7-rail-wrap">
+            <div className="relative">
                 <div
                     ref={railRef}
                     className={className}
@@ -135,64 +159,6 @@ export function ScrollRail({
                     {children}
                 </div>
             </div>
-
-            <style>{`
-                /* Cụm nút — chỉ desktop. Mobile đã vuốt chạm được, và mép thẻ
-                   kế tiếp lộ ra sẵn nên không cần tín hiệu thêm. */
-                .h7-rail-nav { display: none; }
-
-                .h7-rail-wrap { position: relative; }
-
-                @media (min-width: 960px) {
-                    .h7-rail-nav {
-                        display: inline-flex;
-                        gap: 8px;
-                    }
-
-                    .h7-rail-btn {
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        /* 32px — vượt ngưỡng target chạm 24px của WCAG 2.2 §2.5.8. */
-                        width: 32px;
-                        height: 32px;
-                        padding: 0;
-                        border: 1px solid var(--border);
-                        border-radius: 50%;
-                        background: var(--surface);
-                        color: var(--text);
-                        cursor: pointer;
-                        transition: background 150ms ease, color 150ms ease,
-                                    border-color 150ms ease, transform 150ms ease;
-                    }
-                    .h7-rail-btn:hover {
-                        background: var(--brand);
-                        border-color: var(--brand);
-                        color: var(--text-inverse);
-                    }
-                    .h7-rail-btn:active { transform: translateY(1px); }
-                    .h7-rail-btn:focus-visible {
-                        outline: 2px solid var(--brand);
-                        outline-offset: 2px;
-                    }
-                    /* aria-disabled thay cho thuộc tính disabled: screen reader
-                       vẫn đọc được và thứ tự Tab không bị nhảy cóc. */
-                    .h7-rail-btn[aria-disabled='true'] {
-                        opacity: 0.38;
-                        cursor: not-allowed;
-                    }
-                    .h7-rail-btn[aria-disabled='true']:hover {
-                        background: var(--surface);
-                        border-color: var(--border);
-                        color: var(--text);
-                    }
-
-                }
-
-                @media (prefers-reduced-motion: reduce) {
-                    .h7-rail-btn { transition: none; }
-                }
-            `}</style>
         </>
     )
 }

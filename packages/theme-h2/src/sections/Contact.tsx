@@ -14,18 +14,11 @@ const SLUG = meta.slug
 
 const SOCIAL = ['Facebook', 'Instagram', 'TikTok', 'Google Maps']
 
-const COLUMN_TITLE: React.CSSProperties = {
-    fontSize: 'var(--text-xs)',
-    fontWeight: 700,
-    color: 'var(--text)',
-    marginBottom: 'var(--space-3)',
-}
+/** Tiêu đề một cột trong chân trang — lặp ở cả bốn cột nên gom lại một chỗ. */
+const COLUMN_TITLE = 'mb-3 text-xs font-bold text-text-primary'
 
-const LINK: React.CSSProperties = {
-    fontSize: 'var(--text-sm)',
-    color: 'var(--text-muted)',
-    textDecoration: 'none',
-}
+/** Link chân trang — cùng cỡ, cùng màu, không gạch chân. */
+const LINK = 'text-sm text-text-secondary no-underline'
 
 export function Contact({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui[locale]
@@ -35,62 +28,31 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
     return (
         <footer
             id="contact"
-            style={{
-                background: 'var(--surface-alt)',
-                borderTop: '1px solid var(--border)',
-                padding: 'var(--space-16) var(--space-6) 28px',
-                scrollMarginTop: '80px',
-            }}
+            className="border-t border-border-default bg-surface-base px-6 pt-[var(--space-16)] pb-7 [scroll-margin-top:80px]"
         >
-            <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
-                        gap: 'var(--space-8)',
-                        paddingBottom: '36px',
-                        borderBottom: '1px solid var(--border)',
-                    }}
-                >
+            <div className="mx-auto max-w-[var(--container)]">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,200px),1fr))] gap-[var(--space-8)] border-b border-border-default pb-9">
                     <div>
-                        <div
-                            style={{
-                                fontFamily: 'var(--font-display)',
-                                fontSize: 'var(--text-base)',
-                                fontWeight: 700,
-                                color: 'var(--text)',
-                                marginBottom: 'var(--space-3)',
-                            }}
-                        >
+                        <div className="mb-3 font-display text-base font-bold text-text-primary">
                             {brand.name} {brand.suffix}
                         </div>
-                        <p
-                            style={{
-                                fontSize: 'var(--text-sm)',
-                                lineHeight: 1.7,
-                                color: 'var(--text-muted)',
-                                margin: '0 0 var(--space-3)',
-                                maxWidth: '320px',
-                            }}
-                        >
+                        <p className="mt-0 mb-3 max-w-[320px] text-sm leading-[1.7] text-text-secondary">
                             {t.footerAbout}
                         </p>
-                        <div
-                            style={{
-                                fontSize: 'var(--text-sm)',
-                                color: 'var(--text-muted)',
-                                lineHeight: 1.7,
-                            }}
-                        >
+                        <div className="text-sm leading-[1.7] text-text-secondary">
                             {pick(brand.address, locale)}
                         </div>
                     </div>
 
                     <div>
-                        <div style={COLUMN_TITLE}>{t.footerNav}</div>
-                        <div style={{ display: 'grid', gap: 9 }}>
+                        <div className={COLUMN_TITLE}>{t.footerNav}</div>
+                        <div className="grid gap-[9px]">
                             {nav.map((item) => (
-                                <a key={item.href} href={themeHref(SLUG, item.href)} style={LINK}>
+                                <a
+                                    key={item.href}
+                                    href={themeHref(SLUG, item.href)}
+                                    className={LINK}
+                                >
                                     {pick(item.label, locale)}
                                 </a>
                             ))}
@@ -98,19 +60,19 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                     </div>
 
                     <div>
-                        <div style={COLUMN_TITLE}>{t.footerContact}</div>
-                        <div style={{ display: 'grid', gap: 9 }}>
-                            <a href={tel} style={LINK}>
+                        <div className={COLUMN_TITLE}>{t.footerContact}</div>
+                        <div className="grid gap-[9px]">
+                            <a href={tel} className={LINK}>
                                 {brand.phone}
                             </a>
-                            <a href={`mailto:${brand.email}`} style={LINK}>
+                            <a href={`mailto:${brand.email}`} className={LINK}>
                                 {brand.email}
                             </a>
                             <a
                                 href={`https://${brand.site}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={LINK}
+                                className={LINK}
                             >
                                 {brand.site}
                             </a>
@@ -118,10 +80,10 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                     </div>
 
                     <div>
-                        <div style={COLUMN_TITLE}>{t.footerFollow}</div>
-                        <div style={{ display: 'grid', gap: 9 }}>
+                        <div className={COLUMN_TITLE}>{t.footerFollow}</div>
+                        <div className="grid gap-[9px]">
                             {SOCIAL.map((name) => (
-                                <span key={name} style={LINK}>
+                                <span key={name} className={LINK}>
                                     {name}
                                 </span>
                             ))}
@@ -129,22 +91,11 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        paddingTop: 'var(--space-5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 'var(--space-4)',
-                        flexWrap: 'wrap',
-                        fontSize: 'var(--text-xs)',
-                        color: 'var(--text-muted)',
-                    }}
-                >
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-[var(--space-5)] text-xs text-text-secondary">
                     <span>
                         © {new Date().getFullYear()} {brand.name} {brand.suffix}
                     </span>
-                    <a href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
+                    <a href="/" className="text-text-secondary no-underline">
                         ← {locale === 'vi' ? 'Về trang tổng' : 'Back to showcase'}
                     </a>
                 </div>

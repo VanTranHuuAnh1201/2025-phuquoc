@@ -36,9 +36,19 @@ export interface HomeProps {
     locale: Locale
 }
 
+/**
+ * `overflow-x-clip` chứ KHÔNG phải `overflow-x-hidden`.
+ *
+ * Spec CSS: khi một trục là `hidden` còn trục kia `visible`, trình duyệt âm thầm
+ * đổi trục `visible` thành `auto`. Nên `overflow-x: hidden` biến phần tử này
+ * thành scroll container, và mọi `position: sticky` bên trong dính vào NÓ thay
+ * vì vào viewport — thanh đặt phòng dính ở Hero trôi mất khi cuộn.
+ *
+ * `clip` chặn tràn ngang y hệt nhưng không tạo scroll container.
+ */
 export function Home({ data, locale }: HomeProps) {
     return (
-        <div data-theme={meta.slug} style={{ overflowX: 'hidden' }}>
+        <div data-theme={meta.slug} className="overflow-x-clip">
             <BaseCss />
             <Header data={data} locale={locale} />
             <main>

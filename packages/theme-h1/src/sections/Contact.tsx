@@ -1,4 +1,4 @@
-﻿import { pick, telHref, themeRoot, type Locale, type PropertyData } from '@repo/core'
+import { pick, telHref, themeRoot, type Locale, type PropertyData } from '@repo/core'
 
 import { meta } from '../meta'
 import { ui } from '../strings'
@@ -19,34 +19,20 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
     const zaloPhone = brand.phone.replace(/\s/g, '')
 
     return (
-        <footer
-            id="contact"
-            style={{
-                marginTop: 'var(--space-7)',
-                background: 'var(--color-surface-strong)',
-                color: 'var(--color-text-inverse)',
-            }}
-        >
-            <div className="h6-container" style={{ padding: 'var(--space-6) var(--space-4)' }}>
-                <div
-                    className="h6-contact-grid"
-                    style={{ display: 'grid', gap: 'var(--space-5)' }}
-                >
+        <footer id="contact" className="mt-7 bg-surface-strong text-text-inverse">
+            <div className="h6-container p-6 px-4">
+                {/* Mobile một cột; ≥900px chia 7/5 — breakpoint riêng của mẫu,
+                    không trùng thang mặc định của Tailwind nên viết arbitrary. */}
+                <div className="grid gap-5 min-[900px]:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
                     <div>
-                        <p
-                            className="h6-display"
-                            style={{ fontSize: 'var(--font-size-xl)', margin: '0 0 var(--space-2)' }}
-                        >
+                        <p className="h6-display mt-0 mb-2 text-xl">
                             {brand.name} {brand.suffix}
                         </p>
-                        <p style={{ margin: '0 0 var(--space-3)', opacity: 0.85, maxWidth: '48ch' }}>
+                        <p className="mt-0 mb-3 max-w-[48ch] opacity-85">
                             {pick(brand.address, locale)}
                         </p>
-                        <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', opacity: 0.85 }}>
-                            <a
-                                href={`mailto:${brand.email}`}
-                                style={{ color: 'var(--color-text-inverse)' }}
-                            >
+                        <p className="m-0 text-sm opacity-85">
+                            <a href={`mailto:${brand.email}`} className="text-text-inverse">
                                 {brand.email}
                             </a>
                             {' · '}
@@ -54,8 +40,9 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                         </p>
                     </div>
 
-                    <div className="h6-contact-actions" style={{ display: 'grid', gap: 'var(--space-2)', alignContent: 'start' }}>
-                        <p className="h6-kicker" style={{ color: 'var(--color-text-inverse)', opacity: 0.8, margin: 0 }}>
+                    {/* K7: Zalo + hotline lên đầu trên mobile, về đúng cột ở ≥900px. */}
+                    <div className="order-first grid content-start gap-2 min-[900px]:order-none">
+                        <p className="h6-kicker m-0 text-text-inverse opacity-80">
                             {t.contactKicker}
                         </p>
                         <a
@@ -65,16 +52,7 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                                     ? `Gọi hotline ${brand.phone}`
                                     : `Call hotline ${brand.phone}`
                             }
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 10,
-                                minHeight: 32,
-                                color: 'var(--color-text-inverse)',
-                                fontWeight: 'var(--font-weight-bold)' as never,
-                                fontSize: 'var(--font-size-lg)',
-                                textDecoration: 'none',
-                            }}
+                            className="inline-flex min-h-[32px] items-center gap-[10px] text-lg font-bold text-text-inverse no-underline"
                         >
                             <IconPhone size={18} /> {brand.phone}
                         </a>
@@ -87,15 +65,7 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                                     ? 'Nhắn Zalo cho resort (mở tab mới)'
                                     : 'Message the resort on Zalo (new tab)'
                             }
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 10,
-                                minHeight: 32,
-                                color: 'var(--color-text-inverse)',
-                                textDecoration: 'underline',
-                                textUnderlineOffset: 4,
-                            }}
+                            className="inline-flex min-h-[32px] items-center gap-[10px] text-text-inverse underline [text-underline-offset:4px]"
                         >
                             {/* Zalo OA placeholder — fake data theo D-8, thay khi có OA thật. */}
                             <IconZalo size={18} /> Zalo
@@ -103,40 +73,19 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        marginTop: 'var(--space-5)',
-                        paddingTop: 'var(--space-3)',
-                        borderTop: '1px solid var(--overlay-line)',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 'var(--space-2) var(--space-4)',
-                        alignItems: 'baseline',
-                        fontSize: 'var(--font-size-sm)',
-                        opacity: 0.85,
-                    }}
-                >
-                    <span>© {brand.name} {brand.suffix}</span>
+                <div className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-[var(--overlay-line)] pt-3 text-sm opacity-85">
+                    <span>
+                        © {brand.name} {brand.suffix}
+                    </span>
                     <a
                         href={`${themeRoot(meta.slug)}#booking`}
                         title={t.policyNote}
-                        style={{ color: 'var(--color-text-inverse)' }}
+                        className="text-text-inverse"
                     >
                         {t.policyBooking}
                     </a>
                 </div>
             </div>
-
-            <style>{`
-                @media (min-width: 900px) {
-                    .h6-contact-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
-                }
-                @media (max-width: 899.98px) {
-                    /* K7: Zalo + hotline lên đầu trên mobile. */
-                    .h6-contact-actions { order: -1; }
-                }
-            `}</style>
         </footer>
     )
 }
-

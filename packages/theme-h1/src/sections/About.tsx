@@ -18,77 +18,37 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
     const t = ui(locale)
 
     return (
-        <section id="about" style={{ padding: 'var(--space-7) 0 0' }}>
-            <div
-                className="h6-container h6-about-grid"
-                style={{ display: 'grid', gap: 'var(--space-6)', alignItems: 'start' }}
-            >
+        <section id="about" className="pt-7">
+            {/* ≥900px chia 7/5 — breakpoint riêng của mẫu, không nằm trong thang
+                mặc định của Tailwind nên viết arbitrary variant. */}
+            <div className="h6-container grid items-start gap-6 min-[900px]:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
                 {/* ---- câu chuyện + facts ---- */}
                 <div>
-                    <p className="h6-kicker" style={{ margin: '0 0 var(--space-3)' }}>
-                        {t.aboutKicker}
-                    </p>
-                    <h2
-                        className="h6-display"
-                        style={{
-                            fontSize: 'var(--font-size-3xl)',
-                            margin: '0 0 var(--space-4)',
-                            maxWidth: '22ch',
-                        }}
-                    >
+                    <p className="h6-kicker mt-0 mb-3">{t.aboutKicker}</p>
+                    <h2 className="h6-display mt-0 mb-4 max-w-[22ch] text-3xl">
                         {pick(data.about.title, locale)}
                     </h2>
                     {data.about.body.map((paragraph, i) => (
-                        <p
-                            key={i}
-                            style={{
-                                margin: '0 0 var(--space-3)',
-                                color: 'var(--color-text-secondary)',
-                                maxWidth: '58ch',
-                            }}
-                        >
+                        <p key={i} className="mt-0 mb-3 max-w-[58ch] text-text-secondary">
                             {pick(paragraph, locale)}
                         </p>
                     ))}
 
                     {/* dải facts — số serif xanh, kẻ dọc ngăn cách */}
-                    <dl
-                        className="h6-facts"
-                        style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: 'var(--space-3) 0',
-                            margin: 'var(--space-5) 0 0',
-                        }}
-                    >
+                    <dl className="mt-5 mb-0 flex flex-wrap gap-x-0 gap-y-3">
                         {data.facts.map((fact, i) => (
                             <div
                                 key={i}
-                                style={{
-                                    paddingRight: 'var(--space-4)',
-                                    marginRight: 'var(--space-4)',
-                                    borderRight:
-                                        i < data.facts.length - 1
-                                            ? '1px solid var(--color-border-default)'
-                                            : 'none',
-                                }}
+                                className={[
+                                    'mr-4 pr-4',
+                                    // Kẻ dọc giữa các fact — mục cuối không có vạch.
+                                    i < data.facts.length - 1
+                                        ? 'border-r border-border-default'
+                                        : 'border-r-0',
+                                ].join(' ')}
                             >
-                                <dt
-                                    className="h6-display"
-                                    style={{
-                                        fontSize: 'var(--font-size-2xl)',
-                                        color: 'var(--color-brand)',
-                                    }}
-                                >
-                                    {fact.value}
-                                </dt>
-                                <dd
-                                    style={{
-                                        margin: 0,
-                                        fontSize: 'var(--font-size-sm)',
-                                        color: 'var(--color-text-secondary)',
-                                    }}
-                                >
+                                <dt className="h6-display text-2xl text-brand">{fact.value}</dt>
+                                <dd className="m-0 text-sm text-text-secondary">
                                     {pick(fact.label, locale)}
                                 </dd>
                             </div>
@@ -97,106 +57,41 @@ export function About({ data, locale }: { data: PropertyData; locale: Locale }) 
                 </div>
 
                 {/* ---- bảng chặng đường ra đảo ---- */}
-                <div
-                    style={{
-                        background: 'var(--color-surface-raised)',
-                        border: '1px solid var(--color-border-muted)',
-                        borderRadius: 'var(--radius-lg)',
-                        overflow: 'hidden',
-                    }}
-                >
-                    <p
-                        className="h6-kicker"
-                        style={{
-                            margin: 0,
-                            padding: 'var(--space-3) var(--space-4)',
-                            background: 'var(--color-surface-sand)',
-                        }}
-                    >
+                <div className="overflow-hidden rounded-lg border border-border-muted bg-surface-raised">
+                    <p className="h6-kicker m-0 bg-[var(--color-surface-sand)] px-4 py-3">
                         {t.wayKicker}
                     </p>
-                    <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                    <ol className="m-0 list-none p-0">
                         {data.transport.map((leg, i) => (
                             <li
                                 key={i}
-                                style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '24px minmax(0, 1fr) auto',
-                                    gap: '2px var(--space-3)',
-                                    padding: 'var(--space-3) var(--space-4)',
-                                    borderTop: i > 0 ? '1px solid var(--color-border-muted)' : 'none',
-                                }}
+                                className={[
+                                    'grid grid-cols-[24px_minmax(0,1fr)_auto] gap-x-3 gap-y-[2px] px-4 py-3',
+                                    i > 0 ? 'border-t border-border-muted' : '',
+                                ].join(' ')}
                             >
                                 <span
                                     aria-hidden="true"
-                                    style={{
-                                        gridRow: '1 / span 2',
-                                        width: 24,
-                                        height: 24,
-                                        borderRadius: 999,
-                                        display: 'grid',
-                                        placeItems: 'center',
-                                        background: 'var(--color-info-bg)',
-                                        color: 'var(--color-brand)',
-                                        fontSize: 'var(--font-size-xs)',
-                                        fontWeight: 'var(--font-weight-bold)' as never,
-                                        marginTop: 2,
-                                    }}
+                                    className="row-[1/span_2] mt-[2px] grid h-[24px] w-[24px] place-items-center rounded-full bg-info-bg text-xs font-bold text-brand"
                                 >
                                     {i + 1}
                                 </span>
-                                <span
-                                    style={{
-                                        fontWeight: 'var(--font-weight-bold)' as never,
-                                        fontSize: 'var(--font-size-sm)',
-                                    }}
-                                >
-                                    {pick(leg.leg, locale)}
-                                </span>
-                                <span
-                                    style={{
-                                        fontSize: 'var(--font-size-sm)',
-                                        fontWeight: 'var(--font-weight-medium)' as never,
-                                        color: 'var(--color-text-primary)',
-                                        fontVariantNumeric: 'tabular-nums',
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
+                                <span className="text-sm font-bold">{pick(leg.leg, locale)}</span>
+                                <span className="text-sm font-medium whitespace-nowrap text-text-primary [font-variant-numeric:tabular-nums]">
                                     {pick(leg.price, locale)}
                                 </span>
-                                <span
-                                    style={{
-                                        gridColumn: 2,
-                                        fontSize: 'var(--font-size-sm)',
-                                        color: 'var(--color-text-secondary)',
-                                    }}
-                                >
+                                <span className="col-start-2 text-sm text-text-secondary">
                                     {pick(leg.mode, locale)}
                                 </span>
                             </li>
                         ))}
                     </ol>
                     {/* Chốt chặng cuối bằng lời hứa thật của resort. */}
-                    <p
-                        style={{
-                            margin: 0,
-                            padding: 'var(--space-3) var(--space-4)',
-                            borderTop: '1px solid var(--color-border-muted)',
-                            fontSize: 'var(--font-size-sm)',
-                            color: 'var(--color-brand)',
-                            fontWeight: 'var(--font-weight-medium)' as never,
-                        }}
-                    >
+                    <p className="m-0 border-t border-border-muted px-4 py-3 text-sm font-medium text-brand">
                         {t.trustShuttle} · {t.weatherLine}
                     </p>
                 </div>
             </div>
-
-            <style>{`
-                @media (min-width: 900px) {
-                    .h6-about-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
-                }
-            `}</style>
         </section>
     )
 }

@@ -14,26 +14,14 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
     const places = data.places.slice(0, 3)
 
     return (
-        <section id="places" style={{ padding: 'var(--space-7) 0 0' }}>
+        <section id="places" className="pt-7">
             <div className="h6-container">
-                <p className="h6-kicker" style={{ margin: '0 0 var(--space-2)' }}>
-                    {t.placesKicker}
-                </p>
-                <h2
-                    className="h6-display"
-                    style={{ fontSize: 'var(--font-size-3xl)', margin: '0 0 var(--space-5)' }}
-                >
+                <p className="h6-kicker mt-0 mb-2">{t.placesKicker}</p>
+                <h2 className="h6-display mt-0 mb-5 text-3xl">
                     {locale === 'vi' ? 'Nam Du nên đi đâu' : 'Where to go on Nam Du'}
                 </h2>
 
-                <div
-                    style={{
-                        borderRadius: 'var(--radius-xl)',
-                        overflow: 'hidden',
-                        aspectRatio: '21 / 9',
-                        background: 'var(--color-surface-sand)',
-                    }}
-                >
+                <div className="aspect-[21/9] overflow-hidden rounded-xl bg-[var(--color-surface-sand)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={data.hero.images?.[1] ?? '/hero-2.jpg'}
@@ -43,45 +31,29 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
                                 : 'A Nam Du beach seen from above'
                         }
                         loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        className="h-full w-full object-cover"
                     />
                 </div>
 
-                <div
-                    className="h6-places-cols"
-                    style={{
-                        display: 'grid',
-                        gap: 'var(--space-4)',
-                        paddingTop: 'var(--space-5)',
-                    }}
-                >
-                    {places.map((place) => (
-                        <div key={place.id} className="h6-place-col">
-                            <h3
-                                className="h6-display"
-                                style={{ fontSize: 'var(--font-size-xl)', margin: '0 0 4px' }}
-                            >
+                {/* Mobile xếp dọc; ≥900px thành 3 cột editorial kẻ dọc ngăn cách —
+                    breakpoint riêng của mẫu nên viết arbitrary variant. */}
+                <div className="grid gap-4 pt-5 min-[900px]:grid-cols-3">
+                    {places.map((place, i) => (
+                        <div
+                            key={place.id}
+                            className={
+                                i > 0
+                                    ? 'min-[900px]:border-l min-[900px]:border-border-default min-[900px]:pl-4'
+                                    : undefined
+                            }
+                        >
+                            <h3 className="h6-display mt-0 mb-1 text-xl">
                                 {pick(place.name, locale)}
                             </h3>
-                            <p
-                                style={{
-                                    margin: '0 0 var(--space-2)',
-                                    fontSize: 'var(--font-size-xs)',
-                                    fontWeight: 'var(--font-weight-bold)' as never,
-                                    letterSpacing: '0.08em',
-                                    textTransform: 'uppercase',
-                                    color: 'var(--color-brand)',
-                                }}
-                            >
+                            <p className="mt-0 mb-2 text-xs font-bold tracking-[0.08em] text-brand uppercase">
                                 {pick(place.tag, locale)}
                             </p>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    fontSize: 'var(--font-size-sm)',
-                                    color: 'var(--color-text-secondary)',
-                                }}
-                            >
+                            <p className="m-0 text-sm text-text-secondary">
                                 {pick(place.desc, locale)}
                             </p>
                         </div>
@@ -89,50 +61,21 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
                 </div>
 
                 {data.tours.length > 0 && (
-                    <div style={{ paddingTop: 'var(--space-5)' }}>
-                        <p
-                            style={{
-                                margin: '0 0 var(--space-2)',
-                                fontSize: 'var(--font-size-sm)',
-                                fontWeight: 'var(--font-weight-bold)' as never,
-                                color: 'var(--color-text-secondary)',
-                            }}
-                        >
+                    <div className="pt-5">
+                        <p className="mt-0 mb-2 text-sm font-bold text-text-secondary">
                             {t.toursLabel}
                         </p>
-                        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                        <ul className="m-0 list-none p-0">
                             {data.tours.slice(0, 2).map((tour) => (
                                 <li
                                     key={tour.id}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'baseline',
-                                        gap: 'var(--space-3)',
-                                        padding: 'var(--space-3) 0',
-                                        borderTop: '1px solid var(--color-border-muted)',
-                                        flexWrap: 'wrap',
-                                    }}
+                                    className="flex flex-wrap items-baseline gap-3 border-t border-border-muted py-3"
                                 >
-                                    <span
-                                        style={{
-                                            fontSize: 'var(--font-size-xs)',
-                                            fontWeight: 'var(--font-weight-bold)' as never,
-                                            letterSpacing: '0.08em',
-                                            color: 'var(--color-brand)',
-                                        }}
-                                    >
+                                    <span className="text-xs font-bold tracking-[0.08em] text-brand">
                                         {tour.code}
                                     </span>
-                                    <span style={{ fontWeight: 'var(--font-weight-medium)' as never }}>
-                                        {pick(tour.name, locale)}
-                                    </span>
-                                    <span
-                                        style={{
-                                            marginLeft: 'auto',
-                                            fontVariantNumeric: 'tabular-nums',
-                                            fontWeight: 'var(--font-weight-bold)' as never,
-                                        }}
-                                    >
+                                    <span className="font-medium">{pick(tour.name, locale)}</span>
+                                    <span className="ml-auto font-bold [font-variant-numeric:tabular-nums]">
                                         {formatPrice(tour.price, locale)}
                                     </span>
                                 </li>
@@ -141,16 +84,6 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
                     </div>
                 )}
             </div>
-
-            <style>{`
-                @media (min-width: 900px) {
-                    .h6-places-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-                    .h6-place-col + .h6-place-col {
-                        border-left: 1px solid var(--color-border-default);
-                        padding-left: var(--space-4);
-                    }
-                }
-            `}</style>
         </section>
     )
 }

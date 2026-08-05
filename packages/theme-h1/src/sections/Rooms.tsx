@@ -21,19 +21,12 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
     const roomsHref = `${themePath(SLUG, 'rooms')}${locale === 'vi' ? '' : '?lang=en'}`
 
     return (
-        <section id="rooms" style={{ padding: 'var(--space-7) 0 0' }}>
+        <section id="rooms" className="pt-7">
             <div className="h6-container">
-                <p className="h6-kicker" style={{ margin: '0 0 var(--space-2)' }}>
-                    {t.roomsKicker}
-                </p>
-                <h2
-                    className="h6-display"
-                    style={{ fontSize: 'var(--font-size-3xl)', margin: '0 0 var(--space-5)' }}
-                >
-                    {t.roomsTitle}
-                </h2>
+                <p className="h6-kicker mt-0 mb-2">{t.roomsKicker}</p>
+                <h2 className="h6-display mt-0 mb-5 text-3xl">{t.roomsTitle}</h2>
 
-                <div style={{ borderTop: '1px solid var(--color-border-default)' }}>
+                <div className="border-t border-border-default">
                     {rooms.map((room) => {
                         const extra = data.roomExtras[room.id]
                         const specs = [
@@ -45,102 +38,51 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                         return (
                             <a
                                 key={room.id}
-                                className="h6-room-row"
+                                // `group` để hover trên cả dòng đổi màu tiêu đề và
+                                // nền nút phụ (trước đây là selector con trong <style>).
+                                className="group grid items-center gap-4 border-b border-border-muted py-4 text-inherit no-underline min-[900px]:grid-cols-[280px_minmax(0,1fr)_220px]"
                                 href={`${themePath(SLUG, 'rooms')}/${room.id}${locale === 'vi' ? '' : '?lang=en'}`}
-                                style={{
-                                    display: 'grid',
-                                    gap: 'var(--space-4)',
-                                    padding: 'var(--space-4) 0',
-                                    borderBottom: '1px solid var(--color-border-muted)',
-                                    textDecoration: 'none',
-                                    color: 'inherit',
-                                    alignItems: 'center',
-                                }}
                             >
-                                <div
-                                    style={{
-                                        aspectRatio: '3 / 2',
-                                        borderRadius: 'var(--radius-md)',
-                                        overflow: 'hidden',
-                                        background: 'var(--color-surface-sand)',
-                                    }}
-                                >
+                                <div className="aspect-[3/2] overflow-hidden rounded-md bg-[var(--color-surface-sand)]">
                                     {room.images?.[0] && (
                                         // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                             src={room.images[0]}
                                             alt={pick(room.name, locale)}
                                             loading="lazy"
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover',
-                                            }}
+                                            className="h-full w-full object-cover"
                                         />
                                     )}
                                 </div>
 
-                                <div style={{ minWidth: 0 }}>
-                                    <h3
-                                        className="h6-display"
-                                        style={{
-                                            fontSize: 'var(--font-size-xl)',
-                                            margin: '0 0 var(--space-2)',
-                                        }}
-                                    >
+                                <div className="min-w-0">
+                                    <h3 className="h6-display mt-0 mb-2 text-xl transition-colors duration-[var(--motion-instant)] ease-linear group-hover:text-brand">
                                         {pick(room.name, locale)}
                                     </h3>
                                     {specs.length > 0 && (
-                                        <p
-                                            style={{
-                                                margin: '0 0 var(--space-1)',
-                                                fontSize: 'var(--font-size-sm)',
-                                                color: 'var(--color-text-secondary)',
-                                            }}
-                                        >
+                                        <p className="mt-0 mb-1 text-sm text-text-secondary">
                                             {specs.join(' · ')}
                                         </p>
                                     )}
-                                    <p
-                                        style={{
-                                            margin: 0,
-                                            fontSize: 'var(--font-size-sm)',
-                                            color: 'var(--color-text-secondary)',
-                                        }}
-                                    >
+                                    <p className="m-0 text-sm text-text-secondary">
                                         {t.fitLabel}: {fitFor(room, locale)}
                                     </p>
                                 </div>
 
-                                <div className="h6-room-price">
-                                    <p style={{ margin: '0 0 var(--space-2)' }}>
-                                        <span
-                                            style={{
-                                                fontSize: 'var(--font-size-sm)',
-                                                color: 'var(--color-text-secondary)',
-                                            }}
-                                        >
+                                <div className="min-[900px]:text-right">
+                                    <p className="mt-0 mb-2">
+                                        <span className="text-sm text-text-secondary">
                                             {t.fromPrice}{' '}
                                         </span>
-                                        <strong
-                                            style={{
-                                                fontSize: 'var(--font-size-xl)',
-                                                fontVariantNumeric: 'tabular-nums',
-                                            }}
-                                        >
+                                        <strong className="text-xl [font-variant-numeric:tabular-nums]">
                                             {formatPrice(room.price, locale)}
                                         </strong>
-                                        <span
-                                            style={{
-                                                fontSize: 'var(--font-size-sm)',
-                                                color: 'var(--color-text-secondary)',
-                                            }}
-                                        >
+                                        <span className="text-sm text-text-secondary">
                                             {t.perNight}
                                         </span>
                                     </p>
                                     {/* CTA phụ — cả dòng đã là link nên đây là span tạo hình nút. */}
-                                    <span className="h6-btn h6-btn-ghost" style={{ minHeight: 40 }}>
+                                    <span className="h6-btn h6-btn-ghost min-h-[40px] group-hover:border-[var(--border-strong)] group-hover:bg-[var(--color-surface-sand)]">
                                         {t.seeDetail}
                                     </span>
                                 </div>
@@ -149,26 +91,12 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                     })}
                 </div>
 
-                <div style={{ textAlign: 'center', paddingTop: 'var(--space-5)' }}>
+                <div className="pt-5 text-center">
                     <a className="h6-btn h6-btn-brand" href={roomsHref}>
                         {fill(t.viewAllRooms, { n: data.rooms.length })}
                     </a>
                 </div>
             </div>
-
-            <style>{`
-                .h6-room-row { grid-template-columns: minmax(0, 1fr); }
-                .h6-room-row:hover h3 { color: var(--color-brand); }
-                .h6-room-row h3 { transition: color var(--motion-instant) ease; }
-                .h6-room-row:hover .h6-btn-ghost {
-                    background: var(--color-surface-sand);
-                    border-color: var(--border-strong);
-                }
-                @media (min-width: 900px) {
-                    .h6-room-row { grid-template-columns: 280px minmax(0, 1fr) 220px; }
-                    .h6-room-price { text-align: right; }
-                }
-            `}</style>
         </section>
     )
 }

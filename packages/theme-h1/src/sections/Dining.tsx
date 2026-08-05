@@ -13,75 +13,38 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
     const t = ui(locale)
 
     return (
-        <section id="dining" style={{ padding: 'var(--space-7) 0 0' }}>
-            <div style={{ background: 'var(--color-surface-sand)', padding: 'var(--space-6) 0' }}>
+        <section id="dining" className="pt-7">
+            {/* `--color-surface-sand` nằm NGOÀI bộ D1 nên phải trỏ thẳng vào biến. */}
+            <div className="bg-[var(--color-surface-sand)] py-6">
                 <div
-                    className="h6-container h6-dining-grid"
-                    style={{ display: 'grid', gap: 'var(--space-5)' }}
+                    className={[
+                        'h6-container grid gap-5',
+                        // 900px là ngưỡng riêng của mẫu, không phải md/lg mặc định.
+                        'min-[900px]:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]',
+                        'min-[900px]:items-start',
+                    ].join(' ')}
                 >
                     <div>
-                        <p className="h6-kicker" style={{ margin: '0 0 var(--space-2)' }}>
-                            {t.diningKicker}
-                        </p>
-                        <h2
-                            className="h6-display"
-                            style={{ fontSize: 'var(--font-size-3xl)', margin: 0, maxWidth: '14ch' }}
-                        >
+                        <p className="h6-kicker mt-0 mb-2">{t.diningKicker}</p>
+                        <h2 className="h6-display m-0 max-w-[14ch] text-3xl">
                             {locale === 'vi'
                                 ? 'Ăn ngay tại resort, không phải xuống núi'
                                 : 'Eat well without leaving the hill'}
                         </h2>
                     </div>
 
-                    <ul
-                        className="h6-dining-list"
-                        style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 0 }}
-                    >
+                    <ul className="m-0 grid list-none gap-0 p-0">
                         {data.dining.map((item) => (
-                            <li
-                                key={item.id}
-                                style={{
-                                    padding: 'var(--space-3) 0',
-                                    borderTop: '1px solid var(--color-border-default)',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'baseline',
-                                        gap: 'var(--space-3)',
-                                        flexWrap: 'wrap',
-                                    }}
-                                >
-                                    <h3
-                                        style={{
-                                            margin: 0,
-                                            fontSize: 'var(--font-size-lg)',
-                                            fontWeight: 'var(--font-weight-bold)' as never,
-                                        }}
-                                    >
+                            <li key={item.id} className="border-t border-border-default py-3">
+                                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                                    <h3 className="m-0 text-lg font-bold">
                                         {pick(item.name, locale)}
                                     </h3>
-                                    <span
-                                        style={{
-                                            fontSize: 'var(--font-size-sm)',
-                                            color: 'var(--color-brand)',
-                                            fontWeight: 'var(--font-weight-medium)' as never,
-                                            fontVariantNumeric: 'tabular-nums',
-                                        }}
-                                    >
+                                    <span className="text-sm font-medium text-brand tabular-nums">
                                         {pick(item.note, locale)}
                                     </span>
                                 </div>
-                                <p
-                                    style={{
-                                        margin: '4px 0 0',
-                                        fontSize: 'var(--font-size-sm)',
-                                        color: 'var(--color-text-secondary)',
-                                        maxWidth: '56ch',
-                                    }}
-                                >
+                                <p className="mt-1 mb-0 max-w-[56ch] text-sm text-text-secondary">
                                     {pick(item.desc, locale)}
                                 </p>
                             </li>
@@ -89,15 +52,6 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
                     </ul>
                 </div>
             </div>
-
-            <style>{`
-                @media (min-width: 900px) {
-                    .h6-dining-grid {
-                        grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-                        align-items: start;
-                    }
-                }
-            `}</style>
         </section>
     )
 }

@@ -1,4 +1,4 @@
-﻿import type { Brand, Locale } from '@repo/core'
+import type { Brand, Locale } from '@repo/core'
 
 import { IconZalo } from './icons'
 
@@ -32,34 +32,21 @@ export function ZaloFab({
             rel="noopener noreferrer"
             aria-label={label}
             title={label}
-            className="h6-zalo-fab"
-            style={{
-                position: 'fixed',
-                right: 16,
-                bottom: 'calc(84px + env(safe-area-inset-bottom, 0px))',
-                zIndex: 40,
-                width: 56,
-                height: 56,
-                borderRadius: 999,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'var(--color-surface-raised)',
-                color: 'var(--color-brand)',
-                border: '1px solid var(--color-border-default)',
-                boxShadow: 'var(--shadow-2)',
-                transition: 'box-shadow var(--motion-instant) ease, border-color var(--motion-instant) ease',
-            }}
+            className={[
+                'fixed right-4 z-40 flex h-[56px] w-[56px] items-center justify-center',
+                // Trên mobile phải nhường chỗ cho thanh CTA dính đáy + tai thỏ.
+                'bottom-[calc(84px+env(safe-area-inset-bottom,0px))]',
+                // 900px là ngưỡng riêng của mẫu (không phải md/lg mặc định).
+                'min-[900px]:bottom-6',
+                'rounded-[999px] bg-surface-raised text-brand',
+                'border border-border-default shadow-2',
+                'transition-[box-shadow,border-color] duration-[var(--motion-instant)] ease-out',
+                // Hover nâng bóng lên bậc `--shadow-lg` của hợp đồng `ui`.
+                'hover:border-brand hover:shadow-[var(--shadow-lg)]',
+                'active:brightness-[0.96]',
+            ].join(' ')}
         >
             <IconZalo size={26} />
-            <style>{`
-                .h6-zalo-fab:hover { border-color: var(--color-brand); box-shadow: var(--shadow-lg); }
-                .h6-zalo-fab:active { filter: brightness(0.96); }
-                @media (min-width: 900px) {
-                    .h6-zalo-fab { bottom: 24px; }
-                }
-            `}</style>
         </a>
     )
 }
-

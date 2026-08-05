@@ -40,9 +40,19 @@ export interface HomeProps {
     extra?: React.ReactNode
 }
 
+/**
+ * `overflow-x-clip` chứ KHÔNG phải `overflow-x-hidden`.
+ *
+ * Spec CSS: khi một trục là `hidden` còn trục kia `visible`, trình duyệt âm thầm
+ * đổi trục `visible` thành `auto`. Nên `overflow-x: hidden` biến phần tử này
+ * thành scroll container, và mọi `position: sticky` bên trong dính vào NÓ thay
+ * vì vào viewport — thanh tóm tắt của Booking trôi mất khi cuộn.
+ *
+ * `clip` chặn tràn ngang y hệt nhưng không tạo scroll container.
+ */
 export function Home({ data, locale, extra }: HomeProps) {
     return (
-        <div data-theme="h2" style={{ fontFamily: 'var(--font-body)', overflowX: 'hidden' }}>
+        <div data-theme="h2" className="font-primary overflow-x-clip">
             <Header data={data} locale={locale} extra={extra} />
             <main>
                 <Hero data={data} locale={locale} />

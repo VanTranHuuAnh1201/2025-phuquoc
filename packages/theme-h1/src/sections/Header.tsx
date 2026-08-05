@@ -18,144 +18,67 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
     const { brand, nav } = data
 
     return (
-        <header
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 60,
-                background: 'var(--color-surface-base)',
-                borderTop: '3px solid var(--color-brand)',
-                borderBottom: '1px solid var(--color-border-muted)',
-            }}
-        >
-            <div
-                className="h6-container"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--space-4)',
-                    minHeight: 64,
-                    /* Chừa chỗ cho SiteOverlay (đăng nhập + chuông) của app ở góc phải. */
-                    paddingRight: 170,
-                }}
-            >
+        <header className="fixed top-0 right-0 left-0 z-60 border-t-[3px] border-b border-t-brand border-b-border-muted bg-surface-base">
+            {/* `pr-[170px]`: chừa chỗ cho SiteOverlay (đăng nhập + chuông) của app
+                ở góc phải. */}
+            <div className="h6-container flex min-h-[64px] items-center gap-4 pr-[170px]">
                 <a
                     href={themeRoot(SLUG)}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--space-2)',
-                        textDecoration: 'none',
-                        flexShrink: 0,
-                    }}
+                    className="flex shrink-0 items-center gap-2 no-underline"
                 >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={brand.logo || '/OP5.png'}
                         alt={`${brand.name} ${brand.suffix}`}
-                        style={{ height: 36, width: 'auto', objectFit: 'contain' }}
+                        className="h-[36px] w-auto object-contain"
                     />
-                    <span
-                        className="h6-display"
-                        style={{
-                            fontSize: 'var(--font-size-lg)',
-                            color: 'var(--color-text-primary)',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
+                    <span className="h6-display text-lg whitespace-nowrap text-text-primary">
                         {brand.name}
                     </span>
                 </a>
 
+                {/* Nav ẩn dưới 1080px — breakpoint riêng của mẫu. */}
                 <nav
                     aria-label={locale === 'vi' ? 'Điều hướng chính' : 'Main navigation'}
-                    className="h6-header-nav"
-                    style={{
-                        marginLeft: 'auto',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        overflow: 'hidden',
-                    }}
+                    className="ml-auto hidden items-center gap-[2px] overflow-hidden min-[1081px]:flex"
                 >
                     {nav.map((item) => (
                         <a
                             key={item.href}
                             href={themeHref(SLUG, item.href, true)}
-                            style={{
-                                padding: '10px 12px',
-                                fontSize: 'var(--font-size-sm)',
-                                fontWeight: 'var(--font-weight-medium)' as never,
-                                color: 'var(--color-text-secondary)',
-                                textDecoration: 'none',
-                                whiteSpace: 'nowrap',
-                                borderRadius: 'var(--radius-sm)',
-                                transition: 'color var(--motion-instant) ease',
-                            }}
+                            className="rounded-sm px-3 py-[10px] text-sm font-medium whitespace-nowrap text-text-secondary no-underline transition-colors duration-[var(--motion-instant)] ease-linear hover:text-brand"
                         >
                             {pick(item.label, locale)}
                         </a>
                     ))}
                 </nav>
 
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 'var(--space-3)',
-                        flexShrink: 0,
-                    }}
-                >
+                <div className="flex shrink-0 items-center gap-3">
                     <a
                         href={telHref(brand.phone)}
-                        className="h6-header-tel"
                         aria-label={
                             locale === 'vi'
                                 ? `Gọi hotline ${brand.phone}`
                                 : `Call hotline ${brand.phone}`
                         }
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            fontSize: 'var(--font-size-sm)',
-                            fontWeight: 'var(--font-weight-bold)' as never,
-                            color: 'var(--color-brand)',
-                            textDecoration: 'none',
-                            whiteSpace: 'nowrap',
-                            minHeight: 24,
-                            fontVariantNumeric: 'tabular-nums',
-                        }}
+                        className="inline-flex min-h-[24px] items-center gap-[8px] text-sm font-bold whitespace-nowrap text-brand no-underline [font-variant-numeric:tabular-nums]"
                     >
                         <IconPhone size={16} />
-                        <span className="h6-header-tel-num">{brand.phone}</span>
+                        {/* Dưới 640px chỉ còn icon — số điện thoại ẩn để nhường chỗ. */}
+                        <span className="hidden sm:inline">{brand.phone}</span>
                     </a>
 
-                    <span
-                        style={{
-                            display: 'inline-flex',
-                            gap: 2,
-                            fontSize: 'var(--font-size-xs)',
-                            fontWeight: 'var(--font-weight-bold)' as never,
-                        }}
-                    >
+                    <span className="inline-flex gap-[2px] text-xs font-bold">
                         <a
                             href="?lang=vi"
                             aria-label="Tiếng Việt"
                             aria-current={locale === 'vi' ? 'true' : undefined}
-                            style={{
-                                padding: 6,
-                                minWidth: 24,
-                                textAlign: 'center',
-                                textDecoration: locale === 'vi' ? 'underline' : 'none',
-                                textUnderlineOffset: 4,
-                                color:
-                                    locale === 'vi'
-                                        ? 'var(--color-text-primary)'
-                                        : 'var(--color-text-tertiary)',
-                            }}
+                            className={[
+                                'min-w-[24px] p-[6px] text-center [text-underline-offset:4px]',
+                                locale === 'vi'
+                                    ? 'text-text-primary underline'
+                                    : 'text-text-tertiary no-underline',
+                            ].join(' ')}
                         >
                             VI
                         </a>
@@ -163,33 +86,18 @@ export function Header({ data, locale }: { data: PropertyData; locale: Locale })
                             href="?lang=en"
                             aria-label="English"
                             aria-current={locale === 'en' ? 'true' : undefined}
-                            style={{
-                                padding: 6,
-                                minWidth: 24,
-                                textAlign: 'center',
-                                textDecoration: locale === 'en' ? 'underline' : 'none',
-                                textUnderlineOffset: 4,
-                                color:
-                                    locale === 'en'
-                                        ? 'var(--color-text-primary)'
-                                        : 'var(--color-text-tertiary)',
-                            }}
+                            className={[
+                                'min-w-[24px] p-[6px] text-center [text-underline-offset:4px]',
+                                locale === 'en'
+                                    ? 'text-text-primary underline'
+                                    : 'text-text-tertiary no-underline',
+                            ].join(' ')}
                         >
                             EN
                         </a>
                     </span>
                 </div>
             </div>
-
-            <style>{`
-                .h6-header-nav a:hover { color: var(--color-brand); }
-                @media (max-width: 1080px) {
-                    .h6-header-nav { display: none; }
-                }
-                @media (max-width: 640px) {
-                    .h6-header-tel-num { display: none; }
-                }
-            `}</style>
         </header>
     )
 }

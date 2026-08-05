@@ -38,63 +38,40 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
     if (shots.length === 0) return null
 
     return (
-        <section id="gallery" style={{ padding: 'var(--space-7) 0 0', overflow: 'hidden' }}>
+        <section id="gallery" className="overflow-hidden pt-7">
             <div className="h6-container">
-                <p className="h6-kicker" style={{ margin: '0 0 var(--space-4)' }}>
-                    {t.galleryKicker}
-                </p>
+                <p className="h6-kicker mt-0 mb-4">{t.galleryKicker}</p>
             </div>
-            <div className="h6-container" style={{ overflow: 'visible' }}>
-                <div className="h6-filmstrip" role="list">
-                    {shots.map((shot) => (
+            <div className="h6-container overflow-visible">
+                <div
+                    role="list"
+                    className="flex gap-2 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scroll-snap-type:x_proximity]"
+                >
+                    {shots.map((shot, index) => (
                         <div
                             key={shot.src}
                             role="listitem"
-                            style={{
-                                borderRadius: 'var(--radius-md)',
-                                overflow: 'hidden',
-                                background: 'var(--color-surface-sand)',
-                                flexShrink: 0,
-                            }}
+                            className={[
+                                'shrink-0 overflow-hidden rounded-md [scroll-snap-align:start]',
+                                'bg-[var(--color-surface-sand)]',
+                                'h-[200px] md:h-[240px]',
+                                // Nhịp rộng–hẹp xen kẽ cho hàng ảnh vuông 1000×1000 crawl.
+                                index % 3 === 1
+                                    ? 'w-[300px] md:w-[400px]'
+                                    : 'w-[240px] md:w-[300px]',
+                            ].join(' ')}
                         >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={shot.src}
                                 alt={shot.alt}
                                 loading="lazy"
-                                style={{
-                                    display: 'block',
-                                    height: '100%',
-                                    width: '100%',
-                                    objectFit: 'cover',
-                                }}
+                                className="block h-full w-full object-cover"
                             />
                         </div>
                     ))}
                 </div>
             </div>
-
-            <style>{`
-                .h6-filmstrip {
-                    display: flex;
-                    gap: var(--space-2);
-                    overflow-x: auto;
-                    scroll-snap-type: x proximity;
-                    padding-bottom: var(--space-2);
-                    -webkit-overflow-scrolling: touch;
-                }
-                .h6-filmstrip > div {
-                    width: 300px;
-                    height: 240px;
-                    scroll-snap-align: start;
-                }
-                /* Nhịp rộng–hẹp xen kẽ cho hàng ảnh vuông 1000×1000 crawl. */
-                .h6-filmstrip > div:nth-child(3n + 2) { width: 400px; }
-                @media (max-width: 899.98px) {
-                    .h6-filmstrip > div { width: 240px; height: 200px; }
-                    .h6-filmstrip > div:nth-child(3n + 2) { width: 300px; }
-                }
-            `}</style>
         </section>
     )
 }
