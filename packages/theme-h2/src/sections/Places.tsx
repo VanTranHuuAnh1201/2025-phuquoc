@@ -90,7 +90,13 @@ export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; loca
                         className={[
                             'grid gap-[10px] px-4 pb-3',
                             // Máy tính bảng: hai combo nằm cạnh nhau cho đỡ trống.
-                            'sm:grid-cols-2',
+                            //
+                            // `max-[959px]:` là BẮT BUỘC: ở 1440px cả `sm:` lẫn
+                            // `min-[960px]:` đều khớp, mà Tailwind xếp biến thể
+                            // arbitrary TRƯỚC `sm:` nên `sm:grid-cols-2` thắng
+                            // `min-[960px]:grid-cols-1` — cột combo bị chia đôi
+                            // trên desktop thay vì xếp dọc một cột.
+                            'sm:max-[959px]:grid-cols-2',
                             'min-[960px]:grid-cols-1 min-[960px]:gap-[14px] min-[960px]:px-0 min-[960px]:pt-1 min-[960px]:pb-1',
                         ].join(' ')}
                     >

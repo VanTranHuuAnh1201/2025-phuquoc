@@ -86,7 +86,14 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                         '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
                         '[&::-webkit-scrollbar]:hidden',
                         // Máy tính bảng: thẻ hẹp lại, vẫn một hàng.
-                        'sm:[grid-auto-columns:42vw]',
+                        //
+                        // `max-[959px]:` là BẮT BUỘC, không phải cho gọn. Chỉ
+                        // viết `sm:` thì ở 1440px cả `sm:` (≥640px) lẫn
+                        // `min-[960px]:` đều khớp — và Tailwind xếp biến thể
+                        // arbitrary TRƯỚC `sm:` trong output, nên `42vw` thắng.
+                        // Hậu quả đo được: thẻ 604.8px (=42vw) thay vì 293px,
+                        // desktop chỉ hiện 2 thẻ thay vì 4.
+                        'sm:max-[959px]:[grid-auto-columns:42vw]',
                         // DESKTOP: vẫn MỘT hàng, chỉ đổi bề rộng thẻ. Bốn thẻ vừa
                         // khít container; phòng thứ 5 trở đi thì cuộn tiếp —
                         // không bao giờ xuống hàng thứ hai.

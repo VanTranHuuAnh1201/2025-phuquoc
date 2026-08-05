@@ -154,7 +154,11 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                     </p>
 
                     {/* 4 mục trust — chính chủ · hotline · đưa đón · tàu hoãn. */}
-                    <ul className="m-0 grid list-none grid-cols-1 gap-x-0 gap-y-3 px-0 pt-4 pb-5 sm:grid-cols-2 min-[1080px]:grid-cols-4">
+                    {/* `sm:max-[1079px]:` chứ không phải `sm:` trơn — ở 1440px cả
+                        hai biến thể đều khớp, mà Tailwind xếp biến thể arbitrary
+                        TRƯỚC `sm:` trong output, nên `sm:grid-cols-2` sẽ thắng
+                        `min-[1080px]:grid-cols-4` và dải trust chỉ còn 2 cột. */}
+                    <ul className="m-0 grid list-none grid-cols-1 gap-x-0 gap-y-3 px-0 pt-4 pb-5 sm:max-[1079px]:grid-cols-2 min-[1080px]:grid-cols-4">
                         {trustItems.map((item, i) => (
                             <li
                                 key={i}

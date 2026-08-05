@@ -47,7 +47,17 @@ export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; loca
                         '[-webkit-overflow-scrolling:touch] [scrollbar-width:none]',
                         '[&::-webkit-scrollbar]:hidden',
                         // Máy tính bảng: 2 cột, hết cuộn.
-                        'sm:grid-flow-row sm:grid-cols-2 sm:[grid-auto-columns:auto] sm:overflow-x-visible',
+                        //
+                        // `max-[959px]:` trên `grid-cols-2` là BẮT BUỘC: ở
+                        // 1440px cả `sm:` (≥640px) lẫn `min-[960px]:` đều khớp,
+                        // mà Tailwind xếp biến thể arbitrary TRƯỚC `sm:` trong
+                        // output nên `sm:grid-cols-2` thắng `min-[960px]:grid-cols-4`
+                        // → desktop hiện 2 cột thay vì 4.
+                        //
+                        // Ba class còn lại không cần chặn: chúng chỉ tắt chế độ
+                        // cuộn ngang của mobile, và desktop cũng muốn thế.
+                        'sm:grid-flow-row sm:[grid-auto-columns:auto] sm:overflow-x-visible',
+                        'sm:max-[959px]:grid-cols-2',
                         // DESKTOP: 4 cột dàn đều.
                         'min-[960px]:grid-cols-4 min-[960px]:gap-[20px]',
                         'min-[960px]:px-6 min-[960px]:pb-2',
