@@ -952,7 +952,8 @@ export const namDuHill: PropertyData = {
     reviews: [
         {
             id: 'review-ngoc-anh',
-            name: 'Ngọc Anh (TP.HCM)',
+            name: 'Ngọc Anh',
+            from: t('TP.HCM', 'Ho Chi Minh City'),
             date: '2026-05',
             rating: 5,
             comment: t(
@@ -962,7 +963,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-minh-tri',
-            name: 'Minh Trí (Cần Thơ)',
+            name: 'Minh Trí',
+            from: t('Cần Thơ', 'Can Tho'),
             date: '2026-05',
             rating: 5,
             comment: t(
@@ -972,7 +974,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-thu-ha',
-            name: 'Thu Hà (Hà Nội)',
+            name: 'Thu Hà',
+            from: t('Hà Nội', 'Hanoi'),
             date: '2026-04',
             rating: 5,
             comment: t(
@@ -982,7 +985,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-quoc-bao',
-            name: 'Quốc Bảo (Đà Nẵng)',
+            name: 'Quốc Bảo',
+            from: t('Đà Nẵng', 'Da Nang'),
             date: '2026-04',
             rating: 5,
             comment: t(
@@ -992,7 +996,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-lan-phuong',
-            name: 'Lan Phương (Bình Dương)',
+            name: 'Lan Phương',
+            from: t('Bình Dương', 'Binh Duong'),
             date: '2026-03',
             rating: 5,
             comment: t(
@@ -1002,7 +1007,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-duc-huy',
-            name: 'Đức Huy (Nha Trang)',
+            name: 'Đức Huy',
+            from: t('Nha Trang', 'Nha Trang'),
             date: '2026-03',
             rating: 4,
             comment: t(
@@ -1012,7 +1018,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-kim-oanh',
-            name: 'Kim Oanh (Rạch Giá)',
+            name: 'Kim Oanh',
+            from: t('Rạch Giá', 'Rach Gia'),
             date: '2026-02',
             rating: 5,
             comment: t(
@@ -1022,7 +1029,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-thanh-tung',
-            name: 'Thanh Tùng (Vũng Tàu)',
+            name: 'Thanh Tùng',
+            from: t('Vũng Tàu', 'Vung Tau'),
             date: '2026-02',
             rating: 5,
             comment: t(
@@ -1032,7 +1040,8 @@ export const namDuHill: PropertyData = {
         },
         {
             id: 'review-hai-yen',
-            name: 'Hải Yến (Huế)',
+            name: 'Hải Yến',
+            from: t('Huế', 'Hue'),
             date: '2026-01',
             rating: 5,
             comment: t(

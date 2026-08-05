@@ -189,6 +189,12 @@ export interface Amenity {
 export interface Review {
     id: string
     name: string
+    /**
+     * Nơi khách đến — tách khỏi `name` vì địa danh CÓ bản dịch
+     * ("TP.HCM" / "Ho Chi Minh City"), còn tên riêng thì không. Gộp chung một
+     * chuỗi là đánh rơi bản EN của địa danh, vi phạm luật R6.
+     */
+    from?: I18nText
     date: string
     rating: number
     comment: I18nText

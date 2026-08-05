@@ -45,8 +45,9 @@ export interface Room {
     blurb?: string
     blurbEn?: string
     amenities?: Array<[string, string]>
-    conditions?: string[]
-    description?: string[]
+    /** Cặp `[vi, en]` — cùng quy ước với `amenities`, để không rơi bản dịch. */
+    conditions?: Array<[string, string]>
+    description?: Array<[string, string]>
     images: string[]
     reviews?: RoomReview[]
     shots?: number
@@ -76,10 +77,10 @@ function toRoom(core: CoreRoom, extra: RoomExtra | undefined): Room {
         blurb: core.desc.vi,
         blurbEn: core.desc.en,
         amenities: extra?.amenities.map((a) => [a.vi, a.en] as [string, string]),
-        conditions: extra?.conditions.map((c) => c.vi),
-        description: [extra?.long.vi, extra?.long2?.vi].filter(
-            (x): x is string => Boolean(x),
-        ),
+        conditions: extra?.conditions.map((c) => [c.vi, c.en] as [string, string]),
+        description: [extra?.long, extra?.long2]
+            .filter((x): x is NonNullable<typeof x> => Boolean(x))
+            .map((x) => [x.vi, x.en] as [string, string]),
         images: core.images ?? [],
         reviews: core.reviews?.map((r) => ({
             who: r.who,

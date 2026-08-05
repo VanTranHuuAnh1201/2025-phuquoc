@@ -88,7 +88,7 @@ export function HeroSection() {
         <img
           key={slide.src}
           src={slide.src}
-          alt={slide.alt}
+          alt={tx(slide.alt)}
           aria-hidden={currentSlide !== idx}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[900ms] ease-in-out ${currentSlide === idx ? 'opacity-100' : 'opacity-0'
             }`}

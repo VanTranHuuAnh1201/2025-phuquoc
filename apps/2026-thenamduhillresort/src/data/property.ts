@@ -11,19 +11,37 @@
  * backend thật nó sẽ phục vụ từ cache chứ không biến mất.
  */
 
-import { getPropertySync } from '@repo/core'
+import { getPropertySync, type I18nText } from '@repo/core'
 
 export const property = getPropertySync()
 
 /**
  * Ảnh hero, theo thứ tự trình chiếu.
  * File nằm tại `apps/2026-thenamduhillresort/public/uploads/`.
+ *
+ * `alt` song ngữ vì đây là chuỗi khách nhìn thấy — screen reader tiếng Anh mà
+ * đọc mô tả tiếng Việt thì đúng bằng không có `alt` (luật R6 + D4).
  */
-export const HERO_SLIDES = [
-    { src: '/uploads/hai-dang-Ke-Ga-2.jpg', alt: 'Vịnh Nam Du nhìn từ trên đồi' },
-    { src: '/uploads/hero-1.jpg', alt: 'Bãi biển Nam Du' },
-    { src: '/uploads/hero-3.png', alt: 'Sân hiên The Nam Du Hill' },
-    { src: '/uploads/hero-4.png', alt: 'Sân hiên lục giác nhìn từ trên cao về đêm' },
+export const HERO_SLIDES: Array<{ src: string; alt: I18nText }> = [
+    {
+        src: '/uploads/hai-dang-Ke-Ga-2.jpg',
+        alt: { vi: 'Vịnh Nam Du nhìn từ trên đồi', en: 'Nam Du bay seen from the hill' },
+    },
+    {
+        src: '/uploads/hero-1.jpg',
+        alt: { vi: 'Bãi biển Nam Du', en: 'Nam Du beach' },
+    },
+    {
+        src: '/uploads/hero-3.png',
+        alt: { vi: 'Sân hiên The Nam Du Hill', en: 'The Nam Du Hill terrace' },
+    },
+    {
+        src: '/uploads/hero-4.png',
+        alt: {
+            vi: 'Sân hiên lục giác nhìn từ trên cao về đêm',
+            en: 'The hexagonal terrace from above at night',
+        },
+    },
 ]
 
 /**
@@ -220,117 +238,30 @@ export const featuredPlaces = ['place-hai-bo-dap', 'place-hon-mau', 'place-cay-m
 /**
  * Đánh giá của khách — khối cột cuộn trong `HostServiceSection`.
  *
- * VÌ SAO NỘI DUNG TỰ VIẾT: luật R9 cấm đưa nội dung crawl từ thenamduhill.com
- * lên production. Chín đoạn dưới đây viết mới quanh những thứ đặc trưng của
- * Nam Du — chuyến tàu Rạch Giá, bình minh trên đồi, chủ nhà đón tận bến — nên
- * không dính bản quyền bên thứ ba.
+ * VÌ SAO CHỈ ÁNH XẠ CHỨ KHÔNG KHAI LẠI: nội dung nằm ở `core` (luật R8 — một
+ * nguồn sự thật). Trước đây app giữ một bản sao 9 review trùng từng chữ với
+ * `nam-du-hill.ts`; hai bản trôi song song là chuyện chỉ chờ ngày lệch nhau.
+ * Giờ app chỉ đổi tên trường cho khớp component.
  *
  * VÌ SAO KHÔNG CÓ ẢNH ĐẠI DIỆN: đây là review demo. Gán mặt người thật (kể cả
  * ảnh sinh tự động) vào lời khen chưa xảy ra là dựng bằng chứng giả. Component
  * dựng avatar từ chữ cái đầu của tên thay vì tải ảnh về.
- *
- * VÌ SAO KHAI Ở APP CHỨ KHÔNG Ở CORE: hiện chỉ app này dùng. Khi theme khác
- * cần tới thì chuyển lên `core` — trừu tượng hoá lúc có người dùng thứ hai,
- * không phải trước đó.
  */
 export interface Testimonial {
     id: string
-    quote: { vi: string; en: string }
+    quote: I18nText
     name: string
     /** Nơi khách đến — hiện cạnh tên, giúp review đọc có thật hơn. */
-    from: { vi: string; en: string }
-    rating: 4 | 5
+    from: I18nText
+    rating: number
 }
 
-export const TESTIMONIALS: Testimonial[] = [
-    {
-        id: 'tm-ngoc-anh',
-        quote: {
-            vi: 'Chủ nhà nhắn tin trước một ngày hỏi chuyến tàu mấy giờ, rồi có người chờ sẵn ở bến. Đi đảo mà không phải lo khâu nào.',
-            en: 'The host messaged a day ahead to ask which ferry we were on, then someone was waiting at the pier. Nothing left for us to arrange.',
-        },
-        name: 'Ngọc Anh',
-        from: { vi: 'TP.HCM', en: 'Ho Chi Minh City' },
-        rating: 5,
-    },
-    {
-        id: 'tm-minh-tri',
-        quote: {
-            vi: 'Dậy sớm ngồi ngoài hiên xem mặt trời lên khỏi mặt biển. Hai đêm ở đây đáng giá hơn cả tuần nghỉ ở chỗ đông người.',
-            en: 'We got up early and watched the sun come off the water from the terrace. Two nights here beat a whole week somewhere crowded.',
-        },
-        name: 'Minh Trí',
-        from: { vi: 'Cần Thơ', en: 'Can Tho' },
-        rating: 5,
-    },
-    {
-        id: 'tm-thu-ha',
-        quote: {
-            vi: 'Phòng nhìn thẳng ra vịnh, sáng mở cửa là thấy biển. Đúng như ảnh, không có chuyện ảnh một đằng phòng một nẻo.',
-            en: 'The room looks straight onto the bay — you open the door in the morning and there it is. Exactly like the photos, no surprises.',
-        },
-        name: 'Thu Hà',
-        from: { vi: 'Hà Nội', en: 'Hanoi' },
-        rating: 5,
-    },
-    {
-        id: 'tm-quoc-bao',
-        quote: {
-            vi: 'Đi bốn người, thuê xe máy ngay tại resort rồi chạy vòng đảo. Chủ nhà chỉ đường tới mấy bãi vắng mà Google Maps không có.',
-            en: 'Four of us rented bikes right at the resort and rode around the island. The host pointed us to quiet beaches Google Maps does not show.',
-        },
-        name: 'Quốc Bảo',
-        from: { vi: 'Đà Nẵng', en: 'Da Nang' },
-        rating: 5,
-    },
-    {
-        id: 'tm-lan-phuong',
-        quote: {
-            vi: 'Bữa sáng ăn ngoài nhà hàng nhìn ra biển, cá mới đánh về nên ngọt. Bé nhà mình ăn hết cả phần người lớn.',
-            en: 'Breakfast at the seaside restaurant, with fish caught that morning. Our little one finished an adult portion.',
-        },
-        name: 'Lan Phương',
-        from: { vi: 'Bình Dương', en: 'Binh Duong' },
-        rating: 5,
-    },
-    {
-        id: 'tm-duc-huy',
-        quote: {
-            vi: 'Hồ bơi vắng, chiều nào cũng gần như của riêng mình. Buổi tối ra bàn bi-a ngồi với mấy nhóm khách khác, vui.',
-            en: 'The pool was quiet — most afternoons we had it to ourselves. Evenings we played pool with the other guests.',
-        },
-        name: 'Đức Huy',
-        from: { vi: 'Nha Trang', en: 'Nha Trang' },
-        rating: 4,
-    },
-    {
-        id: 'tm-kim-oanh',
-        quote: {
-            vi: 'Lần đầu ra đảo nên khá lo. Nhắn gì cũng được trả lời trong vài phút, kể cả lúc mười giờ đêm hỏi chuyện tàu về.',
-            en: 'It was our first island trip and we were nervous. Every message got an answer within minutes, even asking about the return ferry at ten at night.',
-        },
-        name: 'Kim Oanh',
-        from: { vi: 'Rạch Giá', en: 'Rach Gia' },
-        rating: 5,
-    },
-    {
-        id: 'tm-thanh-tung',
-        quote: {
-            vi: 'Đưa cả nhà ba thế hệ đi, ông bà đi lại thoải mái vì phòng gần khu ăn uống. Chuyện nhỏ nhưng chỗ khác ít khi tính tới.',
-            en: 'We came as three generations. My parents got around easily because the rooms sit close to the dining area — a small thing most places overlook.',
-        },
-        name: 'Thanh Tùng',
-        from: { vi: 'Vũng Tàu', en: 'Vung Tau' },
-        rating: 5,
-    },
-    {
-        id: 'tm-hai-yen',
-        quote: {
-            vi: 'Đi lặn ngắm san hô theo tour chủ nhà giới thiệu, nước trong tới mức nhìn thấy đáy. Về tới nơi đã có nước ấm sẵn để tắm.',
-            en: 'We joined the snorkelling trip the host recommended — the water was clear to the bottom. Hot water was ready for us when we got back.',
-        },
-        name: 'Hải Yến',
-        from: { vi: 'Huế', en: 'Hue' },
-        rating: 5,
-    },
-]
+const NO_PLACE: I18nText = { vi: '', en: '' }
+
+export const TESTIMONIALS: Testimonial[] = (property.reviews ?? []).map((r) => ({
+    id: r.id,
+    quote: r.comment,
+    name: r.name,
+    from: r.from ?? NO_PLACE,
+    rating: r.rating,
+}))
