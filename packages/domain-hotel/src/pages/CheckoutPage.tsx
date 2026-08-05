@@ -10,8 +10,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader } from './PageShell'
+import { PageBody, PageFooter, PageHeader } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Trang thanh toán — port từ `Checkout / Checkout H2 / H3 / H4 - Nam Du Hill.dc.html`.
@@ -197,8 +198,8 @@ export function CheckoutPage({
     if (!room) return null
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             {/* ---- tiêu đề + dải bước ---- */}
             <section
@@ -882,7 +883,7 @@ export function CheckoutPage({
                 </div>
             </section>
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 .ui-form-grid { grid-template-columns: minmax(0, 1fr); }

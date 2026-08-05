@@ -10,8 +10,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Trang danh sách combo & tour — port từ `Tours - Nam Du Hill.dc.html`.
@@ -35,8 +36,8 @@ export function ToursPage({ data, locale, slug, strings }: ToursPageProps) {
     const t = (strings ?? defaultPageStrings)[locale]
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={t.toursTitle}
@@ -401,7 +402,7 @@ export function ToursPage({ data, locale, slug, strings }: ToursPageProps) {
                 </div>
             </section>
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 @media (min-width: 640px) {

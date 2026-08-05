@@ -8,7 +8,7 @@ import {
     GalleryPage as UiGalleryPage,
     TourDetailPage as UiTourDetailPage,
     ToursPage as UiToursPage,
-} from '@repo/ui'
+} from '@repo/domain-hotel'
 
 import { meta } from '../meta'
 

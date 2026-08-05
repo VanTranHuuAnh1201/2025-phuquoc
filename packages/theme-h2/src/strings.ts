@@ -1,4 +1,4 @@
-import type { UiStrings, UiStringSet } from '@repo/ui'
+import type { UiStrings, UiStringSet } from '@repo/domain-hotel'
 
 /**
  * Nhãn giao diện của mẫu 07 — port từ hằng `UI` trong prototype

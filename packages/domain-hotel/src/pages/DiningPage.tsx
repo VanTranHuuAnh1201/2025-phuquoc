@@ -11,8 +11,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Trang Ẩm thực — đích đến của nút "Xem thực đơn & dịch vụ" ở section `dining`.
@@ -54,8 +55,8 @@ export function DiningPage({ data, locale, slug, menu, strings }: DiningPageProp
     const active = categories.find((c) => c.key === activeKey) ?? categories[0]
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={t.diningTitle}
@@ -379,7 +380,7 @@ export function DiningPage({ data, locale, slug, menu, strings }: DiningPageProp
                 </div>
             </section>
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 .ui-dining-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }

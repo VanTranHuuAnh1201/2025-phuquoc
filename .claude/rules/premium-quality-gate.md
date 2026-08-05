@@ -568,16 +568,35 @@ bản "naked" **đính vào PR**. Đây là ảnh chứng minh, không phải tu
 
 ---
 
+## P14 — Automated Visual Audit & Screenshot Gate (Tự động chụp & Thẩm định)
+
+> **BẮT BUỘC:** AI không được báo cáo hoàn thành công việc UI nếu chưa tự mình chạy Visual Inspection qua Browser Subagent / Screenshot Tool.
+
+### Quy trình tự động audit trước khi báo cáo User:
+1. **Chạy Server Dev / Local Server:** Đảm bảo app đang chạy (ví dụ: `http://localhost:3000/h5`).
+2. **Kích hoạt Browser Subagent / Screenshot:**
+   - Chụp Desktop Viewport (1440px width).
+   - Chụp Mobile Viewport (375px width).
+3. **Tự đối chiếu Visual Evidence với Spec & Rules (P0–P13):**
+   - Nút CTA chính có đúng màu `--color-accent` (Accent Ratio ≤10%)?
+   - Cặp Font Serif + Sans-serif hiển thị đúng tiếng Việt không vỡ dấu?
+   - Trên Mobile 375px: H1 + Widget/Nút Đặt phòng có nằm trọn trong Viewport 1 không?
+   - Spacing giữa các section có đủ khoảng thở (≥96px)?
+4. **Báo cáo bằng bằng chứng:** Đính kèm kết quả visual audit vào câu trả lời nghiệm thu cho User.
+
+---
+
 ## Vị trí trong quy trình
 
 ```
 Khách gửi mẫu / yêu cầu
-  → ① website-teardown        (chấm mẫu của khách theo P0–P13 ở Lớp 5)
+  → ① website-teardown        (chấm mẫu của khách theo P0–P14 ở Lớp 5)
   → ② customer-mindset         (nỗi đau, lời từ chối)
   → K0: hỏi user các câu chưa rõ  ← CHỐT: không đoán
-  → ③ conversion-blueprint     (blueprint có mục "P-check": tự đối chiếu P0–P13)
+  → ③ conversion-blueprint     (blueprint có mục "P-check": tự đối chiếu P0–P14)
   → thực thi (frontend-design / ui-ux-pro-max / Figma nhận blueprint)
-  → nghiệm thu: P0–P13 + tự kiểm của design-tokens.md
+  → ④ P14 Auto-Visual Inspection: Chụp screenshot 1440px & 375px tự kiểm P0–P13
+  → nghiệm thu: P0–P14 + tự kiểm của design-tokens.md
 ```
 
 ---
@@ -600,6 +619,7 @@ Khách gửi mẫu / yêu cầu
 | P11 | Premium Feeling | ☐ |
 | P12 | Pixel Quality | ☐ |
 | P13 | Luxury Test | ☐ |
+| P14 | Automated Visual Audit (Desktop 1440px + Mobile 375px Screenshot) | ☐ |
 
 ### Bằng chứng bắt buộc đính vào PR
 

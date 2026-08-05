@@ -12,6 +12,8 @@
   "dependencies": {
     "@repo/core": "workspace:*",
     "@repo/utils": "workspace:*",
+    "@repo/ui-layout": "workspace:*",
+    "@repo/domain-hotel": "workspace:*",
     "@repo/theme-h2": "workspace:*",
     "@repo/ui": "workspace:*",
     "lucide-react": "^0.544.0",

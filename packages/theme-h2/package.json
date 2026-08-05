@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
+    "@repo/domain-hotel": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/ui-layout": "workspace:*",
     "@repo/utils": "workspace:*"
   },
   "devDependencies": {

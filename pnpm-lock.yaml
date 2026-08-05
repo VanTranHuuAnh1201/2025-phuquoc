@@ -78,6 +78,9 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@repo/domain-hotel':
+        specifier: workspace:*
+        version: link:../../packages/domain-hotel
       '@repo/theme-h1':
         specifier: workspace:*
         version: link:../../packages/theme-h1
@@ -87,6 +90,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@repo/ui-layout':
+        specifier: workspace:*
+        version: link:../../packages/ui-layout
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -133,12 +139,18 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@repo/domain-hotel':
+        specifier: workspace:*
+        version: link:../../packages/domain-hotel
       '@repo/theme-h2':
         specifier: workspace:*
         version: link:../../packages/theme-h2
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@repo/ui-layout':
+        specifier: workspace:*
+        version: link:../../packages/ui-layout
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -242,7 +254,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/theme-h1:
+  packages/domain-hotel:
     dependencies:
       '@repo/core':
         specifier: workspace:*
@@ -250,6 +262,40 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../ui
+      '@repo/ui-layout':
+        specifier: workspace:*
+        version: link:../ui-layout
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19
+        version: 19.2.18
+      react:
+        specifier: ^19.1.1
+        version: 19.2.8
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/theme-h1:
+    dependencies:
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@repo/domain-hotel':
+        specifier: workspace:*
+        version: link:../domain-hotel
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@repo/ui-layout':
+        specifier: workspace:*
+        version: link:../ui-layout
       '@repo/utils':
         specifier: workspace:*
         version: link:../utils
@@ -272,9 +318,15 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../core
+      '@repo/domain-hotel':
+        specifier: workspace:*
+        version: link:../domain-hotel
       '@repo/ui':
         specifier: workspace:*
         version: link:../ui
+      '@repo/ui-layout':
+        specifier: workspace:*
+        version: link:../ui-layout
       '@repo/utils':
         specifier: workspace:*
         version: link:../utils
@@ -299,6 +351,28 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../core
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19
+        version: 19.2.18
+      react:
+        specifier: ^19.1.1
+        version: 19.2.8
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/ui-layout:
+    dependencies:
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@repo/utils':
         specifier: workspace:*
         version: link:../utils

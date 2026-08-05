@@ -1,49 +1,74 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import {
-    pick,
-    telHref,
-    themeHref,
-    themePath,
-    themeRoot,
-    type Locale,
-    type PropertyData,
-} from '@repo/core'
-
-import { useScrolled } from '../useScrolled'
-import type { PageStrings } from './strings'
+import { telHref } from '@repo/utils'
+import { useScrolled } from '@repo/ui'
 
 /**
- * Khung dùng chung của các trang con: header cố định, hero có breadcrumb,
- * chân trang.
+ * Khung trang dùng chung: header cố định, hero có breadcrumb, chân trang.
  *
- * VÌ SAO Ở `ui` CHỨ KHÔNG Ở TỪNG THEME: bốn trang Tours / Tour Detail /
- * Gallery / Contact chỉ có MỘT bản trong prototype, nên cả N mẫu dùng chung
- * đúng ba khối này. Bản trước nằm trong `theme-h1` và hard-code `/h1` ở chín
- * chỗ — nhân ra bốn theme là chép code giữa các mẫu (luật R1).
+ * VÌ SAO Ở `ui-layout` CHỨ KHÔNG Ở `ui`: đây là bố cục trang, không phải
+ * primitive. Mọi website đều có header/footer/breadcrumb — kể cả một SaaS
+ * dashboard hay trang thương mại điện tử, không riêng gì lưu trú.
  *
- * Mọi giá trị hình ảnh đọc từ `var(--…)`; không hex nào trong file này, nên
- * đọc nó KHÔNG đoán được đang là mẫu nào (luật R3/D0). Đường dẫn đi qua
- * `themeHref`/`themePath` của core nên chỉ cần `slug` là chạy đúng cho mẫu thứ
- * 20 mà không sửa file này (luật R5).
+ * VÌ SAO KHÔNG NHẬN `PropertyData`: bản trước nhận trọn `data: PropertyData`
+ * nhưng thực chất chỉ đọc `brand` và `nav`. Ràng buộc đó là giả, và nó khoá
+ * cả khung trang vào domain khách sạn — domain thứ hai muốn dùng lại phải chép
+ * code (luật R15). Nay nhận đúng những gì cần, dưới dạng nguyên thuỷ.
+ *
+ * VÌ SAO NHẬN HÀM DỰNG URL: `themeHref`/`themePath` biết tới `rooms`, `tours`,
+ * `dining` — từ vựng của một ngành. Tầng nền không được biết chúng, nên nơi
+ * gọi truyền vào cách dựng đường dẫn của mình.
+ *
+ * Mọi giá trị hình ảnh đọc từ `var(--…)`; không hex nào trong file này, nên đọc
+ * nó KHÔNG đoán được đang là mẫu nào (luật R3/D0).
  *
  * Kích thước bám sát prototype: topbar 44px, header min-height 66px, container
  * `var(--container)`, hero 420px (Tours) · 400px (Gallery) · 380px (Contact).
  */
 
+/** Một mục điều hướng — nhãn đã chọn ngôn ngữ, đường dẫn đã dựng xong. */
+export interface NavItem {
+    label: string
+    href: string
+}
+
+/** Nhận diện thương hiệu ở dạng nguyên thuỷ — không mang type của domain nào. */
+export interface BrandInfo {
+    name: string
+    suffix?: string
+    /** Dòng phụ cạnh tên, vd tên địa danh. Không có thì bỏ trống. */
+    locality?: string
+    address: string
+    phone: string
+    email: string
+    site: string
+}
+
+/** Nhãn cố định của khung trang, do nơi gọi cấp (đã chọn ngôn ngữ). */
+export interface ShellStrings {
+    hotlineTitle: string
+    bookNow: string
+    footerAbout: string
+    footerNav: string
+    footerContact: string
+    footerFollow: string
+    backToHub: string
+}
+
 export interface ShellProps {
-    data: PropertyData
-    locale: Locale
-    /** Slug của mẫu đang render, vd "h3". Quyết định mọi đường dẫn. */
-    slug: string
-    t: PageStrings
+    brand: BrandInfo
+    nav: NavItem[]
+    strings: ShellStrings
+    /** Đường dẫn trang chủ của mẫu đang render. */
+    homeHref: string
+    /** Đường dẫn của nút hành động chính trên header. */
+    ctaHref: string
 }
 
 // ==================================================================== header
 
-export function PageHeader({ data, locale, slug, t }: ShellProps) {
-    const { brand, nav } = data
+export function PageHeader({ brand, nav, strings, homeHref, ctaHref }: ShellProps) {
     const scrolled = useScrolled()
 
     return (
@@ -72,9 +97,9 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                         fontSize: 'var(--text-xs)',
                     }}
                 >
-                    <span>{pick(brand.address, locale)}</span>
+                    <span>{brand.address}</span>
                     <a href={telHref(brand.phone)} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        {t.hotlineTitle}: {brand.phone}
+                        {strings.hotlineTitle}: {brand.phone}
                     </a>
                 </div>
             </div>
@@ -100,7 +125,7 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                     }}
                 >
                     <a
-                        href={themeRoot(slug)}
+                        href={homeHref}
                         style={{
                             flexShrink: 0,
                             display: 'grid',
@@ -121,7 +146,7 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                             {brand.name.toUpperCase()}
                         </span>
                         <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                            {brand.suffix} · Nam Du Island
+                            {[brand.suffix, brand.locality].filter(Boolean).join(' · ')}
                         </span>
                     </a>
 
@@ -139,7 +164,7 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                         {nav.map((item) => (
                             <a
                                 key={item.href}
-                                href={themeHref(slug, item.href)}
+                                href={item.href}
                                 style={{
                                     padding: 'var(--space-2) var(--space-3)',
                                     borderRadius: 'var(--radius)',
@@ -151,13 +176,13 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                                     textDecoration: 'none',
                                 }}
                             >
-                                {pick(item.label, locale)}
+                                {item.label}
                             </a>
                         ))}
                     </nav>
 
                     <a
-                        href={themePath(slug, 'rooms')}
+                        href={ctaHref}
                         style={{
                             padding: '10px var(--space-5)',
                             borderRadius: 'var(--radius-pill)',
@@ -171,7 +196,7 @@ export function PageHeader({ data, locale, slug, t }: ShellProps) {
                             textDecoration: 'none',
                         }}
                     >
-                        {t.bookNow}
+                        {strings.bookNow}
                     </a>
                 </div>
             </header>
@@ -348,8 +373,21 @@ export function LightCrumbs({ crumbs }: { crumbs: Crumb[] }) {
 
 // ================================================================= chân trang
 
-export function PageFooter({ data, locale, slug, t }: ShellProps) {
-    const { brand, nav } = data
+/** Một liên kết mạng xã hội ở chân trang. */
+export interface SocialLink {
+    label: string
+    href: string
+}
+
+export function PageFooter({
+    brand,
+    nav,
+    strings,
+    social,
+}: Omit<ShellProps, 'homeHref' | 'ctaHref'> & { social?: SocialLink[] }) {
+    const socialLinks: SocialLink[] =
+        social ??
+        ['Facebook', 'Instagram', 'Google Maps'].map((label) => ({ label, href: brand.site }))
 
     return (
         <footer
@@ -389,7 +427,7 @@ export function PageFooter({ data, locale, slug, t }: ShellProps) {
                                 maxWidth: 320,
                             }}
                         >
-                            {t.footerAbout}
+                            {strings.footerAbout}
                         </p>
                         <div
                             style={{
@@ -398,23 +436,23 @@ export function PageFooter({ data, locale, slug, t }: ShellProps) {
                                 lineHeight: 1.7,
                             }}
                         >
-                            {pick(brand.address, locale)}
+                            {brand.address}
                         </div>
                     </div>
 
                     <div>
-                        <div style={FOOTER_HEADING}>{t.footerNav}</div>
+                        <div style={FOOTER_HEADING}>{strings.footerNav}</div>
                         <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
                             {nav.map((item) => (
-                                <a key={item.href} href={themeHref(slug, item.href)} style={FOOTER_LINK}>
-                                    {pick(item.label, locale)}
+                                <a key={item.href} href={item.href} style={FOOTER_LINK}>
+                                    {item.label}
                                 </a>
                             ))}
                         </div>
                     </div>
 
                     <div>
-                        <div style={FOOTER_HEADING}>{t.footerContact}</div>
+                        <div style={FOOTER_HEADING}>{strings.footerContact}</div>
                         <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
                             <a href={telHref(brand.phone)} style={FOOTER_LINK}>
                                 {brand.phone}
@@ -426,11 +464,11 @@ export function PageFooter({ data, locale, slug, t }: ShellProps) {
                     </div>
 
                     <div>
-                        <div style={FOOTER_HEADING}>{t.footerFollow}</div>
+                        <div style={FOOTER_HEADING}>{strings.footerFollow}</div>
                         <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
-                            {['Facebook', 'Instagram', 'Google Maps'].map((label) => (
-                                <a key={label} href={brand.site} style={FOOTER_LINK}>
-                                    {label}
+                            {socialLinks.map((link) => (
+                                <a key={link.label} href={link.href} style={FOOTER_LINK}>
+                                    {link.label}
                                 </a>
                             ))}
                         </div>
@@ -453,7 +491,7 @@ export function PageFooter({ data, locale, slug, t }: ShellProps) {
                         © 2026 {brand.name} {brand.suffix}
                     </span>
                     <a href="/" style={{ color: 'var(--border-strong)', textDecoration: 'none' }}>
-                        {t.backToHub}
+                        {strings.backToHub}
                     </a>
                 </div>
             </div>
@@ -480,7 +518,10 @@ const FOOTER_LINK: CSSProperties = {
     fontSize: 'var(--text-sm)',
     color: 'var(--text-muted)',
     textDecoration: 'none',
+    lineHeight: 1.7,
 }
+
+// =================================================================== bọc ngoài
 
 /**
  * Bọc ngoài của mọi trang con — đặt nền, chữ và chặn tràn ngang.
@@ -489,10 +530,16 @@ const FOOTER_LINK: CSSProperties = {
  * biến trong `[data-theme='hN']`, nên thiếu thuộc tính này thì cả trang rơi về
  * bộ dự phòng xám của `@repo/ui` và mọi mẫu trông y hệt nhau.
  */
-export function PageBody({ slug, children }: { slug: string; children: React.ReactNode }) {
+export function PageBody({
+    theme,
+    children,
+}: {
+    theme: string
+    children: React.ReactNode
+}) {
     return (
         <div
-            data-theme={slug}
+            data-theme={theme}
             style={{
                 fontFamily: 'var(--font-body)',
                 color: 'var(--text)',

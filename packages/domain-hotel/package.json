@@ -1,19 +1,16 @@
 {
-  "name": "@repo/theme-h1",
+  "name": "@repo/domain-hotel",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./tokens.css": "./src/tokens.css",
-    "./tokens.fresh.css": "./src/tokens.fresh.css"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@repo/core": "workspace:*",
-    "@repo/domain-hotel": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/ui-layout": "workspace:*",
     "@repo/utils": "workspace:*"

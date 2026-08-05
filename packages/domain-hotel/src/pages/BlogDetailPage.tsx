@@ -7,8 +7,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Chi tiết một bài cẩm nang.
@@ -49,8 +50,8 @@ export function BlogDetailPage({
     const blogHref = themePath(slug, 'blog')
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={pick(post.title, locale)}
@@ -343,7 +344,7 @@ export function BlogDetailPage({
                 </section>
             )}
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 .ui-post-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }

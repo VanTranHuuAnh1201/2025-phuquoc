@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
-import { BookingCalendarModal } from '@repo/ui'
+import { BookingCalendarModal } from '@repo/domain-hotel'
 import { useCartStore } from '../../../../apps/2026-thenamduhill/src/stores/cart.store'
 
 import { meta } from '../meta'

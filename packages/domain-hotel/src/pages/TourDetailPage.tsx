@@ -11,8 +11,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { LightCrumbs, PageBody, PageFooter, PageHeader } from './PageShell'
+import { LightCrumbs, PageBody, PageFooter, PageHeader } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Chi tiết một combo — port từ `Tour Detail - Nam Du Hill.dc.html`.
@@ -75,8 +76,8 @@ export function TourDetailPage({ data, locale, slug, tourSlug, strings }: TourDe
     const others = data.tours.filter((item) => item.id !== tour.id).slice(0, 3)
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <LightCrumbs
                 crumbs={[
@@ -430,7 +431,7 @@ export function TourDetailPage({ data, locale, slug, tourSlug, strings }: TourDe
                 </section>
             )}
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 @media (min-width: 980px) {

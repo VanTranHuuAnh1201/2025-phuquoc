@@ -10,8 +10,9 @@ import {
     type PropertyData,
 } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Cẩm nang — đích đến của nút "Xem tất cả điểm đến & trải nghiệm" ở section
@@ -66,8 +67,8 @@ export function BlogPage({ data, locale, slug, posts = [], strings }: BlogPagePr
     const cats = [{ key: ALL, label: t.filterAll }, ...categories]
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={t.blogTitle}
@@ -334,7 +335,7 @@ export function BlogPage({ data, locale, slug, posts = [], strings }: BlogPagePr
                 </div>
             </section>
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 .ui-post-hero { grid-template-columns: 1fr; }

@@ -3,8 +3,9 @@
 import { useMemo, useState } from 'react'
 import { pick, themePath, themeRoot, type Locale, type PropertyData } from '@repo/core'
 
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Thư viện ảnh — port từ `Gallery - Nam Du Hill.dc.html`.
@@ -99,8 +100,8 @@ export function GalleryPage({ data, locale, slug, strings }: GalleryPageProps) {
     ]
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={t.galleryTitle}
@@ -282,7 +283,7 @@ export function GalleryPage({ data, locale, slug, strings }: GalleryPageProps) {
                 </div>
             </section>
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 .ui-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

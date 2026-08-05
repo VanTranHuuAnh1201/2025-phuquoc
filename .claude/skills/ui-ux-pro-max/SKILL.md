@@ -345,6 +345,11 @@ These are frequently overlooked issues that make UI look unprofessional:
 
 Before delivering UI code, verify these items:
 
+### Automated Visual Audit (Mandatory Gate)
+- [ ] Run Browser Subagent / Screenshot Tool to capture Desktop (1440px) & Mobile (375px) views
+- [ ] Verify visual quality against P0–P14 Quality Gate and active Spec before marking task DONE
+- [ ] Confirm no layout shift, text clipping, or contrast violation in real rendered output
+
 ### Visual Quality
 - [ ] No emojis used as icons (use SVG instead)
 - [ ] All icons from consistent icon set (Heroicons/Lucide)

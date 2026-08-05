@@ -3,9 +3,10 @@
 import { useState, type CSSProperties, type FormEvent } from 'react'
 import { pick, telHref, themeRoot, type Locale, type PropertyData } from '@repo/core'
 
-import { Accordion } from '../Accordion'
-import { PageBody, PageFooter, PageHeader, PageHero } from './PageShell'
+import { Accordion } from '@repo/ui'
+import { PageBody, PageFooter, PageHeader, PageHero } from '@repo/ui-layout'
 import { defaultPageStrings, type PageStrings } from './strings'
+import { shellPropsOf } from '../shell-adapter'
 
 /**
  * Trang liên hệ — port từ `Contact - Nam Du Hill.dc.html`.
@@ -53,8 +54,8 @@ export function ContactPage({ data, locale, slug, strings }: ContactPageProps) {
     }
 
     return (
-        <PageBody slug={slug}>
-            <PageHeader data={data} locale={locale} slug={slug} t={t} />
+        <PageBody theme={slug}>
+            <PageHeader {...shellPropsOf(data, locale, slug, t)} />
 
             <PageHero
                 title={t.contactTitle}
@@ -231,7 +232,7 @@ export function ContactPage({ data, locale, slug, strings }: ContactPageProps) {
                 </section>
             )}
 
-            <PageFooter data={data} locale={locale} slug={slug} t={t} />
+            <PageFooter {...shellPropsOf(data, locale, slug, t)} />
 
             <style>{`
                 @media (min-width: 980px) {
