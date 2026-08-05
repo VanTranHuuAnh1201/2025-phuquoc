@@ -78,21 +78,6 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@repo/theme-h1':
-        specifier: workspace:*
-        version: link:../../packages/theme-h1
-      '@repo/theme-h2':
-        specifier: workspace:*
-        version: link:../../packages/theme-h2
-      '@repo/theme-h3':
-        specifier: workspace:*
-        version: link:../../packages/theme-h3
-      '@repo/theme-h4':
-        specifier: workspace:*
-        version: link:../../packages/theme-h4
-      '@repo/theme-h5':
-        specifier: workspace:*
-        version: link:../../packages/theme-h5
       '@repo/theme-h6':
         specifier: workspace:*
         version: link:../../packages/theme-h6
@@ -243,116 +228,6 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.43
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
-  packages/theme-h1:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../ui
-    devDependencies:
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      react:
-        specifier: ^19.1.1
-        version: 19.2.8
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
-  packages/theme-h2:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../ui
-    devDependencies:
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      react:
-        specifier: ^19.1.1
-        version: 19.2.8
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
-  packages/theme-h3:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../ui
-    devDependencies:
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      react:
-        specifier: ^19.1.1
-        version: 19.2.8
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
-  packages/theme-h4:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../ui
-    devDependencies:
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      react:
-        specifier: ^19.1.1
-        version: 19.2.8
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
-  packages/theme-h5:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../ui
-    devDependencies:
-      '@repo/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      react:
-        specifier: ^19.1.1
-        version: 19.2.8
       typescript:
         specifier: ^5
         version: 5.9.3

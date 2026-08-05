@@ -7,6 +7,10 @@ gợi ý — theme nào lệch khỏi bảng này là sai.
 Bối cảnh kiến trúc ở [CLAUDE.md](../../CLAUDE.md), luật chung ở
 [architecture.md](./architecture.md).
 
+> ⚠️ **Đừng nhầm nhãn.** File này dùng **D0–D6** (hợp đồng token).
+> [premium-quality-gate.md](./premium-quality-gate.md) dùng **P0–P13** (cổng
+> chất lượng thiết kế). `D1` = tên biến CSS · `P1` = Design DNA.
+
 ---
 
 ## D0 — Nguyên tắc bất di bất dịch

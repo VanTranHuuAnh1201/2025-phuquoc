@@ -14,7 +14,7 @@ và **format chính xác** để ra lệnh cho Claude theo từng tình huống.
     booking-domain.md         B0–B8   nghiệp vụ đặt phòng, giá, khuyến mãi
     app-flows.md              F0–F8   luồng màn hình client + CMS
     design-tokens.md          D0–D6   hợp đồng token 4 theme
-    the-10k-checklist.md      K0–K8   cổng chất lượng $10K + 5 câu hỏi bắt buộc
+    premium-quality-gate.md   K0, P0–P13  cổng chất lượng Premium + 5 câu hỏi
   agents/                   AGENT — gọi bằng cách NÊU TÊN trong câu lệnh
     customer-mindset.md       Phòng Sales/Marketing ảo (S1–S5, M1–M6, P1–P4)
     website-teardown.md       Bóc tách website mẫu 6 lớp
@@ -112,7 +112,7 @@ tham số: `node download-images.mjs <file-json> <thư-mục-đích> [--max=N]`.
 
 Claude bóc 6 lớp: UI spec đo được (HEX, px, ms) · phễu chuyển đổi · thông điệp
 marketing · kỹ thuật nền · ưu/nhược theo 2 góc nhìn · khoảng cách với luật
-dự án — kèm chấm điểm K1–K8.
+dự án — kèm chấm điểm P0–P13.
 → Ra file teardown + tóm tắt "mẫu này ăn tiền ở đâu, 3 thứ phải giữ".
 
 ### Bước 3 — Soi tâm thế khách hàng
@@ -141,11 +141,11 @@ Trả lời gộp một lần được, ví dụ:
 > **Gõ:** `Chạy conversion-blueprint cho <theme-hN / sản phẩm X> dựa trên teardown
 > và các câu trả lời K0 ở trên.`
 
-→ Ra blueprint gồm: point of view · **danh sách chức năng** (bảng khách duyệt
+→ Ra blueprint gồm: Design DNA (5 khối) · **danh sách chức năng** (bảng khách duyệt
 phạm vi) · phễu 4 step · design system draft theo tên biến D1 ·
 **UI/UX handoff spec** (token đổ thẳng vào tokens.css, inventory component
 7 trạng thái, layout desktop + mobile riêng từng section R7) · thông điệp
-song ngữ · K-check tự chấm.
+song ngữ · P-check tự chấm P0–P13.
 
 **→ DỪNG Ở ĐÂY, đọc và duyệt blueprint trước khi cho code.** Đây là điểm rẻ
 nhất để sửa hướng.
@@ -180,8 +180,8 @@ Quy tắc khi code (Claude tự biết, nhắc lại để bạn giám sát):
 
 ### Bước 9 — Nghiệm thu
 
-> **Gõ:** `Nghiệm thu <trang/section> bằng customer-mindset và the-10k-checklist.
-> Kết luận: P1 đã gật đầu chưa?`
+> **Gõ:** `Nghiệm thu <trang/section> bằng customer-mindset và
+> premium-quality-gate (P0–P13). Kết luận: có mục nào FAIL không?`
 
 Kèm chạy máy: `pnpm check` (lint + typecheck) và cả 4 theme còn build.
 
@@ -196,7 +196,7 @@ Kèm chạy máy: `pnpm check` (lint + typecheck) và cả 4 theme còn build.
 | Review màn hình đã dựng | `Dùng customer-mindset review <file/route>, kết luận theo khuôn 6 bước` |
 | Bắt đầu theme mới | Chạy đủ Bước 2→5 rồi mới code |
 | Chỉ cần chọn ảnh | `node download-images.mjs` → `Chạy image-curator với <thư mục>` |
-| Kiểm tra chất lượng trước giao | `Đối chiếu <trang> với K1–K8, ghi số đo (LCP, tương phản) vào báo cáo` |
+| Kiểm tra chất lượng trước giao | `Đối chiếu <trang> với P0–P13, ghi số đo (LCP, tương phản) vào báo cáo` |
 | Sửa nhỏ, không cần dây chuyền | Ra lệnh thẳng — rules vẫn tự áp (R, D, F, B) |
 
 ## 5. Nguyên tắc vận hành
@@ -240,5 +240,5 @@ Khách gửi mẫu/yêu cầu ──→ pnpm crawl:full ──→ node download-
                      ⑥ Thực thi (frontend-design / ui-ux-pro-max / Figma)
                                 │
                                 ▼
-                     ⑦ Nghiệm thu: customer-mindset + K1–K8 + pnpm check
+                     ⑦ Nghiệm thu: customer-mindset + P0–P13 + pnpm check
 ```

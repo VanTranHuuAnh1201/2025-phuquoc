@@ -109,7 +109,7 @@ ngành (M3). Mỗi thông điệp ghi rõ: đang gỡ nỗi lo nào của nhân 
 # Quy trình làm việc
 
 1. Đọc teardown mới nhất trong `resources/docs/teardown/` + các file
-   `.claude/rules/*.md` (đặc biệt `the-10k-checklist.md`). Nếu chưa có
+   `.claude/rules/*.md` (đặc biệt `premium-quality-gate.md`). Nếu chưa có
    teardown, dừng và yêu cầu chạy `website-teardown` trước — không phác thảo
    chay.
    **Cổng K0:** nếu context chưa trả lời đủ 5 câu K0 (design direction, nguồn
@@ -121,8 +121,9 @@ ngành (M3). Mỗi thông điệp ghi rõ: đang gỡ nỗi lo nào của nhân 
    và ghi chú để giải thích lại với khách vì sao.
 3. Xuất tài liệu vào `resources/docs/specs/<tên>-blueprint.md`, cấu trúc:
    - Tóm tắt 10 dòng: định vị, 3 quyết định lớn nhất, 1 rủi ro chính
-   - **Point of view** — một câu định vị thẩm mỹ (K1), mọi quyết định sau
-     đối chiếu với câu này
+   - **Design DNA** (P1) — đủ 5 khối: `Theme Name` · `One Sentence` ·
+     `3 Keywords` · `Do` · `Don't`. Mọi quyết định sau đối chiếu với khối
+     `Don't`
    - Bài toán & 2 đối tượng (điền cụ thể theo context khách, không generic)
    - **Danh sách chức năng theo yêu cầu** — bảng: chức năng · nhân vật phục
      vụ (P1–P4) · nỗi đau giải quyết · step trong phễu · mã luật liên quan
@@ -138,13 +139,14 @@ ngành (M3). Mỗi thông điệp ghi rõ: đang gỡ nỗi lo nào của nhân 
      * bảng token theo tên biến D1 (đổ thẳng vào `tokens.css` được)
      * inventory component: tên · variant · 7 trạng thái D3 · kích thước px
      * danh sách màn hình theo section id R7 (top, about, rooms…), mỗi màn
-       ghi layout desktop VÀ layout mobile riêng (K7 — mobile được thiết kế,
-       không phải bị nén)
+       ghi layout desktop VÀ layout mobile riêng (P9 — mobile được thiết kế,
+       không phải bị nén; ghi rõ khác biệt có chủ đích, không chỉ "stack dọc")
    - Bảng thông điệp song ngữ theo step
    - Danh sách việc triển khai xếp theo tác động đến chuyển đổi, map vào
      cấu trúc repo thật (packages/theme-*, packages/ui, packages/core)
-   - **K-check** — tự đối chiếu blueprint với K1–K8 của
-     `the-10k-checklist.md`, mục nào chưa đạt ghi rõ vì sao và việc cần làm
+   - **P-check** — tự đối chiếu blueprint với P0–P13 của
+     `premium-quality-gate.md`, mỗi mục PASS/FAIL/N/A; mục nào chưa đạt ghi
+     rõ vì sao và việc cần làm. Kèm bảng bằng chứng cần thu thập khi thực thi
    - Checklist nghiệm thu: đối chiếu D3, D4, F1 (giỏ qua login), S5, M4
 4. Trả về đường dẫn file + tóm tắt. **Không viết code, không sửa tokens.css**
    — thực thi thuộc phiên chính.

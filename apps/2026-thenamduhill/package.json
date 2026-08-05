@@ -11,11 +11,6 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
-    "@repo/theme-h1": "workspace:*",
-    "@repo/theme-h2": "workspace:*",
-    "@repo/theme-h3": "workspace:*",
-    "@repo/theme-h4": "workspace:*",
-    "@repo/theme-h5": "workspace:*",
     "@repo/theme-h6": "workspace:*",
     "@repo/theme-h7": "workspace:*",
     "@repo/ui": "workspace:*",

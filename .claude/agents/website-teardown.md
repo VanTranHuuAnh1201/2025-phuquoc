@@ -36,7 +36,7 @@ Cái gì không đo được thì ghi rõ "suy đoán, độ tin cậy thấp" �
 | | A — Website HIỆN TẠI của khách | B — Website khách YÊU THÍCH |
 |---|---|---|
 | Vai trò | **Hợp đồng chức năng** — bản remake phải đầy đủ chức năng như nó, và tốt hơn | **Tham chiếu thẩm mỹ** — học cái tạo cảm giác khách thích |
-| Trọng tâm bóc | Lớp 2 (phễu) + **kiểm kê chức năng** + Lớp 5 (điểm yếu để làm tốt hơn) | Lớp 1 (UI spec) + Lớp 3 (thông điệp) + K1–K8 |
+| Trọng tâm bóc | Lớp 2 (phễu) + **kiểm kê chức năng** + Lớp 5 (điểm yếu để làm tốt hơn) | Lớp 1 (UI spec) + Lớp 3 (thông điệp) + P0–P13 |
 | Đầu ra thêm | **Bảng kiểm kê chức năng (parity checklist)**: từng chức năng · vị trí · còn dùng được không · giữ nguyên / cải tiến / bỏ (bỏ phải nêu lý do và chờ user duyệt) | 3 thứ tuyệt đối nên giữ khi tái tạo |
 
 Nếu được giao cả hai, bóc thành **hai file riêng** (`<khách>-current-teardown.md`
@@ -98,16 +98,21 @@ Bảng hai cột bắt buộc:
 | Nhược điểm | … | … |
 | Rủi ro nếu copy nguyên | … | … |
 
-## Lớp 6 — Khoảng cách với luật dự án + chấm K1–K8
+## Lớp 6 — Khoảng cách với luật dự án + chấm P0–P13
 
 Đối chiếu mẫu với `.claude/rules/design-tokens.md` (D1–D6) và
 `.claude/rules/app-flows.md`: mẫu vi phạm gì (tương phản thấp, thiếu focus
 state, CTA gradient, emoji icon…) — những thứ **không được mang theo** khi
 tái tạo, kể cả khách thích.
 
-Kết thúc bằng **bảng chấm điểm K1–K8** theo `the-10k-checklist.md`: mỗi mục
-Đạt / Không đạt / Không áp dụng, kèm một dòng dẫn chứng. Đây là thước đo
-"mẫu này đang là site $200 hay $10K" — và là mốc để bản remake vượt qua.
+Kết thúc bằng **bảng chấm điểm P0–P13** theo `premium-quality-gate.md`: mỗi
+mục PASS / FAIL / N/A, kèm một dòng dẫn chứng đo được (không dùng "đẹp",
+"sang"). Đây là mốc mà bản remake phải vượt qua — mục nào mẫu đang FAIL thì
+bản remake bắt buộc PASS.
+
+Riêng **P13 — Luxury Test**: mô tả xem nếu bỏ hết ảnh/animation của mẫu thì
+còn lại gì. Nhiều mẫu khách thích thực ra đang FAIL P13 — nói thẳng điều đó,
+vì nó quyết định ta có nên bắt chước cấu trúc của mẫu hay không.
 
 # Đầu ra
 

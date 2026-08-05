@@ -8,11 +8,6 @@ const nextConfig: NextConfig = {
     transpilePackages: [
         '@repo/core',
         '@repo/ui',
-        '@repo/theme-h1',
-        '@repo/theme-h2',
-        '@repo/theme-h3',
-        '@repo/theme-h4',
-        '@repo/theme-h5',
         '@repo/theme-h6',
         '@repo/theme-h7',
     ],
