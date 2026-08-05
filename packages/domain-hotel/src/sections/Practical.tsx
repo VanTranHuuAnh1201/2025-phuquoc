@@ -1,7 +1,7 @@
 import { pick, type Locale, type PropertyData } from '@repo/core'
 import { Accordion } from '@repo/ui'
 
-import { ui } from '../strings'
+import type { UiStrings, UiStringSet } from '../strings'
 
 /**
  * Dải thông tin thực dụng: cách đến đảo + lưu ý bên trái, FAQ dạng accordion
@@ -9,6 +9,9 @@ import { ui } from '../strings'
  *
  * Prototype không gán id cho khối này — nó không nằm trong bộ section id của
  * luật R7, mà là phần bổ trợ cho `#booking` ngay bên dưới.
+ *
+ * Section này sống ở `domain-hotel` cho nhiều mẫu của domain lưu trú dùng
+ * chung; bộ nhãn `ui` (giọng văn của mẫu) đi vào qua prop (luật R1).
  */
 
 /** Tiêu đề của hai cột — cùng một dáng chữ nên gom lại một chỗ. */
@@ -18,7 +21,14 @@ const COL_HEADING =
 /** Câu dẫn dưới mỗi tiêu đề cột. */
 const COL_SUB = 'mt-0 mb-[var(--space-6)] text-base text-text-secondary'
 
-export function Practical({ data, locale }: { data: PropertyData; locale: Locale }) {
+export interface PracticalSectionProps {
+    data: PropertyData
+    locale: Locale
+    /** Bộ nhãn giao diện của mẫu — giọng văn là quyết định của theme. */
+    ui: UiStringSet<UiStrings>
+}
+
+export function PracticalSection({ data, locale, ui }: PracticalSectionProps) {
     const t = ui[locale]
 
     return (

@@ -25,7 +25,7 @@ const HERO_IMAGES = ['/hero-1.jpg', '/hero-2.jpg']
  * bố cục — đúng thiết kế, và đây là thông tin quyết định đặt phòng ở Nam Du.
  *
  * Form hiện là vỏ tĩnh; nối vào luồng đặt phòng thật ở bước sau. Không tính
- * giá tại đây (luật R8) — bấm nút là sang `/h7/rooms`.
+ * giá tại đây (luật R8) — bấm nút là sang trang danh sách phòng của mẫu.
  *
  * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
  * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.

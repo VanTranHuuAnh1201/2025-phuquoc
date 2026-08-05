@@ -33,6 +33,29 @@ export {
 } from './shell-adapter'
 export type { AccountRoutes } from './shell-adapter'
 
+// ------------------------------------------------------------------ ảnh
+//
+// Bảng ánh xạ đường dẫn ảnh cho nội dung lưu trú. `core` giữ phần CHỮ, chỗ này
+// giữ ĐƯỜNG DẪN — nhờ vậy app hub và app resort dùng chung một bộ ảnh thay vì
+// mỗi app tự khai một bản (xem docblock của `media.ts`).
+export {
+    UPLOAD_DIR,
+    HERO_SLIDES,
+    RESORT_PHOTOS,
+    FEATURED_PLACE_IDS,
+    galleryWithImages,
+    featuredPlaces,
+    allPhotos,
+    facilityAmenities,
+    hostPerks,
+} from './media'
+export type {
+    HeroSlideAsset,
+    ResortPhoto,
+    ResortPhotoCategory,
+    RoomImageSource,
+} from './media'
+
 // -------------------------------------------------------------- chuỗi giao diện
 export type { UiStrings, UiStringSet } from './strings'
 
@@ -75,3 +98,34 @@ export type { BlogPageProps } from './pages/BlogPage'
 
 export { BlogDetailPage } from './pages/BlogDetailPage'
 export type { BlogDetailPageProps } from './pages/BlogDetailPage'
+
+// ------------------------------------------------------- section của trang chủ
+//
+// Các section này có cùng BỐ CỤC ở nhiều mẫu của domain lưu trú — khác biệt
+// nằm trọn trong `tokens.css` cùng hai prop thuộc về mẫu: `ui` (giọng nhãn) và
+// `headingClass` (bản sắc tiêu đề). Để mỗi theme chép lại là đúng thứ luật R1
+// cấm.
+//
+// `slug` là prop BẮT BUỘC ở mọi section dựng đường dẫn: một mặc định sai làm
+// link trỏ nhầm mẫu mà build vẫn xanh.
+
+export { AboutSection } from './sections/About'
+export type { AboutSectionProps } from './sections/About'
+
+export { RoomsSection } from './sections/Rooms'
+export type { RoomsSectionProps } from './sections/Rooms'
+
+export { DiningSection } from './sections/Dining'
+export type { DiningSectionProps } from './sections/Dining'
+
+export { PlacesSection } from './sections/Places'
+export type { PlacesSectionProps } from './sections/Places'
+
+export { PracticalSection } from './sections/Practical'
+export type { PracticalSectionProps } from './sections/Practical'
+
+export { ScrollRail } from './sections/ScrollRail'
+export type { ScrollRailProps } from './sections/ScrollRail'
+
+export { DEFAULT_SECTION_HEADINGS } from './sections/headings'
+export type { SectionHeadingClasses } from './sections/headings'

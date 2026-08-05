@@ -7,12 +7,16 @@ import { H3 } from '../strings'
 import { TestimonialColumns } from './TestimonialColumns'
 
 /**
- * Section `about` — chủ nhà & tiện ích đi kèm, cạnh lời khách đã ở.
+ * Section `host` — chủ nhà & tiện ích đi kèm, cạnh lời khách đã ở.
  *
- * VÌ SAO MAP VÀO `about` CHỨ KHÔNG PHẢI MỘT ID MỚI: bản gốc ở app đeo
- * `id="experience"`, không nằm trong bộ id của luật R7 — điều hướng và CMS
- * không neo vào nó được. Nội dung ở đây trả lời đúng câu "ở đây là nơi thế
- * nào, ai đón mình" nên `about` là chỗ của nó.
+ * VÌ SAO `host` CHỨ KHÔNG PHẢI `about`: mẫu này render CẢ `AboutSection` dùng
+ * chung của `domain-hotel` (đeo `id="about"`) lẫn khối này. Hai thẻ cùng một
+ * id thì `#about` neo vào cái đầu tiên và cái sau vĩnh viễn không tới được —
+ * deep-link và CMS hỏng lặng lẽ, build vẫn xanh.
+ *
+ * `host` là `CustomSectionId` (xem `types.ts`): id riêng của một mẫu, cố ý
+ * KHÔNG thêm vào `SECTION_IDS` vì bộ đó là hợp đồng mà MỌI mẫu phải hiểu
+ * (luật R7). Một khối chỉ mẫu 03 có thì không thuộc hợp đồng chung.
  *
  * VÌ SAO CÓ REVIEW TRONG CÙNG KHỐI: social proof đặt cạnh lời hứa dịch vụ thì
  * lời hứa mới có sức nặng — tách ra hai section là mất hiệu ứng đó (luật P10).
@@ -31,7 +35,7 @@ export function HostService({ locale, perks, reviews }: HostServiceProps) {
 
     return (
         <section
-            id="about"
+            id="host"
             className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
         >
             <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">

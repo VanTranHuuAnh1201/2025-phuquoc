@@ -4,11 +4,15 @@ import { useState } from 'react'
 import {
     formatPrice,
     pick,
+    roomPath,
     telHref,
+    themePath,
+    themeRoot,
     type Locale,
     type PropertyData,
 } from '@repo/core'
 
+import { meta } from '../meta'
 import { pageUi } from './strings'
 import { LightCrumbs, PageFooter, PageHeader } from './PageShell'
 
@@ -82,15 +86,15 @@ export function RoomDetailPage({
         // trục kia thành scroll container, làm `position: sticky` của sidebar
         // đặt phòng dính vào div này thay vì vào viewport. Xem `globals.css`.
         <div
-            data-theme="h7"
+            data-theme={meta.slug}
             className="overflow-x-clip font-primary text-text-primary"
         >
             <PageHeader data={data} locale={locale} />
 
             <LightCrumbs
                 crumbs={[
-                    { label: t.home, href: '/h7' },
-                    { label: t.roomsPage, href: '/h7/rooms' },
+                    { label: t.home, href: themeRoot(meta.slug) },
+                    { label: t.roomsPage, href: themePath(meta.slug, 'rooms') },
                     { label: pick(room.name, locale) },
                 ]}
             />
@@ -201,7 +205,7 @@ export function RoomDetailPage({
                             {others.map((other) => (
                                 <a
                                     key={other.id}
-                                    href={`/h7/rooms/${other.id}`}
+                                    href={roomPath(meta.slug, other.id)}
                                     className="h7-other-card block overflow-hidden rounded-lg border border-border-default bg-surface-raised text-inherit no-underline"
                                 >
                                     <div className="relative h-[140px] bg-surface-base">
@@ -307,7 +311,7 @@ export function RoomDetailPage({
                                 {pageUi[locale].confirmBooking}
                             </a>
                             <a
-                                href="/h7/rooms"
+                                href={themePath(meta.slug, 'rooms')}
                                 className="mt-[10px] block rounded-[var(--radius-pill)] border border-[var(--border-strong)] p-[12px] text-center text-[13.5px] font-semibold text-text-primary no-underline"
                             >
                                 {t.backToRooms}

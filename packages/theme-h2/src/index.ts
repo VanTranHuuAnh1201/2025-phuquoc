@@ -16,14 +16,14 @@ import {
 } from './pages/shared'
 
 /**
- * Mẫu 07 — Coastal Blue.
+ * Mẫu 02 — Nắng biển (Sunlit Coastal).
  *
  * Theme chỉ chứa HÌNH THỨC: token, section, bố cục. Không nghiệp vụ, không
  * gọi API, không định nghĩa type dữ liệu (luật R4).
  *
  * `Rooms` và `RoomDetail` là hai slot tuỳ chọn của `ThemeDefinition`: route
  * `[theme]/rooms/**` đọc chúng từ registry, mẫu nào chưa dựng thì tự rơi về
- * `Home`. Nhờ vậy thêm trang con cho mẫu 07 không đụng tới h2/h3/h4 (luật R5).
+ * `Home`. Nhờ vậy thêm trang con cho mẫu 02 không đụng tới mẫu khác (luật R5).
  */
 const themeH2: ThemeDefinition<
     typeof Home,
@@ -68,9 +68,8 @@ export {
     BlogDetailPage,
 }
 
-export { About as H2About } from './sections/About'
-export { Rooms as H2Rooms } from './sections/Rooms'
-export { Dining as H2Dining } from './sections/Dining'
-export { Places as H2Places } from './sections/Places'
-export { Practical as H2Practical } from './sections/Practical'
+// Section trang chủ mang sẵn bản sắc của mẫu 02 — lớp vỏ nạp sẵn `ui` và bộ
+// class tiêu đề. Bố cục thật sự sống ở `@repo/domain-hotel` (luật R1); xem
+// docblock trong `sections/home.tsx`.
+export { H2About, H2Rooms, H2Dining, H2Places, H2Practical } from './sections/home'
 

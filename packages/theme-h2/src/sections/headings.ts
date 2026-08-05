@@ -1,15 +1,19 @@
+import type { SectionHeadingClasses } from '@repo/domain-hotel'
+
 /**
- * Class dùng chung cho tiêu đề section của mẫu 07.
+ * Class tiêu đề section — BẢN SẮC của mẫu 02.
  *
- * VÌ SAO TÁCH RA: năm section (Rooms, Dining, Places, Gallery, Booking) đều
- * là "tiêu đề một dải nội dung" — cùng một vai trò thị giác. Trước đây mỗi
- * file chép lại nguyên chuỗi class, và Booking đã trôi lệch (14px/0.06em thay
- * vì 15px/0.07em) mà không ai nhận ra. Đổi cỡ chữ tiêu đề lẽ ra là sửa một
- * chỗ, không phải năm chỗ (luật R12).
+ * VÌ SAO TÁCH RA: các section "một dải nội dung" (Rooms, Dining, Places,
+ * Gallery, Booking) đều là cùng một vai trò thị giác. Trước đây mỗi file chép
+ * lại nguyên chuỗi class, và Booking đã trôi lệch (14px/0.06em thay vì
+ * 15px/0.07em) mà không ai nhận ra. Đổi cỡ chữ tiêu đề lẽ ra là sửa một chỗ,
+ * không phải năm chỗ (luật R12).
  *
- * VÌ SAO KHÔNG ĐẨY LÊN `ui`: đây là *bản sắc* của mẫu 07 — chữ hoa, giãn chữ
- * rộng, đậm. Mẫu khác có ngôn ngữ riêng. Tầng nền không được mang bản sắc
- * thương hiệu (luật R3).
+ * VÌ SAO Ở LẠI THEME dù các section đã lên `@repo/domain-hotel`: chữ hoa, giãn
+ * chữ rộng, đậm là *hình thức* — mẫu khác có ngôn ngữ thị giác riêng. Domain
+ * chỉ giữ HÌNH DẠNG của hợp đồng (`SectionHeadingClasses`); giá trị cụ thể do
+ * mẫu này cấp và truyền xuống qua prop `headingClass`. Tầng nền (`ui`) lại
+ * càng không được mang bản sắc thương hiệu (luật R3/R15).
  */
 
 /**
@@ -23,11 +27,13 @@ export const SECTION_HEADING =
     'mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]'
 
 /**
- * Bản không có `mr-auto` — dùng khi tiêu đề đứng một mình, không chia hàng với
- * nút hay link nào.
+ * Bộ class mà mẫu 02 truyền cho các section dùng chung của `@repo/domain-hotel`.
+ * Cùng một nguồn với `SECTION_HEADING` để section trong theme và section ở
+ * domain không bao giờ trôi lệch nhau.
  */
-export const SECTION_HEADING_SOLO =
-    'text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]'
+export const SECTION_HEADINGS: SectionHeadingClasses = {
+    section: SECTION_HEADING,
+}
 
 /**
  * Tiêu đề BÊN TRONG một thẻ (khối đánh giá, khối phụ) — nhỏ hơn một bậc so với

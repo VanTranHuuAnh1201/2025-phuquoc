@@ -1,10 +1,7 @@
 import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
 
-import { meta } from '../meta'
-import { SECTION_HEADING } from './headings'
-
-const SLUG = meta.slug
+import { DEFAULT_SECTION_HEADINGS, type SectionHeadingClasses } from './headings'
 
 /**
  * Ẩm thực — bốn điểm ăn uống trong resort.
@@ -13,9 +10,26 @@ const SLUG = meta.slug
  * Mobile : băng cuộn ngang cùng cơ chế với Rooms — cùng một quy tắc thị giác
  *          (grid-flow-col + snap + ẩn thanh cuộn), khai tại chỗ bằng utility
  *          nên không phụ thuộc thứ tự render của section nào khác.
+ *
+ * Section này sống ở `domain-hotel` cho nhiều mẫu của domain lưu trú dùng
+ * chung; bản sắc tiêu đề đi vào qua `headingClass` (luật R1).
  */
 
-export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
+export interface DiningSectionProps {
+    data: PropertyData
+    locale: Locale
+    /** Mẫu đang render — dựng đường dẫn `/{slug}/dining`. BẮT BUỘC (xem Rooms). */
+    slug: string
+    /** Class tiêu đề của mẫu. Không truyền thì dùng bộ trung tính. */
+    headingClass?: SectionHeadingClasses
+}
+
+export function DiningSection({
+    data,
+    locale,
+    slug,
+    headingClass = DEFAULT_SECTION_HEADINGS,
+}: DiningSectionProps) {
     const sectionTitle = locale === 'vi' ? 'Ẩm thực' : 'Dining'
     const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
@@ -26,7 +40,7 @@ export function Dining({ data, locale, slug = 'h7' }: { data: PropertyData; loca
         >
             <div className="mx-auto max-w-[var(--container)]">
                 <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
-                    <h2 className={SECTION_HEADING}>
+                    <h2 className={headingClass.section}>
                         {sectionTitle}
                     </h2>
                     <a

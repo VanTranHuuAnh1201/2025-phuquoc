@@ -1,251 +1,83 @@
 /**
- * Cầu nối giữa `@repo/core` và các component của app này.
+ * Cầu nối giữa `@repo/core` / `@repo/domain-hotel` và các component của app.
  *
- * VÌ SAO TỒN TẠI: nội dung song ngữ nằm ở `core` (luật R8 — một nguồn sự
- * thật), nhưng FILE ẢNH thì không: Next chỉ phục vụ những gì nằm trong
- * `public/` của từng app, và mỗi app một cấu trúc khác nhau (xem
- * `packages/core/src/assets.ts`). Nên core giữ chữ, app giữ đường dẫn ảnh.
+ * FILE NÀY ĐÃ MỎNG ĐI RẤT NHIỀU. Trước đây nó tự khai bảng ánh xạ ảnh (hero,
+ * thư viện, điểm đến, 9 ảnh cơ sở) — và đó là một bản FORK: app hub không có
+ * bảng đó nên trang `/h3` render ra hero không ảnh cùng hai section tự ẩn.
+ * Bảng nay nằm ở `@repo/domain-hotel/media`, cả hai app đọc chung (luật R8).
  *
- * VÌ SAO ĐỒNG BỘ: phần lớn component của app là client component, không await
- * được. `getPropertySync()` sinh ra đúng cho trường hợp này; khi chuyển sang
- * backend thật nó sẽ phục vụ từ cache chứ không biến mất.
+ * CÒN LẠI GÌ Ở ĐÂY: đúng ba thứ mà package không quyết được —
+ *   1. `property` — bản đồng bộ của dữ liệu, vì phần lớn component của app là
+ *      client component nên không `await` được.
+ *   2. Cờ môi trường lọc ảnh crawl — `process.env` là thứ của app.
+ *   3. Đổi tên trường cho khớp component sẵn có của app.
  */
 
 import { getPropertySync, type I18nText } from '@repo/core'
+import {
+    HERO_SLIDES as SHARED_HERO_SLIDES,
+    RESORT_PHOTOS as SHARED_RESORT_PHOTOS,
+    allPhotos,
+    galleryWithImages,
+    featuredPlaces as sharedFeaturedPlaces,
+    facilityAmenities as sharedFacilityAmenities,
+    hostPerks as sharedHostPerks,
+    type ResortPhoto,
+    type ResortPhotoCategory,
+} from '@repo/domain-hotel'
 
 export const property = getPropertySync()
 
-/**
- * Ảnh hero, theo thứ tự trình chiếu.
- * File nằm tại `apps/2026-thenamduhillresort/public/uploads/`.
- *
- * `alt` song ngữ vì đây là chuỗi khách nhìn thấy — screen reader tiếng Anh mà
- * đọc mô tả tiếng Việt thì đúng bằng không có `alt` (luật R6 + D4).
- */
-export const HERO_SLIDES: Array<{ src: string; alt: I18nText }> = [
-    {
-        src: '/uploads/hai-dang-Ke-Ga-2.jpg',
-        alt: { vi: 'Vịnh Nam Du nhìn từ trên đồi', en: 'Nam Du bay seen from the hill' },
-    },
-    {
-        src: '/uploads/hero-1.jpg',
-        alt: { vi: 'Bãi biển Nam Du', en: 'Nam Du beach' },
-    },
-    {
-        src: '/uploads/hero-3.png',
-        alt: { vi: 'Sân hiên The Nam Du Hill', en: 'The Nam Du Hill terrace' },
-    },
-    {
-        src: '/uploads/hero-4.png',
-        alt: {
-            vi: 'Sân hiên lục giác nhìn từ trên cao về đêm',
-            en: 'The hexagonal terrace from above at night',
-        },
-    },
-]
+export type { ResortPhoto, ResortPhotoCategory }
+
+/** Ảnh hero — bộ chung ở tầng domain. */
+export const HERO_SLIDES = SHARED_HERO_SLIDES
+
+/** 9 ảnh cơ sở vật chất thật — bộ chung ở tầng domain. */
+export const RESORT_PHOTOS = SHARED_RESORT_PHOTOS
+
+/** Thư viện ảnh trang chủ: chữ từ core, ảnh từ bảng chung. */
+export const gallery = galleryWithImages(property)
+
+/** Bốn điểm đến nổi bật hiện ở trang chủ, kèm ảnh. */
+export const featuredPlaces = sharedFeaturedPlaces(property)
+
+/** Tiện ích cơ sở vật chất — khối "Tiện ích nổi bật". */
+export const facilityAmenities = sharedFacilityAmenities(property)
+
+/** Dịch vụ đi kèm — khối "Chủ nhà & tiện ích đi kèm". */
+export const hostPerks = sharedHostPerks(property)
 
 /**
- * Ảnh cho từng mục thư viện, khớp theo `GalleryItem.id` của core.
- * Chữ nghĩa ở core, ảnh ở đây.
- */
-const GALLERY_IMAGES: Record<string, string> = {
-    'gallery-beach': '/uploads/hoang-hon.jpg',
-    'gallery-pool': '/uploads/ho-boi.jpg',
-    'gallery-dining': '/uploads/nha-hang-view-bien.jpg',
-    'gallery-diving': '/uploads/lan-ngan-san-ho.jpg',
-}
-
-/** Thư viện ảnh trang chủ: nội dung từ core, ảnh từ app. */
-export const gallery = (property.gallery ?? []).map((item) => ({
-    ...item,
-    image: item.image ?? GALLERY_IMAGES[item.id] ?? '',
-}))
-
-/**
- * Ảnh THẬT của resort — dùng cho trang /gallery và khối thư viện ở trang chủ.
+ * Toàn bộ ảnh cho trang `/gallery`.
  *
- * VÌ SAO KHAI Ở ĐÂY CHỨ KHÔNG Ở CORE: đây là đường dẫn file trong `public/`
- * của riêng app này, đúng lý do file `property.ts` tồn tại (xem đầu file).
- * Chữ song ngữ đi kèm nằm ngay tại chỗ vì chỉ trang thư viện dùng tới.
+ * ⚠️ LUẬT R9 — ảnh phòng và ảnh điểm đến phần lớn là URL crawl từ
+ * thenamduhill.com, không được để nguyên khi lên production. Đặt cờ
+ * `NEXT_PUBLIC_ALLOW_CRAWLED_MEDIA=0` để loại hết, trang tự rơi về 9 ảnh local.
  *
- * Đây là các file đã nằm trong `public/uploads/` — luôn dùng được kể cả sau
- * khi gỡ ảnh crawl. Ảnh phòng lấy thêm từ `ROOMS` (xem `galleryPhotos()` bên
- * dưới) và hiện vẫn là ảnh crawl.
- */
-export type ResortPhotoCategory = 'resort' | 'dining' | 'rooms' | 'places' | 'views'
-
-export interface ResortPhoto {
-    id: string
-    src: string
-    title: { vi: string; en: string }
-    category: ResortPhotoCategory
-}
-
-export const RESORT_PHOTOS: ResortPhoto[] = [
-    {
-        id: 'photo-pool',
-        src: '/uploads/ho-boi.jpg',
-        title: { vi: 'Hồ bơi & khu nghỉ', en: 'Pool & guest wing' },
-        category: 'resort',
-    },
-    {
-        id: 'photo-terrace-night',
-        src: '/uploads/hero-3.png',
-        title: { vi: 'Sân hiên về đêm', en: 'Terrace at night' },
-        category: 'resort',
-    },
-    {
-        id: 'photo-facade-night',
-        src: '/uploads/hero-5.png',
-        title: { vi: 'Mặt tiền resort', en: 'Resort facade' },
-        category: 'resort',
-    },
-    {
-        id: 'photo-hexagon-deck',
-        src: '/uploads/hero-4.png',
-        title: { vi: 'Sân hiên lục giác', en: 'Hexagon deck' },
-        category: 'resort',
-    },
-    {
-        id: 'photo-restaurant',
-        src: '/uploads/nha-hang-view-bien.jpg',
-        title: { vi: 'Nhà hàng view biển', en: 'Sea-view restaurant' },
-        category: 'dining',
-    },
-    {
-        id: 'photo-terrace-bay',
-        src: '/uploads/pasted-1785690635080-0.png',
-        title: { vi: 'Ban công nhìn ra vịnh', en: 'Balcony over the bay' },
-        category: 'views',
-    },
-    {
-        id: 'photo-sunset',
-        src: '/uploads/hoang-hon.jpg',
-        title: { vi: 'Hoàng hôn từ resort', en: 'Sunset from the resort' },
-        category: 'views',
-    },
-    {
-        id: 'photo-coast-road',
-        src: '/uploads/hero-2.jpg',
-        title: { vi: 'Đường ven biển xuống bãi', en: 'Coastal road to the beach' },
-        category: 'views',
-    },
-    {
-        id: 'photo-hillside',
-        src: '/uploads/hero-1.jpg',
-        title: { vi: 'Resort trên sườn đồi', en: 'Resort on the hillside' },
-        category: 'resort',
-    },
-]
-
-/**
- * Toàn bộ ảnh cho trang `/gallery` — gộp ba nguồn, giống hệt cách
- * `GalleryPage` của `@repo/ui` dựng danh sách cho `/h7/gallery` ở app 3000.
+ * VÌ SAO CỜ ĐỌC Ở ĐÂY CHỨ KHÔNG Ở PACKAGE: `process.env.NEXT_PUBLIC_*` được
+ * Next thay bằng giá trị thật lúc build CỦA APP. Package đọc thì giá trị dính
+ * theo lúc build package, không theo app đang chạy.
  *
- * ⚠️ LUẬT R9 — ảnh phòng và ảnh điểm đến ở đây phần lớn là URL crawl từ
- * thenamduhill.com. Chúng KHÔNG được để nguyên khi lên production: vừa là vấn
- * đề bản quyền, vừa là duplicate content hại SEO. Trước khi deploy phải thay
- * bằng ảnh chụp thật rồi đưa vào `public/uploads/`.
- *
- * Đặt cờ `NEXT_PUBLIC_ALLOW_CRAWLED_MEDIA=0` để loại hết ảnh crawl, trang tự
- * rơi về 9 ảnh local — không sập bố cục.
- *
- * VÌ SAO LÀ HÀM CHỨ KHÔNG PHẢI HẰNG: `ROOMS` import ngược lại `property.ts`,
- * để hằng ở đây sẽ thành vòng lặp import lúc khởi tạo module. Gọi lúc render
- * thì cả hai module đã sẵn sàng.
+ * VÌ SAO LÀ HÀM CHỨ KHÔNG PHẢI HẰNG: `ROOMS` import ngược lại file này, để
+ * hằng ở đây sẽ thành vòng lặp import lúc khởi tạo module.
  */
 const ALLOW_CRAWLED_MEDIA = process.env.NEXT_PUBLIC_ALLOW_CRAWLED_MEDIA !== '0'
 
-/** Ảnh crawl nhận diện bằng host — file local luôn bắt đầu bằng `/uploads/`. */
-const isCrawled = (src: string) => /^https?:\/\//.test(src)
-
-export function galleryPhotos(rooms: { name: string; nameEn: string; images: string[] }[]): ResortPhoto[] {
-    const roomPhotos: ResortPhoto[] = rooms.flatMap((room, roomIndex) =>
-        (room.images ?? []).map((src, i) => ({
-            id: `room-${roomIndex}-${i}`,
-            src,
-            title: { vi: room.name, en: room.nameEn || room.name },
-            category: 'rooms' as const,
-        })),
-    )
-
-    const placePhotos: ResortPhoto[] = property.places
-        .filter((place) => Boolean(place.image))
-        .map((place) => ({
-            id: `place-${place.id}`,
-            src: place.image as string,
-            title: { vi: place.name.vi, en: place.name.en },
-            category: 'places' as const,
-        }))
-
-    const all = [...RESORT_PHOTOS, ...roomPhotos, ...placePhotos]
-    const usable = ALLOW_CRAWLED_MEDIA ? all : all.filter((photo) => !isCrawled(photo.src))
-
-    // Cùng một file có thể xuất hiện ở nhiều hạng phòng — bỏ trùng theo src.
-    const seen = new Set<string>()
-    return usable.filter((photo) => {
-        if (seen.has(photo.src)) return false
-        seen.add(photo.src)
-        return true
-    })
+export function galleryPhotos(
+    rooms: { name: string; nameEn: string; images: string[] }[],
+): ResortPhoto[] {
+    return allPhotos(property, rooms, ALLOW_CRAWLED_MEDIA)
 }
 
 /**
- * Ảnh cho các điểm đến, khớp theo `Place.id` của core.
- * Chỉ 4 điểm hiện trên trang chủ mới có ảnh.
- */
-const PLACE_IMAGES: Record<string, string> = {
-    'place-hai-bo-dap': '/uploads/honhaibodap.jpg',
-    'place-hon-mau': '/uploads/du-lich-hon-mau.jpg',
-    'place-cay-men': '/uploads/du-lich-bai-cay-men-nam-du.jpg',
-    'place-hai-dang': '/uploads/hai-dang-Ke-Ga-2.jpg',
-}
-
-const amenityById = (id: string) => property.amenities?.find((a) => a.id === id)
-
-const pickAmenities = (ids: string[]) =>
-    ids.map(amenityById).filter((a): a is NonNullable<typeof a> => Boolean(a))
-
-/**
- * Tiện ích cơ sở vật chất — khối "Tiện ích nổi bật".
- * Mobile hiện 4 mục đầu, desktop hiện đủ 6.
- */
-export const facilityAmenities = pickAmenities([
-    'amenity-pool',
-    'amenity-restaurant',
-    'amenity-wifi',
-    'amenity-transfer',
-    'amenity-bike',
-    'amenity-event',
-])
-
-/** Dịch vụ đi kèm — khối "Chủ nhà & tiện ích đi kèm". */
-export const hostPerks = pickAmenities([
-    'amenity-pier-transfer',
-    'amenity-canoe',
-    'amenity-breakfast',
-    'amenity-billiards',
-    'amenity-bike',
-    'amenity-support',
-])
-
-/** Bốn điểm đến nổi bật hiện ở trang chủ, kèm ảnh. */
-export const featuredPlaces = ['place-hai-bo-dap', 'place-hon-mau', 'place-cay-men', 'place-hai-dang']
-    .map((id) => property.places.find((place) => place.id === id))
-    .filter((place): place is NonNullable<typeof place> => Boolean(place))
-    .map((place) => ({ ...place, image: place.image ?? PLACE_IMAGES[place.id] ?? '' }))
-
-/**
- * Đánh giá của khách — khối cột cuộn trong `HostServiceSection`.
+ * Đánh giá của khách — khối cột cuộn trong `HostService`.
  *
- * VÌ SAO CHỈ ÁNH XẠ CHỨ KHÔNG KHAI LẠI: nội dung nằm ở `core` (luật R8 — một
- * nguồn sự thật). Trước đây app giữ một bản sao 9 review trùng từng chữ với
- * `nam-du-hill.ts`; hai bản trôi song song là chuyện chỉ chờ ngày lệch nhau.
- * Giờ app chỉ đổi tên trường cho khớp component.
+ * VÌ SAO CHỈ ÁNH XẠ CHỨ KHÔNG KHAI LẠI: nội dung nằm ở `core` (luật R8). App
+ * chỉ đổi tên trường cho khớp component.
  *
- * VÌ SAO KHÔNG CÓ ẢNH ĐẠI DIỆN: đây là review demo. Gán mặt người thật (kể cả
- * ảnh sinh tự động) vào lời khen chưa xảy ra là dựng bằng chứng giả. Component
- * dựng avatar từ chữ cái đầu của tên thay vì tải ảnh về.
+ * VÌ SAO KHÔNG CÓ ẢNH ĐẠI DIỆN: đây là review demo. Gán mặt người thật vào lời
+ * khen chưa xảy ra là dựng bằng chứng giả. Component dựng avatar từ chữ cái đầu.
  */
 export interface Testimonial {
     id: string

@@ -3,13 +3,19 @@ import { pick, UI, type GalleryItem, type Locale } from '@repo/core'
 import { SectionHeading } from './SectionHeading'
 
 /**
- * Section `places` — bốn khoảnh khắc trên đảo, dẫn sang trang khám phá.
+ * Section `panorama` — bốn khoảnh khắc trên đảo, dẫn sang trang khám phá.
  *
- * VÌ SAO MAP VÀO `places` CHỨ KHÔNG PHẢI `gallery`: nội dung ở đây là các ĐIỂM
- * ĐẾN trên đảo (bãi tắm, hồ bơi, lặn san hô) và nút "Xem tất cả" trỏ sang
- * `/explore` — nó bán trải nghiệm ngoài resort. Section `gallery` của mẫu này
- * đã có chủ: 9 ảnh cơ sở vật chất thật (xem `Gallery.tsx`). Hai khối cùng đeo
- * id `gallery` là deep-link và CMS mất chỗ neo (luật R7).
+ * VÌ SAO KHÔNG PHẢI `gallery`: nội dung ở đây là các ĐIỂM ĐẾN trên đảo (bãi
+ * tắm, hồ bơi, lặn san hô) và nút "Xem tất cả" trỏ sang `/explore` — nó bán
+ * trải nghiệm ngoài resort. Section `gallery` của mẫu này đã có chủ: 9 ảnh cơ
+ * sở vật chất thật (xem `Gallery.tsx`).
+ *
+ * VÌ SAO KHÔNG PHẢI `places` NỮA: mẫu này render cả `PlacesSection` dùng chung
+ * của `domain-hotel`, và khối đó đeo `id="places"`. Hai thẻ cùng id thì neo
+ * `#places` chỉ tới được cái đầu tiên — hỏng lặng lẽ, build vẫn xanh.
+ *
+ * `panorama` là `CustomSectionId`: id riêng của mẫu, cố ý không thêm vào
+ * `SECTION_IDS` vì bộ đó là hợp đồng chung của MỌI mẫu (luật R7).
  *
  * DỮ LIỆU: `data.gallery` của core giữ phần chữ song ngữ; `image` do app bơm
  * vào vì file ảnh nằm trong `public/` của từng app. Mục nào chưa có ảnh thì bỏ
@@ -30,7 +36,7 @@ export function Panorama({ locale, items, exploreHref = '#gallery' }: PanoramaPr
 
     return (
         <section
-            id="places"
+            id="panorama"
             className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
         >
             <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">

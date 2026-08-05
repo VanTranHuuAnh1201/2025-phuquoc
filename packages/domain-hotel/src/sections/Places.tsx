@@ -1,10 +1,7 @@
 import { formatPrice, pick, themePath, tourPath, type Locale, type PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
 
-import { meta } from '../meta'
-import { SECTION_HEADING } from './headings'
-
-const SLUG = meta.slug
+import { DEFAULT_SECTION_HEADINGS, type SectionHeadingClasses } from './headings'
 
 /**
  * Khám phá Nam Du — điểm đến quanh đảo, kèm cột combo bên phải.
@@ -12,10 +9,27 @@ const SLUG = meta.slug
  * Bản thiết kế desktop chia section này làm hai phần trong cùng một hàng:
  * ba thẻ điểm đến bên trái, hai thẻ combo dạng ngang xếp dọc bên phải. Mobile
  * bỏ cột combo khỏi hàng ngang và cho cả hai cùng cuộn — combo vẫn tới được
- * qua trang `/h7/tours`, nên không mất đường dẫn nào.
+ * qua trang `/{slug}/tours`, nên không mất đường dẫn nào.
+ *
+ * Section này sống ở `domain-hotel` cho nhiều mẫu của domain lưu trú dùng
+ * chung; bản sắc tiêu đề đi vào qua `headingClass` (luật R1).
  */
 
-export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
+export interface PlacesSectionProps {
+    data: PropertyData
+    locale: Locale
+    /** Mẫu đang render — dựng đường dẫn `/{slug}/blog` và `/{slug}/tours/…`. BẮT BUỘC (xem Rooms). */
+    slug: string
+    /** Class tiêu đề của mẫu. Không truyền thì dùng bộ trung tính. */
+    headingClass?: SectionHeadingClasses
+}
+
+export function PlacesSection({
+    data,
+    locale,
+    slug,
+    headingClass = DEFAULT_SECTION_HEADINGS,
+}: PlacesSectionProps) {
     const sectionTitle = locale === 'vi' ? 'Khám phá Nam Du' : 'Explore Nam Du'
     const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
 
@@ -29,7 +43,7 @@ export function Places({ data, locale, slug = 'h7' }: { data: PropertyData; loca
         >
             <div className="mx-auto max-w-[var(--container)]">
                 <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
-                    <h2 className={SECTION_HEADING}>
+                    <h2 className={headingClass.section}>
                         {sectionTitle}
                     </h2>
                     <a

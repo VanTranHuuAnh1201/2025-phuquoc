@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
- * Vỏ cuộn ngang dùng cho các dải thẻ của mẫu 07.
+ * Vỏ cuộn ngang dùng cho các dải thẻ của domain lưu trú — mọi mẫu dùng chung.
  *
  * Vì sao tách riêng khỏi `Rooms.tsx`: theo dõi vị trí cuộn cần ref + state +
  * listener, tức bắt buộc là client component. Nếu đánh `'use client'` thẳng
@@ -58,19 +58,16 @@ const RAIL_BTN = [
     'aria-disabled:hover:bg-surface-raised aria-disabled:hover:border-border-default aria-disabled:hover:text-text-primary',
 ].join(' ')
 
-export function ScrollRail({
-    children,
-    className = '',
-    head,
-    labels,
-}: {
+export interface ScrollRailProps {
     children: React.ReactNode
     /** Class đặt lên chính phần tử cuộn — section tự quyết bề rộng thẻ. */
     className?: string
     /** Nhận cụm nút để section tự quyết đặt ở đâu trong header của nó. */
     head: (nav: React.ReactNode) => React.ReactNode
     labels: { prev: string; next: string; group: string }
-}) {
+}
+
+export function ScrollRail({ children, className = '', head, labels }: ScrollRailProps) {
     const railRef = useRef<HTMLDivElement>(null)
     const [atStart, setAtStart] = useState(true)
     const [atEnd, setAtEnd] = useState(true)

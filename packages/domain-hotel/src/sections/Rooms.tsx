@@ -10,12 +10,9 @@ import {
 } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
 
-import { meta } from '../meta'
-import { ui } from '../strings'
+import type { UiStrings, UiStringSet } from '../strings'
 import { ScrollRail } from './ScrollRail'
-import { SECTION_HEADING } from './headings'
-
-const SLUG = meta.slug
+import { DEFAULT_SECTION_HEADINGS, type SectionHeadingClasses } from './headings'
 
 /**
  * Hạng phòng nổi bật.
@@ -32,6 +29,10 @@ const SLUG = meta.slug
  *
  * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
  * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.
+ *
+ * Section này sống ở `domain-hotel` vì nhiều mẫu của domain lưu trú dùng chung
+ * đúng bố cục này. Hai thứ THUỘC VỀ MẪU đi vào qua prop chứ không hard-code:
+ * `ui` (giọng nhãn của mẫu) và `headingClass` (bản sắc tiêu đề).
  */
 
 function IconGuests() {
@@ -52,7 +53,28 @@ function IconArea() {
     )
 }
 
-export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; locale: Locale; slug?: string }) {
+export interface RoomsSectionProps {
+    data: PropertyData
+    locale: Locale
+    /**
+     * Mẫu đang render — dùng dựng đường dẫn `/{slug}/rooms`. BẮT BUỘC, cố ý
+     * không có mặc định: một mặc định sai làm mọi link trỏ nhầm mẫu mà build
+     * vẫn xanh. App resort (một mẫu, không tiền tố) truyền chuỗi rỗng.
+     */
+    slug: string
+    /** Bộ nhãn giao diện của mẫu — giọng văn là quyết định của theme. */
+    ui: UiStringSet<UiStrings>
+    /** Class tiêu đề của mẫu. Không truyền thì dùng bộ trung tính. */
+    headingClass?: SectionHeadingClasses
+}
+
+export function RoomsSection({
+    data,
+    locale,
+    slug,
+    ui,
+    headingClass = DEFAULT_SECTION_HEADINGS,
+}: RoomsSectionProps) {
     const t = ui[locale]
     const sectionTitle = locale === 'vi' ? 'Hạng phòng nổi bật' : 'Featured rooms'
     const detailLabel = locale === 'vi' ? 'Xem chi tiết' : 'View details'
@@ -107,7 +129,7 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                                 mr-auto thay cho justify-between vì header có BA
                                 phần tử — justify-between sẽ dàn đều và ném cụm
                                 nút ra giữa. */}
-                            <h2 className={SECTION_HEADING}>
+                            <h2 className={headingClass.section}>
                                 {sectionTitle}
                             </h2>
                             {/* Nút cuộn đứng TRƯỚC link: nó điều khiển tại chỗ,

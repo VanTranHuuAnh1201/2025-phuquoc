@@ -19,6 +19,10 @@ import { ImageSlot } from '@repo/ui'
  *
  * Breakpoint 960px là của bản thiết kế, không trùng thang mặc định của
  * Tailwind (md 768 · lg 1024) nên viết bằng biến tuỳ ý `min-[960px]:`.
+ *
+ * Section này sống ở `domain-hotel` vì nhiều mẫu của domain lưu trú dùng chung
+ * đúng bố cục này; khác biệt giữa các mẫu nằm trọn trong `tokens.css`
+ * (luật R1 — không chép code giữa các theme).
  */
 
 const USP_ICONS: readonly (() => React.ReactElement)[] = [
@@ -74,7 +78,12 @@ function IconPlay() {
     )
 }
 
-export function About({ data, locale }: { data: PropertyData; locale: Locale }) {
+export interface AboutSectionProps {
+    data: PropertyData
+    locale: Locale
+}
+
+export function AboutSection({ data, locale }: AboutSectionProps) {
     const { facts, about } = data
     const [showVideo, setShowVideo] = useState(false)
 

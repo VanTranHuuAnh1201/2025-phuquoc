@@ -1,8 +1,9 @@
 'use client'
 
-import { pick, telHref, type Locale, type PropertyData } from '@repo/core'
+import { pick, telHref, themePath, themeRoot, type Locale, type PropertyData } from '@repo/core'
 import { useScrolled } from '@repo/ui'
 
+import { meta } from '../meta'
 import { pageUi } from './strings'
 
 /**
@@ -29,17 +30,21 @@ import { pageUi } from './strings'
  *
  * Prototype ánh xạ `#rooms` → `Rooms - Nam Du Hill.dc.html`… Ở đây là route
  * thật; mục nào chưa có trang riêng thì quay về trang chủ kèm neo section.
+ *
+ * ĐƯỜNG DẪN DỰNG TỪ `meta.slug`, KHÔNG VIẾT CỨNG. Bản trước ghi thẳng `/h7/…`
+ * — slug đó biến mất khi mẫu được đổi tên (commit b1c83e0), nên mọi link ở
+ * header trang con trỏ vào một mẫu KHÔNG TỒN TẠI mà build vẫn xanh và không ai
+ * thấy. Dựng từ `meta.slug` thì đổi tên mẫu là đường dẫn tự theo.
  */
+const SUB_PAGES = ['rooms', 'tours', 'gallery', 'contact'] as const
+
 const NAV_ROUTES: Record<string, string> = {
-    '#top': '/h7',
-    '#rooms': '/h7/rooms',
-    '#tours': '/h7/tours',
-    '#gallery': '/h7/gallery',
-    '#contact': '/h7/contact',
+    '#top': themeRoot(meta.slug),
+    ...Object.fromEntries(SUB_PAGES.map((page) => [`#${page}`, themePath(meta.slug, page)])),
 }
 
 function navHref(href: string): string {
-    return NAV_ROUTES[href] ?? `/h7${href}`
+    return NAV_ROUTES[href] ?? `${themeRoot(meta.slug)}${href}`
 }
 
 export function PageHeader({
@@ -83,7 +88,10 @@ export function PageHeader({
                 ].join(' ')}
             >
                 <div className="mx-auto flex min-h-[66px] max-w-[var(--container)] items-center gap-[20px] px-4 py-[10px]">
-                    <a href="/h7" className="flex shrink-0 items-center gap-[10px] no-underline">
+                    <a
+                        href={themeRoot(meta.slug)}
+                        className="flex shrink-0 items-center gap-[10px] no-underline"
+                    >
                         <img
                             src={brand.logo || '/OP5.png'}
                             alt={brand.name}
@@ -120,7 +128,7 @@ export function PageHeader({
                         {extra && <div className="flex items-center">{extra}</div>}
 
                         <a
-                            href="/h7/rooms"
+                            href={themePath(meta.slug, 'rooms')}
                             className="shrink-0 rounded-[var(--radius-pill)] bg-accent px-[20px] py-[10px] text-[13.5px] font-semibold whitespace-nowrap text-text-inverse no-underline shadow-1"
                         >
                             {t.bookNow}

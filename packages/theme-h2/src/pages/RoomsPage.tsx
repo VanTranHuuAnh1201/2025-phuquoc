@@ -4,11 +4,14 @@ import { useMemo, useState } from 'react'
 import {
     formatPrice,
     pick,
+    roomPath,
     telHref,
+    themeRoot,
     type Locale,
     type PropertyData,
 } from '@repo/core'
 
+import { meta } from '../meta'
 import { pageUi } from './strings'
 import { PageFooter, PageHeader, PageHero } from './PageShell'
 
@@ -76,7 +79,7 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
         // trục kia thành scroll container, làm `position: sticky` của sidebar
         // dính vào div này thay vì vào viewport. Xem chú thích ở `globals.css`.
         <div
-            data-theme="h7"
+            data-theme={meta.slug}
             className="overflow-x-clip font-primary text-text-primary"
         >
             <PageHeader data={data} locale={locale} />
@@ -84,7 +87,10 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
             <PageHero
                 title={t.roomsTitle}
                 sub={t.roomsSub}
-                crumbs={[{ label: t.home, href: '/h7' }, { label: t.roomsPage }]}
+                crumbs={[
+                    { label: t.home, href: themeRoot(meta.slug) },
+                    { label: t.roomsPage },
+                ]}
             />
 
             <section id="list" className="bg-surface-base px-4 pt-[32px] pb-[88px]">
@@ -210,7 +216,7 @@ export function RoomsPage({ data, locale }: { data: PropertyData; locale: Locale
 
                                                 <div className="flex flex-wrap gap-[10px]">
                                                     <a
-                                                        href={`/h7/rooms/${room.id}`}
+                                                        href={roomPath(meta.slug, room.id)}
                                                         className={ghostButtonClass}
                                                     >
                                                         {t.viewDetail}
