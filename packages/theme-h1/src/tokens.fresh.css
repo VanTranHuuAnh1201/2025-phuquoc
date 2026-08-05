@@ -4,7 +4,7 @@
  * Bản token SO SÁNH để trình khách: xanh lá đảo + coral nhẹ, tự nhiên hơn,
  * bớt cảm giác "hotel booking". Layout KHÔNG đổi — muốn demo, trong
  * `apps/2026-thenamduhill/src/app/layout.tsx` thay import
- * `@repo/theme-h6/tokens.css` bằng `@repo/theme-h6/tokens.fresh.css`.
+ * `@repo/theme-h1/tokens.css` bằng `@repo/theme-h1/tokens.fresh.css`.
  *
  * Ràng buộc giữ nguyên từ Option A: nền rất sáng ≥85% diện tích, CTA vàng
  * duy nhất mỗi viewport (spec §2.2 — rủi ro "eco resort" nếu lạm dụng xanh lá).
@@ -14,7 +14,7 @@
  * Georgia — không vỡ layout.
  */
 
-[data-theme='h6'] {
+[data-theme='h1'] {
     /* --- màu ngữ nghĩa (hợp đồng D1) ------------------------------------- */
     --color-brand: #2f8f6b; /* xanh lá đảo */
     --color-accent: #f2a93b; /* vàng ấm — CHỈ cho CTA chính */

@@ -19,10 +19,10 @@ const nextConfig: NextConfig = {
 
   /**
    * Package workspace xuất TypeScript nguồn, Next phải tự transpile.
-   * `@repo/ui` và `@repo/theme-h7` được import trong `app/layout.tsx`
+   * `@repo/ui` và `@repo/theme-h2` được import trong `app/layout.tsx`
    * (tokens.css) nên bắt buộc phải có mặt ở đây.
    */
-  transpilePackages: ['@repo/core', '@repo/ui', '@repo/theme-h7'],
+  transpilePackages: ['@repo/core', '@repo/ui', '@repo/theme-h2'],
 
   images: {
     remotePatterns: [

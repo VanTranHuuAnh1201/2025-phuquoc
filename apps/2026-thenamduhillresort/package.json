@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
-    "@repo/theme-h7": "workspace:*",
+    "@repo/theme-h2": "workspace:*",
     "@repo/ui": "workspace:*",
     "lucide-react": "^0.544.0",
     "next": "^15.5.4",

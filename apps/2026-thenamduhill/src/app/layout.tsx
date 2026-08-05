@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Be_Vietnam_Pro, Lora } from 'next/font/google'
 import '@repo/ui/tokens.css'
-import '@repo/theme-h6/tokens.css'
-import '@repo/theme-h7/tokens.css'
+import '@repo/theme-h1/tokens.css'
+import '@repo/theme-h2/tokens.css'
 import './globals.css'
 
 /**

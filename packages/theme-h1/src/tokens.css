@@ -17,7 +17,7 @@
  * chốt PR, đặc biệt cặp #1173B8/#FDFCF8 (~4.9:1, sát ngưỡng AA).
  */
 
-[data-theme='h6'] {
+[data-theme='h1'] {
     /* --- màu ngữ nghĩa (hợp đồng D1) ------------------------------------- */
     --color-brand: #1173b8; /* xanh biển tươi — tinh chỉnh đậm từ logo #38A8F0 */
     --color-accent: #f6b21b; /* vàng nắng — CHỈ cho CTA chính */

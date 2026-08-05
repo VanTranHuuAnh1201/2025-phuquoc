@@ -25,7 +25,7 @@ import {
  * `[theme]/rooms/**` đọc chúng từ registry, mẫu nào chưa dựng thì tự rơi về
  * `Home`. Nhờ vậy thêm trang con cho mẫu 07 không đụng tới h2/h3/h4 (luật R5).
  */
-const themeH7: ThemeDefinition<
+const themeH2: ThemeDefinition<
     typeof Home,
     typeof RoomsPage,
     typeof RoomDetailPage,
@@ -53,7 +53,7 @@ const themeH7: ThemeDefinition<
     BlogDetail: BlogDetailPage,
 }
 
-export default themeH7
+export default themeH2
 export { meta, Home, sections }
 export {
     RoomsPage,
@@ -68,9 +68,9 @@ export {
     BlogDetailPage,
 }
 
-export { About as H7About } from './sections/About'
-export { Rooms as H7Rooms } from './sections/Rooms'
-export { Dining as H7Dining } from './sections/Dining'
-export { Places as H7Places } from './sections/Places'
-export { Practical as H7Practical } from './sections/Practical'
+export { About as H2About } from './sections/About'
+export { Rooms as H2Rooms } from './sections/Rooms'
+export { Dining as H2Dining } from './sections/Dining'
+export { Places as H2Places } from './sections/Places'
+export { Practical as H2Practical } from './sections/Practical'
 

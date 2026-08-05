@@ -42,7 +42,7 @@ export interface HomeProps {
 
 export function Home({ data, locale, extra }: HomeProps) {
     return (
-        <div data-theme="h7" style={{ fontFamily: 'var(--font-body)', overflowX: 'hidden' }}>
+        <div data-theme="h2" style={{ fontFamily: 'var(--font-body)', overflowX: 'hidden' }}>
             <Header data={data} locale={locale} extra={extra} />
             <main>
                 <Hero data={data} locale={locale} />

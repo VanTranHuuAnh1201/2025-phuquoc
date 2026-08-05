@@ -2,7 +2,7 @@
 
 import { useLanguage } from '../context/LanguageContext'
 import { property } from '../data/property'
-import { H7About, H7Rooms, H7Dining, H7Places, H7Practical } from '@repo/theme-h7'
+import { H2About, H2Rooms, H2Dining, H2Places, H2Practical } from '@repo/theme-h2'
 
 import { HeroSection } from '../components/home/HeroSection'
 import { PanoramaSection } from '../components/home/PanoramaSection'
@@ -16,24 +16,24 @@ export default function HomePage() {
     <main>
       <HeroSection />
       
-      <div data-theme="h7">
-        <H7About data={property} locale={language} />
+      <div data-theme="h2">
+        <H2About data={property} locale={language} />
       </div>
 
       <PanoramaSection />
 
-      <div data-theme="h7">
-        <H7Rooms data={property} locale={language} slug="" />
-        <H7Dining data={property} locale={language} slug="" />
-        <H7Places data={property} locale={language} slug="" />
+      <div data-theme="h2">
+        <H2Rooms data={property} locale={language} slug="" />
+        <H2Dining data={property} locale={language} slug="" />
+        <H2Places data={property} locale={language} slug="" />
       </div>
 
       <HostServiceSection />
 
       <GallerySection />
 
-      <div data-theme="h7">
-        <H7Practical data={property} locale={language} />
+      <div data-theme="h2">
+        <H2Practical data={property} locale={language} />
       </div>
     </main>
   )

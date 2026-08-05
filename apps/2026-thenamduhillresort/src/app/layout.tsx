@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import '@repo/ui/tokens.css'
-import '@repo/theme-h7/tokens.css'
+import '@repo/theme-h2/tokens.css'
 import { LanguageProvider } from '../context/LanguageContext'
 import { Header } from '../components/common/Header'
 import { Footer } from '../components/common/Footer'

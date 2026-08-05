@@ -15,7 +15,7 @@
  * không viết selector cho component của `ui` (đó là vi phạm ranh giới).
  */
 
-[data-theme='h7'] {
+[data-theme='h2'] {
     /* --- màu ------------------------------------------------------------ */
     --brand: #075e9e;
     --brand-dark: #06467a;

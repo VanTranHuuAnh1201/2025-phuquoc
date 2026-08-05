@@ -78,12 +78,12 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@repo/theme-h6':
+      '@repo/theme-h1':
         specifier: workspace:*
-        version: link:../../packages/theme-h6
-      '@repo/theme-h7':
+        version: link:../../packages/theme-h1
+      '@repo/theme-h2':
         specifier: workspace:*
-        version: link:../../packages/theme-h7
+        version: link:../../packages/theme-h2
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -130,9 +130,9 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@repo/theme-h7':
+      '@repo/theme-h2':
         specifier: workspace:*
-        version: link:../../packages/theme-h7
+        version: link:../../packages/theme-h2
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -232,7 +232,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/theme-h6:
+  packages/theme-h1:
     dependencies:
       '@repo/core':
         specifier: workspace:*
@@ -254,7 +254,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  packages/theme-h7:
+  packages/theme-h2:
     dependencies:
       '@repo/core':
         specifier: workspace:*

@@ -5,8 +5,8 @@ import type {
     PropertyData,
     ThemeDefinition,
 } from '@repo/core'
-import themeH6 from '@repo/theme-h6'
-import themeH7 from '@repo/theme-h7'
+import themeH1 from '@repo/theme-h1'
+import themeH2 from '@repo/theme-h2'
 
 /**
  * REGISTRY THEME — đây là file DUY NHẤT phải sửa khi thêm một mẫu mới.
@@ -101,6 +101,6 @@ export type AnyThemeDefinition = ThemeDefinition<
 >
 
 export const themes: readonly AnyThemeDefinition[] = [
-    themeH6 as AnyThemeDefinition,
-    themeH7 as AnyThemeDefinition,
+    themeH1 as AnyThemeDefinition,
+    themeH2 as AnyThemeDefinition,
 ]
