@@ -3,7 +3,6 @@ import { findTheme, getProperty, isLocale, themeSlugs, DEFAULT_LOCALE } from '@r
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 import { AccountBar } from '@/components/AccountBar'
 
 /**
@@ -47,8 +46,6 @@ export default async function ThemePage({ params, searchParams }: PageProps) {
     const { Home } = theme
     return (
         <LocaleProvider>
-            {/* Cụm tài khoản + chuông, chung cho cả N mẫu — xem SiteOverlay. */}
-            <SiteOverlay />
             <Home data={data} locale={locale} extra={<AccountBar />} />
         </LocaleProvider>
     )

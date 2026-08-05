@@ -1,4 +1,6 @@
 import type { Locale, PropertyData, SectionId } from '@repo/core'
+import { siteFooterPropsOf } from '@repo/domain-hotel'
+import { SiteFooter } from '@repo/ui-layout'
 
 import { meta } from './meta'
 import { BaseCss } from './components/base'
@@ -34,6 +36,14 @@ export const sections: readonly SectionId[] = [
 export interface HomeProps {
     data: PropertyData
     locale: Locale
+    /**
+     * Cụm chuông + tài khoản do app cắm vào header.
+     *
+     * Route của app truyền `extra={<AccountBar />}` cho MỌI mẫu. Bản trước của
+     * `HomeProps` không khai prop này nên nó bị bỏ rơi im lặng — mẫu 01 mất hẳn
+     * chuông và đăng nhập mà không ai báo lỗi.
+     */
+    extra?: React.ReactNode
 }
 
 /**
@@ -46,11 +56,11 @@ export interface HomeProps {
  *
  * `clip` chặn tràn ngang y hệt nhưng không tạo scroll container.
  */
-export function Home({ data, locale }: HomeProps) {
+export function Home({ data, locale, extra }: HomeProps) {
     return (
         <div data-theme={meta.slug} className="overflow-x-clip">
             <BaseCss />
-            <Header data={data} locale={locale} />
+            <Header data={data} locale={locale} extra={extra} />
             <main>
                 <Hero data={data} locale={locale} />
                 <About data={data} locale={locale} />
@@ -60,7 +70,11 @@ export function Home({ data, locale }: HomeProps) {
                 <Gallery data={data} locale={locale} />
                 <Booking data={data} locale={locale} />
             </main>
+            {/* `Contact` là section `#contact` của luật R7 — nội dung liên hệ,
+                không phải chân trang. `SiteFooter` mới là chân trang thật, dùng
+                chung với mọi mẫu và với app resort. */}
             <Contact data={data} locale={locale} />
+            <SiteFooter {...siteFooterPropsOf(data, locale, meta.slug)} />
             <ZaloFab brand={data.brand} locale={locale} />
         </div>
     )

@@ -10,7 +10,6 @@ import {
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 /** /[theme]/dining — điểm ăn uống và thực đơn. */
 
@@ -49,7 +48,6 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <Component data={data} locale={locale} menu={menu} />
         </LocaleProvider>
     )

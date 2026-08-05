@@ -1,4 +1,6 @@
 import type { Locale, PropertyData, SectionId } from '@repo/core'
+import { siteFooterPropsOf } from '@repo/domain-hotel'
+import { SiteFooter } from '@repo/ui-layout'
 
 import { About } from './sections/About'
 import { Booking } from './sections/Booking'
@@ -64,7 +66,10 @@ export function Home({ data, locale, extra }: HomeProps) {
                 <Booking data={data} locale={locale} />
                 <Practical data={data} locale={locale} />
             </main>
+            {/* `Contact` là section `#contact` của luật R7 — nội dung liên hệ,
+                không phải chân trang. `SiteFooter` mới là chân trang thật. */}
             <Contact data={data} locale={locale} />
+            <SiteFooter {...siteFooterPropsOf(data, locale, 'h2')} />
         </div>
     )
 }

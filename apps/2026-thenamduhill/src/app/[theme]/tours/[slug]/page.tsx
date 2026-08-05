@@ -3,7 +3,6 @@ import { findTheme, getProperty, isLocale, DEFAULT_LOCALE } from '@repo/core'
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 /** /[theme]/tours/[slug] — chi tiết một combo. */
 
@@ -38,7 +37,6 @@ export default async function Page({ params, searchParams }: PageProps) {
         const Component = theme.TourDetail
         return (
             <LocaleProvider>
-                <SiteOverlay />
                 <Component data={data} locale={locale} tourSlug={tourSlug} />
             </LocaleProvider>
         )
@@ -47,7 +45,6 @@ export default async function Page({ params, searchParams }: PageProps) {
     const Fallback = theme.Home
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <Fallback data={data} locale={locale} />
         </LocaleProvider>
     )

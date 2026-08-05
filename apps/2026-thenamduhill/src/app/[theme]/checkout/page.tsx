@@ -3,7 +3,6 @@ import { findTheme, getProperty, isLocale, themeSlugs, DEFAULT_LOCALE } from '@r
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 interface PageProps {
     params: Promise<{ theme: string }>
@@ -41,7 +40,6 @@ export default async function CheckoutPage({ params, searchParams }: PageProps) 
 
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <CheckoutComponent
                 data={data}
                 locale={locale}

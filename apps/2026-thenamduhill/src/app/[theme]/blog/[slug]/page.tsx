@@ -10,7 +10,6 @@ import {
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 /** /[theme]/blog/[slug] — chi tiết một bài cẩm nang. */
 
@@ -51,7 +50,6 @@ export default async function Page({ params, searchParams }: PageProps) {
         const related = all.filter((p) => p.id !== post.id).slice(0, 3)
         return (
             <LocaleProvider>
-                <SiteOverlay />
                 <Component data={data} locale={locale} post={post} related={related} />
             </LocaleProvider>
         )
@@ -60,7 +58,6 @@ export default async function Page({ params, searchParams }: PageProps) {
     const Fallback = theme.Home
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <Fallback data={data} locale={locale} />
         </LocaleProvider>
     )

@@ -201,6 +201,28 @@ export function toFooterColumns(
     return columns
 }
 
+/**
+ * Gói trọn prop header cho một mẫu trong app hub.
+ *
+ * Khác bản của app resort ở hai chỗ: đường dẫn gắn slug của mẫu, và chuyển
+ * ngôn ngữ dùng `?lang=` thay vì state — nhờ vậy trang chủ giữ được SSG.
+ */
+export function siteHeaderPropsOf(data: PropertyData, locale: Locale, slug: string) {
+    return {
+        brand: toSiteHeaderBrand(data, locale),
+        nav: toNavItems(data, locale, slug),
+        strings: toSiteHeaderStrings(locale),
+        homeHref: themeRoot(slug),
+        ctaHref: themePath(slug, 'rooms'),
+        accountMenu: toAccountMenu(locale, { myOrders: '/my-orders' }),
+        locales: [
+            { code: 'vi', label: 'VI', href: '?lang=vi' },
+            { code: 'en', label: 'EN', href: '?lang=en' },
+        ],
+        activeLocale: locale as string,
+    }
+}
+
 /** Gói trọn prop chân trang cho một mẫu trong app hub. */
 export function siteFooterPropsOf(data: PropertyData, locale: Locale, slug: string) {
     return {

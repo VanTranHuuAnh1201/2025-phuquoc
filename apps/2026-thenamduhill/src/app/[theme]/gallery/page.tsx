@@ -3,7 +3,6 @@ import { findTheme, getProperty, isLocale, themeSlugs, DEFAULT_LOCALE } from '@r
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 /** /[theme]/gallery — thư viện ảnh. */
 
@@ -40,7 +39,6 @@ export default async function Page({ params, searchParams }: PageProps) {
 
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <Component data={data} locale={locale} />
         </LocaleProvider>
     )

@@ -74,10 +74,19 @@ export interface SiteHeaderProps {
     accountMenu?: AccountMenuItem[]
 
     /**
-     * Bộ chuyển ngôn ngữ. Nơi gọi quyết định cơ chế — state của app hay
-     * `?lang=` trên URL — nên nhận cả nhãn lẫn handler.
+     * Bộ chuyển ngôn ngữ. Hai cơ chế cùng được hỗ trợ vì hai app làm khác nhau:
+     *
+     *   `onSelect`  app resort — đổi state của `LanguageContext`
+     *   `href`      app hub    — điều hướng `?lang=vi`, giữ được SSG
+     *
+     * Truyền `href` thì render `<a>`, truyền `onSelect` thì render `<button>`.
      */
-    locales?: Array<{ code: string; label: string; onSelect: () => void }>
+    locales?: Array<{
+        code: string
+        label: string
+        onSelect?: () => void
+        href?: string
+    }>
     activeLocale?: string
 
     /**
@@ -248,31 +257,45 @@ export function SiteHeader({
                             {/* ---- chuyển ngôn ngữ ---- */}
                             {locales.length > 1 && (
                                 <div className="flex items-center gap-1 px-1 py-1 text-xs font-medium">
-                                    {locales.map((loc, i) => (
-                                        <span key={loc.code} className="flex items-center gap-1">
-                                            {i > 0 && (
-                                                <span
-                                                    aria-hidden="true"
-                                                    className={solid ? 'text-border-default' : 'text-white/40'}
-                                                >
-                                                    |
-                                                </span>
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={loc.onSelect}
-                                                aria-current={activeLocale === loc.code ? 'true' : undefined}
-                                                className={[
-                                                    'cursor-pointer border-0 bg-transparent px-1 py-[2px] text-xs uppercase transition',
-                                                    activeLocale === loc.code
-                                                        ? `font-bold ${tone.text}`
-                                                        : `${tone.textMuted} hover:${tone.text}`,
-                                                ].join(' ')}
-                                            >
-                                                {loc.label}
-                                            </button>
-                                        </span>
-                                    ))}
+                                    {locales.map((loc, i) => {
+                                        const active = activeLocale === loc.code
+                                        const cls = [
+                                            'min-w-[24px] cursor-pointer border-0 bg-transparent px-1 py-[2px] text-center text-xs uppercase no-underline transition',
+                                            active ? `font-bold ${tone.text}` : tone.textMuted,
+                                        ].join(' ')
+                                        return (
+                                            <span key={loc.code} className="flex items-center gap-1">
+                                                {i > 0 && (
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className={
+                                                            solid ? 'text-border-default' : 'text-white/40'
+                                                        }
+                                                    >
+                                                        |
+                                                    </span>
+                                                )}
+                                                {loc.href ? (
+                                                    <a
+                                                        href={loc.href}
+                                                        aria-current={active ? 'true' : undefined}
+                                                        className={cls}
+                                                    >
+                                                        {loc.label}
+                                                    </a>
+                                                ) : (
+                                                    <button
+                                                        type="button"
+                                                        onClick={loc.onSelect}
+                                                        aria-current={active ? 'true' : undefined}
+                                                        className={cls}
+                                                    >
+                                                        {loc.label}
+                                                    </button>
+                                                )}
+                                            </span>
+                                        )
+                                    })}
                                 </div>
                             )}
 

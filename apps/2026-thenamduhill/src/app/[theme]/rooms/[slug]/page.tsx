@@ -3,7 +3,6 @@ import { findTheme, getProperty, isLocale, DEFAULT_LOCALE } from '@repo/core'
 
 import { themes } from '@/themes/registry'
 import { LocaleProvider } from '@/components/LocaleProvider'
-import { SiteOverlay } from '@/components/SiteOverlay'
 
 interface PageProps {
     params: Promise<{ theme: string; slug: string }>
@@ -37,7 +36,6 @@ export default async function RoomDetailPage({ params, searchParams }: PageProps
 
     return (
         <LocaleProvider>
-            <SiteOverlay />
             <RoomDetailComponent data={data} locale={locale} roomSlug={roomSlug} />
         </LocaleProvider>
     )

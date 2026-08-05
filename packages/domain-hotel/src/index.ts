@@ -28,6 +28,7 @@ export {
     toAccountMenu,
     toSiteFooterBrand,
     toFooterColumns,
+    siteHeaderPropsOf,
     siteFooterPropsOf,
 } from './shell-adapter'
 export type { AccountRoutes } from './shell-adapter'
