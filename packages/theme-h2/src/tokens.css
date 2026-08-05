@@ -137,4 +137,8 @@
     --motion-fast: 220ms;
     --motion-normal: 400ms;
 
+    /* Khung nội dung. `SiteHeader`/`SiteFooter` dùng chung đọc biến này —
+       thiếu nó thì header rơi về 1360px của contract dự phòng, rộng hơn phần
+       thân trang và lệch mép trái phải. 1280px là bề rộng bản thiết kế. */
+    --container: 1280px;
 }

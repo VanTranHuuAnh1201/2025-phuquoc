@@ -158,6 +158,12 @@
     --motion-instant: 150ms;
     --motion-fast: 300ms;
     --motion-normal: 700ms;
+
+    /* Khung nội dung. `SiteHeader`/`SiteFooter` dùng chung đọc biến này —
+       thiếu nó thì header rơi về 1360px của contract dự phòng, rộng hơn phần
+       thân trang và lệch mép trái phải. 1280px là bề rộng bản thiết kế gốc
+       của resort (`max-w-[1280px]` ở header cũ). */
+    --container: 1280px;
 }
 
 /* ---------------------------------------------------------------------------
