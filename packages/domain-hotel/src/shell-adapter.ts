@@ -100,11 +100,21 @@ export interface AccountRoutes {
     admin?: string
 }
 
-export function toSiteHeaderBrand(data: PropertyData, locale: Locale): SiteHeaderBrand {
+/**
+ * `_locale` giữ trong chữ ký cho khớp bộ `to*` còn lại, dù bản hiện tại không
+ * cần dịch gì — `brand.suffix` là danh từ riêng. Bỏ tham số đi thì mọi nơi gọi
+ * phải sửa lại khi có mẫu cần tagline song ngữ.
+ */
+export function toSiteHeaderBrand(data: PropertyData, _locale: Locale): SiteHeaderBrand {
     const { brand } = data
     return {
         name: brand.name,
-        tagline: pick(UI.cuTronVillageNamDuIsland, locale),
+        // Dòng phụ NGẮN — chỉ tên vùng, không phải địa chỉ đầy đủ.
+        //
+        // `brand.address` là "Ấp Củ Tron, Đảo Nam Du, Huyện Kiên Hải, Kiên
+        // Giang" — 49 ký tự, đặt cạnh logo thì bóp cả hàng và đẩy nav xuống
+        // dòng. Địa chỉ đầy đủ thuộc về chân trang và trang liên hệ.
+        tagline: brand.suffix,
         logo: brand.logo,
     }
 }
@@ -214,12 +224,16 @@ export function siteHeaderPropsOf(data: PropertyData, locale: Locale, slug: stri
         strings: toSiteHeaderStrings(locale),
         homeHref: themeRoot(slug),
         ctaHref: themePath(slug, 'rooms'),
-        accountMenu: toAccountMenu(locale, { myOrders: '/my-orders' }),
-        locales: [
-            { code: 'vi', label: 'VI', href: '?lang=vi' },
-            { code: 'en', label: 'EN', href: '?lang=en' },
-        ],
         activeLocale: locale as string,
+        // KHÔNG khai `locales` và `accountMenu` ở đây.
+        //
+        // App hub cắm `<AccountBar />` vào slot `extra`, và component đó đã có
+        // sẵn chuyển ngôn ngữ + chuông + menu tài khoản — nó đọc `auth.store`
+        // và `notify.store` nên biết trạng thái đăng nhập thật. Khai thêm ở
+        // đây thì header hiện HAI bộ VI|EN và HAI icon người dùng.
+        //
+        // App resort thì ngược lại: không có `AccountBar`, nên nó tự truyền
+        // `locales`/`accountMenu` cho `SiteHeader` (xem Header.tsx của app đó).
     }
 }
 

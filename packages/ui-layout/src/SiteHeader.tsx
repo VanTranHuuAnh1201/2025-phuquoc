@@ -191,12 +191,15 @@ export function SiteHeader({
                 tone.text,
             ].join(' ')}
         >
-            <div className="mx-auto flex max-w-[var(--container)] items-center justify-between gap-6 px-4 sm:px-6">
+            <div className="mx-auto flex max-w-[var(--container)] items-center justify-between gap-4 px-4 sm:px-6">
                 {/* ---- thương hiệu ---- */}
+                {/* `shrink-0` trên chính thẻ `<a>`: nó là flex item, thiếu thì
+                    khi hàng chật trình duyệt bóp nó lại và tên thương hiệu
+                    xuống dòng từng chữ một — "The / Nam / Du / Hill". */}
                 <a
                     href={focusBadge ? undefined : homeHref}
                     className={[
-                        'group flex items-center gap-[10px] no-underline',
+                        'group flex shrink-0 items-center gap-[10px] no-underline',
                         focusBadge ? 'pointer-events-none cursor-default' : '',
                     ].join(' ')}
                 >
@@ -210,12 +213,17 @@ export function SiteHeader({
                     )}
                     <span className="flex flex-col leading-none">
                         <span
-                            className={`font-display text-[13px] font-bold tracking-tight sm:text-sm ${tone.text}`}
+                            className={`font-display text-[13px] font-bold whitespace-nowrap tracking-tight sm:text-sm ${tone.text}`}
                         >
                             {brand.name}
                         </span>
                         {brand.tagline && (
-                            <span className={`mt-[2px] text-[10px] font-medium ${tone.textMuted}`}>
+                            /* Dòng phụ có thể dài (địa chỉ đầy đủ) — cắt bằng
+                               `truncate` thay vì cho xuống dòng, và chỉ hiện từ
+                               màn vừa trở lên để mobile không chật. */
+                            <span
+                                className={`mt-[2px] hidden max-w-[220px] truncate text-[10px] font-medium sm:block ${tone.textMuted}`}
+                            >
                                 {brand.tagline}
                             </span>
                         )}
@@ -229,10 +237,17 @@ export function SiteHeader({
                     </span>
                 )}
 
+                {/* Cụm phải: nav + ngôn ngữ + tài khoản + CTA, dồn sát mép phải
+                    trên MỘT hàng.
+
+                    `min-w-0` là bắt buộc: mặc định flex item không co xuống dưới
+                    kích thước nội dung, nên cụm này đẩy hàng vỡ khi menu dài.
+                    `flex-nowrap` chặn xuống dòng, `whitespace-nowrap` ở từng mục
+                    nav giữ mỗi nhãn nguyên vẹn. */}
                 {!focusBadge && (
-                    <div className="flex items-center gap-5 sm:gap-7">
+                    <div className="flex min-w-0 flex-nowrap items-center gap-3 lg:gap-4">
                         {/* ---- điều hướng desktop ---- */}
-                        <nav className="hidden items-center gap-5 md:flex lg:gap-7">
+                        <nav className="hidden min-w-0 items-center gap-4 md:flex lg:gap-5">
                             {nav.map((item) => {
                                 const active = currentHref === item.href
                                 return (
@@ -241,7 +256,7 @@ export function SiteHeader({
                                         href={item.href}
                                         aria-current={active ? 'page' : undefined}
                                         className={[
-                                            'relative py-1 text-sm font-medium no-underline transition-colors hover:text-brand',
+                                            'relative py-1 text-sm font-medium whitespace-nowrap no-underline transition-colors hover:text-brand',
                                             active
                                                 ? 'font-semibold text-brand after:absolute after:right-0 after:bottom-0 after:left-0 after:h-[2px] after:rounded-full after:bg-brand'
                                                 : tone.textMuted,
@@ -253,18 +268,18 @@ export function SiteHeader({
                             })}
                         </nav>
 
-                        <div className="flex items-center gap-[10px] sm:gap-3">
+                        <div className="flex shrink-0 items-center gap-2">
                             {/* ---- chuyển ngôn ngữ ---- */}
                             {locales.length > 1 && (
-                                <div className="flex items-center gap-1 px-1 py-1 text-xs font-medium">
+                                <div className="flex shrink-0 items-center text-xs font-medium">
                                     {locales.map((loc, i) => {
                                         const active = activeLocale === loc.code
                                         const cls = [
-                                            'min-w-[24px] cursor-pointer border-0 bg-transparent px-1 py-[2px] text-center text-xs uppercase no-underline transition',
+                                            'cursor-pointer border-0 bg-transparent px-[6px] py-[2px] text-center text-xs uppercase no-underline transition',
                                             active ? `font-bold ${tone.text}` : tone.textMuted,
                                         ].join(' ')
                                         return (
-                                            <span key={loc.code} className="flex items-center gap-1">
+                                            <span key={loc.code} className="flex items-center">
                                                 {i > 0 && (
                                                     <span
                                                         aria-hidden="true"
@@ -348,7 +363,7 @@ export function SiteHeader({
                             {ctaHref && (
                                 <a
                                     href={ctaHref}
-                                    className="hidden rounded-md bg-accent px-4 py-[9px] text-sm font-bold whitespace-nowrap text-text-inverse no-underline shadow-1 transition hover:brightness-95 sm:inline-block"
+                                    className="hidden shrink-0 rounded-md bg-accent px-[14px] py-[8px] text-[13px] font-bold whitespace-nowrap text-text-inverse no-underline shadow-1 transition hover:brightness-95 sm:inline-block"
                                 >
                                     {strings.bookNow}
                                 </a>
