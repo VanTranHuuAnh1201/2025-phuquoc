@@ -53,11 +53,21 @@ apps/
   2026-thenamduhill/   Booking Hotel — hub + N mẫu      → cổng 3000
   2025-phogroup/       Pho Group cũ (vùng đóng băng)    → cổng 3001
 packages/
-  core/         Type, dữ liệu, nghiệp vụ booking, i18n — KHÔNG chứa JSX
-  ui/           Primitive không mang bản sắc thương hiệu
-  tsconfig/     Config TypeScript dùng chung
-  theme-h1/     ✅ tokens + sections + composition (khuôn mẫu)
-  theme-h2..h4/ ⏳ nhân bản từ h1 sau khi duyệt
+  ── TẦNG NỀN — không biết domain nào tồn tại (luật R15) ──
+  utils/            i18n, format tiền/ngày, env, đường dẫn asset vô danh
+  ui/              Primitive rời: Button, Modal, Field, DataTable
+  ui-layout/       Bố cục trang: Header, Hero, Breadcrumbs, Footer
+  styling-css/     Hợp đồng token — engine CSS variable thuần
+  styling-tailwind/ Cầu nối Tailwind v4 ⇄ token của theme
+  tsconfig/        Config TypeScript dùng chung
+
+  ── TẦNG DOMAIN — nghiệp vụ, không hình thức ──
+  core/            Type, dữ liệu, tính giá, tồn kho, vòng đời đơn
+  domain-hotel/    8 trang nghiệp vụ + adapter + chuỗi của ngành lưu trú
+
+  ── TẦNG THEME — chỉ hình thức ──
+  theme-h1/        tokens + sections + composition
+  theme-h2/        tokens + sections + composition + pages riêng
 resources/
   design/       Bundle Figma (prototype HTML)
   docs/         Kiến trúc + hướng dẫn deploy
@@ -87,15 +97,26 @@ nằm trong code. Chi tiết: [DEPLOY.md](resources/docs/DEPLOY.md).
 ### Ranh giới package — bất khả xâm phạm
 
 ```
-theme-*  →  ui, core        ✅
-ui       →  core            ✅
-core     →  (không phụ thuộc ai)
-theme-a  →  theme-b         ❌ TUYỆT ĐỐI KHÔNG
-core     →  ui / theme-*    ❌
+theme-*   →  domain-*  →  ui-layout  →  ui  →  utils
+                                               ↑
+                             styling-*  ───────┘
+
+theme-a   →  theme-b        ❌ TUYỆT ĐỐI KHÔNG
+domain-a  →  domain-b       ❌ TUYỆT ĐỐI KHÔNG (cùng lý do)
+tầng nền  →  domain-*       ❌
+ui        →  core           ❌ `ui` không phụ thuộc gì
 ```
 
-`packages/core` không được chứa JSX hay CSS. Nếu một logic cần dùng ở 2 theme
-trở lên, nó thuộc về `core` hoặc `ui` — **không bao giờ copy giữa các theme**.
+`packages/core` không được chứa JSX hay CSS.
+
+Nếu 2 theme của **cùng domain** cần chung một thứ → đẩy lên `domain-*` đó.
+Nếu 2 **domain** cần chung → đẩy lên tầng nền, và phải **gột sạch từ vựng
+ngành** trước khi lên (luật R15). **Không bao giờ copy giữa các theme.**
+
+Phép thử một dòng cho tầng nền:
+
+> *"File này có nhắc phòng, đơn hàng, thực đơn, bệnh án, gói cước không?"*
+> Không → tầng nền. Có → `packages/domain-*`.
 
 ---
 
@@ -161,15 +182,21 @@ kiểm tra rồi merge tay.
 
 ### Thêm một mẫu mới (đã kiểm chứng)
 
-Đúng 5 chỗ, không đụng `core`/`ui`/route:
+Đúng 6 chỗ, không đụng tầng nền / `domain-*` / route:
 
 1. tạo `packages/theme-hN/` (copy khung từ `theme-h1`)
-2. `apps/2026-thenamduhill/package.json` — thêm `"@repo/theme-hN": "workspace:*"`
-3. `apps/2026-thenamduhill/src/themes/registry.ts` — thêm import + một phần tử mảng
-4. `apps/2026-thenamduhill/src/app/layout.tsx` — thêm một dòng import `tokens.css`
-5. `apps/2026-thenamduhill/next.config.ts` — thêm vào `transpilePackages`
+2. `packages/theme-hN/package.json` — khai **styling engine** muốn dùng:
+   `@repo/styling-tailwind` hoặc `@repo/styling-css` (luật R14)
+3. `apps/2026-thenamduhill/package.json` — thêm `"@repo/theme-hN": "workspace:*"`
+4. `apps/2026-thenamduhill/src/themes/registry.ts` — thêm import + một phần tử mảng
+5. `apps/2026-thenamduhill/src/app/layout.tsx` — thêm một dòng import `tokens.css`
+6. `apps/2026-thenamduhill/next.config.ts` — thêm vào `transpilePackages`;
+   nếu dùng Tailwind thì thêm cả `@source` trong `globals.css`
 
 Rồi `pnpm install`. Route `/hN` và thẻ trên hub tự xuất hiện.
+
+⚠️ Quên bước 6 thì **build vẫn xanh nhưng trang mất sạch style** — Tailwind bỏ
+qua `node_modules`, mà mọi `@repo/*` đều là symlink nằm trong đó.
 
 ### Thêm một sản phẩm mới
 
