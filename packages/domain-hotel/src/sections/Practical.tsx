@@ -2,6 +2,7 @@ import { pick, type Locale, type PropertyData } from '@repo/core'
 import { Accordion } from '@repo/ui'
 
 import type { UiStrings, UiStringSet } from '../strings'
+import { DEFAULT_SECTION_HEADINGS, type SectionHeadingClasses } from './headings'
 
 /**
  * Dải thông tin thực dụng: cách đến đảo + lưu ý bên trái, FAQ dạng accordion
@@ -14,10 +15,6 @@ import type { UiStrings, UiStringSet } from '../strings'
  * chung; bộ nhãn `ui` (giọng văn của mẫu) đi vào qua prop (luật R1).
  */
 
-/** Tiêu đề của hai cột — cùng một dáng chữ nên gom lại một chỗ. */
-const COL_HEADING =
-    'mt-0 mb-2 font-display text-xl leading-[1.2] font-extrabold tracking-[-0.03em] text-text-primary'
-
 /** Câu dẫn dưới mỗi tiêu đề cột. */
 const COL_SUB = 'mt-0 mb-[var(--space-6)] text-base text-text-secondary'
 
@@ -26,10 +23,18 @@ export interface PracticalSectionProps {
     locale: Locale
     /** Bộ nhãn giao diện của mẫu — giọng văn là quyết định của theme. */
     ui: UiStringSet<UiStrings>
+    /** Class tiêu đề của mẫu. Không truyền thì dùng bộ trung tính. */
+    headingClass?: SectionHeadingClasses
 }
 
-export function PracticalSection({ data, locale, ui }: PracticalSectionProps) {
+export function PracticalSection({
+    data,
+    locale,
+    ui,
+    headingClass = DEFAULT_SECTION_HEADINGS,
+}: PracticalSectionProps) {
     const t = ui[locale]
+    const COL_HEADING = headingClass.column
 
     return (
         <section className="bg-surface-base px-6 pt-[var(--space-16)] pb-[var(--space-20)]">

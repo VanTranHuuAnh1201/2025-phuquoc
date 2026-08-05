@@ -47,6 +47,6 @@ export function H2Places(props: Omit<PlacesSectionProps, 'headingClass'>) {
     return <PlacesSection {...props} headingClass={SECTION_HEADINGS} />
 }
 
-export function H2Practical(props: Omit<PracticalSectionProps, 'ui'>) {
-    return <PracticalSection {...props} ui={ui} />
+export function H2Practical(props: Omit<PracticalSectionProps, 'ui' | 'headingClass'>) {
+    return <PracticalSection {...props} ui={ui} headingClass={SECTION_HEADINGS} />
 }

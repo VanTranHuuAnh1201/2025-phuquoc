@@ -31,14 +31,34 @@ export interface SectionHeadingClasses {
      * giữa.
      */
     section: string
+
+    /**
+     * Tiêu đề của một CỘT bên trong section (khối "Đường ra đảo", "Câu hỏi
+     * thường gặp" của `PracticalSection`).
+     *
+     * VÌ SAO PHẢI QUA PROP CHỨ KHÔNG VIẾT CỨNG: bậc `text-xl` không phải một
+     * cỡ chữ cố định — nó trỏ vào `--text-xl` của theme đang render. Mẫu 02
+     * khai 1.375rem (22px), mẫu 03 khai 1rem (16px). Cùng một chuỗi class cho
+     * ra tiêu đề 22px ở mẫu này và 16px ở mẫu kia — bằng đúng cỡ chữ thân bài,
+     * mất sạch thứ bậc thị giác (luật P4).
+     *
+     * Mỗi mẫu tự chọn bậc nào của thang CHÍNH NÓ là "tiêu đề cột".
+     */
+    column: string
 }
 
 /**
- * Bộ mặc định — cố ý TRUNG TÍNH: chỉ khai thứ bậc (cỡ chữ theo thang token,
- * đậm, màu chữ chính) và không khai bản sắc (không `uppercase`, không giãn
- * chữ). Theme nào không truyền `headingClass` vẫn đọc được, nhưng sẽ nhìn ra
- * ngay là chưa khai bộ riêng.
+ * Bộ mặc định — cố ý TRUNG TÍNH: chỉ khai thứ bậc (đậm, màu chữ chính) và
+ * không khai bản sắc (không `uppercase`, không giãn chữ). Theme nào không
+ * truyền `headingClass` vẫn đọc được, nhưng sẽ nhìn ra ngay là chưa khai bộ
+ * riêng.
+ *
+ * Cỡ chữ dùng `rem` TUYỆT ĐỐI chứ không dùng bậc `text-xl` của thang token:
+ * bộ này là lưới an toàn cho theme chưa khai gì, nên nó phải cho ra cùng một
+ * kích thước ở mọi mẫu. Trỏ vào thang token thì chính bộ dự phòng cũng trôi
+ * theo mẫu — đúng thứ nó sinh ra để chặn.
  */
 export const DEFAULT_SECTION_HEADINGS: SectionHeadingClasses = {
-    section: 'mr-auto text-lg leading-[1.25] font-bold text-text-primary',
+    section: 'mr-auto text-[1.125rem] leading-[1.25] font-bold text-text-primary',
+    column: 'mt-0 mb-2 text-[1.25rem] leading-[1.2] font-bold text-text-primary',
 }

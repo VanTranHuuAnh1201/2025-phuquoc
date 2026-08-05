@@ -21,4 +21,15 @@ import type { SectionHeadingClasses } from '@repo/domain-hotel'
 export const SECTION_HEADINGS: SectionHeadingClasses = {
     section:
         'mr-auto text-[19px] leading-[1.2] font-bold tracking-[-0.01em] text-text-primary min-[960px]:text-[22px]',
+
+    /**
+     * Tiêu đề cột bên trong section (`PracticalSection`).
+     *
+     * VÌ SAO KHÔNG DÙNG BẬC `text-xl` NHƯ MẪU 02: thang chữ của mẫu này nhỏ
+     * hơn hẳn — `--text-xl` ở đây là 1rem (16px), bằng đúng cỡ chữ thân bài.
+     * Dùng bậc đó thì tiêu đề cột không còn là tiêu đề (luật P4). Bậc dùng
+     * được là `--text-2xl` (1.25rem = 20px), viết thẳng theo px cho khớp
+     * `section` ở trên — hai tiêu đề của cùng một mẫu phải cùng một dáng.
+     */
+    column: 'mt-0 mb-2 text-[19px] leading-[1.2] font-bold tracking-[-0.01em] text-text-primary min-[960px]:text-[22px]',
 }

@@ -26,6 +26,12 @@
     --brand-light: #718096;
     --accent: #a0aec0;
     --accent-dark: #718096;
+    /* Chữ đặt TRÊN nền `--accent`.
+       Tách riêng khỏi `--text-inverse` vì nút nền sáng (vàng, xanh lá) cần chữ
+       ĐẬM MÀU, còn nút nền tối cần chữ trắng — một biến không phục vụ được cả
+       hai. Thiếu nó thì chữ rơi về `color` kế thừa và có thể trùng màu nền:
+       nút vàng chữ vàng, tương phản 1:1 (luật D4). */
+    --on-accent: #1a202c;
 
     --surface: #ffffff;
     --surface-alt: #f7fafc;

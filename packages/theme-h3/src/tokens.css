@@ -32,6 +32,21 @@
     --accent: #ffb800;
     --accent-light: #ffc837;
     --accent-lighter: #ffe082;
+    /* Bậc TỐI của vàng — trạng thái hover của nút accent.
+       BẮT BUỘC KHAI: nút trong các section dùng chung có
+       `hover:bg-[var(--accent-dark)]`. Thiếu biến thì rơi về bộ dự phòng
+       #718096 của contract, tức rê chuột vào nút vàng thì nó chuyển XÁM —
+       trông như nút bị vô hiệu hoá. */
+    --accent-dark: #e0a000;
+
+    /* Chữ đặt TRÊN nền vàng.
+       BẮT BUỘC KHAI, không được để rơi về bộ dự phòng: các section dùng chung
+       của `domain-hotel` có nút `bg-[var(--accent)] text-[var(--on-accent)]`.
+       Thiếu biến thì chữ kế thừa `color` của khối cha — ở đây là vàng trên
+       vàng, tương phản 1:1.
+       Trắng trên #ffb800 chỉ đạt 1.73:1, trượt WCAG AA. Navy đậm nhất của
+       bảng màu đạt 10.18:1 (đo bằng công thức WCAG 2.x, luật D4). */
+    --on-accent: #0b192c;
 
     /* Xanh mòng két của hero: nền lót sau ảnh và màu focus của thanh tìm kiếm.
        Tách riêng khỏi `--brand` vì hero có bảng màu lạnh hơn phần thân trang. */
@@ -46,6 +61,12 @@
     --surface-alt: #fafaf8;
     --surface-hover: #f5f7fa;
     --surface-inverse: #0f2d52;
+    /* Nền nhạt MANG SẮC THƯƠNG HIỆU — dùng cho viên icon và nền hover của thẻ
+       trong các section dùng chung.
+       BẮT BUỘC KHAI: thiếu thì rơi về #edf2f7 của contract — xám trung tính,
+       không dính dáng gì tới bảng navy của mẫu. Đây là bậc nhạt nhất của
+       chính `--brand` #1d4e89. */
+    --surface-tint: #eaf1f9;
 
     /* Lớp phủ hero — gradient bốn chặng của bản thiết kế gốc. Khai thành một
        biến để section không phải nhúng hex vào `style` (luật D0). */
@@ -67,6 +88,10 @@
 
     --border: #e5e7eb;
     --border-muted: #ececec;
+    /* Viền ĐẬM hơn mặc định — thẻ được chọn, ô nhập đang focus.
+       BẮT BUỘC KHAI: thiếu thì rơi về #cbd5e0 của contract. Giá trị này là
+       bậc kế tiếp của chính `--border` ở trên, giữ đúng sắc xám-lam của mẫu. */
+    --border-strong: #cfd6de;
 
     --success: #047857;
     --danger: #b91c1c;

@@ -49,10 +49,26 @@ export function HostService({ locale, perks, reviews }: HostServiceProps) {
                         <span className="text-brand text-xs font-semibold tracking-wider uppercase">
                             {pick(UI.hostAmenities, locale)}
                         </span>
-                        <h2 className="font-display text-text-primary text-base leading-snug font-bold sm:text-xl md:text-2xl">
+                        {/*
+                          * CỠ CHỮ VIẾT THẲNG THEO PX, KHÔNG DÙNG BẬC TOKEN.
+                          *
+                          * Bản trước là `text-base sm:text-xl md:text-2xl` —
+                          * trông như một thang tăng dần, nhưng thang chữ của
+                          * mẫu này rất nhỏ (trích từ bảng Travlla base 14px):
+                          * `--text-base` 14px · `--text-xl` 16px · `--text-2xl`
+                          * 20px. Nghĩa là tiêu đề chính của section chỉ 14px
+                          * trên mobile — nhỏ hơn thân bài của mẫu 02 và gần
+                          * bằng chính câu dẫn ngay dưới nó (13px). Thứ bậc thị
+                          * giác biến mất (luật P4).
+                          *
+                          * Các bậc `--text-*` của mẫu này phục vụ THÂN BÀI. Cỡ
+                          * tiêu đề là quyết định riêng, khớp với
+                          * `SECTION_HEADINGS` của cùng mẫu (19/22px).
+                          */}
+                        <h2 className="font-display text-text-primary text-[19px] leading-[1.25] font-bold sm:text-[22px] md:text-[26px]">
                             {pick(UI.youArePickedUpAtThe, locale)}
                         </h2>
-                        <p className="text-text-secondary text-xs leading-relaxed font-normal sm:text-sm">
+                        <p className="text-text-secondary text-[13px] leading-relaxed font-normal sm:text-[14px]">
                             {pick(UI.privateRoundtripCarTransferFromCu, locale)}
                         </p>
 

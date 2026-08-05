@@ -53,7 +53,19 @@ export function SectionHeading({
                     </span>
                 )}
 
-                <h2 className="font-display text-text-primary mt-0.5 text-base font-bold tracking-tight sm:text-xl md:text-2xl">
+                {/*
+                  * CỠ CHỮ THEO PX, KHÔNG DÙNG BẬC TOKEN — xem lý do đầy đủ ở
+                  * `HostService.tsx`. Ngắn gọn: thang `--text-*` của mẫu này
+                  * phục vụ THÂN BÀI (base 14px), nên `text-base sm:text-xl
+                  * md:text-2xl` cho ra tiêu đề 14 → 16 → 20px. Tiêu đề của mọi
+                  * dải nội dung co lại bằng cỡ chữ thường, mất thứ bậc (P4).
+                  *
+                  * Ba con số dưới đây khớp `SECTION_HEADINGS` của cùng mẫu —
+                  * tiêu đề dựng bởi component này và tiêu đề của các section
+                  * dùng chung phải cùng một dáng, không thì trang trông như
+                  * ghép từ hai bản thiết kế.
+                  */}
+                <h2 className="font-display text-text-primary mt-0.5 text-[19px] leading-[1.2] font-bold tracking-tight sm:text-[22px] md:text-[26px]">
                     {title}
                 </h2>
 

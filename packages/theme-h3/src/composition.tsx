@@ -184,7 +184,12 @@ export function Home({
                 />
                 <HostService locale={locale} perks={perks} reviews={reviews} />
                 <Gallery locale={locale} photos={photos} galleryHref={galleryHref} />
-                <PracticalSection data={data} locale={locale} ui={ui} />
+                <PracticalSection
+                    data={data}
+                    locale={locale}
+                    ui={ui}
+                    headingClass={SECTION_HEADINGS}
+                />
             </main>
             <SiteFooter {...siteFooterPropsOf(data, locale, meta.slug)} />
         </div>

@@ -89,7 +89,12 @@ export function Home({ data, locale, extra }: HomeProps) {
                 />
                 <Gallery data={data} locale={locale} />
                 <Booking data={data} locale={locale} />
-                <PracticalSection data={data} locale={locale} ui={ui} />
+                <PracticalSection
+                    data={data}
+                    locale={locale}
+                    ui={ui}
+                    headingClass={SECTION_HEADINGS}
+                />
             </main>
             {/* `Contact` là section `#contact` của luật R7 — nội dung liên hệ,
                 không phải chân trang. `SiteFooter` mới là chân trang thật. */}

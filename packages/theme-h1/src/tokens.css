@@ -99,6 +99,11 @@
        do theme tự render. */
     --accent: var(--color-brand);
     --accent-dark: #0b527f;
+    /* Chữ trên nền accent — TRẮNG, đúng như ghi chú ngay trên.
+       BẮT BUỘC KHAI: thiếu nó thì rơi về #1a202c của contract (chữ đậm màu,
+       dành cho accent nền sáng kiểu vàng). Đen trên #1173b8 chỉ đạt 3.24:1,
+       trượt WCAG AA; trắng đạt 5.04:1 (luật D4). */
+    --on-accent: var(--color-text-inverse);
 
     --surface: var(--color-surface-raised);
     --surface-alt: var(--color-surface-base);

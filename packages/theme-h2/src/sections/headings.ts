@@ -31,8 +31,18 @@ export const SECTION_HEADING =
  * Cùng một nguồn với `SECTION_HEADING` để section trong theme và section ở
  * domain không bao giờ trôi lệch nhau.
  */
+/**
+ * Tiêu đề của một CỘT bên trong section (`PracticalSection`).
+ *
+ * `text-xl` = `--text-xl` của mẫu này = 1.375rem (22px). Giữ nguyên chuỗi của
+ * bản trước khi section chuyển lên tầng domain, nên mẫu 02 không đổi diện mạo.
+ */
+const COLUMN_HEADING =
+    'mt-0 mb-2 font-display text-xl leading-[1.2] font-extrabold tracking-[-0.03em] text-text-primary'
+
 export const SECTION_HEADINGS: SectionHeadingClasses = {
     section: SECTION_HEADING,
+    column: COLUMN_HEADING,
 }
 
 /**
