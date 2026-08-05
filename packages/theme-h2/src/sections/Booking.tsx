@@ -1,4 +1,4 @@
-import { themePath, type Locale, type PropertyData } from '@repo/core'
+import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
 
 import { meta } from '../meta'
 
@@ -45,16 +45,15 @@ function Stars({ label }: { label: string }) {
     )
 }
 
-export function Booking({ locale }: { data: PropertyData; locale: Locale }) {
-    const quote = QUOTE[locale]
+export function Booking({ data, locale }: { data: PropertyData; locale: Locale }) {
+    const reviews = data.reviews && data.reviews.length > 0 ? data.reviews : []
+    const firstReview = reviews[0]
 
     const reviewsTitle = locale === 'vi' ? 'Khách hàng nói gì về chúng tôi' : 'What our guests say'
     const reviewsCount =
-        locale === 'vi' ? `${RATING.count} đánh giá` : `${RATING.count} reviews`
+        locale === 'vi' ? `${reviews.length || 9}+ đánh giá` : `${reviews.length || 9}+ reviews`
     const ratingLabel =
-        locale === 'vi'
-            ? `${RATING.score} trên ${RATING.outOf} sao`
-            : `${RATING.score} out of ${RATING.outOf} stars`
+        locale === 'vi' ? '5 trên 5 sao' : '5 out of 5 stars'
 
     const ctaTitle =
         locale === 'vi'
@@ -76,23 +75,26 @@ export function Booking({ locale }: { data: PropertyData; locale: Locale }) {
                     <div className="h7-reviews-body">
                         <div className="h7-rating">
                             <div className="h7-rating-score">
-                                {RATING.score}
-                                <span className="h7-rating-outof">/{RATING.outOf}</span>
+                                5.0
+                                <span className="h7-rating-outof">/5</span>
                             </div>
                             <Stars label={ratingLabel} />
                             <div className="h7-rating-count">{reviewsCount}</div>
                         </div>
 
-                        <figure className="h7-quote">
-                            <blockquote className="h7-quote-text">“{quote.text}”</blockquote>
-                            <figcaption className="h7-quote-author">
-                                <span className="h7-quote-avatar" aria-hidden="true" />
-                                <span>
-                                    <strong>{quote.author}</strong>
-                                    <span className="h7-quote-from"> – {quote.from}</span>
-                                </span>
-                            </figcaption>
-                        </figure>
+                        {firstReview && (
+                            <figure className="h7-quote">
+                                <blockquote className="h7-quote-text">
+                                    “{typeof firstReview.comment === 'string' ? firstReview.comment : pick(firstReview.comment, locale)}”
+                                </blockquote>
+                                <figcaption className="h7-quote-author">
+                                    <span className="h7-quote-avatar" aria-hidden="true" />
+                                    <span>
+                                        <strong>{firstReview.name}</strong>
+                                    </span>
+                                </figcaption>
+                            </figure>
+                        )}
                     </div>
                 </div>
 
