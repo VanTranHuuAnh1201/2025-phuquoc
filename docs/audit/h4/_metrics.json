@@ -1,0 +1,337 @@
+{
+  "home-desktop": {
+    "scrollW": 1440,
+    "clientW": 1440,
+    "bodyH": 6237,
+    "title": "The Nam Du Hill — Tĩnh lặng Nam Du",
+    "overflow": [
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-5 sm:gap-7",
+        "left": 337,
+        "right": 1626
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-[10px] sm:gap-3",
+        "left": 1258,
+        "right": 1626
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative",
+        "left": 1456,
+        "right": 1488
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border bg-t",
+        "left": 1456,
+        "right": 1488
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 1464,
+        "right": 1480
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 1466,
+        "right": 1477
+      },
+      {
+        "tag": "A",
+        "cls": "hidden rounded-md bg-accent px-4 py-[9px] text-sm font-bold whitespace-nowrap text-text-in",
+        "left": 1504,
+        "right": 1626
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -27,
+        "right": 1467
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -27,
+        "right": 1467
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -27,
+        "right": 1467
+      },
+      {
+        "tag": "DIV",
+        "cls": "shrink-0 py-3 lg:py-4 lg:pl-8",
+        "left": 1170,
+        "right": 1690
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[var(--radius)] px-6 te",
+        "left": 1330,
+        "right": 1690
+      }
+    ],
+    "h1": [
+      "Nơi đại dương chạm mây trời"
+    ],
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  "rooms-desktop": {
+    "scrollW": 1440,
+    "clientW": 1440,
+    "bodyH": 16522,
+    "title": "Hạng phòng & Suite — The Nam Du Hill",
+    "overflow": [
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-5 sm:gap-7",
+        "left": 337,
+        "right": 1626
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-[10px] sm:gap-3",
+        "left": 1258,
+        "right": 1626
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative",
+        "left": 1456,
+        "right": 1488
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border bg-t",
+        "left": 1456,
+        "right": 1488
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 1464,
+        "right": 1480
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 1466,
+        "right": 1477
+      },
+      {
+        "tag": "A",
+        "cls": "hidden rounded-md bg-accent px-4 py-[9px] text-sm font-bold whitespace-nowrap text-text-in",
+        "left": 1504,
+        "right": 1626
+      }
+    ],
+    "h1": [
+      "Hạng phòng & Suite"
+    ],
+    "errors": [
+      "Each child in a list should have a unique \"key\" prop.%s%s See https://react.dev/link/warning-keys for more information. \n\nCheck the render method of `SiteHeader`.  It was passed a child from RoomsListingPage."
+    ]
+  },
+  "room-detail-desktop": {
+    "scrollW": 1440,
+    "clientW": 1440,
+    "bodyH": 3939,
+    "title": "Phòng Deluxe — The Nam Du Hill",
+    "overflow": [
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-5 sm:gap-7",
+        "left": 337,
+        "right": 1513
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-[10px] sm:gap-3",
+        "left": 1258,
+        "right": 1513
+      },
+      {
+        "tag": "A",
+        "cls": "hidden rounded-md bg-accent px-4 py-[9px] text-sm font-bold whitespace-nowrap text-text-in",
+        "left": 1391,
+        "right": 1513
+      }
+    ],
+    "h1": [
+      "Phòng Deluxe"
+    ],
+    "errors": []
+  },
+  "home-mobile": {
+    "scrollW": 375,
+    "clientW": 375,
+    "bodyH": 8265,
+    "title": "The Nam Du Hill — Tĩnh lặng Nam Du",
+    "overflow": [
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-5 sm:gap-7",
+        "left": 181,
+        "right": 441
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-[10px] sm:gap-3",
+        "left": 181,
+        "right": 441
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative",
+        "left": 367,
+        "right": 399
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border bg-t",
+        "left": 367,
+        "right": 399
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 375,
+        "right": 391
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 377,
+        "right": 388
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border-0 tr",
+        "left": 409,
+        "right": 441
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 417,
+        "right": 433
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 419,
+        "right": 431
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -6,
+        "right": 381
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -6,
+        "right": 381
+      },
+      {
+        "tag": "IMG",
+        "cls": "h4-kenburns h-full w-full object-cover",
+        "left": -6,
+        "right": 381
+      }
+    ],
+    "h1": [
+      "Nơi đại dương chạm mây trời"
+    ],
+    "errors": []
+  },
+  "rooms-mobile": {
+    "scrollW": 375,
+    "clientW": 375,
+    "bodyH": 28617,
+    "title": "Hạng phòng & Suite — The Nam Du Hill",
+    "overflow": [
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-5 sm:gap-7",
+        "left": 181,
+        "right": 441
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex items-center gap-[10px] sm:gap-3",
+        "left": 181,
+        "right": 441
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative",
+        "left": 367,
+        "right": 399
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border bg-t",
+        "left": 367,
+        "right": 399
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 375,
+        "right": 391
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 377,
+        "right": 388
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border-0 tr",
+        "left": 409,
+        "right": 441
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "left": 417,
+        "right": 433
+      },
+      {
+        "tag": "path",
+        "cls": "[object SVGAnimatedString]",
+        "left": 419,
+        "right": 431
+      }
+    ],
+    "h1": [
+      "Hạng phòng & Suite"
+    ],
+    "errors": [
+      "Each child in a list should have a unique \"key\" prop.%s%s See https://react.dev/link/warning-keys for more information. \n\nCheck the render method of `SiteHeader`.  It was passed a child from RoomsListingPage."
+    ]
+  },
+  "room-detail-mobile": {
+    "scrollW": 375,
+    "clientW": 375,
+    "bodyH": 5870,
+    "title": "Phòng Deluxe — The Nam Du Hill",
+    "overflow": [],
+    "h1": [
+      "Phòng Deluxe"
+    ],
+    "errors": []
+  }
+}

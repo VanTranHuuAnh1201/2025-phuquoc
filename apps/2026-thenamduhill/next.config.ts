@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
         '@repo/theme-h1',
         '@repo/theme-h2',
         '@repo/theme-h3',
+        '@repo/theme-h4',
     ],
 
     images: {
