@@ -31,7 +31,11 @@
 export function BaseCss() {
     return (
         <style>{`
-[data-theme='h6'] {
+/* Slug là 'h1' — mẫu này từng tên là h6, đổi tên ở commit b1c83e0 nhưng
+   selector còn sót lại nên khối này chết âm thầm: font và nền cấp gốc không
+   áp, chỉ được token layer bù nên khó thấy. Tiền tố class h6- giữ nguyên vì
+   đổi sẽ chạm 9 file, và tên class không ảnh hưởng hoạt động. */
+[data-theme='h1'] {
     font-family: var(--font-family-primary);
     color: var(--color-text-primary);
     line-height: var(--line-height-base);

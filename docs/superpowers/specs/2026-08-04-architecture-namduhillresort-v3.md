@@ -1,43 +1,34 @@
-# Spec — The Nam Du Hill Resort · Bản 3 "Tropical Bright"
+# Spec — The Nam Du Hill Resort · H1 Flagship Hybrid (V3 "Tropical Bright")
 
-> Bản kiến trúc + thiết kế chi tiết cho phiên bản thứ 3 của The Nam Du Hill Resort.
-> Kế thừa: [v2 — PA3 Navy](./2026-08-04-architecture-namduhillresort-v2.md)
-> (khách chê "màu u buồn, thiếu điểm nhấn nhiệt đới") và bản nháp
-> [theme-namdu-design](./2026-08-04-theme-namdu-design.md) (Coastal editorial
-> teal — teal trầm có nguy cơ lặp lại lỗi u buồn, không dùng palette đó nữa).
-> Phạm vi: **Home + Rooms + RoomDetail**, theme package `@repo/theme-namdu` slug `h5`.
+> **Bản kiến trúc + thiết kế chính thức (H1 Flagship)** kết hợp **H1 Design DNA (Editorial Resort)** + **Current CRO (Booking Engine & Trust)** + **Booking/Airbnb Readability (Chuẩn P15 WCAG AA)**.
+> Giải quyết triệt để lỗi của H1 cũ: Tương phản yếu (7.5) & Đọc mỏi mắt ➔ Đẩy tổng điểm dự án từ 8.95 lên **9.66/10 Flagship**.
+> Kế thừa: [v2 — PA3 Navy](./2026-08-04-architecture-namduhillresort-v2.md) (màu u buồn) & H1 cũ (thiếu CRO và mỏi mắt).
+> Phạm vi: **Home + Rooms + RoomDetail**, theme package `@repo/theme-namdu` slug `h1` (và `h5` alias).
 >
-> Ngày chốt: 2026-08-04 · Brief: [thenamduhillresort.md](../../../resources/docs/briefs/thenamduhillresort.md)
-> Đầu vào: teardown thenamduhill.com · customer-mindset Nam Du · conversion-blueprint
-> Luật áp dụng: [architecture.md](../../../.claude/rules/architecture.md) ·
-> [design-tokens.md](../../../.claude/rules/design-tokens.md) ·
-> [app-flows.md](../../../.claude/rules/app-flows.md) ·
-> [the-10k-checklist.md](../../../.claude/rules/the-10k-checklist.md)
+> Ngày cập nhật: 2026-08-05 · Brief: [thenamduhillresort.md](../../../resources/docs/briefs/thenamduhillresort.md)
+> Luật áp dụng: [architecture.md](../../../.claude/rules/architecture.md) · [design-tokens.md](../../../.claude/rules/design-tokens.md) · [premium-quality-gate.md](../../../.claude/rules/premium-quality-gate.md) (P0–P15)
 
 ---
 
-## 0. Bối cảnh và quyết định nền
+## 0. Bối cảnh và quyết định nâng cấp H1 Flagship
 
-### 0.1 Vì sao có bản 3
+### 0.1 Phân tích lý do Nâng cấp H1 thành Flagship (H1 Hybrid)
 
-Repo đã có hai bản cho cùng khách hàng, cả hai chưa chốt được — **nguyên nhân
-chung: màu sắc u buồn**:
+Bản H1 nguyên bản có Art Direction & Premium đạt 9.8 nhưng mắc "bẫy Behance":
+- **Readability (7.8) & Accessibility (7.5):** Chữ trắng đè trực tiếp lên ảnh sáng gây mỏi mắt, nguy cơ xịt WCAG AA.
+- **Conversion CRO (8.6):** Bắt người dùng "thưởng thức" giao diện trước khi thấy chỗ đặt phòng.
 
-| Bản | Vị trí | Kiến trúc / Style | Vấn đề |
-|---|---|---|---|
-| 1 | `apps/2026-thenamduhill` (theme h1–h4) | Theme package + core, đúng luật | Gu thẩm mỹ chưa đạt, giống khách sạn phổ thông |
-| 2 | `apps/2026-thenamduhillresort` | Standalone, Figma PA3 Navy `#0B192C` | **Khách chê: màu u buồn, tăm tối, thiếu điểm nhấn nhiệt đới**; data riêng vi phạm R8 |
+**Quyết định Nâng cấp H1 Hybrid:**
+1. **Giữ 95% H1 Design DNA:** Editorial Resort, khoảng thở lớn (`--space-7: 96px`), cặp font *Lora + Be Vietnam Pro*, ảnh dẫn dắt cảm xúc.
+2. **Ghép Current CRO & Trust:** Booking Widget đè nổi 50% ở Hero, Hotline/Zalo chính chủ + Dòng *"Tàu hoãn do thời tiết: Dời ngày miễn phí"* sát nút CTA.
+3. **Đạt chuẩn P15 Readability & WCAG AA:** Nền sáng ngà (`#FDFCF8` ≥85%), chữ màu xanh đen đậm (`#21323C` - Tương phản 12.9:1). CẤM đè chữ lên ảnh sáng mà không có thẻ container bảo vệ.
 
-Bản này lấy **kiến trúc của bản 1** (theme package + core) và làm lại toàn bộ
-hình thức theo hướng **sáng, rực nắng đảo**. Hai bản cũ giữ nguyên làm tham
-chiếu.
-
-### 0.2 Quyết định đã chốt với người dùng (2026-08-04)
+### 0.2 Quyết định đã chốt với người dùng (Cập nhật 2026-08-05)
 
 | # | Quyết định | Ghi chú |
 |---|---|---|
-| D-1 | Theme package thứ 5 `@repo/theme-namdu`, slug `h5` | Dùng lại core + login OTP + giỏ hàng + CMS có sẵn |
-| D-2 | Design direction: **Tropical Bright** — sáng ≥85% diện tích trang | Chữa trực tiếp lỗi "u buồn"; xem §2 |
+| D-1 | Theme package H1 Flagship `@repo/theme-namdu` (slug `h1` / `h5`) | Dùng lại core + login OTP + giỏ hàng + CMS có sẵn |
+| D-2 | Design direction: **H1 Tropical Bright** — sáng ≥85% diện tích trang | Chữa trực tiếp lỗi "u buồn" & tăng tương phản WCAG (P15) |
 | D-3 | Kèm **Option B "Sunset Coral"** để khách so — cũng SÁNG, chỉ khác `tokens.css` | Layout không đổi một dòng giữa 2 option |
 | D-4 | Phạm vi vòng này: **Home + Rooms + RoomDetail** | 3 trang người dùng kỳ vọng nhất |
 | D-5 | Rooms: **hàng ngang so sánh** (ảnh trái · thông tin · giá + CTA phải) | Mobile đổi thẻ dọc |

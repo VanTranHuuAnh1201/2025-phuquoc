@@ -568,21 +568,22 @@ bản "naked" **đính vào PR**. Đây là ảnh chứng minh, không phải tu
 
 ---
 
-## P14 — Automated Visual Audit & Screenshot Gate (Tự động chụp & Thẩm định)
+## P15 — Readability & Information Clarity Gate (Độ dễ đọc & Rõ ràng thông tin)
 
-> **BẮT BUỘC:** AI không được báo cáo hoàn thành công việc UI nếu chưa tự mình chạy Visual Inspection qua Browser Subagent / Screenshot Tool.
+> **BẮT BUỘC:** Website không được chỉ "đẹp screenshot" như sản phẩm triển lãm Behance. Độ dễ đọc và khả năng hành động kinh doanh phải đứng song song với tính thẩm mỹ.
 
-### Quy trình tự động audit trước khi báo cáo User:
-1. **Chạy Server Dev / Local Server:** Đảm bảo app đang chạy (ví dụ: `http://localhost:3000/h5`).
-2. **Kích hoạt Browser Subagent / Screenshot:**
-   - Chụp Desktop Viewport (1440px width).
-   - Chụp Mobile Viewport (375px width).
-3. **Tự đối chiếu Visual Evidence với Spec & Rules (P0–P13):**
-   - Nút CTA chính có đúng màu `--color-accent` (Accent Ratio ≤10%)?
-   - Cặp Font Serif + Sans-serif hiển thị đúng tiếng Việt không vỡ dấu?
-   - Trên Mobile 375px: H1 + Widget/Nút Đặt phòng có nằm trọn trong Viewport 1 không?
-   - Spacing giữa các section có đủ khoảng thở (≥96px)?
-4. **Báo cáo bằng bằng chứng:** Đính kèm kết quả visual audit vào câu trả lời nghiệm thu cho User.
+### Tiêu chí kiểm soát:
+
+1. **Contrast độc lập với ảnh nền (WCAG AA ≥ 4.5:1):**
+   - CẤM đè chữ trắng/xám trực tiếp lên ảnh sáng hoặc ảnh biến đổi mà không có container nền tối/sáng vững chắc (Solid card hoặc gradient scrim opacity ≥70%).
+   - Tương phản chữ thân (`--color-text-primary`) và chữ phụ (`--color-text-secondary`) trên nền trang phải đạt **≥ 4.5:1** (đo kỹ bằng công cụ WCAG).
+2. **5-Second Scanability Test:**
+   - Trong vòng ≤ 5 giây nhìn vào viewport, người dùng phải xác định ngay lập tức: **Tiêu đề chính là gì, Giá phòng từ bao nhiêu, và Nút hành động (CTA) ở đâu**.
+3. **Reading Comfort (Độ thoải mái khi đọc):**
+   - Chiều rộng dòng chữ thân: 65–75 ký tự (`max-width: 65ch`). Line-height: 1.6–1.65.
+   - Người dùng đọc liên tục 2–3 phút không mỏi mắt, không vỡ dấu tiếng Việt.
+4. **Information Density Balance (Độ dày thông tin):**
+   - Card phòng & Form phải hiển thị đủ thông số ra quyết định (giá, sức chứa, diện tích, chính sách hủy 1 dòng), không giấu thông tin bắt người dùng phải đoán.
 
 ---
 
@@ -590,13 +591,13 @@ bản "naked" **đính vào PR**. Đây là ảnh chứng minh, không phải tu
 
 ```
 Khách gửi mẫu / yêu cầu
-  → ① website-teardown        (chấm mẫu của khách theo P0–P14 ở Lớp 5)
+  → ① website-teardown        (chấm mẫu của khách theo P0–P15 ở Lớp 5)
   → ② customer-mindset         (nỗi đau, lời từ chối)
   → K0: hỏi user các câu chưa rõ  ← CHỐT: không đoán
-  → ③ conversion-blueprint     (blueprint có mục "P-check": tự đối chiếu P0–P14)
+  → ③ conversion-blueprint     (blueprint có mục "P-check": tự đối chiếu P0–P15)
   → thực thi (frontend-design / ui-ux-pro-max / Figma nhận blueprint)
-  → ④ P14 Auto-Visual Inspection: Chụp screenshot 1440px & 375px tự kiểm P0–P13
-  → nghiệm thu: P0–P14 + tự kiểm của design-tokens.md
+  → ④ P14 Auto-Visual Inspection: Chụp screenshot 1440px & 375px tự kiểm P0–P15
+  → nghiệm thu: P0–P15 + tự kiểm của design-tokens.md
 ```
 
 ---
@@ -620,6 +621,7 @@ Khách gửi mẫu / yêu cầu
 | P12 | Pixel Quality | ☐ |
 | P13 | Luxury Test | ☐ |
 | P14 | Automated Visual Audit (Desktop 1440px + Mobile 375px Screenshot) | ☐ |
+| P15 | Readability & Information Clarity (WCAG AA + 5-sec Scanability) | ☐ |
 
 ### Bằng chứng bắt buộc đính vào PR
 

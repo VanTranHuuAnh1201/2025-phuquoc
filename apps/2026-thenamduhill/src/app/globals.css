@@ -32,32 +32,33 @@
 @source '../../../../packages/ui-layout/src';
 @source '../../../../packages/domain-hotel/src';
 
-/* ------------------------------------------------------------------ reset */
+/* ------------------------------------------------------------------ reset
+ *
+ * KHÔNG khai lại `box-sizing`, `margin: 0`, `img { height: auto }` ở đây.
+ *
+ * Preflight của Tailwind (nạp cùng `@import 'tailwindcss'`) đã làm đủ những
+ * việc đó, và nó nằm trong `@layer base` nên utility luôn thắng được. Reset
+ * viết tay ở file này thì KHÔNG vào layer nào — mà rule ngoài layer luôn
+ * thắng rule trong layer, bất kể specificity hay thứ tự.
+ *
+ * Đã cắn thật: một dòng `img { height: auto }` để trần đè `h-[36px]` của logo
+ * header. Logo `/OP5.png` (3000×3000) render đúng 3000px, `<header fixed>` cao
+ * 3004px phủ kín viewport, cả trang h1 trông như mất sạch CSS. Reset ấy vô hại
+ * suốt thời gian chưa có Tailwind — nó thành có hại đúng lúc layer xuất hiện.
+ *
+ * Bọc lại bằng `@layer base { … }` cũng KHÔNG cứu được: `@import 'tailwindcss'`
+ * đã chốt thứ tự layer trước đó, nên khối viết sau bị tách ra ngoài. Cách đúng
+ * là đừng khai lại thứ preflight đã có.
+ */
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-}
-
+/* Hai thứ preflight KHÔNG làm, nên vẫn phải khai. Chúng chỉ đặt thuộc tính
+   cấp trang, không tranh chấp với utility nào. */
 html {
     scroll-behavior: smooth;
 }
 
 body {
     -webkit-font-smoothing: antialiased;
-}
-
-img,
-video {
-    max-width: 100%;
-    height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
