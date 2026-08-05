@@ -42,7 +42,11 @@ function IconChevron({ dir }: { dir: 'left' | 'right' }) {
 const RAIL_BTN = [
     'inline-flex items-center justify-center',
     // 32px — vượt ngưỡng target chạm 24px của WCAG 2.2 §2.5.8.
-    'h-8 w-8 p-0',
+    //
+    // Kích thước viết trong ngoặc vuông, không dùng số của thang: thang spacing
+    // của dự án phi tuyến (bậc 8 = 140px), nên utility đánh số cho ra nút to
+    // gấp bốn lần. Số trong class là chỉ số của thang, không phải pixel.
+    'h-[32px] w-[32px] shrink-0 p-0',
     'rounded-full border border-border-default bg-surface-raised text-text-primary',
     'cursor-pointer',
     'transition-[background-color,color,border-color,transform] duration-150 ease-out',

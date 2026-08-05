@@ -331,7 +331,7 @@ export function RoomDetailPage({
                                                     [addon.id]: !prev[addon.id],
                                                 }))
                                             }
-                                            className="mt-[3px] h-4 w-4 shrink-0 accent-[var(--accent)]"
+                                            className="mt-[3px] h-[16px] w-[16px] shrink-0 accent-[var(--accent)]"
                                         />
                                         <span className="grid flex-1 gap-[2px]">
                                             <span className="text-[13.5px] font-semibold text-text-primary">

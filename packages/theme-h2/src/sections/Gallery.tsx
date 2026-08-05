@@ -1,5 +1,6 @@
 import type { Locale, PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
+import { SECTION_HEADING } from './headings'
 
 /**
  * Ảnh thật tại resort.
@@ -33,7 +34,7 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
         >
             <div className="mx-auto max-w-[var(--container)]">
                 <div className="mb-3 flex items-center gap-3 px-4 min-[960px]:mb-[20px] min-[960px]:px-6">
-                    <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                    <h2 className={SECTION_HEADING}>
                         {sectionTitle}
                     </h2>
                     <a

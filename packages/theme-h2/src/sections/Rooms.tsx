@@ -13,6 +13,7 @@ import { ImageSlot } from '@repo/ui'
 import { meta } from '../meta'
 import { ui } from '../strings'
 import { ScrollRail } from './ScrollRail'
+import { SECTION_HEADING } from './headings'
 
 const SLUG = meta.slug
 
@@ -99,7 +100,7 @@ export function Rooms({ data, locale, slug = 'h7' }: { data: PropertyData; local
                                 mr-auto thay cho justify-between vì header có BA
                                 phần tử — justify-between sẽ dàn đều và ném cụm
                                 nút ra giữa. */}
-                            <h2 className="mr-auto text-[15px] font-bold tracking-[0.07em] text-text-primary uppercase min-[960px]:text-[16px]">
+                            <h2 className={SECTION_HEADING}>
                                 {sectionTitle}
                             </h2>
                             {/* Nút cuộn đứng TRƯỚC link: nó điều khiển tại chỗ,

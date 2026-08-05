@@ -1,6 +1,7 @@
 import { pick, themePath, type Locale, type PropertyData } from '@repo/core'
 
 import { meta } from '../meta'
+import { CARD_HEADING } from './headings'
 
 const SLUG = meta.slug
 
@@ -54,7 +55,7 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
             <div className="mx-auto grid max-w-[var(--container)] items-stretch gap-4 min-[960px]:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] min-[960px]:gap-[22px]">
                 {/* --- Đánh giá --- */}
                 <div className="rounded-md border border-border-default bg-surface-raised px-4 py-[18px] min-[960px]:px-6 min-[960px]:py-[22px]">
-                    <h2 className="mt-0 mb-4 text-[14px] font-bold tracking-[0.06em] text-text-primary uppercase">
+                    <h2 className={CARD_HEADING}>
                         {reviewsTitle}
                     </h2>
 
