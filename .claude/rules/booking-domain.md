@@ -188,7 +188,8 @@ tiềnPhòng = Σ (giáMộtĐêm[ngày])   với mọi ngày từ checkIn đế
 ```
 
 Tính **theo từng đêm**, không lấy `giá × số đêm` — vì mỗi đêm có thể một giá.
-Đây là lỗi hay gặp nhất và là lý do `calculatePrice()` hiện tại phải viết lại.
+Đây là lỗi hay gặp nhất, và là lý do bản `calculatePrice()` đầu tiên đã bị gỡ.
+Mọi tính toán nay đi qua `buildQuote()` trong `availability.ts`.
 
 ---
 
