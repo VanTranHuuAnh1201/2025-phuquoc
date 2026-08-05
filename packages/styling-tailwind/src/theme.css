@@ -1,0 +1,105 @@
+/**
+ * CẦU NỐI TOKEN — Tailwind v4 ⇄ token của theme.
+ *
+ * VẤN ĐỀ NÓ GIẢI: viết `className="bg-blue-500 rounded-lg"` là hard-code màu
+ * và radius ngay trong code dùng chung — theme con không đổi được nữa, và vi
+ * phạm luật R3/D0. Nhưng viết `style={{ background: 'var(--brand)' }}` thì
+ * mất hết cái tiện của Tailwind.
+ *
+ * CÁCH GIẢI: khai utility của Tailwind trỏ VÀO biến CSS, không vào mã màu.
+ *
+ *     theme-hN/tokens.css   →  [data-theme='hN'] { --color-brand: #1173B8 }
+ *     file này              →  --color-brand: var(--color-brand)  (@theme)
+ *     component dùng        →  className="bg-brand"
+ *
+ * Cùng một class `bg-brand`, ở h1 ra xanh biển, ở h2 ra teal — vì `tokens.css`
+ * khác nhau. Đây đúng là "children chỉ thay danh sách màu là xong".
+ *
+ * VÌ SAO `@theme inline`: `inline` bảo Tailwind sinh utility tham chiếu THẲNG
+ * tới biến thay vì nội suy giá trị lúc build. Bắt buộc phải có — không thì
+ * Tailwind chốt cứng giá trị của theme đầu tiên và mọi theme trông y hệt nhau.
+ *
+ * VÌ SAO TÊN THEO VAI TRÒ, KHÔNG THEO MÀU: `--color-gold-500` thành nói dối
+ * ngay khi có một theme dùng xanh lá. Đặt theo vai trò (`brand`, `accent`)
+ * thì tên luôn đúng (luật D1).
+ *
+ * CÁCH DÙNG trong `globals.css` của app:
+ *
+ *     @import "tailwindcss";
+ *     @import "@repo/styling-tailwind/theme.css";
+ *     @import "@repo/theme-h1/tokens.css";
+ *     @import "@repo/theme-h2/tokens.css";
+ *
+ * Theme nào không dùng Tailwind thì đơn giản là không import file này —
+ * styling engine là lựa chọn của theme, không phải của app (luật R14).
+ */
+
+@theme inline {
+    /* --- màu ngữ nghĩa (hợp đồng D1) ---------------------------------------
+       Sinh ra: bg-brand, text-brand, border-brand, ring-brand… */
+    --color-brand: var(--color-brand);
+    --color-accent: var(--color-accent);
+
+    --color-text-primary: var(--color-text-primary);
+    --color-text-secondary: var(--color-text-secondary);
+    --color-text-tertiary: var(--color-text-tertiary);
+    --color-text-inverse: var(--color-text-inverse);
+
+    --color-surface-base: var(--color-surface-base);
+    --color-surface-raised: var(--color-surface-raised);
+    --color-surface-strong: var(--color-surface-strong);
+
+    --color-border-default: var(--color-border-default);
+    --color-border-muted: var(--color-border-muted);
+
+    /* --- trạng thái — dùng chung cho booking lẫn CMS --------------------- */
+    --color-success: var(--color-success);
+    --color-success-bg: var(--color-success-bg);
+    --color-warning: var(--color-warning);
+    --color-warning-bg: var(--color-warning-bg);
+    --color-danger: var(--color-danger);
+    --color-danger-bg: var(--color-danger-bg);
+    --color-info: var(--color-info);
+    --color-info-bg: var(--color-info-bg);
+
+    /* --- chữ -------------------------------------------------------------
+       Sinh ra: font-display, font-primary, text-xs … text-4xl */
+    --font-display: var(--font-display);
+    --font-primary: var(--font-family-primary);
+
+    --text-xs: var(--font-size-xs);
+    --text-sm: var(--font-size-sm);
+    --text-base: var(--font-size-base);
+    --text-lg: var(--font-size-lg);
+    --text-xl: var(--font-size-xl);
+    --text-2xl: var(--font-size-2xl);
+    --text-3xl: var(--font-size-3xl);
+    --text-4xl: var(--font-size-4xl);
+
+    /* --- khoảng cách: thang đóng, cấm giá trị "một lần dùng" (luật D5) ----
+       Sinh ra: p-1 … p-8, gap-*, m-*, space-* */
+    --spacing-1: var(--space-1);
+    --spacing-2: var(--space-2);
+    --spacing-3: var(--space-3);
+    --spacing-4: var(--space-4);
+    --spacing-5: var(--space-5);
+    --spacing-6: var(--space-6);
+    --spacing-7: var(--space-7);
+    --spacing-8: var(--space-8);
+
+    /* --- bo góc: sinh ra rounded-xs … rounded-xl ------------------------- */
+    --radius-xs: var(--radius-xs);
+    --radius-sm: var(--radius-sm);
+    --radius-md: var(--radius-md);
+    --radius-lg: var(--radius-lg);
+    --radius-xl: var(--radius-xl);
+
+    /* --- đổ bóng: ĐÚNG 2 bậc theo luật P7 -------------------------------- */
+    --shadow-1: var(--shadow-1);
+    --shadow-2: var(--shadow-2);
+
+    /* --- chuyển động: sinh ra duration-instant / fast / normal ------------ */
+    --animate-duration-instant: var(--motion-instant);
+    --animate-duration-fast: var(--motion-fast);
+    --animate-duration-normal: var(--motion-normal);
+}

@@ -13,6 +13,8 @@
     "@repo/core": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/ui-layout": "workspace:*",
+    "@repo/styling-css": "workspace:*",
+    "@repo/styling-tailwind": "workspace:*",
     "@repo/domain-hotel": "workspace:*",
     "@repo/theme-h2": "workspace:*",
     "@repo/ui": "workspace:*",

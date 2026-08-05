@@ -1,0 +1,10 @@
+{
+  "name": "@repo/styling-css",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./contract.css": "./src/contract.css",
+    "./contract.d.ts": "./src/contract.d.ts"
+  }
+}

@@ -1,15 +1,20 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { ThemeSectionId } from '@repo/core'
 
 /**
  * Khung section chuẩn.
  *
  * Bọc `id` để deep-link và điều hướng hoạt động đồng nhất trên mọi theme
  * (luật R7). Theme quyết định nội dung và cách bố cục bên trong.
+ *
+ * VÌ SAO `id` LÀ `string` CHỨ KHÔNG PHẢI UNION CHẶT: bản trước nhận
+ * `ThemeSectionId` của core, mà union đó liệt kê `rooms`/`dining`/`tours` —
+ * từ vựng của ngành lưu trú. Một domain khác dùng lại component này sẽ bị
+ * type chặn dù markup chẳng liên quan gì (luật R15). Ràng buộc bộ id hợp lệ
+ * là việc của tầng domain, nơi biết mình có những section nào.
  */
 
 export interface SectionProps {
-    id: ThemeSectionId
+    id: string
     children: ReactNode
     /** Nền xen kẽ để phân tách các dải nội dung. */
     tone?: 'default' | 'alt' | 'inverse'

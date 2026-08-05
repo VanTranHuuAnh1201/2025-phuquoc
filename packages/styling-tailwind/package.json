@@ -1,0 +1,13 @@
+{
+  "name": "@repo/styling-tailwind",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./theme.css": "./src/theme.css",
+    "./preset.css": "./src/theme.css"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4"
+  }
+}

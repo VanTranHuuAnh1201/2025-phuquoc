@@ -81,6 +81,12 @@ importers:
       '@repo/domain-hotel':
         specifier: workspace:*
         version: link:../../packages/domain-hotel
+      '@repo/styling-css':
+        specifier: workspace:*
+        version: link:../../packages/styling-css
+      '@repo/styling-tailwind':
+        specifier: workspace:*
+        version: link:../../packages/styling-tailwind
       '@repo/theme-h1':
         specifier: workspace:*
         version: link:../../packages/theme-h1
@@ -142,6 +148,12 @@ importers:
       '@repo/domain-hotel':
         specifier: workspace:*
         version: link:../../packages/domain-hotel
+      '@repo/styling-css':
+        specifier: workspace:*
+        version: link:../../packages/styling-css
+      '@repo/styling-tailwind':
+        specifier: workspace:*
+        version: link:../../packages/styling-tailwind
       '@repo/theme-h2':
         specifier: workspace:*
         version: link:../../packages/theme-h2
@@ -282,6 +294,14 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  packages/styling-css: {}
+
+  packages/styling-tailwind:
+    dependencies:
+      tailwindcss:
+        specifier: ^4
+        version: 4.3.3
+
   packages/theme-h1:
     dependencies:
       '@repo/core':
@@ -347,13 +367,6 @@ importers:
   packages/tsconfig: {}
 
   packages/ui:
-    dependencies:
-      '@repo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@repo/utils':
-        specifier: workspace:*
-        version: link:../utils
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*

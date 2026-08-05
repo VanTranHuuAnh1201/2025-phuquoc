@@ -1,13 +1,22 @@
 /**
- * Hợp đồng design token.
+ * HỢP ĐỒNG DESIGN TOKEN — engine "CSS variable thuần".
  *
- * Đây là danh sách ĐẦY ĐỦ các biến mà `@repo/ui` được phép dùng. Mỗi theme
- * ghi đè các biến này trong `tokens.css` của mình; `ui` không bao giờ
- * hard-code màu, font hay radius (luật R3).
+ * Đây là danh sách ĐẦY ĐỦ các biến mà `@repo/ui` và `@repo/ui-layout` được
+ * phép dùng. Mỗi theme ghi đè chúng trong `tokens.css` của mình; tầng nền
+ * không bao giờ hard-code màu, font hay radius (luật R3).
  *
- * Giá trị dưới đây chỉ là dự phòng trung tính — cố ý xám xịt để nếu một
- * theme quên khai báo biến nào thì lỗi lộ ra ngay, thay vì âm thầm trông
- * "tạm ổn".
+ * VÌ SAO Ở PACKAGE RIÊNG CHỨ KHÔNG Ở `ui`: styling engine là lựa chọn của
+ * THEME, không phải của app hay của package primitive (luật R14). Một theme
+ * có thể chọn `@repo/styling-tailwind` để viết `className="bg-brand"`, theme
+ * khác chọn file này để viết `var(--brand)` — cả hai đọc CÙNG một nguồn màu
+ * trong `tokens.css` của theme.
+ *
+ * Nếu để hợp đồng nằm trong `ui`, mọi theme bị buộc phải dùng cơ chế của `ui`
+ * và không thể thêm engine thứ ba (Material UI, CSS Modules…) mà không sửa
+ * package dùng chung — đúng thứ luật R5 cấm.
+ *
+ * Giá trị dưới đây chỉ là dự phòng trung tính — cố ý xám xịt để nếu một theme
+ * quên khai báo biến nào thì lỗi lộ ra ngay, thay vì âm thầm trông "tạm ổn".
  */
 
 :root {
