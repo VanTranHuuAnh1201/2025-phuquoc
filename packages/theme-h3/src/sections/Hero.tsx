@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Calendar } from 'lucide-react'
+import { Calendar, Phone, ShieldCheck } from 'lucide-react'
 import { pick, UI, type I18nText, type Locale } from '@repo/core'
 import { BookingCalendarModal } from '@repo/domain-hotel'
 
@@ -48,6 +48,12 @@ export interface HeroProps {
     onSearch?: (params: HeroSearchParams) => void
     /** Đích mặc định khi không có `onSearch`. */
     searchHref?: string
+    /**
+     * Số hotline hiện cạnh nút đặt phòng, dạng người đọc ("0985 000 650").
+     * Nguồn là `data.brand.phone` — theme không tự khai số (luật R8).
+     * Rỗng thì khối gọi tự ẩn, không render link `tel:` cụt.
+     */
+    phone?: string
 }
 
 /** State của modal là ISO (YYYY-MM-DD); thanh tìm kiếm hiện dd/mm/yyyy. */
@@ -109,7 +115,7 @@ function Field({
     )
 }
 
-export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroProps) {
+export function Hero({ locale, slides, onSearch, searchHref = '#rooms', phone }: HeroProps) {
     const [currentSlide, setCurrentSlide] = useState(0)
     const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
@@ -269,6 +275,35 @@ export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroPr
                             {pick(UI.checkAvailability, locale)}
                         </a>
                     )}
+                </div>
+
+                {/*
+                  * TRUST & OBJECTION HANDLER — ngay dưới nút đặt phòng.
+                  *
+                  * VÌ SAO Ở ĐÂY chứ không phải một section riêng bên dưới: đây
+                  * là hai câu trả lời cho hai nỗi do dự xuất hiện ĐÚNG lúc ngón
+                  * tay đang ở trên nút. Đẩy xuống dưới thì khách đã rời ý định
+                  * trước khi đọc tới (luật P10).
+                  *
+                  * Hiện ở MỌI breakpoint — mobile là nơi nỗi sợ mạnh nhất mà
+                  * cũng là nơi hay bị cắt mất nhất.
+                  */}
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 sm:mt-4">
+                    {phone ? (
+                        <a
+                            href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                            className="text-text-inverse inline-flex min-h-[24px] items-center gap-1.5 text-[12.5px] font-semibold no-underline transition-opacity duration-150 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--text-inverse)]"
+                        >
+                            <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                            <span>
+                                {pick(H3.hotlineDirect, locale)}: {phone}
+                            </span>
+                        </a>
+                    ) : null}
+                    <span className="text-text-inverse/[0.86] inline-flex items-center gap-1.5 text-[12.5px] font-medium">
+                        <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        {pick(H3.ferryDelayFree, locale)}
+                    </span>
                 </div>
 
                 {/* Cam kết + chấm chỉ vị trí slide */}

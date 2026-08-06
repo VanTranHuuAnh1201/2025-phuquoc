@@ -22,6 +22,8 @@ import { Gallery, type GalleryPhoto } from './sections/Gallery'
 import { Hero, type HeroSearchParams, type HeroSlide } from './sections/Hero'
 import { HostService } from './sections/HostService'
 import { Panorama } from './sections/Panorama'
+import { StickyBookBar } from './sections/StickyBookBar'
+import { TrustBar } from './sections/TrustBar'
 
 /**
  * Bố cục mẫu 03 — Coastal Navy.
@@ -134,6 +136,16 @@ export function Home({
     const reviews = data.reviews ?? []
     // `galleryWithImages` gắn ảnh vào mục nào chưa có — chữ vẫn từ `core`.
     const places = panoramaItems ?? galleryWithImages(data)
+    /*
+     * Giá thấp nhất cho thanh dính đáy màn hình. Tính từ chính `data.rooms`
+     * (luật R8 — một nguồn sự thật); mẫu không được khai một con số "từ …"
+     * riêng, vì đổi giá một chỗ phải phản ánh ở mọi nơi.
+     *
+     * Không có phòng nào thì để 0 — `StickyBookBar` tự không hiện, thay vì
+     * quảng cáo "từ 0đ".
+     */
+    const rooms = data.rooms ?? []
+    const fromPrice = rooms.length ? Math.min(...rooms.map((room) => room.price)) : 0
 
     return (
         <div data-theme="h3" className="font-primary overflow-x-clip">
@@ -160,7 +172,9 @@ export function Home({
                     slides={heroSlides}
                     onSearch={onSearch}
                     searchHref={searchHref}
+                    phone={data.brand.phone}
                 />
+                <TrustBar locale={locale} />
                 <AboutSection data={data} locale={locale} />
                 <Panorama locale={locale} items={places} exploreHref={exploreHref} />
                 <RoomsSection
@@ -191,6 +205,8 @@ export function Home({
                     headingClass={SECTION_HEADINGS}
                 />
             </main>
+            {/* Lối vào đặt phòng luôn trong tầm mắt trên mobile (luật P10). */}
+            <StickyBookBar locale={locale} fromPrice={fromPrice} href={searchHref} />
             <SiteFooter {...siteFooterPropsOf(data, locale, meta.slug)} />
         </div>
     )

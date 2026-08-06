@@ -20,6 +20,47 @@ export const H3 = {
     slide: t('Ảnh', 'Slide'),
     /** Tiêu đề khối đánh giá trong section `about`. */
     pastGuestsSay: t('Khách đã ở nói gì', 'What past guests say'),
+
+    // ------------------------------------------------- trust & giải toả nỗi sợ
+    /*
+     * Ba khối dưới đây phục vụ chuẩn V3-Fixed: nỗi sợ lớn nhất của khách ra đảo
+     * là "đặt rồi tàu không chạy thì mất tiền". Câu trả lời phải nằm NGAY cạnh
+     * nút đặt phòng, không chôn trong trang chính sách — đọc sau khi đã do dự
+     * thì đã muộn (luật P10).
+     *
+     * Giữ ở H3 chứ chưa đẩy lên `domain-hotel`: mới một mẫu dùng. Có mẫu thứ
+     * hai cần thì mới nâng lên (luật R12).
+     */
+    /** Nhãn nút gọi trên hero. Số máy nối vào sau, lấy từ `data.brand.phone`. */
+    hotlineDirect: t('Hotline chính chủ', 'Owner direct line'),
+    /** Câu giải toả nỗi sợ số một khi đặt phòng ngoài đảo. */
+    ferryDelayFree: t(
+        'Tàu hoãn do thời tiết: dời ngày miễn phí',
+        'Ferry delayed by weather: free date change',
+    ),
+
+    /** Ba cột của dải tín nhiệm ngay dưới hero. */
+    trustOwnerTitle: t('Chính chủ sở hữu', 'Owner-operated'),
+    trustOwnerDesc: t(
+        'Resort do người bản địa Nam Du xây dựng và vận hành trực tiếp — đặt phòng không qua trung gian.',
+        'Built and run directly by a Nam Du local family — book with no middleman.',
+    ),
+    trustTransferTitle: t('Hỗ trợ di chuyển', 'Travel support'),
+    trustTransferDesc: t(
+        'Xe điện đón tận bến tàu Nam Du, hỗ trợ đặt vé tàu cao tốc Rạch Giá – Nam Du.',
+        'Electric shuttle meets you at Nam Du pier; we help book the Rach Gia ferry.',
+    ),
+    trustRefundTitle: t('Cam kết hoàn huỷ', 'Cancellation promise'),
+    trustRefundDesc: t(
+        'Thời tiết xấu tàu không chạy: dời ngày miễn phí hoặc hoàn 100% tiền cọc.',
+        'If bad weather stops the ferry: free date change or a full deposit refund.',
+    ),
+
+    /**
+     * Hậu tố giá trên thanh đặt phòng dính đáy màn hình (mobile).
+     * "Từ" đã có ở `UI.from` của core nên không khai lại (luật R12).
+     */
+    stickyPerNight: t('/đêm', '/night'),
     /** Tiêu đề và mô tả của thư viện ảnh thật. */
     realPhotosTitle: t('Ảnh thật tại resort', 'Real photos at the resort'),
     realPhotosDesc: t(

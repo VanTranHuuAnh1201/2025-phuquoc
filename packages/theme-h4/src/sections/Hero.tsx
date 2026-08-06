@@ -204,7 +204,7 @@ export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroPr
                 </Container>
 
                 {/* ------------------------------- thanh Concierge ở đáy hero */}
-                <div className="border-t border-solid border-[rgb(250_248_245/0.18)] bg-[rgb(20_39_51/0.62)] backdrop-blur-[10px]">
+                <div className="border-t border-solid border-[rgb(250_248_245/0.18)] bg-[rgb(26_30_36/0.65)] backdrop-blur-[10px]">
                     <Container>
                         <form
                             action={searchHref}

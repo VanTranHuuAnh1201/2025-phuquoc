@@ -61,10 +61,10 @@ export const heroSlides: readonly ThemeImage[] = HERO_SLIDES.slice(0, 3)
 
 /** Ảnh cột phải của section `about`. */
 export const settingImage: ThemeImage = {
-    src: propertyPath('about-resort.png'),
+    src: propertyPath('hero-drone.jpg'),
     alt: t(
-        'The Nam Du Hill Resort trên triền đồi Củ Tron, sân hiên nhìn ra vịnh',
-        'The Nam Du Hill Resort on the Cu Tron hillside, terraces overlooking the bay',
+        'The Nam Du Hill Resort trên triền đồi Củ Tron nhìn từ trên cao',
+        'The Nam Du Hill Resort on the Cu Tron hillside seen from above',
     ),
 }
 

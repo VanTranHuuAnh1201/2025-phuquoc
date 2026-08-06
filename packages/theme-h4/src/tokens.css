@@ -28,84 +28,67 @@
  */
 
 [data-theme='h4'] {
-    /* --- màu: rút từ ảnh thật của đảo ----------------------------------- */
+    /* --- màu: hệ màu trung tính cực kỳ tinh giản của Amanoi ----------------- */
 
-    /* Xanh ngọc biển Bãi Cây Mến, hạ độ sáng tới ngưỡng đọc được trên nền ngà.
-       Đây là màu của NƯỚC trong ảnh, không phải màu logo in trên giấy. */
-    --brand: #0e5e70;
-    --brand-deep: #0a4552;
-    --brand-soft: #d7e8ea;
+    /* Charcoal Black tinh tế cho màu thương hiệu chính */
+    --brand: #1a242b;
+    --brand-deep: #111519;
+    --brand-soft: #f2ece1;
 
-    /* Vàng hoàng hôn hòn Hàng Bè — CHỈ dùng cho CTA chính và eyebrow.
+    /* Vàng Champagne Gold (#C8A261) sang trọng tĩnh lặng thay cho màu vàng nghệ chói.
        Giữ dưới 10% diện tích viewport (luật P2). */
-    --accent: #e8a317;
-    --accent-soft: #f7ecd4;
+    --accent: #c8a261;
+    --accent-soft: #faf6ee;
 
     /* Nền: trắng ngà nắng đảo + cát. Đây là 85% diện tích trang. */
     --surface: #ffffff;
     --surface-base: #faf8f5;
     --surface-sand: #f2ece1;
-    /* Nền tối — giá trị `#1E3A4C` của spec, dùng đúng chỗ nó thuộc về. */
-    --surface-dark: #1e3a4c;
-    --surface-darker: #142733;
+    /* Nền tối — Charcoal Black sang trọng, không phải xanh Navy chói. */
+    --surface-dark: #1e242b;
+    --surface-darker: #111519;
 
-    --text: #16232b;
-    --text-muted: #46586a;
-    --text-soft: #6b7b88;
+    --text: #111111;
+    --text-muted: #555555;
+    --text-soft: #777777;
     --text-inverse: #faf8f5;
 
-    --border: #e4dccf;
-    --border-muted: #efe9df;
+    --border: #e2d9cc;
+    --border-muted: #efe8de;
 
-    /* Màng phủ ảnh hero. Đủ tối để chữ trắng đạt ≥ 7:1 ở mọi vùng ảnh —
-       ảnh Nam Du có cả trời sáng lẫn nước sẫm nên scrim phải chắc tay,
-       không phải 35% như bản nháp (P15 cấm chữ trắng trên ảnh sáng). */
+    /* Màng phủ ảnh hero tông đen than để chữ trắng đạt ≥ 7:1 (P15). */
     --hero-scrim: linear-gradient(
         180deg,
-        rgba(12, 28, 36, 0.58) 0%,
-        rgba(12, 28, 36, 0.34) 38%,
-        rgba(12, 28, 36, 0.52) 72%,
-        rgba(12, 28, 36, 0.86) 100%
+        rgba(17, 21, 25, 0.6) 0%,
+        rgba(17, 21, 25, 0.35) 38%,
+        rgba(17, 21, 25, 0.55) 72%,
+        rgba(17, 21, 25, 0.88) 100%
     );
-    /* Màng mỏng hơn cho ảnh trong thân trang, nơi chữ nằm trên thẻ riêng. */
+    /* Màng mỏng hơn cho ảnh trong thân trang. */
     --image-scrim: linear-gradient(
         180deg,
-        rgba(12, 28, 36, 0) 40%,
-        rgba(12, 28, 36, 0.72) 100%
+        rgba(17, 21, 25, 0) 40%,
+        rgba(17, 21, 25, 0.75) 100%
     );
 
     --success: #0f6b46;
     --danger: #a52222;
 
     /* --- chữ: serif hiển thị + sans thân, đủ glyph tiếng Việt (P3) ------- */
-    /* Hai biến `--font-lora` / `--font-bevietnam` do `layout.tsx` của app khai
-       bằng `next/font` với subset `vietnamese` — dấu `ữ ằ ợ ẫ ỹ` không vỡ. */
     --font-display: var(--font-lora), Georgia, 'Times New Roman', serif;
     --font-body: var(--font-bevietnam), system-ui, -apple-system, sans-serif;
 
-    /* --- hình khối: Amanoi gần như không bo góc ------------------------- */
-    /* Radius 2/4/8 — sắc, tĩnh. Bo tròn nhiều là ngôn ngữ của app tiêu dùng,
-       không phải của resort ultra-luxury. Một vai trò một giá trị (P0/P7). */
-    --radius-sm: 2px;
-    --radius: 4px;
-    --radius-lg: 8px;
+    /* --- hình khối: Amanoi hoàn toàn không bo góc (0px) ------------------- */
+    --radius-sm: 0px;
+    --radius: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
 
-    /* Đúng HAI bậc bóng (luật P7). Rất nhẹ — sang trọng đến từ khoảng thở
-       và typography, không đến từ đổ bóng. */
-    --shadow-sm: 0 1px 3px rgba(20, 39, 51, 0.06);
-    --shadow: 0 14px 40px rgba(20, 39, 51, 0.1);
+    /* Không sử dụng đổ bóng (flat design tối giản như website Aman thật) ------ */
+    --shadow-sm: none;
+    --shadow: none;
 
-    /* --- alias sang hợp đồng D1 (cho `@repo/styling-tailwind`) ----------
-       ĐẾM TOKEN MÀU (luật P2, trần 12):
-
-         bảng màu   11  brand · accent · 3 bậc chữ + inverse · 3 bậc nền +
-                        raised · 2 bậc viền                        ✅ ≤ 12
-         ngữ nghĩa   8  success/warning/danger/info × (màu + nền)
-
-       Trần 12 của P2 áp cho BẢNG MÀU — thứ quyết định diện mạo. Bộ ngữ nghĩa
-       là hợp đồng bắt buộc của D1 (badge trạng thái đơn, tồn kho, toast dùng
-       chung cho cả booking lẫn CMS), không phải lựa chọn thẩm mỹ của mẫu, nên
-       không tính vào trần. Mọi mẫu trong repo đều khai đúng 8 biến này. */
+    /* --- alias sang hợp đồng D1 (cho `@repo/styling-tailwind`) ---------- */
     --color-brand: var(--brand);
     --color-accent: var(--accent);
 
@@ -132,8 +115,7 @@
 
     --font-family-primary: var(--font-body);
 
-    /* Thang chữ ĐÓNG (luật P3) — không có bậc "một lần dùng" nào ngoài đây.
-       Nhịp lớn: 64px display cho hero, 44px cho tiêu đề section. */
+    /* Thang chữ ĐÓNG (luật P3) */
     --font-size-xs: 12px;
     --font-size-sm: 14px;
     --font-size-base: 16px;
@@ -146,11 +128,9 @@
     --font-weight-base: 400;
     --font-weight-medium: 500;
     --font-weight-bold: 700;
-    /* 1.7 — thoáng, đúng khoảng 1.6–1.65+ mà P15 yêu cầu cho đọc dài. */
     --line-height-base: 1.7;
 
-    /* Khoảng thở Amanoi. `--space-8: 160px` là nhịp giữa các section trên
-       desktop — đây chính là thứ tạo cảm giác "quiet luxury" (P5). */
+    /* Khoảng thở Amanoi */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 16px;
@@ -162,7 +142,7 @@
 
     --radius-xs: var(--radius-sm);
     --radius-md: var(--radius);
-    --radius-xl: 12px;
+    --radius-xl: 0px;
 
     --shadow-1: var(--shadow-sm);
     --shadow-2: var(--shadow);
@@ -171,8 +151,7 @@
     --motion-fast: 240ms;
     --motion-normal: 480ms;
 
-    /* Chiều rộng khối đọc — 65ch theo P15. Khai thành biến để mọi đoạn văn
-       dùng chung một con số, không mỗi chỗ một kiểu. */
+    /* Chiều rộng khối đọc */
     --measure: 65ch;
     --container: 1240px;
 }

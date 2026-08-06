@@ -47,8 +47,12 @@ export function SectionHeading({
             className={`mb-3 flex items-start justify-between gap-3${className ? ` ${className}` : ''}`}
         >
             <div className="min-w-0">
+                {/* `--accent-text` chứ không phải `--accent`: đây là chữ
+                    thật trên nền sáng, mà #ffb800 chỉ đạt 1.73:1 (luật
+                    D4/P15). Ngôi sao đánh giá vẫn dùng `--accent` vì chúng
+                    là hình trang trí có `aria-hidden`. */}
                 {eyebrow && (
-                    <span className="text-accent block text-xs font-extrabold tracking-widest uppercase">
+                    <span className="block text-xs font-extrabold tracking-widest text-[var(--accent-text)] uppercase">
                         {eyebrow}
                     </span>
                 )}

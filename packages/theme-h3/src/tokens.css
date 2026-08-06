@@ -39,6 +39,15 @@
        trông như nút bị vô hiệu hoá. */
     --accent-dark: #e0a000;
 
+    /* Vàng dùng LÀM MÀU CHỮ trên nền sáng — không phải một bậc trang trí.
+       BẮT BUỘC TÁCH RIÊNG: `--accent` #ffb800 trên nền trắng chỉ đạt 1.73:1,
+       trượt xa WCAG AA 4.5:1 (luật D4/P15). Nó vẫn đúng ở vai trò gốc — nền
+       nút, ngôi sao đánh giá, chi tiết trên nền tối — nên KHÔNG đổi `--accent`;
+       đổi là hỏng cả bảng màu 5% vàng của mẫu.
+       #9a6600 giữ nguyên sắc vàng nhưng đạt 4.91:1 trên #ffffff và 4.70:1 trên
+       #fafaf8 — qua AA ở cả hai nền sáng của mẫu. */
+    --accent-text: #9a6600;
+
     /* Chữ đặt TRÊN nền vàng.
        BẮT BUỘC KHAI, không được để rơi về bộ dự phòng: các section dùng chung
        của `domain-hotel` có nút `bg-[var(--accent)] text-[var(--on-accent)]`.
@@ -54,7 +63,11 @@
     --hero-tint: #eefafd;
     --hero-line: #d9eff5;
     --hero-focus: #06b6d4;
-    --hero-label: #78a3ae;
+    /* Nhãn "NHẬN PHÒNG / TRẢ PHÒNG" và dòng phụ trong thanh tìm phòng.
+       #78a3ae cũ chỉ đạt 2.75:1 trên thẻ trắng của hero — trượt AA ngay tại
+       khối có ý định đặt phòng cao nhất trang (luật P15). #4e7784 giữ đúng sắc
+       xanh mòng két lạnh của hero và đạt 4.89:1. */
+    --hero-label: #4e7784;
     --hero-dot: #00c46a;
 
     --surface: #ffffff;
