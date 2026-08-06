@@ -16,6 +16,8 @@ coverage/
 
 # next.js
 .next/
+# `pnpm build:safe` ghi vào đây để không đụng `.next` mà dev server đang dùng
+.next-build/
 out/
 
 # production

@@ -151,20 +151,44 @@ production**.
 Monorepo đã dựng xong. Dùng **pnpm** ở gốc — không dùng yarn nữa:
 
 ```bash
-pnpm install   # cài toàn bộ workspace
-pnpm dev       # chạy hết → mở http://localhost:3002 rồi click
-pnpm build     # build toàn bộ (turbo, có cache)
-pnpm check     # lint + typecheck toàn bộ
+pnpm install     # cài toàn bộ workspace
+pnpm dev         # chạy hết → mở http://localhost:3002 rồi click
+pnpm build       # build toàn bộ (turbo, có cache) — ghi vào .next
+pnpm build:safe  # build KHI DEV SERVER ĐANG CHẠY — ghi vào .next-build
+pnpm free-ports  # giải phóng cổng 3000-3003 bị tiến trình mồ côi giữ
+pnpm check       # lint + typecheck toàn bộ
 ```
 
 **Chỉ cần nhớ `pnpm dev` và cổng 3002.** Trang chính ở đó, click sang từng sản
 phẩm. Các app chạy song song ở cổng cố định: 3002 portfolio · 3000
-`2026-thenamduhill` · 3001 `2025-phogroup`.
+`2026-thenamduhill` · 3001 `2025-phogroup` · 3003 `2026-thenamduhillresort`.
 
 Khi cần nhẹ máy, chạy riêng một app: `pnpm dev:portfolio`, `dev:thenamduhill`,
-`dev:phogroup` — lúc đó các cổng kia không có gì.
+`dev:phogroup`, `dev:thenamduhillresort` — lúc đó các cổng kia không có gì.
 
 Build riêng một package: `pnpm turbo build --filter=@repo/2026-thenamduhill`.
+
+### ⚠️ Đừng chạy `pnpm build` khi dev server đang mở
+
+`next dev` và `next build` cùng ghi vào `.next/`. Build đè lên chunk mà dev
+server đang phục vụ → trang đổ *"Module was instantiated because it was
+required from…"*, tiến trình dev chết nửa vời và để lại một node mồ côi vẫn
+giữ cổng. Lần sau `pnpm dev` báo `EADDRINUSE`.
+
+Hai lệnh đã xử lý dứt điểm:
+
+| Lệnh | Làm gì |
+|---|---|
+| `pnpm build:safe` | Đặt `NEXT_DIST_DIR=.next-build` → build đi lối riêng, dev server không hề hấn. Kèm `--force` vì `outputs` của turbo trỏ `.next/**` nên nó tưởng cache hit. |
+| `pnpm free-ports` | Tắt tiến trình đang giữ 3000–3003. **Chỉ tắt của repo này** — nó đọc dòng lệnh từng PID, nên worktree khác (vd `wt-h4-amanoi` ở cổng 3100) và mọi thứ không thuộc repo đều được giữ nguyên. |
+
+Mọi `pnpm dev:*` đã tự gọi `free-ports` cho đúng cổng của nó trước khi chạy —
+không phải nhớ.
+
+`pnpm build` thường vẫn ghi `.next` và **không được đổi**: `vercel.json` khai
+`outputDirectory: ".next"`, `turbo.json` khai `outputs: [".next/**"]`. Đổi
+ngầm theo `NODE_ENV` là deploy hỏng và cache turbo trượt — mà chỉ phát hiện
+được sau khi đã đẩy lên.
 
 Chưa có test framework — **không bịa lệnh test**.
 
