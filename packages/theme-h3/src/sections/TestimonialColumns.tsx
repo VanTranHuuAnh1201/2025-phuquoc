@@ -86,13 +86,7 @@ function TestimonialCard({
                 >
                     {item.name.charAt(0)}
                 </span>
-                {/*
-                  * `min-w-0` BẮT BUỘC: đây là flex item, mà flex item mặc định
-                  * không co xuống dưới kích thước nội dung của nó. Thiếu nó thì
-                  * dòng "MINH TRÍ · Cần Thơ" đẩy rộng hơn card và bị
-                  * `overflow-hidden` của khối cuộn chặt ngang giữa chữ.
-                  */}
-                <span className="text-surface-strong min-w-0 text-[10px] leading-tight font-bold tracking-wider uppercase">
+                <span className="text-surface-strong text-[10px] leading-tight font-bold tracking-wider uppercase">
                     {item.name}
                     {item.from && (
                         <span className="text-text-tertiary font-medium tracking-normal normal-case">
@@ -147,23 +141,11 @@ function ScrollingColumn({
 }
 
 /**
- * Khối các cột đánh giá.
+ * Khối ba cột. Mobile chỉ hiện một cột, tablet hai, desktop đủ ba — cột thứ ba
+ * hẹp quá thì chữ vỡ thành từng dòng một hai chữ, đọc không nổi.
  *
- * ĐO BỀ RỘNG CỦA CHÍNH KHỐI, KHÔNG ĐO VIEWPORT.
- *
- * Bản trước dùng `sm:grid-cols-2 lg:grid-cols-3` — và đó là lỗi thật, thấy
- * được trên màn 1520px: khối này chỉ chiếm NỬA PHẢI của một grid hai cột nằm
- * trong thẻ có `p-8`, nên bề rộng thật của nó chỉ ~590px. Breakpoint `lg` lại
- * đo viewport (1024px) chứ không đo cột, nên nó vẫn chia BA — mỗi cột còn
- * ~150px, trừ `p-3.5` của card thì chữ còn ~120px. Kết quả: chữ vỡ thành từng
- * dòng một hai từ, và dòng tên "MINH TRÍ · Cần Thơ" bị `overflow-hidden` chặt
- * ngang giữa chữ.
- *
- * `@container` cùng `@[..]` đo đúng thứ cần đo. Ngưỡng chọn theo bề rộng tối
- * thiểu để một card đọc được (~260px/cột): 2 cột từ 560px, 3 cột từ 840px.
- *
- * Tốc độ các cột cố ý lệch nhau (nguyên tố cùng nhau) để chu kỳ không trùng
- * khớp và mắt không bắt được quy luật lặp.
+ * Tốc độ ba cột cố ý lệch nhau (nguyên tố cùng nhau) để chu kỳ không trùng khớp
+ * và mắt không bắt được quy luật lặp.
  */
 export function TestimonialColumns({ items, locale }: { items: Review[]; locale: Locale }) {
     const size = Math.ceil(items.length / 3)
@@ -174,31 +156,28 @@ export function TestimonialColumns({ items, locale }: { items: Review[]; locale:
     ]
 
     return (
-        <div className="@container">
-            <div
-                className="
-                    grid h-[300px] grid-cols-1 gap-3 overflow-hidden
-                    [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
-                    [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
-                    @min-[560px]:h-[340px] @min-[560px]:grid-cols-2
-                    @min-[840px]:h-[360px] @min-[840px]:grid-cols-3
-                "
-            >
-                <ScrollingColumn items={first} duration={38} locale={locale} />
-                <ScrollingColumn
-                    items={second}
-                    duration={47}
-                    locale={locale}
-                    reverse
-                    className="hidden @min-[560px]:block"
-                />
-                <ScrollingColumn
-                    items={third}
-                    duration={43}
-                    locale={locale}
-                    className="hidden @min-[840px]:block"
-                />
-            </div>
+        <div
+            className="
+                grid h-[300px] grid-cols-1 gap-3 overflow-hidden
+                [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
+                [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]
+                sm:h-[340px] sm:grid-cols-2 lg:h-[360px] lg:grid-cols-3
+            "
+        >
+            <ScrollingColumn items={first} duration={38} locale={locale} />
+            <ScrollingColumn
+                items={second}
+                duration={47}
+                locale={locale}
+                reverse
+                className="hidden sm:block"
+            />
+            <ScrollingColumn
+                items={third}
+                duration={43}
+                locale={locale}
+                className="hidden lg:block"
+            />
         </div>
     )
 }

@@ -40,7 +40,11 @@ export function Gallery({ locale, photos, galleryHref = '#contact' }: GalleryPro
             id="gallery"
             className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
         >
-            <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+            {/*
+              * Khung đọc từ `--container`, padding dừng ở `sm:px-6` — khớp
+              * khuôn của các section dùng chung. Xem `HostService.tsx`.
+              */}
+            <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
                 <SectionHeading
                     title={pick(H3.realPhotosTitle, locale)}
                     description={pick(H3.realPhotosDesc, locale)}

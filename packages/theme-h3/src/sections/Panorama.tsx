@@ -39,7 +39,14 @@ export function Panorama({ locale, items, exploreHref = '#gallery' }: PanoramaPr
             id="panorama"
             className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
         >
-            <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+            {/*
+              * Khung đọc từ `--container`, padding dừng ở `sm:px-6` — khớp
+              * khuôn của các section dùng chung (`domain-hotel`). Bản trước là
+              * `max-w-[1280px] … lg:px-8`, tức ở màn ≥1024px khối này thụt vào
+              * 32px mỗi bên trong khi section liền kề vẫn đủ 1280px. Xem giải
+              * thích đầy đủ ở `HostService.tsx`.
+              */}
+            <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
                 <SectionHeading
                     title={pick(UI.momentsAtTheNamDuHill, locale)}
                     description={pick(UI.captureUnforgettableIslandMemories, locale)}

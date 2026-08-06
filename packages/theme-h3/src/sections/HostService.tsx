@@ -38,9 +38,23 @@ export function HostService({ locale, perks, reviews }: HostServiceProps) {
             id="host"
             className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
         >
-            <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+            {/*
+              * KHUNG ĐỌC TỪ `--container`, PADDING ĐẶT Ở CON — đúng khuôn mà
+              * các section dùng chung của `domain-hotel` đang theo.
+              *
+              * Bản trước là `max-w-[1280px] px-4 sm:px-6 lg:px-8`: padding nằm
+              * trên CHÍNH phần tử mang `max-w`, nên 32px mỗi bên ăn VÀO trong
+              * 1280px và nội dung chỉ còn 1216px. Section ngay trên
+              * (`PlacesSection`) đặt padding ở con nên giữ đủ 1280px. Kết quả:
+              * thẻ này thụt vào 32px mỗi bên, mép trái không thẳng hàng với
+              * tiêu đề phía trên — thấy rõ ở màn rộng.
+              *
+              * Con số cũng phải đọc từ token: `1280px` viết cứng là một bản sao
+              * của `--container`, sửa một chỗ thì hai chỗ lệch nhau (luật D0).
+              */}
+            <div className="mx-auto max-w-[var(--container)]">
                 <div
-                    className={`bg-surface-base border-border-muted grid grid-cols-1 items-center gap-6 rounded-md border p-5 sm:p-8 ${
+                    className={`bg-surface-base border-border-muted mx-4 grid grid-cols-1 items-center gap-6 rounded-md border p-5 sm:mx-6 sm:p-8 ${
                         hasReviews ? 'lg:grid-cols-2' : ''
                     }`}
                 >
@@ -49,26 +63,10 @@ export function HostService({ locale, perks, reviews }: HostServiceProps) {
                         <span className="text-brand text-xs font-semibold tracking-wider uppercase">
                             {pick(UI.hostAmenities, locale)}
                         </span>
-                        {/*
-                          * CỠ CHỮ VIẾT THẲNG THEO PX, KHÔNG DÙNG BẬC TOKEN.
-                          *
-                          * Bản trước là `text-base sm:text-xl md:text-2xl` —
-                          * trông như một thang tăng dần, nhưng thang chữ của
-                          * mẫu này rất nhỏ (trích từ bảng Travlla base 14px):
-                          * `--text-base` 14px · `--text-xl` 16px · `--text-2xl`
-                          * 20px. Nghĩa là tiêu đề chính của section chỉ 14px
-                          * trên mobile — nhỏ hơn thân bài của mẫu 02 và gần
-                          * bằng chính câu dẫn ngay dưới nó (13px). Thứ bậc thị
-                          * giác biến mất (luật P4).
-                          *
-                          * Các bậc `--text-*` của mẫu này phục vụ THÂN BÀI. Cỡ
-                          * tiêu đề là quyết định riêng, khớp với
-                          * `SECTION_HEADINGS` của cùng mẫu (19/22px).
-                          */}
-                        <h2 className="font-display text-text-primary text-[19px] leading-[1.25] font-bold sm:text-[22px] md:text-[26px]">
+                        <h2 className="font-display text-text-primary text-base leading-snug font-bold sm:text-xl md:text-2xl">
                             {pick(UI.youArePickedUpAtThe, locale)}
                         </h2>
-                        <p className="text-text-secondary text-[13px] leading-relaxed font-normal sm:text-[14px]">
+                        <p className="text-text-secondary text-xs leading-relaxed font-normal sm:text-sm">
                             {pick(UI.privateRoundtripCarTransferFromCu, locale)}
                         </p>
 
