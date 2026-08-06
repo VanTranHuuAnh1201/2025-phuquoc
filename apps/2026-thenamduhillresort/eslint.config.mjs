@@ -25,9 +25,13 @@ const config = [
         // ghi rõ KHÔNG port hai file này, và grep xác nhận không file nguồn
         // nào import chúng. Chúng là tư liệu tham chiếu, không phải code sản
         // xuất — giữ lại để đối chiếu thiết kế nhưng không lint.
+        // `.next-build/**`: `next.config.ts` của app này cũng đọc
+        // `NEXT_DIST_DIR`, nên `pnpm build:safe` ghi ra thư mục đó. Thiếu dòng
+        // này thì ESLint quét code Next tự sinh y như trường hợp `.next/**`.
         ignores: [
             'node_modules/**',
             '.next/**',
+            '.next-build/**',
             'out/**',
             'next-env.d.ts',
             'figma/**',

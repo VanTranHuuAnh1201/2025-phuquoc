@@ -11,7 +11,15 @@ const config = [
     {
         // next-env.d.ts do Next tu sinh, bat buoc dung triple-slash reference
         // va khong duoc sua bang tay -> loai khoi pham vi lint.
-        ignores: ['node_modules/**', '.next/**', 'out/**', 'next-env.d.ts'],
+        // `.next-build/**`: `next.config.ts` đọc `NEXT_DIST_DIR`, nên
+        // `pnpm build:safe` ghi ra đó. Thiếu thì ESLint quét code Next tự sinh.
+        ignores: [
+            'node_modules/**',
+            '.next/**',
+            '.next-build/**',
+            'out/**',
+            'next-env.d.ts',
+        ],
     },
 ]
 
