@@ -36,6 +36,35 @@ export function UserIcon({ size = 20 }: IconProps) {
     )
 }
 
+export function MenuIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M3 6h18" />
+            <path d="M3 12h18" />
+            <path d="M3 18h18" />
+        </svg>
+    )
+}
+
+export function PlusIcon({ size = 18 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+        </svg>
+    )
+}
+
+export function DownloadIcon({ size = 18 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M12 3v12" />
+            <path d="m7 10 5 5 5-5" />
+            <path d="M4 20h16" />
+        </svg>
+    )
+}
+
 export function BellIcon({ size = 20 }: IconProps) {
     return (
         <svg {...svgProps(size)}>

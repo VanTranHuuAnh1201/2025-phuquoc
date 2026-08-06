@@ -12,7 +12,15 @@
 
 import { use, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { formatPrice, getPropertySync, nextStatuses, pick, quoteRefund, ratePlans } from '@repo/core'
+import {
+    can,
+    formatPrice,
+    getPropertySync,
+    nextStatuses,
+    pick,
+    quoteRefund,
+    ratePlans,
+} from '@repo/core'
 import type { BookingStatus, IncidentalCharge } from '@repo/core'
 import {
     Badge,
@@ -27,8 +35,10 @@ import { useLocale } from '@/components/LocaleProvider'
 import { useAuthStore } from '@/stores/auth.store'
 import { useBookingStore } from '@/stores/booking.store'
 import { useNotifyStore } from '@/stores/notify.store'
+import type { WriteError } from '@/stores/booking.store'
+import { TrashIcon } from '@/components/icons'
 import { todayKey } from '@/stores/demo-data'
-import { S, STATUS_LABEL, STATUS_TONE, tr } from '@/strings'
+import { CHANNEL_LABEL, S, STATUS_LABEL, STATUS_TONE, WRITE_ERROR_LABEL, tr } from '@/strings'
 
 export default function AdminBookingDetail({
     params,
@@ -52,7 +62,13 @@ export default function AdminBookingDetail({
     const [dialog, setDialog] = useState<'none' | 'check-in' | 'check-out' | 'cancel' | 'note'>(
         'none',
     )
-    const [error, setError] = useState<string | null>(null)
+    const [error, setError] = useState<WriteError | null>(null)
+    /**
+     * Hành động đang gửi. Ở GD1 store trả kết quả đồng bộ nên gần như không
+     * thấy, nhưng `200-06` đổi thân hàm thành `await fetch()` là dùng ngay —
+     * nút giữ nguyên kích thước và khoá tương tác (FE1).
+     */
+    const [busy, setBusy] = useState(false)
 
     const property = getPropertySync()
     const room = booking ? property.rooms.find((r) => r.id === booking.roomTypeId) : undefined
@@ -84,8 +100,18 @@ export default function AdminBookingDetail({
     const actor = { id: user.id, name: user.fullName, role: user.role }
     const next = nextStatuses(booking.status)
 
+    // Ẩn nút KHÔNG phải bảo mật (luật A3/BE2) — chỉ để lễ tân đỡ bấm nhầm vào
+    // thứ sẽ bị từ chối. Chặn thật nằm ở Route Handler (`000-03`) và RLS
+    // (`000-02`). Bản GD1 chạy trên store nên chưa có lớp đó — `200-06` trả nợ.
+    const canChangeStatus = can(user.role, 'booking.change-status')
+    const canCancel = can(user.role, 'booking.cancel')
+    const canRefund = can(user.role, 'booking.refund')
+
     const runStatus = (to: BookingStatus) => {
+        setBusy(true)
         const result = changeStatus(booking.id, to, actor)
+        setBusy(false)
+        // Không được bỏ qua giá trị trả về (§6.6) — kể cả khi GD1 luôn trả null.
         setError(result)
         if (!result && to === 'confirmed' && booking.customerId) {
             pushNotification({
@@ -99,7 +125,7 @@ export default function AdminBookingDetail({
     }
 
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
+        <div style={{ display: 'grid', gap: 'var(--space-5)', minWidth: 0 }}>
             <Link
                 href="/admin/orders"
                 style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', textDecoration: 'none' }}
@@ -116,11 +142,18 @@ export default function AdminBookingDetail({
                     flexWrap: 'wrap',
                 }}
             >
-                <div>
+                <div style={{ minWidth: 0 }}>
                     <h1 style={{ margin: 0, fontSize: 'var(--text-2xl)', fontFamily: 'var(--font-display)' }}>
                         {booking.code}
                     </h1>
-                    <p style={{ margin: 'var(--space-2) 0 0', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                    <p
+                        style={{
+                            margin: 'var(--space-2) 0 0',
+                            fontSize: 'var(--text-sm)',
+                            color: 'var(--text-muted)',
+                            overflowWrap: 'anywhere',
+                        }}
+                    >
                         {booking.guest.fullName} · {booking.guest.phone} ·{' '}
                         {room ? pick(room.name, locale) : booking.roomTypeId}
                     </p>
@@ -142,26 +175,37 @@ export default function AdminBookingDetail({
                     borderRadius: 'var(--radius-lg)',
                 }}
             >
-                {next.includes('confirmed') && (
-                    <Button onClick={() => runStatus('confirmed')}>{tr(S.doConfirm, locale)}</Button>
+                {canChangeStatus && next.includes('confirmed') && (
+                    <Button onClick={() => runStatus('confirmed')} disabled={busy} aria-busy={busy}>
+                        {tr(S.doConfirm, locale)}
+                    </Button>
                 )}
-                {next.includes('checked_in') && (
-                    <Button onClick={() => setDialog('check-in')}>{tr(S.doCheckIn, locale)}</Button>
+                {canChangeStatus && next.includes('checked_in') && (
+                    <Button onClick={() => setDialog('check-in')} disabled={busy}>
+                        {tr(S.doCheckIn, locale)}
+                    </Button>
                 )}
-                {next.includes('checked_out') && (
-                    <Button onClick={() => setDialog('check-out')}>{tr(S.doCheckOut, locale)}</Button>
+                {canChangeStatus && next.includes('checked_out') && (
+                    <Button onClick={() => setDialog('check-out')} disabled={busy}>
+                        {tr(S.doCheckOut, locale)}
+                    </Button>
                 )}
-                {next.includes('no_show') && (
-                    <Button variant="secondary" onClick={() => runStatus('no_show')}>
+                {canChangeStatus && next.includes('no_show') && (
+                    <Button
+                        variant="secondary"
+                        onClick={() => runStatus('no_show')}
+                        disabled={busy}
+                        aria-busy={busy}
+                    >
                         {tr(S.markNoShow, locale)}
                     </Button>
                 )}
-                {next.includes('cancelled') && (
-                    <Button variant="secondary" onClick={() => setDialog('cancel')}>
+                {canCancel && next.includes('cancelled') && (
+                    <Button variant="secondary" onClick={() => setDialog('cancel')} disabled={busy}>
                         {tr(S.cancelBooking, locale)}
                     </Button>
                 )}
-                <Button variant="ghost" onClick={() => setDialog('note')}>
+                <Button variant="ghost" onClick={() => setDialog('note')} disabled={busy}>
                     {tr(S.staffNote, locale)}
                 </Button>
 
@@ -175,6 +219,7 @@ export default function AdminBookingDetail({
             {error && (
                 <div
                     role="alert"
+                    aria-live="polite"
                     style={{
                         padding: 'var(--space-4)',
                         background: 'var(--danger-bg)',
@@ -183,17 +228,16 @@ export default function AdminBookingDetail({
                         fontSize: 'var(--text-sm)',
                     }}
                 >
-                    {error === 'unit-unavailable'
-                        ? locale === 'vi'
-                            ? 'Phòng đã chọn không còn trống.'
-                            : 'The selected room is no longer available.'
-                        : error === 'not-settled'
-                          ? tr(S.settledHint, locale)
-                          : error}
+                    {/* Mỗi mã lỗi một câu riêng — gộp thành "Có lỗi xảy ra" là lấy
+                        đi thông tin duy nhất giúp lễ tân xử lý được (§6.6). */}
+                    {tr(WRITE_ERROR_LABEL[error], locale)}
                 </div>
             )}
 
-            <div className="admin-detail-grid" style={{ display: 'grid', gap: 'var(--space-5)' }}>
+            <div
+                className="admin-detail-grid"
+                style={{ display: 'grid', gap: 'var(--space-5)', minWidth: 0 }}
+            >
                 <Card title={tr(S.priceSummary, locale)}>
                     <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
                         {booking.priceLines.map((line, i) => (
@@ -227,6 +271,44 @@ export default function AdminBookingDetail({
                                 tone="success"
                             />
                         )}
+
+                        {/* Duyệt hoàn tiền — lễ tân KHÔNG có `booking.refund` nên
+                            khối này biến mất hẳn với họ, không hiện dạng disabled
+                            (§4.3). Ẩn nút không phải bảo mật: chặn thật ở API. */}
+                        {canRefund && booking.cancellation && (
+                            <div
+                                style={{
+                                    marginTop: 'var(--space-2)',
+                                    padding: 'var(--space-4)',
+                                    background: 'var(--warning-bg)',
+                                    borderRadius: 'var(--radius)',
+                                    display: 'grid',
+                                    gap: 'var(--space-3)',
+                                }}
+                            >
+                                <Row
+                                    label={tr(S.refundAmount, locale)}
+                                    value={formatPrice(booking.cancellation.refundAmount, locale)}
+                                />
+                                <Button
+                                    size="sm"
+                                    disabled={busy}
+                                    onClick={() =>
+                                        setError(
+                                            addNote(
+                                                booking.id,
+                                                locale === 'vi'
+                                                    ? `Duyệt hoàn ${booking.cancellation!.refundAmount.toLocaleString('vi-VN')}đ`
+                                                    : `Refund approved: ${booking.cancellation!.refundAmount}`,
+                                                actor,
+                                            ),
+                                        )
+                                    }
+                                >
+                                    {locale === 'vi' ? 'Duyệt hoàn tiền' : 'Approve refund'}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </Card>
 
@@ -235,6 +317,10 @@ export default function AdminBookingDetail({
                         <Row label={tr(S.fullName, locale)} value={booking.guest.fullName} />
                         <Row label={tr(S.phone, locale)} value={booking.guest.phone} />
                         <Row label={tr(S.email, locale)} value={booking.guest.email || '—'} />
+                        <Row
+                            label={tr(S.channel, locale)}
+                            value={tr(CHANNEL_LABEL[booking.channel], locale)}
+                        />
                         <Row
                             label={`${tr(S.checkIn, locale)} → ${tr(S.checkOut, locale)}`}
                             value={`${booking.checkIn} → ${booking.checkOut}`}
@@ -334,7 +420,7 @@ export default function AdminBookingDetail({
                                         flexShrink: 0,
                                     }}
                                 />
-                                <div style={{ fontSize: 'var(--text-sm)' }}>
+                                <div style={{ fontSize: 'var(--text-sm)', minWidth: 0, overflowWrap: 'anywhere' }}>
                                     <div>
                                         {log.action}
                                         {log.from && log.to ? `: ${log.from} → ${log.to}` : ''}
@@ -451,8 +537,48 @@ function CheckInDialog({
     const [early, setEarly] = useState(false)
     const [plate, setPlate] = useState('')
     const [note, setNote] = useState('')
+    const [unitError, setUnitError] = useState<string | null>(null)
+    const [idError, setIdError] = useState<string | null>(null)
 
-    const ready = Boolean(unitId && idNumber.trim())
+    // Không còn phòng trống thì KHOÁ nút Lưu — để select rỗng im lặng là lễ tân
+    // bấm mãi không hiểu vì sao (§6.9).
+    const noUnits = units.length === 0
+
+    const trySubmit = () => {
+        // AC-10: bấm Lưu khi chưa chọn phòng phải BÁO LỖI BẰNG CHỮ, không im
+        // lặng. Vì thế nút vẫn bấm được, việc chặn nằm ở đây.
+        const missingUnit = !unitId
+        const missingId = !idNumber.trim()
+        setUnitError(
+            missingUnit
+                ? locale === 'vi'
+                    ? 'Chọn phòng vật lý trước khi lưu.'
+                    : 'Select a physical room before saving.'
+                : null,
+        )
+        setIdError(
+            missingId
+                ? locale === 'vi'
+                    ? 'Nhập số CCCD / hộ chiếu — bắt buộc theo quy định khai báo lưu trú.'
+                    : 'Enter the ID / passport number — required by guest registration rules.'
+                : null,
+        )
+        if (missingUnit || missingId) return
+
+        onSubmit({
+            roomUnitId: unitId,
+            idNumber: idNumber.trim(),
+            actualGuests: {
+                adults,
+                children: defaultGuests.children.slice(0, childCount),
+            },
+            earlyCheckIn: early,
+            vehiclePlate: plate || undefined,
+            note: note || undefined,
+            staffId: user?.id ?? '',
+            staffName: user?.fullName ?? '',
+        })
+    }
 
     return (
         <Modal
@@ -469,24 +595,7 @@ function CheckInDialog({
                     <Button variant="ghost" onClick={onClose}>
                         {tr(S.cancel, locale)}
                     </Button>
-                    <Button
-                        disabled={!ready}
-                        onClick={() =>
-                            onSubmit({
-                                roomUnitId: unitId,
-                                idNumber: idNumber.trim(),
-                                actualGuests: {
-                                    adults,
-                                    children: defaultGuests.children.slice(0, childCount),
-                                },
-                                earlyCheckIn: early,
-                                vehiclePlate: plate || undefined,
-                                note: note || undefined,
-                                staffId: user?.id ?? '',
-                                staffName: user?.fullName ?? '',
-                            })
-                        }
-                    >
+                    <Button disabled={noUnits} onClick={trySubmit}>
                         {tr(S.doCheckIn, locale)}
                     </Button>
                 </>
@@ -496,13 +605,17 @@ function CheckInDialog({
                 <SelectField
                     label={tr(S.assignRoom, locale)}
                     value={unitId}
-                    onChange={(e) => setUnitId(e.target.value)}
-                    hint={
-                        units.length === 0
+                    onChange={(e) => {
+                        setUnitId(e.target.value)
+                        setUnitError(null)
+                    }}
+                    disabled={noUnits}
+                    error={
+                        noUnits
                             ? locale === 'vi'
-                                ? 'Không còn phòng trống của hạng này — kiểm tra Buồng phòng.'
-                                : 'No available rooms of this type — check Housekeeping.'
-                            : undefined
+                                ? 'Không còn phòng trống của hạng này. Đổi phòng ở màn Buồng phòng rồi quay lại.'
+                                : 'No available rooms of this type. Free one up in Housekeeping, then come back.'
+                            : unitError
                     }
                     required
                 >
@@ -519,12 +632,16 @@ function CheckInDialog({
                 <Field
                     label={tr(S.idNumber, locale)}
                     value={idNumber}
-                    onChange={(e) => setIdNumber(e.target.value)}
+                    onChange={(e) => {
+                        setIdNumber(e.target.value)
+                        setIdError(null)
+                    }}
                     hint={
                         locale === 'vi'
                             ? 'Bắt buộc theo quy định khai báo lưu trú.'
                             : 'Required for mandatory guest registration.'
                     }
+                    error={idError}
                     required
                 />
 
@@ -675,9 +792,12 @@ function CheckOutDialog({
                             <button
                                 type="button"
                                 onClick={() => setItems(items.filter((_, i) => i !== index))}
-                                aria-label={tr(S.delete, locale)}
+                                aria-label={`${tr(S.delete, locale)}: ${item.description || tr(S.incidentals, locale)}`}
                                 style={{
+                                    display: 'grid',
+                                    placeItems: 'center',
                                     width: 32,
+                                    minHeight: 32,
                                     background: 'transparent',
                                     border: '1px solid var(--border)',
                                     borderRadius: 'var(--radius)',
@@ -685,7 +805,7 @@ function CheckOutDialog({
                                     cursor: 'pointer',
                                 }}
                             >
-                                ×
+                                <TrashIcon size={14} />
                             </button>
                         </div>
                     ))}
@@ -889,6 +1009,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius-lg)',
                 padding: 'var(--space-5)',
+                minWidth: 0,
             }}
         >
             <h2 style={{ margin: '0 0 var(--space-4)', fontSize: 'var(--text-base)', fontFamily: 'var(--font-display)' }}>
@@ -926,13 +1047,26 @@ function Row({
                 display: 'flex',
                 justifyContent: 'space-between',
                 gap: 'var(--space-4)',
+                // Giá trị dài (tên hạng phòng, ghi chú) phải xuống dòng chứ
+                // không được đẩy thẻ rộng ra và sinh cuộn ngang ở 375px (AC-7).
+                flexWrap: 'wrap',
+                minWidth: 0,
                 fontSize: strong ? 'var(--text-lg)' : 'var(--text-sm)',
                 fontWeight: strong ? 700 : 400,
                 color,
             }}
         >
-            <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-            <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+            <span style={{ color: 'var(--text-muted)', minWidth: 0 }}>{label}</span>
+            <span
+                style={{
+                    textAlign: 'right',
+                    fontVariantNumeric: 'tabular-nums',
+                    minWidth: 0,
+                    overflowWrap: 'anywhere',
+                }}
+            >
+                {value}
+            </span>
         </div>
     )
 }

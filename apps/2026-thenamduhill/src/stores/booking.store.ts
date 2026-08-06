@@ -98,6 +98,14 @@ export interface CreateBookingInput {
     guest: Booking['guest']
     customerId?: string
     channel: Booking['channel']
+    /**
+     * Ai thực sự tạo đơn — dùng cho `ActivityLog`.
+     *
+     * Bỏ trống = khách tự đặt trên web, nhật ký ghi chính khách (hành vi cũ,
+     * không đổi). Truyền vào khi lễ tân nhập đơn hộ qua CMS: nhật ký phải ghi
+     * tên nhân viên, nếu không thì tranh chấp về sau không truy được ai làm.
+     */
+    actor?: Actor
 }
 
 function initialState() {
@@ -192,7 +200,7 @@ export const useBookingStore = create<BookingState>()(
                     appliedPromotions: input.quote.promotion.applied,
                 }
 
-                const actor: Actor = {
+                const actor: Actor = input.actor ?? {
                     id: input.customerId ?? 'guest',
                     name: input.guest.fullName,
                     role: 'customer',

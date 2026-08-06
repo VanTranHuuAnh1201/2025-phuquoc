@@ -7,6 +7,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## 0. Bản đồ luật & quy trình
+
+| Cần gì | Đọc file |
+|---|---|
+| Chuẩn code chung (mọi tầng) | [`.claude/rules/common.md`](.claude/rules/common.md) |
+| Backend — API, DB, bảo mật | [`.claude/rules/backend.md`](.claude/rules/backend.md) |
+| Frontend — theme H3, CMS, store | [`.claude/rules/frontend.md`](.claude/rules/frontend.md) |
+| Quy trình 5 vai trò chạy tự động | [`.claude/rules/workflow.md`](.claude/rules/workflow.md) |
+| Kiến trúc monorepo, ranh giới package | [`.claude/rules/architecture.md`](.claude/rules/architecture.md) |
+| Nghiệp vụ đặt phòng | [`.claude/rules/booking-domain.md`](.claude/rules/booking-domain.md) |
+| Luồng màn hình client & CMS | [`.claude/rules/app-flows.md`](.claude/rules/app-flows.md) |
+| Token thiết kế | [`.claude/rules/design-tokens.md`](.claude/rules/design-tokens.md) |
+| Cổng chất lượng thiết kế P0–P15 | [`.claude/rules/premium-quality-gate.md`](.claude/rules/premium-quality-gate.md) |
+
+### Agent theo vai trò — dự án Nam Du Hill
+
+Sáu agent chạy theo chuỗi tự động (chi tiết ở `workflow.md`):
+
+| Agent | Vai trò | Không làm |
+|---|---|---|
+| `ndh-pm` | Điều phối, thứ tự ưu tiên, bảng tiến độ | Quyết định kỹ thuật |
+| `ndh-ba` | Viết ticket, tiêu chí chấp nhận | Chọn thư viện, thiết kế API |
+| `ndh-sa` | Mọi quyết định kỹ thuật, review code | Viết ticket nghiệp vụ |
+| `ndh-be` | `app/api/**`, migration, RLS, cron | Sửa theme, đụng giao diện |
+| `ndh-fe` | `theme-h3`, `app/admin/**`, store | Viết SQL, sửa Route Handler |
+| `ndh-qc` | Verify DoD — **duy nhất được ký `done/`** | Sửa code, nới tiêu chí |
+
+Bảng công việc: [`apps/2026-thenamduhill/handover/`](apps/2026-thenamduhill/handover/README.md)
+
+---
+
 ## 1. Dự án là gì
 
 Monorepo chứa **nhiều sản phẩm web thương mại**, bắt đầu bằng **Booking Hotel**.

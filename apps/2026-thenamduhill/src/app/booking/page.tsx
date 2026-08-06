@@ -1,10 +1,14 @@
 'use client'
 
 /**
- * Luồng đặt phòng 4 bước.
+ * Luồng đặt phòng — bước 1–4 (bước 5 ở `/booking/success`).
  *
  * Bước 1–2 tự do; bấm "Đặt phòng" ở cuối bước 2 mới bị chặn đăng nhập. Chi tiết
  * và lý do: `.claude/rules/app-flows.md` §F1–F2.
+ *
+ * MẶC `data-theme` CỦA MẪU H3 nhưng luồng VẪN Ở TẦNG APP: nó gọi store, điều
+ * hướng và kiểm đăng nhập — ba thứ theme không được chứa (luật R4/R13/FE3).
+ * Theme chỉ cấp `tokens.css`; đổi mẫu là đổi đúng một thuộc tính ở đây.
  */
 
 import { useEffect, useMemo, useState } from 'react'
@@ -30,7 +34,9 @@ import { useNotifyStore } from '@/stores/notify.store'
 import { useAvailability, useCurrentQuote } from '@/stores/useQuote'
 import { todayKey } from '@/stores/demo-data'
 import { BLOCK_REASON_LABEL, S, tr } from '@/strings'
+import { CheckIcon, Stepper } from './Stepper'
 
+/** Bước 5 sống ở `/booking/success`, nên state ở đây chỉ tới 4. */
 type Step = 1 | 2 | 3 | 4
 
 export default function BookingPage() {
@@ -42,7 +48,6 @@ export default function BookingPage() {
 }
 
 function BookingFlow() {
-    const { locale } = useLocale()
     const router = useRouter()
     const cart = useCartStore()
     const user = useAuthStore((s) => s.user)
@@ -51,15 +56,30 @@ function BookingFlow() {
     const [step, setStep] = useState<Step>(1)
     const [showErrors, setShowErrors] = useState(false)
 
+    // `cart.store` persist đọc `localStorage`, thứ chỉ có SAU lần render đầu.
+    // Không chờ mốc này thì effect khôi phục bước ở dưới chạy trên giỏ rỗng mặc
+    // định, kết luận "chưa chọn gì" rồi không bao giờ chạy lại — khách vừa đăng
+    // nhập xong bị ném về bước 1 dù giỏ còn nguyên trong localStorage.
+    const [hydrated, setHydrated] = useState(false)
+    useEffect(() => setHydrated(true), [])
+
     const availability = useAvailability(cart.checkIn, cart.checkOut, cart.guests)
 
     // Khách đăng nhập xong quay lại: nhảy thẳng tới bước thông tin, không bắt
     // chọn lại từ đầu. Đây chính là "fallback về màn thanh toán" trong yêu cầu.
+    //
+    // ĐIỀU KIỆN LÀ `step < 3`, KHÔNG PHẢI `step === 2`. Đi qua `/login` là rời
+    // hẳn trang này, nên lúc quay lại component MOUNT MỚI và `step` khởi tạo
+    // bằng 1 — không bao giờ bằng 2. Điều kiện cũ vì thế không bao giờ đúng ở
+    // đúng cái trường hợp nó sinh ra để phục vụ, và khách phải chọn phòng lại
+    // từ đầu dù giỏ còn nguyên.
+    //
+    // Chặn trên `< 3` để không kéo ngược khách đang ở bước 4 về bước 3.
     useEffect(() => {
-        if (user && step === 2 && cart.isSelectionComplete()) setStep(3)
-        // Chỉ chạy khi trạng thái đăng nhập đổi.
+        if (user && step < 3 && cart.isSelectionComplete()) setStep(3)
+        // Chỉ chạy khi trạng thái đăng nhập đổi hoặc giỏ vừa hydrate xong.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user])
+    }, [user, hydrated])
 
     // Điền sẵn thông tin từ tài khoản.
     useEffect(() => {
@@ -83,9 +103,13 @@ function BookingFlow() {
         setStep(3)
     }
 
+    // Thanh tóm tắt chỉ có nghĩa khi đã chọn phòng — trước đó chưa có gì để
+    // cộng. Giữ nguyên điều kiện cũ, chỉ đặt tên để dùng lại ở hai chỗ render.
+    const showSummary = Boolean(quote && cart.roomTypeId && step >= 2)
+
     return (
         <div
-            data-theme="h1"
+            data-theme="h3"
             style={{
                 minHeight: '100vh',
                 background: 'var(--surface-alt)',
@@ -96,24 +120,23 @@ function BookingFlow() {
             <TopBar />
 
             <main
-                style={{
-                    maxWidth: 1100,
-                    margin: '0 auto',
-                    padding: 'var(--space-8) var(--space-5) var(--space-20)',
-                }}
+                className="booking-main"
+                data-sheet={showSummary ? 'on' : 'off'}
+                style={{ maxWidth: 1100, margin: '0 auto' }}
             >
                 <Stepper current={step} />
 
                 <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'minmax(0, 1fr)',
-                        gap: 'var(--space-8)',
-                        marginTop: 'var(--space-8)',
-                    }}
+                    style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}
                     className="booking-grid"
                 >
-                    <div style={{ display: 'grid', gap: 'var(--space-6)', alignContent: 'start' }}>
+                    {/* `minWidth: 0` là bắt buộc: mặc định grid item lấy
+                        `min-width:auto` nên nội dung rộng (thẻ phòng, ô nhập)
+                        đẩy cột phình ra và tràn ngang ở 375px. */}
+                    <div
+                        className="booking-col"
+                        style={{ display: 'grid', alignContent: 'start', minWidth: 0 }}
+                    >
                         {step === 1 && (
                             <SearchStep
                                 onNext={() => setStep(2)}
@@ -146,61 +169,116 @@ function BookingFlow() {
                         {step === 4 && <PaymentStep onBack={() => setStep(3)} />}
                     </div>
 
-                    {/* Thanh tóm tắt: dính khi cuộn, để giá luôn trong tầm mắt */}
-                    {quote && cart.roomTypeId && step >= 2 && (
-                        <aside
-                            style={{
-                                position: 'sticky',
-                                top: 'var(--space-5)',
-                                alignSelf: 'start',
-                                background: 'var(--surface)',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius-lg)',
-                                padding: 'var(--space-6)',
-                            }}
-                        >
-                            <h2
-                                style={{
-                                    margin: '0 0 var(--space-5)',
-                                    fontSize: 'var(--text-lg)',
-                                    fontFamily: 'var(--font-display)',
-                                }}
-                            >
-                                {tr(S.priceSummary, locale)}
-                            </h2>
-
-                            <div
-                                style={{
-                                    marginBottom: 'var(--space-5)',
-                                    paddingBottom: 'var(--space-5)',
-                                    borderBottom: '1px solid var(--border)',
-                                    fontSize: 'var(--text-sm)',
-                                    color: 'var(--text-muted)',
-                                    display: 'grid',
-                                    gap: 4,
-                                }}
-                            >
-                                <div>
-                                    {cart.checkIn} → {cart.checkOut}
-                                </div>
-                                <div>
-                                    {quote.nights} {tr(S.nights, locale)} ·{' '}
-                                    {cart.guests.adults} {tr(S.adults, locale).toLowerCase()}
-                                    {cart.guests.children.length > 0 &&
-                                        ` · ${cart.guests.children.length} ${tr(S.children, locale).toLowerCase()}`}
-                                </div>
-                            </div>
-
-                            <PriceBreakdown quote={quote} locale={locale} />
+                    {/* Thanh tóm tắt: dính khi cuộn, để giá luôn trong tầm mắt.
+                        Từ 900px trở lên là cột phải; dưới đó chuyển hẳn sang
+                        bottom sheet ở cuối file — CÙNG MỘT nội dung, hai chỗ
+                        đặt (luật FE5/P9: mobile là thiết kế riêng, không phải
+                        cột bị đẩy xuống cuối trang). */}
+                    {showSummary && quote && (
+                        <aside className="booking-summary">
+                            <SummaryCard quote={quote} />
                         </aside>
                     )}
                 </div>
             </main>
 
+            {/* Bottom sheet — chỉ tồn tại dưới 900px, xem ghi chú ở khối style */}
+            {showSummary && quote && <SummarySheet quote={quote} />}
+
             <style>{`
+                /* THANG KHOẢNG CÁCH CỦA h3 TO HƠN HẲN h1 Ở CÙNG TÊN BIẾN:
+                   --space-6 là 64px (h1 cũng 64px) và --space-8 là 140px. Bê
+                   nguyên "padding: var(--space-6)" xuống màn 375px thì riêng
+                   đệm hai bên đã ăn 128px, thẻ phình tới 457px và TRÀN NGANG —
+                   đúng thứ luật FE5 cấm. Build vẫn xanh, chỉ nhìn ở 375px mới
+                   thấy.
+                   Cách xử lý: bậc nhỏ ở màn hẹp, bậc lớn ở màn rộng. Vẫn lấy
+                   từ thang token, không có số lẻ nào (luật FE2/P5). */
+                .booking-main {
+                    padding: var(--space-4) var(--space-3) var(--space-6);
+                }
+
+                .booking-panel {
+                    padding: var(--space-3);
+                    /* Không cho thẻ phình quá ô lưới chứa nó. */
+                    min-width: 0;
+                    max-width: 100%;
+                }
+
+                /* Khoảng cách giữa các thẻ: --space-6 (64px) quá thoáng ở màn
+                   hẹp, đẩy nút "Tiếp tục" xuống rất sâu. */
+                .booking-col {
+                    gap: var(--space-3);
+                }
+
+                @media (min-width: 900px) {
+                    .booking-col {
+                        gap: var(--space-4);
+                    }
+                }
+
+                /* Ô nhập trong lưới: mặc định min-width:auto của grid item lấy
+                   theo bề rộng nội tại của input (với type="date" là khá lớn),
+                   nên ô không co lại được và đẩy tràn ngang ở 375px. */
+                .booking-panel input,
+                .booking-panel select,
+                .booking-panel textarea {
+                    min-width: 0;
+                    max-width: 100%;
+                }
+
+                /* --space-8 (140px) là bậc dành cho khoảng nghỉ GIỮA CÁC SECTION
+                   của trang marketing, không phải cho form. Dùng nó ở đây thì
+                   riêng khoảng trắng đã chiếm gần hai màn điện thoại. */
+                .booking-grid {
+                    gap: var(--space-4);
+                    margin-top: var(--space-3);
+                }
+
+                .booking-summary {
+                    display: none;
+                }
+
+                @media (min-width: 640px) {
+                    .booking-main {
+                        padding: var(--space-5) var(--space-4) var(--space-6);
+                    }
+
+                    .booking-panel {
+                        padding: var(--space-4);
+                    }
+                }
+
+                @media (min-width: 900px) {
+                    .booking-main {
+                        padding: var(--space-5) var(--space-5) var(--space-20);
+                    }
+
+                    .booking-panel {
+                        padding: var(--space-5);
+                    }
+                }
+
                 @media (min-width: 900px) {
                     .booking-grid {
                         grid-template-columns: minmax(0, 1fr) 340px;
+                    }
+
+                    .booking-summary {
+                        display: block;
+                        position: sticky;
+                        top: var(--space-4);
+                        align-self: start;
+                    }
+                }
+
+                /* Dưới 900px sheet chiếm chỗ ở đáy màn. Không chừa đệm thì nó
+                   NẰM ĐÈ lên nút "Tiếp tục" — nút vẫn đủ 44px và vẫn hiện,
+                   nhưng bấm không được. Đây là lỗi dễ bỏ sót nhất của bố cục
+                   này vì nhìn ảnh chụp không thấy. */
+                @media (max-width: 899px) {
+                    .booking-main[data-sheet='on'] {
+                        padding-bottom: 96px;
                     }
                 }
             `}</style>
@@ -230,8 +308,10 @@ function TopBar() {
                     gap: 'var(--space-4)',
                 }}
             >
+                {/* Về đúng mẫu khách đi ra — bấm logo mà nhảy sang mẫu khác là
+                    đứt mạch, đúng thứ AC-1 muốn tránh. */}
                 <Link
-                    href="/h1"
+                    href="/h3"
                     style={{
                         fontSize: 'var(--text-base)',
                         fontFamily: 'var(--font-display)',
@@ -254,84 +334,274 @@ function TopBar() {
     )
 }
 
-function Stepper({ current }: { current: Step }) {
+// ========================================================= tóm tắt giá
+
+/** Dòng ngày + số khách, dùng chung cho cả cột phải lẫn bottom sheet. */
+function StayLine({ nights }: { nights: number }) {
     const { locale } = useLocale()
-    const steps = [
-        { n: 1, label: tr(S.stepSearch, locale) },
-        { n: 2, label: tr(S.stepSelect, locale) },
-        { n: 3, label: tr(S.stepGuest, locale) },
-        { n: 4, label: tr(S.stepPayment, locale) },
-    ]
+    const cart = useCartStore()
 
     return (
-        <ol
+        <div
             style={{
-                display: 'flex',
-                gap: 'var(--space-2)',
-                listStyle: 'none',
-                margin: 0,
-                padding: 0,
-                flexWrap: 'wrap',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--text-muted)',
+                display: 'grid',
+                gap: 'var(--space-1)',
             }}
         >
-            {steps.map((step) => {
-                const state = step.n < current ? 'done' : step.n === current ? 'current' : 'todo'
-                return (
-                    <li
-                        key={step.n}
-                        aria-current={state === 'current' ? 'step' : undefined}
-                        style={{
-                            flex: '1 1 120px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--space-2)',
-                            padding: 'var(--space-3) var(--space-4)',
-                            background: state === 'current' ? 'var(--surface)' : 'transparent',
-                            border: `1px solid ${state === 'current' ? 'var(--brand)' : 'var(--border)'}`,
-                            borderRadius: 'var(--radius)',
-                            fontSize: 'var(--text-sm)',
-                            color: state === 'todo' ? 'var(--text-muted)' : 'var(--text)',
-                            fontWeight: state === 'current' ? 600 : 400,
-                        }}
-                    >
-                        <span
-                            style={{
-                                width: 22,
-                                height: 22,
-                                display: 'grid',
-                                placeItems: 'center',
-                                borderRadius: '50%',
-                                fontSize: 'var(--text-xs)',
-                                fontWeight: 700,
-                                flexShrink: 0,
-                                background:
-                                    state === 'done'
-                                        ? 'var(--success)'
-                                        : state === 'current'
-                                          ? 'var(--brand)'
-                                          : 'var(--border)',
-                                color:
-                                    state === 'todo' ? 'var(--text-muted)' : 'var(--text-inverse)',
-                            }}
-                        >
-                            {state === 'done' ? '✓' : step.n}
-                        </span>
-                        {step.label}
-                    </li>
-                )
-            })}
-        </ol>
+            <div>
+                {cart.checkIn} → {cart.checkOut}
+            </div>
+            <div>
+                {nights} {tr(S.nights, locale)} · {cart.guests.adults}{' '}
+                {tr(S.adults, locale).toLowerCase()}
+                {cart.guests.children.length > 0 &&
+                    ` · ${cart.guests.children.length} ${tr(S.children, locale).toLowerCase()}`}
+            </div>
+        </div>
+    )
+}
+
+/** Thẻ tóm tắt đầy đủ — nội dung giống hệt ở desktop và trong sheet mobile. */
+function SummaryCard({ quote }: { quote: NonNullable<ReturnType<typeof useCurrentQuote>> }) {
+    const { locale } = useLocale()
+
+    return (
+        <div
+            style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)',
+                padding: 'var(--space-4)',
+            }}
+        >
+            <h2
+                style={{
+                    margin: '0 0 var(--space-3)',
+                    fontSize: 'var(--text-lg)',
+                    fontFamily: 'var(--font-display)',
+                }}
+            >
+                {tr(S.priceSummary, locale)}
+            </h2>
+
+            <div
+                style={{
+                    marginBottom: 'var(--space-3)',
+                    paddingBottom: 'var(--space-3)',
+                    borderBottom: '1px solid var(--border)',
+                }}
+            >
+                <StayLine nights={quote.nights} />
+            </div>
+
+            <PriceBreakdown quote={quote} locale={locale} />
+        </div>
+    )
+}
+
+/**
+ * Bottom sheet giá cho màn hẹp.
+ *
+ * MỐC 900px, KHÔNG PHẢI 640px: lưới hai cột của luồng bật ở 900px. Đặt sheet ở
+ * 640px thì khoảng 640–900px không có cột phải (chưa đủ rộng) mà cũng chưa có
+ * sheet — thanh giá rơi xuống tận cuối trang, đúng thứ FE5 gọi là "chưa thiết
+ * kế mobile".
+ */
+function SummarySheet({ quote }: { quote: NonNullable<ReturnType<typeof useCurrentQuote>> }) {
+    const { locale } = useLocale()
+    const [open, setOpen] = useState(false)
+
+    return (
+        <div className="booking-sheet">
+            <button
+                type="button"
+                className="booking-sheet__toggle"
+                aria-expanded={open}
+                aria-controls="booking-sheet-body"
+                onClick={() => setOpen((v) => !v)}
+            >
+                <span className="booking-sheet__total">
+                    <span className="booking-sheet__total-label">
+                        {tr(S.totalAmount, locale)}
+                    </span>
+                    <strong className="booking-sheet__total-value">
+                        {formatPrice(quote.totalAmount, locale)}
+                    </strong>
+                </span>
+                <span className="booking-sheet__hint">
+                    {tr(open ? S.hidePriceDetails : S.showPriceDetails, locale)}
+                    <ChevronIcon up={!open} />
+                </span>
+            </button>
+
+            {/* Ẩn bằng `hidden` chứ không tháo khỏi cây: giữ nguyên id để
+                `aria-controls` luôn trỏ tới một phần tử có thật. */}
+            <div id="booking-sheet-body" className="booking-sheet__body" hidden={!open}>
+                <StayLine nights={quote.nights} />
+                <div style={{ marginTop: 'var(--space-3)' }}>
+                    <PriceBreakdown quote={quote} locale={locale} />
+                </div>
+            </div>
+
+            <style>{`
+                .booking-sheet {
+                    position: fixed;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 50;
+                    background: var(--surface);
+                    border-top: 1px solid var(--border);
+                    box-shadow: var(--shadow-lg);
+                }
+
+                /* Từ 900px trở lên đã có cột phải — hai bản cùng hiện là thừa. */
+                @media (min-width: 900px) {
+                    .booking-sheet {
+                        display: none;
+                    }
+                }
+
+                .booking-sheet__toggle {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: var(--space-3);
+                    width: 100%;
+                    /* AC-12: mốc chạm chính của màn hẹp, không được dưới 56px. */
+                    min-height: 56px;
+                    padding: var(--space-2) var(--space-3);
+                    background: transparent;
+                    border: 0;
+                    font-family: var(--font-body);
+                    color: var(--text);
+                    text-align: left;
+                    cursor: pointer;
+                    transition: background var(--motion-instant) var(--ease);
+                }
+
+                .booking-sheet__toggle:hover {
+                    background: var(--surface-hover);
+                }
+
+                .booking-sheet__toggle:active {
+                    background: var(--surface-tint);
+                }
+
+                /* Nút này có hình dạng riêng nên không dùng được @repo/ui —
+                   phải TỰ khai viền focus. Tuyệt đối không tắt outline
+                   (luật FE1/D3). */
+                .booking-sheet__toggle:focus-visible {
+                    outline: 2px solid var(--focus-ring);
+                    outline-offset: -3px;
+                }
+
+                .booking-sheet__total {
+                    display: grid;
+                    gap: 2px;
+                    min-width: 0;
+                }
+
+                .booking-sheet__total-label {
+                    font-size: var(--text-xs);
+                    color: var(--text-muted);
+                }
+
+                .booking-sheet__total-value {
+                    font-size: var(--text-lg);
+                    font-weight: 700;
+                    font-variant-numeric: tabular-nums;
+                }
+
+                .booking-sheet__hint {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: var(--space-1);
+                    flex-shrink: 0;
+                    font-size: var(--text-xs);
+                    color: var(--brand);
+                    font-weight: 600;
+                }
+
+                .booking-sheet__chevron {
+                    transition: transform var(--motion-instant) var(--ease);
+                }
+
+                .booking-sheet__body {
+                    /* Cuộn TRONG sheet: breakdown dài (nhiều khuyến mãi, nhiều
+                       addon) không được đẩy cao quá màn rồi che hết trang. */
+                    max-height: 70vh;
+                    overflow-y: auto;
+                    padding: var(--space-3);
+                    border-top: 1px solid var(--border);
+                }
+
+                /* WCAG 2.2 §2.3.3 / luật FE12. Hai chuyển động ở sheet này đều
+                   là trang trí — đổi nền khi rê chuột và xoay mũi tên — nên tắt
+                   hẳn, không chỉ rút ngắn.
+                   Phải khai tường minh: biến --motion-instant là hằng số 150ms
+                   của theme, KHÔNG tự về 0 như --duration của contract. */
+                @media (prefers-reduced-motion: reduce) {
+                    .booking-sheet__toggle,
+                    .booking-sheet__chevron {
+                        transition: none;
+                    }
+                }
+            `}</style>
+        </div>
+    )
+}
+
+/** Mũi tên quay lại. SVG, không dùng ký tự `←` (luật FE9). */
+function BackIcon() {
+    return (
+        <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            <path d="M19 12H5m0 0 7 7m-7-7 7-7" />
+        </svg>
+    )
+}
+
+/** Icon SVG, không emoji (luật FE9). */
+function ChevronIcon({ up }: { up: boolean }) {
+    return (
+        <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="booking-sheet__chevron"
+            style={{ transform: up ? 'rotate(180deg)' : 'none' }}
+        >
+            <path d="m6 9 6 6 6-6" />
+        </svg>
     )
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
     return (
         <section
+            className="booking-panel"
             style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius-lg)',
-                padding: 'var(--space-6)',
             }}
         >
             <h2
@@ -363,12 +633,18 @@ function SearchStep({
 
     return (
         <Panel title={tr(S.stepSearch, locale)}>
-            <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
+            <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                {/* `minmax(150px, …)` để trần: ô `type="date"` có bề rộng nội
+                    tại lớn hơn 150px nên nó ĐẨY rộng ô lưới ra và tràn ngang ở
+                    375px. `min(150px, 100%)` cho track co lại được khi màn hẹp
+                    hơn 150px, còn `minmax(0, 1fr)` chặn nội dung phình track. */}
                 <div
+                    className="booking-field-grid"
                     style={{
                         display: 'grid',
-                        gap: 'var(--space-4)',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                        gap: 'var(--space-3)',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(min(150px, 100%), 1fr))',
                     }}
                 >
                     <Field
@@ -431,7 +707,7 @@ function SearchStep({
                         style={{
                             display: 'grid',
                             gap: 'var(--space-3)',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(110px, 100%), 1fr))',
                         }}
                     >
                         {cart.guests.children.map((age, index) => (
@@ -461,14 +737,24 @@ function SearchStep({
                         flexWrap: 'wrap',
                     }}
                 >
-                    <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                    {/* Trạng thái rỗng phải nói RÕ NGÀY NÀO hết và làm gì tiếp
+                        (luật FE7): "không có kết quả" bắt khách tự đoán. */}
+                    <span
+                        role={availableCount === 0 ? 'status' : undefined}
+                        style={{
+                            fontSize: 'var(--text-sm)',
+                            color: availableCount === 0 ? 'var(--warning)' : 'var(--text-muted)',
+                        }}
+                    >
                         {availableCount > 0
-                            ? locale === 'vi'
-                                ? `${availableCount} hạng phòng còn trống`
-                                : `${availableCount} room types available`
-                            : locale === 'vi'
-                              ? 'Hết phòng cho ngày đã chọn. Thử ngày khác.'
-                              : 'Sold out for these dates. Try other dates.'}
+                            ? tr(S.roomsAvailable, locale).replace(
+                                  '{count}',
+                                  String(availableCount),
+                              )
+                            : tr(S.soldOutForDates, locale).replace(
+                                  '{range}',
+                                  `${cart.checkIn} – ${cart.checkOut}`,
+                              )}
                     </span>
                     <Button onClick={onNext} disabled={availableCount === 0} size="lg">
                         {tr(S.searchRooms, locale)}
@@ -749,13 +1035,18 @@ function SelectStep({
                     </div>
                     {cart.promoCode && codeAccepted && (
                         <p
+                            role="status"
                             style={{
                                 margin: 'var(--space-3) 0 0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-1)',
                                 fontSize: 'var(--text-sm)',
                                 color: 'var(--success)',
                             }}
                         >
-                            ✓ {tr(S.promoApplied, locale)}: {cart.promoCode}
+                            <CheckIcon />
+                            {tr(S.promoApplied, locale)}: {cart.promoCode}
                         </p>
                     )}
                 </Panel>
@@ -811,7 +1102,7 @@ function GuestStep({
                         style={{
                             display: 'grid',
                             gap: 'var(--space-4)',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))',
                         }}
                     >
                         <Field
@@ -836,7 +1127,7 @@ function GuestStep({
                         style={{
                             display: 'grid',
                             gap: 'var(--space-4)',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))',
                         }}
                     >
                         <Field
@@ -876,7 +1167,7 @@ function GuestStep({
                             style={{
                                 display: 'grid',
                                 gap: 'var(--space-4)',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))',
                             }}
                         >
                             <Field
@@ -1047,8 +1338,13 @@ function StepNav({
                 flexWrap: 'wrap',
             }}
         >
-            <Button variant="ghost" onClick={onBack}>
-                ← {tr(S.back, locale)}
+            <Button
+                variant="ghost"
+                onClick={onBack}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)' }}
+            >
+                <BackIcon />
+                {tr(S.back, locale)}
             </Button>
             <Button onClick={onNext} disabled={nextDisabled} size="lg">
                 {nextLabel}

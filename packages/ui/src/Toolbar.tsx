@@ -113,6 +113,10 @@ export function FilterSelect({ label, value, onChange, options }: FilterSelectPr
                 border: '1px solid var(--border-strong)',
                 borderRadius: 'var(--radius)',
                 cursor: 'pointer',
+                // Nhãn dài (tên hạng phòng) không được đẩy select tràn khỏi
+                // thanh công cụ trên màn hẹp — đó là nguồn cuộn ngang (FE5).
+                maxWidth: '100%',
+                minWidth: 0,
             }}
         >
             {options.map((option) => (

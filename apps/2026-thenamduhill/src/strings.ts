@@ -12,6 +12,7 @@ import { t } from '@repo/core'
 import type {
     AvailabilityBlockReason,
     BookingStatus,
+    Channel,
     I18nText,
     Locale,
     NotificationKind,
@@ -52,25 +53,36 @@ export const S = {
     logout: t('Đăng xuất', 'Sign out'),
     loginTitle: t('Đăng nhập', 'Sign in'),
     loginSubtitle: t(
-        'Nhập số điện thoại hoặc email để tiếp tục.',
-        'Enter your phone number or email to continue.',
+        'Nhập email và mật khẩu để tiếp tục.',
+        'Enter your email and password to continue.',
     ),
-    identifierLabel: t('Số điện thoại / Email', 'Phone number / Email'),
-    identifierPlaceholder: t('0901234567', '0901234567'),
-    otpLabel: t('Mã xác thực', 'Verification code'),
-    otpSentTo: t('Mã đã gửi tới', 'Code sent to'),
-    otpDemoHint: t(
-        'Bản demo: nhập mã 1234',
-        'Demo mode: enter code 1234',
-    ),
-    otpResend: t('Gửi lại mã', 'Resend code'),
-    changeIdentifier: t('Đổi số khác', 'Use another number'),
+    emailLabel: t('Email', 'Email'),
+    emailPlaceholder: t('ten@example.com', 'name@example.com'),
+    passwordLabel: t('Mật khẩu', 'Password'),
+    passwordPlaceholder: t('Ít nhất 8 ký tự', 'At least 8 characters'),
     backHome: t('Về trang chủ', 'Back to home'),
     loginRequired: t(
         'Đăng nhập để tiếp tục đặt phòng',
         'Sign in to continue your booking',
     ),
-    loginDemoStaff: t('Đăng nhập nhanh (demo)', 'Quick sign-in (demo)'),
+    loginProcessing: t('Đang đăng nhập…', 'Signing in…'),
+
+    // ------------------------------------------------------- đăng ký
+    registerTitle: t('Tạo tài khoản', 'Create account'),
+    registerSubtitle: t(
+        'Điền thông tin để đặt phòng nhanh hơn ở những lần sau.',
+        'Fill in your details to book faster next time.',
+    ),
+    register: t('Đăng ký', 'Sign up'),
+    registerProcessing: t('Đang tạo tài khoản…', 'Creating account…'),
+    fullNameLabel: t('Họ và tên', 'Full name'),
+    fullNamePlaceholder: t('Nguyễn Văn A', 'John Smith'),
+    phoneLabel: t('Số điện thoại', 'Phone number'),
+    phonePlaceholder: t('0901234567', '0901234567'),
+    tabLogin: t('Đăng nhập', 'Sign in'),
+    tabRegister: t('Đăng ký', 'Sign up'),
+    noAccountYet: t('Chưa có tài khoản?', "Don't have an account?"),
+    hadAccount: t('Đã có tài khoản?', 'Already have an account?'),
 
     // lỗi đăng nhập
     errIdentifierInvalid: t(
@@ -90,6 +102,22 @@ export const S = {
     stepGuest: t('Thông tin', 'Details'),
     stepPayment: t('Thanh toán', 'Payment'),
     stepDone: t('Hoàn tất', 'Done'),
+    stepperLabel: t('Các bước đặt phòng', 'Booking steps'),
+    /** `{n}` và `{total}` được thay bằng số ở nơi hiển thị. */
+    stepOf: t('Bước {n}/{total}', 'Step {n} of {total}'),
+
+    /** `{count}` được thay bằng số hạng phòng còn trống. */
+    roomsAvailable: t('{count} hạng phòng còn trống', '{count} room types available'),
+    /** Trạng thái rỗng phải nói rõ LÀM GÌ TIẾP, không chỉ báo "không có kết
+     *  quả" (luật FE7). `{range}` là khoảng ngày khách đang chọn. */
+    soldOutForDates: t(
+        'Hết phòng cho {range}. Thử ngày khác hoặc giảm số khách.',
+        'Sold out for {range}. Try different dates or reduce the number of guests.',
+    ),
+
+    // thanh tóm tắt giá thu gọn trên mobile
+    showPriceDetails: t('Xem chi tiết giá', 'Show price details'),
+    hidePriceDetails: t('Ẩn chi tiết giá', 'Hide price details'),
 
     selectRoom: t('Chọn phòng này', 'Select this room'),
     selected: t('Đã chọn', 'Selected'),
@@ -161,6 +189,15 @@ export const S = {
         'We have sent a confirmation to your email. Show your booking code at check-in.',
     ),
     viewMyOrders: t('Xem đơn của tôi', 'View my bookings'),
+    checkInCodeHint: t(
+        'Đọc mã này cho lễ tân khi nhận phòng',
+        'Read this code to reception at check-in',
+    ),
+    bookingNotFound: t('Không tìm thấy đơn', 'Booking not found'),
+    bookingNotFoundHint: t(
+        'Liên kết có thể đã cũ hoặc sai mã. Mở "Đơn của tôi" để xem toàn bộ đơn đã đặt.',
+        'This link may be outdated or the code is wrong. Open "My bookings" to see all your bookings.',
+    ),
 
     // ------------------------------------------------------ đơn của tôi
     myOrders: t('Đơn của tôi', 'My bookings'),
@@ -221,6 +258,61 @@ export const S = {
     ),
     closingComment: t('Nhận xét kết thúc', 'Closing comment'),
     guestRating: t('Đánh giá khách (nội bộ)', 'Guest rating (internal)'),
+
+    // ------------------------------------------------- tạo đơn thủ công (CMS)
+    newBooking: t('Tạo đơn thủ công', 'New booking'),
+    newBookingSubtitle: t(
+        'Lễ tân nhập đơn hộ khách gọi điện hoặc tới thẳng quầy. Giá tính bằng đúng engine của web — không gõ tay tổng tiền.',
+        'Reception enters a booking on behalf of a guest calling in or walking up. Prices come from the same engine as the website — totals are never typed by hand.',
+    ),
+    stayDetails: t('Kỳ lưu trú', 'Stay details'),
+    channel: t('Kênh đặt', 'Booking channel'),
+    channelHint: t(
+        'Dùng cho báo cáo nguồn khách. Chọn đúng kênh thật khách đã liên hệ.',
+        'Used for source-of-business reporting. Pick the channel the guest actually used.',
+    ),
+    channelPhone: t('Điện thoại', 'Phone'),
+    channelWalkIn: t('Tới thẳng quầy', 'Walk-in'),
+    channelWeb: t('Website', 'Website'),
+    channelOta: t('Kênh OTA', 'OTA'),
+    roomTypeLabel: t('Hạng phòng', 'Room type'),
+    selectRoomFirst: t(
+        'Chọn hạng phòng và khoảng ngày để xem giá.',
+        'Pick a room type and dates to see the price.',
+    ),
+    createBookingCta: t('Tạo đơn', 'Create booking'),
+    creatingBooking: t('Đang tạo đơn…', 'Creating booking…'),
+    priceReadOnlyHint: t(
+        'Tổng tiền do hệ thống tính, không sửa tay được. Cần giá khác thì dùng mã khuyến mãi.',
+        'The total is calculated by the system and cannot be edited. Use a promo code if a different price is needed.',
+    ),
+    priceEditNoPermission: t(
+        'Tài khoản của bạn không có quyền sửa giá.',
+        'Your account cannot edit prices.',
+    ),
+    exportExcel: t('Xuất Excel', 'Export Excel'),
+    selectedCount: t('đã chọn', 'selected'),
+    clearSelection: t('Bỏ chọn', 'Clear selection'),
+    selectAllRows: t('Chọn tất cả đơn trong trang', 'Select all bookings on this page'),
+
+    // lỗi ghi dữ liệu — mỗi mã một câu riêng, cấm gộp thành "Có lỗi xảy ra"
+    errNotFound: t(
+        'Không tìm thấy đơn. Có thể đơn vừa bị xoá ở máy khác — tải lại trang.',
+        'Booking not found. It may have just been removed elsewhere — reload the page.',
+    ),
+    errInvalidTransition: t(
+        'Đơn vừa đổi trạng thái ở nơi khác. Tải lại trang rồi thao tác lại.',
+        'This booking changed status elsewhere. Reload the page and try again.',
+    ),
+    errUnitUnavailable: t(
+        'Phòng đã chọn không còn trống. Chọn phòng khác trong danh sách.',
+        'The selected room is no longer available. Pick another one from the list.',
+    ),
+    errSoldOut: t(
+        'Hết phòng cho ngày đã chọn. Đổi ngày hoặc chọn hạng phòng khác.',
+        'Sold out for the selected dates. Change the dates or pick another room type.',
+    ),
+    reloadPage: t('Tải lại trang', 'Reload page'),
 
     // tồn kho
     availableUnits: t('Còn trống', 'Available'),
@@ -324,6 +416,34 @@ export const STATUS_TONE: Record<
     cancelled: 'danger',
     no_show: 'danger',
     expired: 'neutral',
+}
+
+/**
+ * Lỗi ghi dữ liệu → câu song ngữ.
+ *
+ * Mỗi mã một câu riêng, nói rõ phải làm gì tiếp (luật C3/C8/FE4). Gộp tất cả
+ * thành "Có lỗi xảy ra" là lấy đi thông tin duy nhất giúp lễ tân xử lý được.
+ *
+ * Kiểu khoá cố ý viết bằng chuỗi thay vì import `WriteError` từ store: `strings`
+ * là tầng trình bày, không được phụ thuộc ngược vào store.
+ */
+export const WRITE_ERROR_LABEL: Record<
+    'not-found' | 'invalid-transition' | 'version-conflict' | 'sold-out' | 'unit-unavailable' | 'not-settled',
+    I18nText
+> = {
+    'not-found': S.errNotFound,
+    'invalid-transition': S.errInvalidTransition,
+    'version-conflict': S.versionConflict,
+    'sold-out': S.errSoldOut,
+    'unit-unavailable': S.errUnitUnavailable,
+    'not-settled': S.settledHint,
+}
+
+export const CHANNEL_LABEL: Record<Channel, I18nText> = {
+    web: S.channelWeb,
+    phone: S.channelPhone,
+    'walk-in': S.channelWalkIn,
+    ota: S.channelOta,
 }
 
 export const UNIT_STATUS_LABEL: Record<RoomUnitStatus, I18nText> = {

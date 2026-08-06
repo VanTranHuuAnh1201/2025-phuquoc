@@ -197,11 +197,79 @@
     --motion-fast: 300ms;
     --motion-normal: 700ms;
 
+    /* --- alias cho luồng đặt phòng ở tầng app ------------------------------
+       Luồng `/booking` sống ở tầng app (luật R4/R13: nó gọi store, điều hướng,
+       kiểm đăng nhập — theme không được chứa những thứ đó). Nó viết style bằng
+       BỘ TÊN NGẮN của `@repo/styling-css`, nên mẫu nào cho nó mượn `data-theme`
+       thì phải khai đủ bộ tên đó.
+
+       VÌ SAO PHẢI KHAI TƯỜNG MINH — đây là kiểu hỏng IM LẶNG: thiếu biến thì
+       `:root` của `contract.css` vẫn khớp, build vẫn xanh, trang vẫn có màu,
+       nhưng rơi về bảng xám trung tính không dính dáng gì tới navy của mẫu.
+       Không có lỗi nào để đọc; chỉ nhìn mới thấy.
+
+       Tất cả đều là ALIAS sang giá trị lớp D1 đã khai ở trên — không thêm mã
+       màu mới, nên sửa màu vẫn chỉ sửa một chỗ (luật D1/P0). */
+    --text-xs: var(--font-size-xs);
+    --text-sm: var(--font-size-sm);
+
+    --warning: var(--color-warning);
+    --warning-bg: var(--color-warning-bg);
+    --success-bg: var(--color-success-bg);
+    --danger-bg: var(--color-danger-bg);
+    /* Giữ đúng navy của mẫu. Bộ dự phòng của contract là #2b6cb0 — xanh dương
+       khác hệ, đứng cạnh --brand #1d4e89 trông như lỗi in màu. */
+    --info: var(--color-info);
+    --info-bg: var(--color-info-bg);
+
+    --radius-pill: 999px;
+    /* Bậc kế tiếp của thang khoảng cách mẫu này (…96 → 140). Dùng làm đệm đáy
+       của luồng đặt phòng. Bộ dự phòng 5rem=80px lạc khỏi thang. */
+    --space-20: 120px;
+
+    /* Viền focus bàn phím. `contract.css` áp `outline: 2px solid
+       var(--focus-ring)` cho mọi phần tử tương tác; thiếu biến thì rơi về
+       #1a56db — gần trùng sắc với --brand #1d4e89 nên viền focus chìm vào
+       chính nút đang focus, đúng thứ WCAG 2.2 AA cấm.
+       --brand-light #2563a6 sáng hơn hẳn nền navy và đạt 3.42:1 trên nền
+       trắng của mẫu. */
+    --focus-ring: var(--brand-light);
+
     /* Khung nội dung. `SiteHeader`/`SiteFooter` dùng chung đọc biến này —
        thiếu nó thì header rơi về 1360px của contract dự phòng, rộng hơn phần
        thân trang và lệch mép trái phải. 1280px là bề rộng bản thiết kế gốc
        của resort (`max-w-[1280px]` ở header cũ). */
     --container: 1280px;
+}
+
+/* ---------------------------------------------------------------------------
+   NÚT CHÍNH CỦA MẪU NÀY LÀ NAVY, KHÔNG PHẢI VÀNG.
+
+   `@repo/ui` dựng nút `primary` bằng `background: var(--accent)` +
+   `color: var(--text-inverse)`. Ở h1 điều đó đúng vì h1 alias
+   `--accent: var(--color-brand)` — nền navy, chữ trắng.
+
+   Ở mẫu này `--accent` là VÀNG #ffb800, và vàng ở đây là màu trang trí 5%
+   (sao đánh giá, eyebrow) chứ không phải màu CTA — chính file này đã ghi rõ ở
+   đầu. Để nguyên thì mọi nút chính của luồng đặt phòng thành CHỮ TRẮNG TRÊN
+   NỀN VÀNG: 1.73:1, trượt xa WCAG AA 4.5:1 (luật D4/P15) — đúng con số mà
+   khối `--accent-text` phía trên đã cảnh báo.
+
+   KHÔNG sửa `packages/ui`: nút đó dùng chung cho cả 4 mẫu, đổi ở đó là đổi
+   luôn h1/h2/h4 (luật R3/R5). Cũng KHÔNG đổi `--accent` sang navy: vàng vẫn
+   đúng ở vai trò gốc của nó, đổi là hỏng cả bảng màu 5% vàng.
+
+   Cách đúng là bẻ biến TẠI CHỖ TIÊU THỤ: trong phạm vi mẫu này, nút đọc
+   `--accent` sẽ nhận navy — khớp với CTA của chính mẫu (`StickyBookBar` dùng
+   `bg-brand text-text-inverse`, 8.59:1) nên khách đi từ `/h3` sang `/booking`
+   thấy cùng một màu nút.
+
+   Chỉ áp cho `button`, không áp cho toàn khối: `--accent` vẫn phải giữ nguyên
+   sắc vàng cho sao đánh giá và eyebrow nằm cùng trang.
+--------------------------------------------------------------------------- */
+[data-theme='h3'] button {
+    --accent: var(--brand);
+    --accent-dark: var(--brand-dark);
 }
 
 /* ---------------------------------------------------------------------------

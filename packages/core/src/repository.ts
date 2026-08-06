@@ -35,17 +35,77 @@ import type {
 export const DEFAULT_PROPERTY_ID = 'nam-du-hill'
 
 /**
- * Nguồn dữ liệu chung cho cả N theme, đến từ đúng một đầu mối `./data`
- * (luật R8). Không import thẳng file nội dung ở đây — `./data/index.ts` mới là
- * nơi quyết định dùng bản thủ công hay bản ghép seed crawl.
+ * Seed tĩnh — nguồn dự phòng khi chưa ai tiêm nguồn dữ liệu thật.
+ *
+ * Đến từ đúng một đầu mối `./data` (luật R8). Không import thẳng file nội dung
+ * ở đây — `./data/index.ts` mới là nơi quyết định dùng bản thủ công hay bản
+ * ghép seed crawl.
  */
-const properties: Record<string, PropertyData> = {
+const staticProperties: Record<string, PropertyData> = {
     [DEFAULT_PROPERTY_ID]: propertyData,
+}
+
+/**
+ * Cổng tiêm nguồn dữ liệu — ticket 200-01 §6.3.
+ *
+ * Vì sao `core` KHÔNG tự tạo Supabase client:
+ *
+ *   1. `@repo/core` phải chạy được trong Node thuần, không kéo dependency
+ *      runtime (luật BE9/R2). Import `@supabase/supabase-js` ở đây là phá luật.
+ *   2. Cả 4 theme import `core` vào **bundle client**. Kéo client Supabase vào
+ *      nghĩa là mọi trang công khai tải thêm SDK và lộ cấu hình.
+ *
+ * Nên `core` chỉ khai một cổng; app gọi `setPropertySource()` đúng một lần ở
+ * `src/lib/data/bootstrap.ts` (server-only) với client Supabase của nó.
+ */
+export interface PropertySource {
+    load(propertyId: string): Promise<PropertyData>
+}
+
+let source: PropertySource | null = null
+
+/**
+ * Bộ nhớ đệm những cơ sở lưu trú đã nạp xong.
+ *
+ * Đây là thứ giữ cho `getPropertySync()` không chết sau khi chuyển sang
+ * Supabase: nó phục vụ từ đây thay vì biến mất (§6.3 điều 2).
+ */
+const cache: Record<string, PropertyData> = {}
+
+/**
+ * Khai nguồn dữ liệu thật. Gọi một lần lúc khởi động phía server.
+ *
+ * Chưa gọi → mọi hàm dưới đây dùng seed tĩnh trong `./data` như trước. Nhờ vậy
+ * 4 theme và `pnpm build:safe` không vỡ khi chưa có DB (AC-13).
+ */
+export function setPropertySource(next: PropertySource): void {
+    source = next
+}
+
+/** Xoá bộ nhớ đệm — dùng khi CMS vừa sửa nội dung và cần nạp lại. */
+export function clearPropertyCache(propertyId?: string): void {
+    if (propertyId) {
+        delete cache[propertyId]
+        return
+    }
+    for (const key of Object.keys(cache)) delete cache[key]
 }
 
 export async function getProperty(
     propertyId: string = DEFAULT_PROPERTY_ID,
 ): Promise<PropertyData> {
+    const cached = cache[propertyId]
+    if (cached) return cached
+
+    if (source) {
+        // Không bọc try/catch nuốt lỗi ở đây (luật C3): nguồn thật hỏng thì nơi
+        // gọi phải biết, chứ không được âm thầm rơi về seed tĩnh rồi hiện dữ
+        // liệu cũ như thể mọi thứ bình thường.
+        const loaded = await source.load(propertyId)
+        cache[propertyId] = loaded
+        return loaded
+    }
+
     return getPropertySync(propertyId)
 }
 
@@ -55,14 +115,14 @@ export async function getProperty(
  * Chỉ dành cho những chỗ BẮT BUỘC phải đồng bộ — cụ thể là hàm khởi tạo state
  * của store phía client, nơi React không cho phép await.
  *
- * Mọi chỗ khác dùng `getProperty()`. Khi chuyển sang Supabase, hàm này sẽ phục
- * vụ từ bộ nhớ đệm đã nạp sẵn chứ không biến mất — nhờ vậy nơi gọi không phải
- * sửa. Đây là lý do nó tồn tại thay vì để mỗi nơi tự lách một kiểu.
+ * Mọi chỗ khác dùng `getProperty()`. Thứ tự phục vụ: bộ nhớ đệm đã nạp → seed
+ * tĩnh. **Chưa nạp thì trả seed tĩnh, KHÔNG ném lỗi** — ném ở đây là giết render
+ * phía client (§6.3 điều 2 / AC-13).
  */
 export function getPropertySync(
     propertyId: string = DEFAULT_PROPERTY_ID,
 ): PropertyData {
-    const property = properties[propertyId]
+    const property = cache[propertyId] ?? staticProperties[propertyId]
     if (!property) {
         throw new Error(`Không tìm thấy dữ liệu cho property "${propertyId}"`)
     }

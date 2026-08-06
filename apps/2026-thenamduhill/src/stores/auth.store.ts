@@ -3,90 +3,109 @@
 /**
  * Phiên đăng nhập của khách và của quản trị viên.
  *
- * Bản demo: OTP cố định `1234`, hiện thẳng trên màn hình login. Không có mật
- * khẩu, không gọi SMS. Khi lên Supabase, chỉ thay thân `verifyOtp()` — chữ ký
- * và mọi nơi gọi giữ nguyên.
+ * Chốt v1.0.0: **email + mật khẩu**, gọi thẳng `/api/auth/*`. Luồng OTP qua SMS
+ * đã gỡ bỏ vì chưa có nhà cung cấp SMS Brandname (MANUAL.md M3/M16) — giữ một
+ * cửa đăng nhập không gửi được mã chính là để lại cửa sau mà M16 cảnh báo.
+ *
+ * Phiên thật nằm trong cookie `HttpOnly` do server cấp; store này chỉ giữ bản
+ * sao thông tin tài khoản để giao diện hiển thị. Cookie mới là nguồn sự thật —
+ * store bị sửa trong DevTools cũng không vượt được quyền, vì mọi API đều đọc
+ * vai trò từ token đã verify phía server (BE2).
  */
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { isValidEmail, isValidPhone } from '@repo/core'
 import type { Account, Role } from '@repo/core'
 
-/** OTP dùng chung cho mọi tài khoản trong bản demo. */
-export const DEMO_OTP = '1234'
-
-/** Tài khoản quản trị dựng sẵn, để vào được CMS ngay. */
-export const DEMO_STAFF: Account[] = [
-    {
-        id: 'staff-owner',
-        role: 'owner',
-        fullName: 'Trần Văn Hải',
-        phone: '0901000001',
-        email: 'owner@namduhill.vn',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        active: true,
-    },
-    {
-        id: 'staff-01',
-        role: 'receptionist',
-        fullName: 'Lê Thị Ngọc',
-        phone: '0901000002',
-        email: 'ngoc@namduhill.vn',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        active: true,
-    },
-    {
-        id: 'staff-editor',
-        role: 'editor',
-        fullName: 'Phạm Quốc Bảo',
-        phone: '0901000003',
-        email: 'bao@namduhill.vn',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        active: true,
-    },
-]
-
-export type IdentifierKind = 'phone' | 'email' | 'invalid'
-
-/** Định danh khách nhập là số điện thoại hay email. */
-export function classifyIdentifier(value: string): IdentifierKind {
-    const trimmed = value.trim()
-    if (isValidPhone(trimmed)) return 'phone'
-    if (isValidEmail(trimmed)) return 'email'
-    return 'invalid'
+/** Lỗi hiển thị được cho người dùng, đã dịch sẵn theo ngôn ngữ đang chọn. */
+export interface AuthError {
+    code: string
+    message: string
 }
 
-export type OtpError = 'identifier-invalid' | 'otp-wrong' | 'account-disabled'
+interface ApiResponse {
+    success: boolean
+    data?: { account?: unknown }
+    error?: { code?: string; message?: { vi?: string; en?: string } }
+}
+
+export interface RegisterInput {
+    email: string
+    password: string
+    fullName: string
+    phone: string
+}
 
 interface AuthState {
     user: Account | null
-    /** Định danh đang chờ xác thực OTP. */
-    pendingIdentifier: string | null
+    /** Đang gọi API — dùng để khoá nút và hiện chỉ báo (luật FE1). */
+    pending: boolean
 
-    /** Bước 1: nhận định danh, chuyển sang màn nhập OTP. */
-    requestOtp: (identifier: string) => OtpError | null
-    /** Bước 2: xác thực. Tài khoản khách chưa có thì tự tạo. */
-    verifyOtp: (otp: string) => OtpError | null
-    /** Đăng nhập thẳng bằng tài khoản dựng sẵn — dùng cho nút demo ở CMS. */
-    loginAs: (accountId: string) => void
-    logout: () => void
-    cancelOtp: () => void
+    login: (email: string, password: string, locale: 'vi' | 'en') => Promise<AuthError | null>
+    register: (input: RegisterInput, locale: 'vi' | 'en') => Promise<AuthError | null>
+    logout: () => Promise<void>
+    /** Đồng bộ lại từ cookie — cookie hết hạn thì xoá bản sao cục bộ. */
+    refresh: () => Promise<void>
     hasRole: (...roles: Role[]) => boolean
 }
 
-/** Tài khoản khách mới, sinh từ định danh vừa xác thực. */
-function makeCustomerAccount(identifier: string): Account {
-    const kind = classifyIdentifier(identifier)
-    const clean = identifier.trim()
+const MSG_NETWORK = {
+    vi: 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.',
+    en: 'Cannot reach the server. Check your connection and try again.',
+}
+
+/** Chuyển tài khoản dạng snake_case của API sang `Account` của core. */
+function toAccount(raw: unknown): Account | null {
+    if (!raw || typeof raw !== 'object') return null
+    const a = raw as Record<string, unknown>
+    if (typeof a.id !== 'string' || typeof a.role !== 'string') return null
     return {
-        id: `cus-${clean}`,
-        role: 'customer',
-        fullName: '',
-        phone: kind === 'phone' ? clean : '',
-        email: kind === 'email' ? clean : '',
-        createdAt: new Date().toISOString(),
-        active: true,
+        id: a.id,
+        role: a.role as Role,
+        fullName: typeof a.fullName === 'string' ? a.fullName : '',
+        phone: typeof a.phone === 'string' ? a.phone : '',
+        email: typeof a.email === 'string' ? a.email : '',
+        createdAt: typeof a.createdAt === 'string' ? a.createdAt : new Date().toISOString(),
+        active: a.active !== false,
+    }
+}
+
+/**
+ * Gọi một endpoint auth và đặt `user` nếu thành công.
+ * Trả `null` khi thành công, `AuthError` khi thất bại — nơi gọi chỉ việc hiện.
+ */
+async function callAuth(
+    set: (partial: Partial<AuthState>) => void,
+    url: string,
+    body: unknown,
+    locale: 'vi' | 'en',
+): Promise<AuthError | null> {
+    set({ pending: true })
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        })
+        const json = (await res.json()) as ApiResponse
+
+        if (!res.ok || !json.success) {
+            return {
+                code: json.error?.code ?? 'UNKNOWN',
+                message: json.error?.message?.[locale] ?? MSG_NETWORK[locale],
+            }
+        }
+
+        const account = toAccount(json.data?.account)
+        if (!account) {
+            return { code: 'BAD_RESPONSE', message: MSG_NETWORK[locale] }
+        }
+        set({ user: account })
+        return null
+    } catch {
+        return { code: 'NETWORK', message: MSG_NETWORK[locale] }
+    } finally {
+        set({ pending: false })
     }
 }
 
@@ -94,42 +113,36 @@ export const useAuthStore = create<AuthState>()(
     persist(
         (set, get) => ({
             user: null,
-            pendingIdentifier: null,
+            pending: false,
 
-            requestOtp: (identifier) => {
-                if (classifyIdentifier(identifier) === 'invalid') {
-                    return 'identifier-invalid'
+            login: (email, password, locale) =>
+                callAuth(set, '/api/auth/login', { email, password }, locale),
+
+            register: (input, locale) => callAuth(set, '/api/auth/register', input, locale),
+
+            logout: async () => {
+                try {
+                    await fetch('/api/auth/logout', { method: 'POST' })
+                } catch {
+                    // Xoá được cookie hay không thì bản sao cục bộ vẫn phải sạch:
+                    // để lại `user` sau khi bấm Đăng xuất là hiểu nhầm nguy hiểm.
                 }
-                set({ pendingIdentifier: identifier.trim() })
-                return null
+                set({ user: null })
             },
 
-            verifyOtp: (otp) => {
-                const identifier = get().pendingIdentifier
-                if (!identifier) return 'identifier-invalid'
-                if (otp.trim() !== DEMO_OTP) return 'otp-wrong'
-
-                // Tài khoản nội bộ khớp SĐT/email thì đăng nhập bằng vai trò đó;
-                // còn lại là khách, tự tạo tài khoản sau khi xác thực thành công.
-                const staff = DEMO_STAFF.find(
-                    (a) => a.phone === identifier || a.email === identifier,
-                )
-                if (staff && !staff.active) return 'account-disabled'
-
-                set({
-                    user: staff ?? makeCustomerAccount(identifier),
-                    pendingIdentifier: null,
-                })
-                return null
+            refresh: async () => {
+                try {
+                    const res = await fetch('/api/auth/me')
+                    if (!res.ok) {
+                        set({ user: null })
+                        return
+                    }
+                    const json = (await res.json()) as ApiResponse
+                    set({ user: json.success ? toAccount(json.data?.account) : null })
+                } catch {
+                    // Mất mạng không phải là đăng xuất — giữ nguyên bản sao cũ.
+                }
             },
-
-            loginAs: (accountId) => {
-                const staff = DEMO_STAFF.find((a) => a.id === accountId)
-                if (staff) set({ user: staff, pendingIdentifier: null })
-            },
-
-            logout: () => set({ user: null, pendingIdentifier: null }),
-            cancelOtp: () => set({ pendingIdentifier: null }),
 
             hasRole: (...roles) => {
                 const user = get().user
@@ -138,8 +151,8 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: 'namduhill.auth',
-            // `pendingIdentifier` cố ý KHÔNG persist: mở lại tab mà vẫn đang kẹt
-            // ở màn OTP là trạng thái khó hiểu cho người dùng.
+            // `pending` cố ý KHÔNG persist: mở lại tab mà nút vẫn đang quay là
+            // trạng thái kẹt vĩnh viễn.
             partialize: (state) => ({ user: state.user }),
         },
     ),

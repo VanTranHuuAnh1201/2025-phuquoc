@@ -38,8 +38,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+prompt-supabase.md
 
 # vercel
 .vercel
@@ -47,9 +48,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# cho phep commit file mau env
-!.env.local.example
 
 # Ket qua crawl - noi dung va anh cua ben thu ba, KHONG duoc commit (luat R9).
 # Ca file .seed.ts cung bi loai: chung hotlink hang nghin anh tu site goc
@@ -60,3 +58,5 @@ next-env.d.ts
 # thung rac cua understand-anything
 .ua/.trash-*/
 resources/package
+# Hash mật khẩu nhân viên demo (200-01) — sinh lại bằng: pnpm seed:hash
+resources/scripts/seed/staff-hashes.json

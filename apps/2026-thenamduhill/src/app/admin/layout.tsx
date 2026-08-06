@@ -22,18 +22,26 @@ import {
     ExternalIcon,
     FileTextIcon,
     GridIcon,
+    MenuIcon,
     TagIcon,
     UsersIcon,
 } from '@/components/icons'
 import { ROLE_LABEL, S, tr } from '@/strings'
-import type { Role } from '@repo/core'
+import { can, isStaffRole } from '@repo/core'
+import type { Permission } from '@repo/core'
 
 interface NavItem {
     href: string
     labelKey: keyof typeof S
     icon: React.ReactNode
-    /** Vai trò được thấy mục này. Rỗng = mọi vai trò nội bộ. */
-    roles?: Role[]
+    /**
+     * Quyền cần có để thấy mục này. Rỗng = mọi vai trò nội bộ.
+     *
+     * Cố ý KHÔNG liệt kê vai trò: liệt kê vai trò là nguồn sự thật thứ hai bên
+     * cạnh `ROLE_PERMISSIONS`, và hai nguồn sẽ lệch nhau ngay lần đầu ai đó
+     * thêm vai trò mới (luật BE2, ticket 000-02 §6.2).
+     */
+    permission?: Permission
 }
 
 const NAV: { group: keyof typeof S; items: NavItem[] }[] = [
@@ -44,15 +52,25 @@ const NAV: { group: keyof typeof S; items: NavItem[] }[] = [
     {
         group: 'orders',
         items: [
-            { href: '/admin/orders', labelKey: 'orders', icon: <FileTextIcon size={18} /> },
+            {
+                href: '/admin/orders',
+                labelKey: 'orders',
+                icon: <FileTextIcon size={18} />,
+                permission: 'booking.view.all',
+            },
             {
                 href: '/admin/inventory',
                 labelKey: 'inventoryCalendar',
                 icon: <CalendarIcon size={18} />,
-                roles: ['owner', 'manager'],
+                permission: 'inventory.edit',
             },
             { href: '/admin/housekeeping', labelKey: 'housekeeping', icon: <BedIcon size={18} /> },
-            { href: '/admin/customers', labelKey: 'customers', icon: <UsersIcon size={18} /> },
+            {
+                href: '/admin/customers',
+                labelKey: 'customers',
+                icon: <UsersIcon size={18} />,
+                permission: 'booking.view.all',
+            },
         ],
     },
     {
@@ -62,7 +80,7 @@ const NAV: { group: keyof typeof S; items: NavItem[] }[] = [
                 href: '/admin/promotions',
                 labelKey: 'promotions',
                 icon: <TagIcon size={18} />,
-                roles: ['owner', 'manager'],
+                permission: 'promotion.edit',
             },
         ],
     },
@@ -92,14 +110,16 @@ function AdminShell({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!hydrated) return
         if (!user) router.replace(`/login?next=${encodeURIComponent(pathname)}`)
-        else if (user.role === 'customer') router.replace('/my-orders')
+        // `isStaffRole()` chứ không so `role === 'customer'` bằng tay: thêm vai
+        // trò khách thứ hai sau này là chỗ này tự đúng, không phải nhớ sửa.
+        else if (!isStaffRole(user.role)) router.replace('/my-orders')
     }, [hydrated, user, pathname, router])
 
-    if (!hydrated || !user || user.role === 'customer') return null
+    if (!hydrated || !user || !isStaffRole(user.role)) return null
 
     const visible = NAV.map((section) => ({
         ...section,
-        items: section.items.filter((item) => !item.roles || item.roles.includes(user.role)),
+        items: section.items.filter((item) => !item.permission || can(user.role, item.permission)),
     })).filter((section) => section.items.length > 0)
 
     return (
@@ -282,10 +302,10 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                             border: '1px solid var(--border)',
                             borderRadius: 'var(--radius)',
                             cursor: 'pointer',
-                            fontSize: 18,
+                            color: 'var(--text)',
                         }}
                     >
-                        ☰
+                        <MenuIcon size={18} />
                     </button>
                     <strong style={{ fontSize: 'var(--text-sm)' }}>
                         {tr(S.adminPanel, locale)}

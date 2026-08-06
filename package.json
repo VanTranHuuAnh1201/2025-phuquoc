@@ -18,6 +18,7 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "check": "turbo lint typecheck",
+    "test:e2e": "pnpm --filter @repo/2026-thenamduhill test:e2e",
     "clean": "turbo clean && rimraf node_modules",
     "crawl:pages": "node resources/scripts/crawl/crawl-pages.mjs",
     "crawl:build": "node resources/scripts/crawl/build-seed.mjs && node resources/scripts/crawl/emit-ts.mjs && node resources/scripts/crawl/emit-property-data.mjs && node resources/scripts/crawl/emit-resort-data.mjs",
@@ -25,10 +26,13 @@
     "crawl:travlla:build": "node resources/scripts/crawl/build-travlla-seed.mjs && node resources/scripts/crawl/emit-travlla-ts.mjs",
     "crawl:rooms": "node resources/scripts/crawl/crawl-room-details.mjs",
     "crawl:full": "node resources/scripts/crawl/crawl-full-site.mjs",
-    "crawl:property": "node resources/scripts/crawl/emit-property-data.mjs"
+    "crawl:property": "node resources/scripts/crawl/emit-property-data.mjs",
+    "seed:hash": "node resources/scripts/seed/hash-staff-passwords.mjs",
+    "seed:build": "tsx resources/scripts/seed/build-seed.ts"
   },
   "devDependencies": {
     "@mendable/firecrawl-js": "^4.32.0",
+    "bcryptjs": "^3.0.3",
     "docx": "^9.7.1",
     "dotenv": "^17.4.2",
     "marked": "^18.0.9",

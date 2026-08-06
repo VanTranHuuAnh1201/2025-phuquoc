@@ -42,6 +42,7 @@ export * from './assets'
 // `booking.ts` (bản đầu, tính giá một mức) đã được gỡ — không nơi nào còn
 // dùng `calculatePrice`/`validateBooking`, mọi tính toán đi qua `buildQuote()`.
 export * from './booking-types'
+export * from './permissions'
 export * from './pricing'
 export * from './promotion'
 export * from './availability'
