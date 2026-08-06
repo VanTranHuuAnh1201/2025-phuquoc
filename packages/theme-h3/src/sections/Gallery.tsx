@@ -38,13 +38,13 @@ export function Gallery({ locale, photos, galleryHref = '#contact' }: GalleryPro
     return (
         <section
             id="gallery"
-            className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
+            className="bg-surface-raised border-border-muted border-b pt-[26px] pb-[26px] [scroll-margin-top:80px] min-[960px]:pt-[36px] min-[960px]:pb-[36px]"
         >
             {/*
-              * Khung đọc từ `--container`, padding dừng ở `sm:px-6` — khớp
-              * khuôn của các section dùng chung. Xem `HostService.tsx`.
+              * Khung và padding khớp các section dùng chung. Số trong class
+              * không phải pixel — xem `HostService.tsx`.
               */}
-            <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
+            <div className="mx-auto max-w-[var(--container)] px-4 min-[960px]:px-6">
                 <SectionHeading
                     title={pick(H3.realPhotosTitle, locale)}
                     description={pick(H3.realPhotosDesc, locale)}

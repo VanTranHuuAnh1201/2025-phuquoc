@@ -36,25 +36,21 @@ export function HostService({ locale, perks, reviews }: HostServiceProps) {
     return (
         <section
             id="host"
-            className="bg-surface-raised border-border-muted border-b py-5 [scroll-margin-top:80px] sm:py-7"
+            className="bg-surface-raised border-border-muted border-b pt-[26px] pb-[26px] [scroll-margin-top:80px] min-[960px]:pt-[36px] min-[960px]:pb-[36px]"
         >
             {/*
-              * KHUNG ĐỌC TỪ `--container`, PADDING ĐẶT Ở CON — đúng khuôn mà
-              * các section dùng chung của `domain-hotel` đang theo.
+              * ⚠️ SỐ TRONG CLASS SPACING KHÔNG PHẢI PIXEL.
               *
-              * Bản trước là `max-w-[1280px] px-4 sm:px-6 lg:px-8`: padding nằm
-              * trên CHÍNH phần tử mang `max-w`, nên 32px mỗi bên ăn VÀO trong
-              * 1280px và nội dung chỉ còn 1216px. Section ngay trên
-              * (`PlacesSection`) đặt padding ở con nên giữ đủ 1280px. Kết quả:
-              * thẻ này thụt vào 32px mỗi bên, mép trái không thẳng hàng với
-              * tiêu đề phía trên — thấy rõ ở màn rộng.
+              * Thang của dự án phi tuyến: p-4=24 · p-5=40 · p-6=64 · p-7=96 ·
+              * p-8=140px. `sm:p-8` từng ở đây cho ra padding 140px MỖI BÊN —
+              * thẻ phình ra, nội dung dồn vào giữa và hai bên trống hoác.
               *
-              * Con số cũng phải đọc từ token: `1280px` viết cứng là một bản sao
-              * của `--container`, sửa một chỗ thì hai chỗ lệch nhau (luật D0).
+              * Cần một giá trị cụ thể thì viết trong ngoặc (`p-[28px]`); chỉ
+              * dùng số trần khi thật sự muốn bậc đó của thang.
               */}
-            <div className="mx-auto max-w-[var(--container)]">
+            <div className="mx-auto max-w-[var(--container)] px-4 min-[960px]:px-6">
                 <div
-                    className={`bg-surface-base border-border-muted mx-4 grid grid-cols-1 items-center gap-6 rounded-md border p-5 sm:mx-6 sm:p-8 ${
+                    className={`bg-surface-base border-border-muted grid grid-cols-1 items-center gap-5 rounded-md border p-4 sm:p-[28px] ${
                         hasReviews ? 'lg:grid-cols-2' : ''
                     }`}
                 >

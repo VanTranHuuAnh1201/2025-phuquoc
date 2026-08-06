@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react'
-import { Star } from 'lucide-react'
 import { pick, type Locale, type Review } from '@repo/core'
+import { Star } from 'lucide-react'
+import React from 'react'
 
 /**
  * Các cột đánh giá cuộn vô hạn.
@@ -82,7 +82,7 @@ function TestimonialCard({
                 {/* Chữ cái đầu thay ảnh: review demo, không dựng mặt người thật */}
                 <span
                     aria-hidden="true"
-                    className={`h-6 w-6 rounded-full ${tone} text-text-inverse flex shrink-0 items-center justify-center text-[10px] font-bold`}
+                    className={`h-4 w-4 rounded-full ${tone} text-text-inverse flex shrink-0 items-center justify-center text-[10px] font-bold`}
                 >
                     {item.name.charAt(0)}
                 </span>

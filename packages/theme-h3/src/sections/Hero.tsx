@@ -162,7 +162,16 @@ export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroPr
                 Gradient khai trong `tokens.css` để không có hex nào ở đây (D0). */}
             <div className="absolute inset-0 bg-[image:var(--hero-scrim)]" />
 
-            <div className="relative z-10 mx-auto flex min-h-[70vh] w-full max-w-[1320px] flex-col justify-end px-5 pt-[96px] pb-5 sm:px-8 sm:pt-[130px] sm:pb-[42px] lg:pt-[160px]">
+            {/*
+              * ⚠️ `px-5 sm:px-8` từng ở đây = 40px → 140px, không phải 20/32px:
+              * thang spacing của dự án phi tuyến (p-8 = --space-8 = 140px).
+              * Hero khi đó thụt vào 140px mỗi bên, lệch hẳn so với mọi section
+              * bên dưới. Nay dùng đúng bộ của các section khác.
+              *
+              * Khung vẫn rộng hơn `--container` một chút vì hero là khối
+              * full-bleed — cố ý, không phải trôi lệch.
+              */}
+            <div className="relative z-10 mx-auto flex min-h-[70vh] w-full max-w-[1320px] flex-col justify-end px-4 pt-[96px] pb-5 min-[960px]:px-6 sm:pt-[130px] sm:pb-[42px] lg:pt-[160px]">
                 {/* Eyebrow — ẩn trên mobile, viewport đầu để dành cho tiêu đề
                     và ô tìm kiếm (luật P9). */}
                 <div className="mb-4 hidden items-center gap-3 sm:mb-[18px] md:flex">
