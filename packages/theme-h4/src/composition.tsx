@@ -104,13 +104,8 @@ export function Home({
 
     return (
         <div data-theme="h4" className="font-primary overflow-x-clip bg-surface-base">
-            {/* `locales={[]}`: app hub cắm `AccountBar` vào `extra`, mà bar đó
-                ĐÃ có bộ chuyển ngôn ngữ riêng. Để `siteHeaderPropsOf` bơm
-                thêm `locales` nữa là header hiện "VI | EN VI | EN" — thấy rõ
-                trên ảnh audit. Tắt bộ của header, giữ bộ của app. */}
             <SiteHeader
                 {...siteHeaderPropsOf(data, locale, slug)}
-                locales={[]}
                 extra={extra}
                 transparentOnTop
             />

@@ -25,6 +25,8 @@ export const H4 = {
         'A hillside opening straight onto Cu Tron bay, where the day begins with the sound of surf and closes on the sunset behind Hon Hang Be.',
     ),
     scrollHint: t('Cuộn để khám phá', 'Scroll to explore'),
+    /** Nhãn nút tìm phòng, bản ngắn cho dải 1024–1279px. */
+    checkShort: t('Tìm phòng', 'Find rooms'),
 
     // ------------------------------------------------- thanh đặt phòng concierge
     concierge: t('Đặt phòng cùng lễ tân', 'Reserve with our concierge'),

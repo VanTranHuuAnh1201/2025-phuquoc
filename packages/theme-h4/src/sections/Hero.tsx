@@ -70,11 +70,11 @@ function ConciergeField({
     children: React.ReactNode
 }) {
     return (
-        // `basis-[150px]`: đủ rộng để "08/12/2026" và nhãn "NGÀY ĐẾN" hiện
-        // trọn, nhưng vẫn co giãn được. Để `basis-0` thì ba ô bị bóp tới mức
-        // ngày cụt thành "08,"; để `flex-1` trần thì ô ngày (nội dung dài) ăn
-        // hết chỗ và đẩy nút CTA đè lên ô "Số khách".
-        <label className="flex min-h-[44px] min-w-0 flex-1 basis-[150px] flex-col justify-center gap-1 px-5 py-3">
+        // `basis-[190px]` + `px-4`: `<input type=date>` render "08/13/2026" kèm
+        // icon lịch của trình duyệt và KHÔNG tự xuống dòng — hụt chỗ là nó cắt
+        // cụt thành "08/13/" chứ không co chữ. 190px là mức đo được vừa đủ ở
+        // cả Chrome lẫn Firefox. `flex-1` cho giãn thêm khi còn chỗ.
+        <label className="flex min-h-[44px] min-w-0 flex-1 basis-[190px] flex-col justify-center gap-1 px-4 py-3">
             <span className="truncate text-xs tracking-[0.16em] text-[rgb(250_248_245/0.72)] uppercase">
                 {label}
             </span>
@@ -89,8 +89,14 @@ function ConciergeField({
  * `[color-scheme:dark]` để lịch bật ra của trình duyệt cũng ở tông tối, không
  * loè một mảng trắng giữa hero.
  */
+/**
+ * `w-full min-w-0`: ô nhập phải co theo `<label>` cha, KHÔNG được tự giữ bề
+ * rộng riêng. Đặt `min-width` ở đây thì input phình quá khung cha và hai ô
+ * ngày đè chữ lên nhau. Ràng buộc bề rộng tối thiểu nằm ở `<label>` (`basis`),
+ * là chỗ duy nhất flex tính được.
+ */
 const conciergeInputClass =
-    'w-full min-w-[135px] border-none bg-transparent p-0 text-base font-medium text-text-inverse outline-none [color-scheme:dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]'
+    'w-full min-w-0 border-none bg-transparent p-0 text-base font-medium text-text-inverse outline-none [color-scheme:dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]'
 
 export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroProps) {
     const [current, setCurrent] = useState(0)
@@ -205,20 +211,29 @@ export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroPr
                             onSubmit={handleSubmit}
                             className="flex flex-col items-stretch gap-2 py-3 lg:flex-row lg:items-center lg:gap-0 lg:py-0"
                         >
-                            {/* Nhãn chỉ hiện từ xl: ở 1024–1279px nó ăn mất chỗ
-                                của ba ô nhập và đẩy nút CTA đè lên ô "Số khách". */}
-                            <p className="m-0 hidden shrink-0 pr-8 text-xs tracking-[0.2em] text-[rgb(250_248_245/0.72)] uppercase xl:block">
+                            {/* Nhãn là thứ ÍT quan trọng nhất trên thanh này, nên
+                                nó là thứ đầu tiên bị cắt khi hết chỗ. Chỉ hiện
+                                từ 2xl (1536px): dưới mức đó, ba ô nhập + nút CTA
+                                đã ăn hết bề ngang container, và nhãn chen vào là
+                                đẩy nút tràn khỏi mép phải. */}
+                            <p className="m-0 hidden shrink-0 pr-6 text-xs tracking-[0.2em] text-[rgb(250_248_245/0.72)] uppercase 2xl:block">
                                 {pick(H4.concierge, locale)}
                             </p>
 
-                            {/* `min-w-0`: không có nó, các ô `flex-1` giữ nguyên
-                                chiều rộng nội dung tối thiểu và đẩy nút CTA
-                                tràn khỏi mép phải viewport — nút chỉ còn hiện
-                                chữ "KIỂM". Đây là lỗi thấy rõ ở ảnh audit 1440px.
+                            {/* `lg:basis-[520px]`: cụm ba ô phải giữ được chỗ
+                                cho 3×168px, nếu không nhãn concierge và nút CTA
+                                nén nó xuống ~97px/ô và hai ô ngày đè chữ lên
+                                nhau (`<input type=date>` không xuống dòng, nó
+                                tràn ra ngoài khung).
 
                                 Divider dọc chỉ hiện từ lg — mobile xếp dọc, mỗi
                                 ô một dòng, không nhồi ngang (P9). */}
-                            <div className="flex min-w-0 flex-1 flex-col divide-y divide-solid divide-[rgb(250_248_245/0.16)] lg:flex-row lg:divide-x lg:divide-y-0">
+                            {/* `min-w` chỉ từ xl (1280px) trở lên. Ở 1024–1279px
+                                container chưa đủ rộng để vừa 3×190px vừa nút
+                                CTA — ép min-width ở đó là đẩy nút tràn khỏi
+                                viewport. Dưới xl để flex tự chia, ô hẹp hơn
+                                một chút nhưng ngày vẫn hiện đủ. */}
+                            <div className="flex min-w-0 flex-1 flex-col divide-y divide-solid divide-[rgb(250_248_245/0.16)] lg:flex-row lg:divide-x lg:divide-y-0 xl:min-w-[570px]">
                                 <ConciergeField label={pick(H4.arrival, locale)}>
                                     <input
                                         type="date"
@@ -252,12 +267,24 @@ export function Hero({ locale, slides, onSearch, searchHref = '#rooms' }: HeroPr
                                 </ConciergeField>
                             </div>
 
-                            <div className="shrink-0 py-3 lg:py-4 lg:pl-8">
+                            {/* `lg:pl-4 xl:pl-8`: ở 1024–1279px mọi khoảng đệm
+                                đều phải nhường chỗ cho ba ô ngày. Nhãn nút cũng
+                                rút gọn ở mức đó — "Kiểm tra phòng trống" dài 20
+                                ký tự, đủ để đẩy ngày cụt thành "08/13/2(". */}
+                            <div className="shrink-0 py-3 lg:py-4 lg:pl-4 xl:pl-8">
                                 <button
                                     type="submit"
-                                    className={`${primaryButtonClass} w-full lg:w-auto`}
+                                    className={`${primaryButtonClass} w-full lg:w-auto lg:px-4 xl:px-6`}
                                 >
-                                    {pick(UI.checkAvailability, locale)}
+                                    <span className="lg:hidden xl:inline">
+                                        {pick(UI.checkAvailability, locale)}
+                                    </span>
+                                    {/* Nhãn ngắn CHỈ ở dải 1024–1279px. Vẫn là
+                                        động từ rõ nghĩa, không phải "Xem" mơ hồ
+                                        (luật D5). */}
+                                    <span className="hidden lg:inline xl:hidden">
+                                        {pick(H4.checkShort, locale)}
+                                    </span>
                                 </button>
                             </div>
                         </form>

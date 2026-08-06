@@ -1,4 +1,5 @@
 import { propertyPath, t, type I18nText } from '@repo/core'
+import { HERO_SLIDES } from '@repo/domain-hotel'
 
 /**
  * ẢNH MẶC ĐỊNH CỦA MẪU 04 — kết quả tuyển chọn theo P6.
@@ -21,13 +22,11 @@ import { propertyPath, t, type I18nText } from '@repo/core'
  * sẵn. P6 cấm để sự pha trộn đó lộ ra trong cùng một dải.
  *
  * CHỌN:
- *   hero-hai-dang  → HERO chính. Khung rộng nhất, có chiều sâu (mũi đá →
- *                    biển → đường bờ), độ nét cao nhất trong kho. Là ảnh duy
- *                    nhất đủ "editorial" để đứng ở 100svh.
- *   hero-1 /
- *   hero-drone     → slide 2 và 3. Cùng cảnh vịnh Cây Mến, cùng tông xanh
- *                    ngọc và nắng trưa → ba slide đọc như một bộ, không nhảy
- *                    tông (yêu cầu "Tone" của P6).
+ *   HERO           → lấy 3 slide đầu của `HERO_SLIDES` (tầng domain). Slide 1
+ *                    (`hai-dang-Ke-Ga-2`) là khung rộng nhất và nét nhất trong
+ *                    kho — ảnh duy nhất đủ "editorial" để đứng ở gần 100svh.
+ *                    Ba slide cùng tông xanh ngọc + nắng trưa nên đọc như một
+ *                    bộ, không nhảy tông (yêu cầu "Tone" của P6).
  *   place-cay-men  → dải 21:9 của section ẩm thực. Nước trong, thuyền gỗ —
  *                    bán "trải nghiệm", không bán "phòng" (P6 §Hero).
  *   about-resort   → cột ảnh section `about`. Đây LÀ ảnh ghép có logo in
@@ -46,30 +45,19 @@ export interface ThemeImage {
     alt: I18nText
 }
 
-/** Ảnh hero, theo thứ tự trình chiếu. */
-export const heroSlides: readonly ThemeImage[] = [
-    {
-        src: propertyPath('hero-hai-dang.jpg'),
-        alt: t(
-            'Mũi đá và ngọn hải đăng vươn ra vịnh biển xanh ngọc nhìn từ trên cao',
-            'A rocky headland and lighthouse reaching into a turquoise bay, seen from above',
-        ),
-    },
-    {
-        src: propertyPath('hero-1.jpg'),
-        alt: t(
-            'Vịnh Bãi Cây Mến với thuyền cá neo trên mặt nước xanh ngọc, đồi dừa phía sau',
-            'Cay Men bay with fishing boats moored on jade water, a palm-covered hill behind',
-        ),
-    },
-    {
-        src: propertyPath('hero-drone.jpg'),
-        alt: t(
-            'Toàn cảnh vịnh Củ Tron nhìn từ triền đồi vào buổi trưa',
-            'Cu Tron bay seen from the hillside at midday',
-        ),
-    },
-]
+/**
+ * Ảnh hero — DÙNG CHUNG bộ của tầng domain (`domain-hotel/media.ts`).
+ *
+ * VÌ SAO KHÔNG TỰ KHAI RIÊNG NỮA: `HERO_SLIDES` ở `domain-hotel` là một nguồn
+ * sự thật cho mọi mẫu (luật R8) — đổi ảnh hero một chỗ là cả h1/h2/h3/h4 đổi
+ * theo, và cờ `NEXT_PUBLIC_ALLOW_CRAWLED_MEDIA` của app vẫn kiểm soát được.
+ * Bản trước của mẫu này tự trỏ vào `property/` là đang fork lại đúng thứ mà
+ * commit "ảnh dùng chung ở tầng domain" vừa gom về một mối.
+ *
+ * Mẫu 04 CHỈ lấy 3 slide đầu: hero ở đây cao gần trọn màn hình và không tự
+ * chạy, nên bốn ảnh là thừa — người dùng hiếm khi bấm quá slide thứ ba.
+ */
+export const heroSlides: readonly ThemeImage[] = HERO_SLIDES.slice(0, 3)
 
 /** Ảnh cột phải của section `about`. */
 export const settingImage: ThemeImage = {

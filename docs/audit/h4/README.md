@@ -9,22 +9,38 @@ Ngày: 2026-08-05 · Chụp bằng Playwright/Chromium, DPR 2, dev server cổng
 | `final-home.png` / `final-home-m.png` | HOME 1440px / 375px |
 | `final-rooms.png` / `final-rooms-m.png` | DANH SÁCH PHÒNG 1440px / 375px |
 | `final-detail.png` / `final-detail-m.png` | CHI TIẾT PHÒNG 1440px / 375px |
-| `_baseline-h3-header.png` | **Bằng chứng**: header vỡ y hệt ở mẫu h3 → lỗi có sẵn ở `@repo/ui-layout`, không phải do h4 |
+| `_baseline-h3-header.png` | **Bằng chứng lịch sử**: header từng vỡ y hệt ở mẫu h3 → lỗi có sẵn ở `@repo/ui-layout`, không phải do h4. Đã được `617956e` trên `theme/namdu` sửa dứt điểm |
 | `_metrics.json` | Số đo tương phản + hình học từ vòng audit đầu |
 
 ## Số đo sau khi sửa
 
 | Trang | Chiều cao header | Tràn ngang | Chiều cao trang |
 |---|---|---|---|
-| Home 1440 | 70px | 0 | 6.237px |
-| Home 375 | 68px | 0 | 8.485px |
-| Rooms 1440 | 59px | 0 | 6.111px |
+| Home 1440 | 68px | 0 | 6.237px |
+| Home 375 | 68px | 0 | 8.605px |
+| Rooms 1440 | 57px | 0 | 6.111px |
 | Rooms 375 | 57px | 0 | 10.301px |
-| Detail 1440 | 59px | 0 | 3.939px |
+| Detail 1440 | 57px | 0 | 3.939px |
 | Detail 375 | 57px | 0 | 5.870px |
 
 Trước khi sửa: header **214px**, Rooms **16.522px** (desktop) / **28.617px** (mobile),
-**hai** bộ chuyển ngôn ngữ.
+**hai** bộ chuyển ngôn ngữ. Đo lại sau khi rebase lên `theme/namdu`: đúng **một**
+bộ chuyển ngôn ngữ trên mọi trang, không tràn ngang ở bất kỳ kích thước nào.
+
+### Thanh đặt phòng — đo riêng, vì đây là chỗ vỡ dai nhất
+
+`<input type="date">` không tự xuống dòng và không co chữ: hụt chỗ là nó cắt cụt
+("08/13/2(") chứ không báo gì. Đã đo ở bốn bề rộng, không cụt và không tràn:
+
+| Bề rộng | Bề rộng ô ngày | Nút CTA tràn? |
+|---|---|---|
+| 1600 | 141px | không |
+| 1440 | 164px | không |
+| 1280 | 164px | không |
+| 1024 | 211px | không |
+
+Ở dải 1024–1279px, nhãn "ĐẶT PHÒNG CÙNG LỄ TÂN" ẩn đi và nút rút gọn còn
+"Tìm phòng" — nhường chỗ cho ba ô ngày.
 
 ## Tương phản đo được (P15 / D4)
 
@@ -44,10 +60,10 @@ Trước khi sửa: header **214px**, Rooms **16.522px** (desktop) / **28.617px*
 
 | # | Lỗi | Chỗ sửa |
 |---|---|---|
-| 1 | Header cao 214px, tên thương hiệu rớt mỗi chữ một dòng, nhãn nav vỡ hai dòng | `ui-layout/SiteHeader.tsx` — thêm `shrink-0` + `whitespace-nowrap`, `truncate` cho tagline |
-| 2 | Hiện **hai** bộ chuyển ngôn ngữ (`VI|EN VI|EN`) | h4 truyền `locales={[]}`; app đã cấp bộ riêng qua `AccountBar` |
+| 1 | Header cao 214px, tên thương hiệu rớt mỗi chữ một dòng, nhãn nav vỡ hai dòng | **Không sửa ở nhánh này** — `617956e` trên `theme/namdu` đã sửa, và sửa kỹ hơn (đổi tagline sang `brand.suffix` thay vì truncate địa chỉ 49 ký tự). Commit trùng của tôi đã bị drop khi rebase |
+| 2 | Hiện **hai** bộ chuyển ngôn ngữ (`VI|EN VI|EN`) | Cũng do `617956e` xử lý ở tầng adapter (bỏ hẳn `locales` khỏi `siteHeaderPropsOf`). Bản vá `locales={[]}` của h4 đã được gỡ vì thành thừa |
 | 3 | Nút CTA hero bị cắt ngoài mép phải ở 1440px | `Hero.tsx` — `min-w-0` cho cụm ô nhập |
-| 4 | CTA đè lên ô "Số khách" ở 1024–1279px | nhãn concierge chỉ hiện từ `xl`; ô nhập `min-w-[135px]` |
+| 4 | Hai ô ngày đè chữ lên nhau; ngày cụt "08/13/2(" | ô nhập bỏ `min-width` (phải co theo cha), ràng buộc dồn về `<label>` `basis-[190px]` + cụm cha `xl:min-w-[570px]`; nhãn concierge lên `2xl`, nút rút gọn ở dải `lg` |
 | 5 | Câu dẫn ghi "Sáu hạng phòng" trong khi dữ liệu có 20 | bỏ số cứng khỏi câu dẫn; số thật hiện ở bộ đếm |
 | 6 | Rooms đổ hết 20 dòng → trang dài 16.522px | phân trang 6 dòng/lần + dòng "Đang xem x–y trong z" |
 | 7 | Bộ đếm kết quả bị đẩy xa bộ lọc bằng `ml-auto` | bỏ `ml-auto`, đặt cạnh bộ lọc |

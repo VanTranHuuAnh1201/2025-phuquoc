@@ -42,13 +42,7 @@ export function PageShell({
             data-theme="h4"
             className="font-primary overflow-x-clip bg-surface-base text-text-primary"
         >
-            {/* `locales={[]}` — cùng lý do như ở `composition.tsx`: tránh hai
-                bộ chuyển ngôn ngữ cạnh nhau khi app cắm `AccountBar`. */}
-            <SiteHeader
-                {...siteHeaderPropsOf(data, locale, meta.slug)}
-                locales={[]}
-                extra={extra}
-            />
+            <SiteHeader {...siteHeaderPropsOf(data, locale, meta.slug)} extra={extra} />
             <main>{children}</main>
             <SiteFooter {...siteFooterPropsOf(data, locale, meta.slug)} />
         </div>
