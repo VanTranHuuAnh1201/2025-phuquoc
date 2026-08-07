@@ -711,8 +711,13 @@ export const S = {
     kpiPendingDeposit: t('CHỜ XÁC NHẬN CỌC', 'AWAITING DEPOSIT CONFIRMATION'),
     kpiUnitSuffix: t('lượt', 'stays'),
     kpiOrderSuffix: t('đơn', 'bookings'),
-    expectedBeforeNoon: t('Dự kiến trước 12:00', 'Expected before 12:00'),
-    checkDepositTransfer: t('Cần kiểm tra chuyển khoản', 'Needs transfer review'),
+    expectedBeforeNoon: t('trước 12:00', 'before 12:00'),
+    checkDepositTransfer: t('cần kiểm tra CK', 'needs review'),
+    // Round 3: nút ẩn/hiện MetricStrip — lễ tân trực cả ngày cần BẢNG, không
+    // cần KPI thường trực (mục 3). `aria-expanded`/`aria-controls` bắt buộc
+    // để screen reader biết đang ẩn hay hiện, và biết vùng nào bị điều khiển.
+    hideMetrics: t('Ẩn số liệu', 'Hide metrics'),
+    showMetrics: t('Hiện số liệu', 'Show metrics'),
     recentActivity: t('VỪA DIỄN RA', 'RECENT ACTIVITY'),
     todayLabelShort: t('hôm nay', 'today'),
     tapeChartView: t('Sơ đồ Tape Chart ▾', 'Tape Chart view ▾'),

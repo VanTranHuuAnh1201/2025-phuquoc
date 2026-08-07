@@ -15,18 +15,51 @@
  *    `RoomUnit` chỉ được lễ tân gán lúc check-in, không suy ra từ vị trí mảng.
  */
 
-import { EyeIcon, CalendarIcon } from '@/components/icons'
+import { EyeIcon, CalendarIcon, ChevronDownIcon } from '@/components/icons'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
 import type { Column } from '@repo/ui'
 import { getPropertySync, pick, formatPrice } from '@repo/core'
 import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
+
+/** Khoá `localStorage` RIÊNG cho trạng thái ẩn/hiện MetricStrip — round 3
+ *  mục 3 yêu cầu KHÔNG dùng chung khoá sidebar (`namduhill-cms-rail-collapsed`
+ *  ở `AppShell`), vì đây là hai lựa chọn độc lập của người dùng: có thể muốn
+ *  sidebar thu gọn nhưng vẫn thấy KPI, hoặc ngược lại. */
+const METRICS_COLLAPSE_KEY = 'namduhill-cms-dashboard-metrics-collapsed'
+
+/** Đọc/ghi trạng thái ẩn/hiện MetricStrip qua `localStorage`. Không dùng
+ *  `useRailCollapse` của `@repo/ui` vì hook đó gắn kèm hành vi click-outside
+ *  tự thu gọn — đúng cho sidebar (không gian hẹp, tạm mở), SAI cho một khối
+ *  nội dung tĩnh mà người dùng bấm ẩn/hiện có chủ đích (round 3 mục 3). */
+function useMetricsCollapsed(): [boolean, (next: boolean) => void] {
+    const [collapsed, setCollapsed] = useState(false)
+
+    useEffect(() => {
+        try {
+            setCollapsed(localStorage.getItem(METRICS_COLLAPSE_KEY) === '1')
+        } catch {
+            // localStorage không khả dụng (SSR/trình duyệt chặn) — giữ mặc định hiện.
+        }
+    }, [])
+
+    const update = (next: boolean) => {
+        setCollapsed(next)
+        try {
+            localStorage.setItem(METRICS_COLLAPSE_KEY, next ? '1' : '0')
+        } catch {
+            // Không lưu được thì vẫn cho đổi trạng thái trong phiên hiện tại.
+        }
+    }
+
+    return [collapsed, update]
+}
 
 /** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
 const STATUS_TONE_MAP: Record<BookingStatus, CmsTone> = {
@@ -74,6 +107,7 @@ export default function AdminDashboard() {
     const property = getPropertySync()
 
     const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
+    const [metricsCollapsed, setMetricsCollapsed] = useMetricsCollapsed()
     const [shift, setShift] = useState<'all' | 'morning' | 'afternoon'>('all')
     const [segment, setSegment] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
     const [tab, setTab] = useState<'all' | 'pending' | 'arrivals'>('all')
@@ -123,12 +157,26 @@ export default function AdminDashboard() {
             key: 'guestName',
             header: tr(S.colGuestPhone, locale),
             sortable: true,
+            // `min-w-0` + `truncate` + `title` (round 3 mục 4): round 2 đo
+            // được rowH nhảy 56→68px khi cột hẹp lại (laptop 640px, zoom
+            // 150%) vì hai dòng chữ ở ô này XUỐNG DÒNG THỨ BA khi không đủ
+            // ngang. `truncate` ép mỗi dòng ở lại ĐÚNG một dòng, cắt bằng "…"
+            // — thông tin đầy đủ vẫn còn trong `title` (hover xem được),
+            // không mất hẳn như cắt cứng số ký tự. `min-w-0` bắt buộc trên
+            // `<div>` cha vì flex/table cell mặc định không co dưới nội dung,
+            // `truncate` không có tác dụng nếu thiếu nó.
             cell: (row) => (
-                <div>
-                    <div className="font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]">
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.guestName}
+                    >
                         {row.guestName}
                     </div>
-                    <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono">
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono"
+                        title={`${row.code} · ${row.phone}`}
+                    >
                         {row.code} · {row.phone}
                     </div>
                 </div>
@@ -138,11 +186,14 @@ export default function AdminDashboard() {
             key: 'roomType',
             header: tr(S.colRoomTypeNights, locale),
             cell: (row) => (
-                <div>
-                    <div className="text-[var(--cms-text)] text-[length:var(--cms-text-body)]">
+                <div className="min-w-0">
+                    <div
+                        className="truncate text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.roomTypeName}
+                    >
                         {row.roomTypeName}
                     </div>
-                    <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                         {row.nights} {tr(S.nights, locale)} ({row.checkInDate})
                     </div>
                 </div>
@@ -172,10 +223,14 @@ export default function AdminDashboard() {
                 const remaining = row.totalAmount - row.paidAmount
                 return (
                     <div className="text-right">
-                        <div className="font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)] tabular-nums">
+                        {/* `whitespace-nowrap` phòng ngừa: cột này có `width` cố
+                            định (170px) nên ít rủi ro hơn 2 cột co giãn ở trên,
+                            nhưng số tiền dài (7 chữ số + "đ") ở màn rất hẹp vẫn
+                            có thể xuống dòng nếu không chặn tường minh. */}
+                        <div className="whitespace-nowrap font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)] tabular-nums">
                             {formatPrice(row.totalAmount, locale)}
                         </div>
-                        <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] tabular-nums">
+                        <div className="whitespace-nowrap text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] tabular-nums">
                             {remaining > 0
                                 ? `${tr(S.balanceShort, locale)}: ${formatPrice(remaining, locale)}`
                                 : tr(S.balanceSettled, locale)}
@@ -271,6 +326,12 @@ export default function AdminDashboard() {
             .slice(0, 8)
     }, [logs])
 
+    // Round 3 mục 2: gộp tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" (trước là
+    // một tầng `<div>` riêng ~52px bên dưới) làm NHÓM PILL THỨ BA ngay trong
+    // `shiftGroups` — cùng cơ chế `<fieldset>`/pill với CA TRỰC, HẠNG PHÒNG.
+    // Cả 3 nhóm giờ render chung một hàng trong `FilterBar`, tự `flex-wrap`
+    // xuống dòng khi màn hẹp (đúng tinh thần ảnh mẫu Sales Cloud: mọi filter
+    // dồn về một hàng).
     const shiftGroups = [
         {
             legend: tr(S.shiftFilterLabel, locale),
@@ -293,6 +354,16 @@ export default function AdminDashboard() {
                 { value: 'deluxe', label: tr(S.segmentDeluxe, locale) },
             ],
         },
+        {
+            legend: tr(S.status, locale),
+            value: tab,
+            onChange: (v: string) => setTab(v as typeof tab),
+            options: [
+                { value: 'all', label: tr(S.tabAllRooms, locale) },
+                { value: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
+                { value: 'pending', label: tr(S.tabPendingDeposit, locale) },
+            ],
+        },
     ]
 
     return (
@@ -311,6 +382,20 @@ export default function AdminDashboard() {
                 }
                 actions={
                     <>
+                        {/* Nút ẩn/hiện MetricStrip (round 3 mục 3) — lễ tân trực cả
+                            ngày cần BẢNG hơn KPI thường trực. `aria-expanded` báo
+                            đúng trạng thái, `aria-controls` trỏ tới id của khối bị
+                            điều khiển để screen reader biết vùng nào vừa đổi. */}
+                        <button
+                            type="button"
+                            onClick={() => setMetricsCollapsed(!metricsCollapsed)}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="dashboard-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                            <ChevronDownIcon size={14} />
+                        </button>
                         <button
                             type="button"
                             onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
@@ -328,59 +413,43 @@ export default function AdminDashboard() {
                 }
             />
 
-            <div className="px-[var(--cms-pad)] pb-4">
-                <MetricStrip>
-                    <KpiCard
-                        label={tr(S.kpiOccupancyRate, locale)}
-                        value={`${stats.occupancyRate}%`}
-                        tone="blue"
-                    />
-                    <KpiCard
-                        label={tr(S.kpiCheckInToday, locale)}
-                        value={`${stats.checkInToday}`}
-                        note={`${tr(S.kpiUnitSuffix, locale)}`}
-                        tone="emerald"
-                    />
-                    <KpiCard
-                        label={tr(S.kpiCheckOutToday, locale)}
-                        value={`${stats.checkOutToday}`}
-                        note={tr(S.expectedBeforeNoon, locale)}
-                        tone="slate"
-                    />
-                    <KpiCard
-                        label={tr(S.kpiPendingDeposit, locale)}
-                        value={`${stats.pendingDeposit}`}
-                        note={tr(S.checkDepositTransfer, locale)}
-                        tone="amber"
-                    />
-                </MetricStrip>
-            </div>
-
-            <div className="flex items-center justify-between gap-3 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
-                <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] text-[length:var(--cms-text-body)]">
-                    {(
-                        [
-                            { key: 'all', label: tr(S.tabAllRooms, locale) },
-                            { key: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
-                            { key: 'pending', label: tr(S.tabPendingDeposit, locale) },
-                        ] as const
-                    ).map((t2) => (
-                        <button
-                            key={t2.key}
-                            type="button"
-                            aria-pressed={tab === t2.key}
-                            onClick={() => setTab(t2.key)}
-                            className={`px-3 py-1 rounded-[var(--cms-radius-sm)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
-                                tab === t2.key
-                                    ? 'bg-[var(--cms-accent)] text-white'
-                                    : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
-                            }`}
-                        >
-                            {t2.label}
-                        </button>
-                    ))}
+            {/* Ẩn hẳn khỏi DOM (không phải `display:none` giữ chỗ) khi thu gọn
+                — tiết kiệm TRỌN chiều cao ~96px của MetricStrip, đúng yêu cầu
+                round 3 mục 3 "phải tiết kiệm trọn ~96px". `id` khớp
+                `aria-controls` của nút toggle ở trên. */}
+            {!metricsCollapsed && (
+                <div id="dashboard-metric-strip" className="px-[var(--cms-pad)] pb-3">
+                    <MetricStrip>
+                        <KpiCard
+                            label={tr(S.kpiOccupancyRate, locale)}
+                            value={`${stats.occupancyRate}%`}
+                            tone="blue"
+                        />
+                        <KpiCard
+                            label={tr(S.kpiCheckInToday, locale)}
+                            value={`${stats.checkInToday}`}
+                            note={tr(S.kpiUnitSuffix, locale)}
+                            tone="emerald"
+                        />
+                        <KpiCard
+                            label={tr(S.kpiCheckOutToday, locale)}
+                            value={`${stats.checkOutToday}`}
+                            note={tr(S.expectedBeforeNoon, locale)}
+                            tone="slate"
+                        />
+                        <KpiCard
+                            label={tr(S.kpiPendingDeposit, locale)}
+                            value={`${stats.pendingDeposit}`}
+                            note={tr(S.checkDepositTransfer, locale)}
+                            tone="amber"
+                        />
+                    </MetricStrip>
                 </div>
-            </div>
+            )}
+
+            {/* Tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" (round 1) ĐÃ GỘP vào
+                `shiftGroups` làm nhóm pill thứ ba trong `FilterBar` ở trên
+                (round 3 mục 2) — không còn tầng `<div>` riêng ~52px ở đây. */}
 
             {/* Lưới 2 cột: bảng đơn (3/4) · dòng sự kiện thật trong ngày (1/4).
                 Round 1 dùng 2/3+1/3 — cột "Vừa diễn ra" thường chỉ có 1-2 dòng
