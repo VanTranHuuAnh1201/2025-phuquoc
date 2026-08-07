@@ -251,3 +251,27 @@
         min-height: calc(var(--cms-row-h) * 2 + 33px);
     }
 }
+
+/* --- header bảng DÍNH khi cuộn ---
+ * `DataTable` render `<thead>` bình thường (`position: static`), nên cuộn
+ * xuống là mất tiêu đề cột — đo được: cuộn 200px thì thead trôi từ 260px lên
+ * 60px. Với bảng 18 hàng, lễ tân cuộn tới giữa là không còn biết cột nào là
+ * "tổng tiền", cột nào là "còn thiếu".
+ *
+ * `position: sticky` trên `<th>` (KHÔNG phải `<thead>` — Chrome/Safari không
+ * dính `<thead>` khi `border-collapse: collapse`, mà `DataTable` đang dùng
+ * đúng kiểu đó). `z-index` để hàng cuộn qua nằm DƯỚI header, và `background`
+ * đặc để chữ hàng không lộ qua. */
+[data-cms] .dt-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--cms-bg-subtle);
+}
+
+/* Đường kẻ dưới header phải vẽ bằng `box-shadow` chứ không `border-bottom`:
+ * với `border-collapse: collapse`, viền của ô sticky bị cuộn trôi theo nội
+ * dung và để lại khe hở 1px. `box-shadow` vẽ theo vị trí đã dính. */
+[data-cms] .dt-table thead th {
+    box-shadow: inset 0 -1px 0 var(--cms-border);
+}
