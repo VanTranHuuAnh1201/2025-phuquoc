@@ -7,7 +7,8 @@ export interface RecordPaymentInput {
     paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'momo' | 'vnpay'
     reference?: string
     kind?: 'deposit' | 'full' | 'surcharge' | 'refund'
-    rawPayload?: Record<string, any>
+    /** Payload thô ghi kèm giao dịch (log đối soát) — hình dạng tuỳ cổng, không ép type domain. */
+    rawPayload?: Record<string, unknown>
 }
 
 /**

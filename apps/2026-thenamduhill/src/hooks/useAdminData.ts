@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useBookingStore } from '@/stores/booking.store'
 import { usePromotionStore } from '@/stores/promotion.store'
+import type { AccountRowItem } from '@/app/admin/settings/accounts/page'
+
+/** Rút gọn `err: unknown` bắt được trong `catch` thành thông điệp hiển thị được. */
+function errorMessage(err: unknown, fallback: string): string {
+    return err instanceof Error && err.message ? err.message : fallback
+}
 
 /**
  * Hook tập trung quản lý fetching đơn hàng từ REST API với đầy đủ trạng thái loading & error.
@@ -22,8 +28,8 @@ export function useBookingsData() {
         setError(null)
         try {
             await fetchBookingsFromApi()
-        } catch (err: any) {
-            setError(err?.message || 'Không thể tải dữ liệu đơn hàng.')
+        } catch (err: unknown) {
+            setError(errorMessage(err, 'Không thể tải dữ liệu đơn hàng.'))
         } finally {
             setLoading(false)
         }
@@ -67,8 +73,8 @@ export function usePromotionsData() {
         setError(null)
         try {
             await fetchFromApi()
-        } catch (err: any) {
-            setError(err?.message || 'Không thể tải danh sách khuyến mãi.')
+        } catch (err: unknown) {
+            setError(errorMessage(err, 'Không thể tải danh sách khuyến mãi.'))
         } finally {
             setLoading(false)
         }
@@ -94,13 +100,20 @@ export function usePromotionsData() {
     }
 }
 
-let accountsInFlightPromise: Promise<any> | null = null
+/** Hình dạng phong bì API chuẩn (BE1) khi trả về danh sách tài khoản. */
+interface AccountsApiEnvelope {
+    success: boolean
+    data: AccountRowItem[] | null
+    error: { code: string; message: { vi: string; en: string } } | null
+}
+
+let accountsInFlightPromise: Promise<AccountsApiEnvelope> | null = null
 
 /**
  * Hook tập trung quản lý danh sách tài khoản nhân viên từ REST API.
  */
 export function useAccountsData() {
-    const [accounts, setAccounts] = useState<any[]>([])
+    const [accounts, setAccounts] = useState<AccountRowItem[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
@@ -115,10 +128,10 @@ export function useAccountsData() {
             if (json.success && Array.isArray(json.data)) {
                 setAccounts(json.data)
             } else {
-                setError(json.error?.message || 'Không thể tải tài khoản.')
+                setError(json.error?.message.vi || 'Không thể tải tài khoản.')
             }
-        } catch (err: any) {
-            setError(err?.message || 'Lỗi mạng khi tải tài khoản.')
+        } catch (err: unknown) {
+            setError(errorMessage(err, 'Lỗi mạng khi tải tài khoản.'))
         } finally {
             accountsInFlightPromise = null
             setLoading(false)

@@ -539,9 +539,13 @@ export const useBookingStore = create<BookingState>()(
         {
             name: 'namduhill.bookings',
             version: 3,
-            migrate: (persistedState: any, version: number) => {
-                if (version === 1 && persistedState && Array.isArray(persistedState.bookings)) {
-                    persistedState.bookings = persistedState.bookings.map((b: any) => {
+            // `persistedState` đến từ `localStorage` của một phiên bản schema cũ hơn —
+            // không có type nào mô tả đúng nó trước khi migrate xong, nên thu hẹp bằng
+            // `Partial<BookingState>` (đủ để đọc `bookings` một cách an toàn) thay vì `any`.
+            migrate: (persistedState: unknown, version: number) => {
+                const state = persistedState as Partial<BookingState> | undefined
+                if (version === 1 && state && Array.isArray(state.bookings)) {
+                    state.bookings = state.bookings.map((b: Booking) => {
                         if (b.checkOutRecord) {
                             return {
                                 ...b,
@@ -567,13 +571,13 @@ export const useBookingStore = create<BookingState>()(
                 // nào trong UI). An toàn để tự phục hồi bằng seed demo.
                 if (
                     version <= 2 &&
-                    persistedState &&
-                    Array.isArray(persistedState.bookings) &&
-                    persistedState.bookings.length === 0
+                    state &&
+                    Array.isArray(state.bookings) &&
+                    state.bookings.length === 0
                 ) {
-                    return { ...persistedState, ...initialState() }
+                    return { ...state, ...initialState() }
                 }
-                return persistedState
+                return state
             },
         },
     ),

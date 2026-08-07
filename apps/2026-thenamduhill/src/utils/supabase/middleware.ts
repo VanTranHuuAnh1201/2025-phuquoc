@@ -14,7 +14,10 @@ export const createClient = (request: NextRequest) => {
     },
   });
 
-  const supabase = createServerClient(supabaseUrl!, supabaseKey!, {
+  // `createServerClient` được gọi để nó ĐỌC/GHI cookie qua callback `setAll` bên
+  // dưới (thứ `supabaseResponse` phụ thuộc) — bản thân client không dùng để query
+  // gì thêm trong middleware này, nên không gán vào biến (tránh unused-vars).
+  createServerClient(supabaseUrl!, supabaseKey!, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
