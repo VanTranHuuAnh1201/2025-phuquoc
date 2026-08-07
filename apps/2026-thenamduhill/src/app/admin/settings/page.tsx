@@ -1,131 +1,141 @@
 'use client'
 
-import {
-    BedIcon,
-    CoinsIcon,
-    SettingsIcon,
-    TagIcon,
-    TicketIcon,
-    UsersIcon,
-} from '@/components/icons'
+/**
+ * Hub "Cài đặt & Cấu hình" — điểm vào của 6 màn cấu hình dữ liệu gốc.
+ *
+ * Đây là màn ĐIỀU HƯỚNG (card → link), không phải bảng danh sách — không có
+ * dữ liệu để đếm/lọc/phân trang nên §F6 (format bảng) không áp được nguyên
+ * văn. Vẫn dùng `PageHeaderBar` cho hàng tiêu đề và tông màu/khoảng cách của
+ * `@repo/cms-ui` để nhất quán với các màn Vận hành đã áp — card cấu hình đọc
+ * token `--cms-*` giống hệt `DataGrid`/`KpiCard`, chỉ khác ở chỗ nội dung bên
+ * trong là một liên kết thay vì một dòng dữ liệu.
+ *
+ * `DotBadge` dùng cho hai badge "Cơ sở"/"Bảo mật" — đúng D4 (chấm + chữ),
+ * không còn `bg-slate-100 text-slate-700` tô tay của bản cũ.
+ */
+
+import { ChevronRightIcon, BedIcon, CoinsIcon, SettingsIcon, TagIcon, TicketIcon, UsersIcon } from '@/components/icons'
 import Link from 'next/link'
+import { DotBadge, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
+import { useLocale } from '@/components/LocaleProvider'
+import { S, tr } from '@/strings'
+import type { I18nText } from '@repo/core'
 
 interface ConfigSection {
     id: string
-    title: string
-    description: string
+    title: I18nText
+    description: I18nText
     href: string
     icon: React.ReactNode
-    badge?: string
+    badge?: { label: I18nText; tone: CmsTone }
 }
 
 const CONFIG_SECTIONS: ConfigSection[] = [
     {
         id: 'rooms',
-        title: 'Hạng Phòng & Số Hiệu Phòng Master',
-        description: 'Tạo hạng phòng, gán số phòng vật lý (P.101, Villa 01), quản lý tầng và tình trạng thiết bị.',
+        title: S.settingsSectionRoomsTitle,
+        description: S.settingsSectionRoomsDesc,
         href: '/admin/settings/rooms',
-        icon: <BedIcon size={24} />,
-        badge: 'Cơ sở',
+        icon: <BedIcon size={20} />,
+        badge: { label: S.settingsBadgeCore, tone: 'blue' },
     },
     {
         id: 'rate-plans',
-        title: 'Gói Giá & Chính Sách Đặt Phòng',
-        description: 'Cấu hình gói giá (Rate Plan), tỷ lệ cọc %, điều kiện hoàn hủy và phụ thu người thứ 3.',
+        title: S.settingsSectionRatePlansTitle,
+        description: S.settingsSectionRatePlansDesc,
         href: '/admin/settings/rate-plans',
-        icon: <TagIcon size={24} />,
+        icon: <TagIcon size={20} />,
     },
     {
         id: 'addons',
-        title: 'Phụ Thu & Dịch Vụ Đi Kèm (Add-ons)',
-        description: 'Danh mục dịch vụ thêm: Tour đảo Nam Du, Buffet hải sản, Đón bến tàu, BBQ ngoài trời.',
+        title: S.settingsSectionAddonsTitle,
+        description: S.settingsSectionAddonsDesc,
         href: '/admin/settings/addons',
-        icon: <CoinsIcon size={24} />,
+        icon: <CoinsIcon size={20} />,
     },
     {
         id: 'tickets',
-        title: 'Ticket Sự Cố & Bảo Trì Kỹ Thuật',
-        description: 'Quản lý báo cáo sự cố phòng, lịch bảo trì máy lạnh, điện nước ca trực buồng phòng.',
+        title: S.settingsSectionTicketsTitle,
+        description: S.settingsSectionTicketsDesc,
         href: '/admin/settings/tickets',
-        icon: <TicketIcon size={24} />,
+        icon: <TicketIcon size={20} />,
     },
     {
         id: 'accounts',
-        title: 'Tài Khoản Nhân Viên & Phân Quyền RBAC',
-        description: 'Quản lý danh sách tài khoản lễ tân, quản lý, chủ cơ sở và phân quyền truy cập hệ thống.',
+        title: S.settingsSectionAccountsTitle,
+        description: S.settingsSectionAccountsDesc,
         href: '/admin/settings/accounts',
-        icon: <UsersIcon size={24} />,
-        badge: 'Bảo mật',
+        icon: <UsersIcon size={20} />,
+        badge: { label: S.settingsBadgeSecurity, tone: 'amber' },
     },
     {
         id: 'general',
-        title: 'Cài Đặt Ngân Hàng QR & ZNS Thông Báo',
-        description: 'Cấu hình tài khoản VietQR nhận cọc tự động, mẫu tin nhắn Zalo ZNS và SMS xác nhận.',
+        title: S.settingsSectionGeneralTitle,
+        description: S.settingsSectionGeneralDesc,
         href: '/admin/settings/general',
-        icon: <SettingsIcon size={24} />,
+        icon: <SettingsIcon size={20} />,
     },
 ]
 
 export default function SystemSetupHubPage() {
-    return (
-        <div className="w-full flex-1 flex flex-col space-y-4 overflow-y-auto custom-scrollbar">
-            {/* Header Banner */}
-            <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
-                <div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                            <SettingsIcon size={18} />
-                        </div>
-                        <div>
-                            <h1 className="text-base font-bold text-slate-900">
-                                SYSTEM SETUP · BÀN CẤU HÌNH TỔNG QUAN HỆ THỐNG
-                            </h1>
-                            <p className="text-xs text-slate-500">
-                                Quản lý master data cơ sở lưu trú, chính sách gói giá và cài đặt hệ thống Nam Du Hill
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    const { locale } = useLocale()
 
-                <div className="text-xs text-slate-500 font-medium bg-slate-50 px-3 py-1.5 rounded border border-slate-200">
-                    Hệ thống: <span className="font-bold text-slate-800">Nam Du Hill Resort (Production)</span>
-                </div>
+    return (
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái — khớp hình mẫu dashboard/customers.
+                Không có nút hành động bên phải: hub này chỉ điều hướng, không
+                có thao tác tạo mới cấp trang. */}
+            <PageHeaderBar
+                title={tr(S.settingsHubTitle, locale)}
+                count={{ value: CONFIG_SECTIONS.length, suffix: tr({ vi: 'mục', en: 'items' }, locale) }}
+            />
+
+            {/* HÀNG 2: mô tả ngắn — thay cho hàng bộ lọc (không có gì để lọc ở
+                một hub điều hướng), giữ border-t 1px phân tách đúng nhịp các
+                màn khác. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                <p className="text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)] max-w-2xl">
+                    {tr(S.settingsHubDesc, locale)}
+                </p>
             </div>
 
-            {/* Config Hub Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                {CONFIG_SECTIONS.map((config) => (
-                    <Link
-                        key={config.id}
-                        href={config.href}
-                        className="group bg-white p-4 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 hover:shadow-md transition-all flex flex-col justify-between"
-                    >
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-slate-50 text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600 rounded-md transition-colors">
-                                    {config.icon}
+            {/* Lưới card cấu hình — chiếm hết phần còn lại, tự cuộn khi thấp.
+                Mỗi card là MỘT LIÊN KẾT tới màn con, đúng vai trò "hub" — CMS
+                quản nội dung/dữ liệu, không quản màn hình (§F5). */}
+            <div className="flex-1 min-h-0 overflow-y-auto border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {CONFIG_SECTIONS.map((config) => (
+                        <Link
+                            key={config.id}
+                            href={config.href}
+                            className="group flex flex-col justify-between border border-[var(--cms-border)] rounded-[var(--cms-radius)] p-4 bg-[var(--cms-bg)] hover:border-[var(--cms-accent)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <div>
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="p-2 rounded-[var(--cms-radius-sm)] bg-[var(--cms-bg-subtle)] text-[var(--cms-text-muted)] group-hover:text-[var(--cms-accent)] transition-colors">
+                                        {config.icon}
+                                    </div>
+                                    {config.badge && (
+                                        <DotBadge tone={config.badge.tone} label={tr(config.badge.label, locale)} />
+                                    )}
                                 </div>
-                                {config.badge && (
-                                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-700 rounded border border-slate-200">
-                                        {config.badge}
-                                    </span>
-                                )}
+
+                                <h2 className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)] group-hover:text-[var(--cms-accent)] transition-colors">
+                                    {tr(config.title, locale)}
+                                </h2>
+
+                                <p className="mt-1 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] leading-relaxed">
+                                    {tr(config.description, locale)}
+                                </p>
                             </div>
 
-                            <h2 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
-                                {config.title}
-                            </h2>
-
-                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                                {config.description}
-                            </p>
-                        </div>
-
-                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
-                            <span>Quản lý cài đặt →</span>
-                        </div>
-                    </Link>
-                ))}
+                            <div className="mt-3 pt-3 border-t border-[var(--cms-border)] flex items-center justify-between text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-accent)]">
+                                <span>{tr(S.settingsManageCta, locale)}</span>
+                                <ChevronRightIcon size={14} />
+                            </div>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     )

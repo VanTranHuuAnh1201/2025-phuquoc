@@ -266,6 +266,46 @@ export const S = {
     revenue: t('Doanh thu', 'Revenue'),
     pendingReview: t('Chờ xác nhận', 'Awaiting confirmation'),
 
+    // -------------------------------------------------- hub Setup & Cấu hình
+    settingsHubTitle: t('Cài đặt & Cấu hình', 'Setup & Configuration'),
+    settingsHubDesc: t(
+        'Quản lý dữ liệu gốc: hạng phòng, gói giá, dịch vụ, tài khoản và cài đặt hệ thống.',
+        'Manage master data: room types, rate plans, add-ons, accounts, and system settings.',
+    ),
+    settingsBadgeCore: t('Cơ sở', 'Core'),
+    settingsBadgeSecurity: t('Bảo mật', 'Security'),
+    settingsManageCta: t('Quản lý', 'Manage'),
+    settingsSectionRoomsTitle: t('Hạng phòng & Số hiệu phòng', 'Room types & Room units'),
+    settingsSectionRoomsDesc: t(
+        'Tạo hạng phòng, gán số phòng vật lý, quản lý tầng và tình trạng thiết bị.',
+        'Create room types, assign physical room numbers, manage floors and equipment status.',
+    ),
+    settingsSectionRatePlansTitle: t('Gói giá & Chính sách đặt phòng', 'Rate plans & Booking policy'),
+    settingsSectionRatePlansDesc: t(
+        'Cấu hình gói giá, tỷ lệ cọc, điều kiện hoàn huỷ và phụ thu người thứ 3.',
+        'Configure rate plans, deposit ratio, cancellation policy, and extra-guest surcharge.',
+    ),
+    settingsSectionAddonsTitle: t('Dịch vụ đi kèm (Add-ons)', 'Add-on services'),
+    settingsSectionAddonsDesc: t(
+        'Danh mục dịch vụ thêm: đưa đón tàu, ăn uống, tour đảo, BBQ ngoài trời.',
+        'Extra service catalogue: boat transfer, dining, island tours, outdoor BBQ.',
+    ),
+    settingsSectionTicketsTitle: t('Ticket sự cố & Bảo trì', 'Maintenance tickets'),
+    settingsSectionTicketsDesc: t(
+        'Quản lý báo cáo sự cố phòng, lịch bảo trì thiết bị, ca trực buồng phòng.',
+        'Manage room issue reports, equipment maintenance schedule, housekeeping shifts.',
+    ),
+    settingsSectionAccountsTitle: t('Tài khoản nhân viên & Phân quyền', 'Staff accounts & Permissions'),
+    settingsSectionAccountsDesc: t(
+        'Quản lý tài khoản lễ tân, quản lý, chủ cơ sở và phân quyền truy cập.',
+        'Manage receptionist, manager, and owner accounts and access permissions.',
+    ),
+    settingsSectionGeneralTitle: t('Ngân hàng QR & Thông báo', 'QR payment & Notifications'),
+    settingsSectionGeneralDesc: t(
+        'Cấu hình tài khoản VietQR nhận cọc, mẫu tin nhắn Zalo ZNS và SMS xác nhận.',
+        'Configure VietQR deposit account, Zalo ZNS and SMS confirmation templates.',
+    ),
+
     doCheckIn: t('Nhận phòng', 'Check in'),
     doCheckOut: t('Trả phòng', 'Check out'),
     doConfirm: t('Xác nhận đơn', 'Confirm booking'),
