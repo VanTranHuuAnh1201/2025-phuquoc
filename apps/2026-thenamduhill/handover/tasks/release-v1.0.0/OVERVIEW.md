@@ -2,7 +2,7 @@
 
 > **App target**: `apps/2026-thenamduhill` · **Theme giao khách**: `@repo/theme-h3`  
 > **Mốc bàn giao**: GD1 `10/08/2026` (Giao diện) — ✅ **ĐÓNG ĐỦ 07/08, sớm 3 ngày** · GD2 `17/08/2026` (DB & API) — 🔄 đang tới · GD3 `24–28/08/2026` (Go-Live)  
-> **Tiến độ**: `done` **8/20** · `process` **0** · `pending` **12** (đối soát `ls` ngày 07/08/2026)  
+> **Tiến độ**: `done` **9/20** · `process` **0** · `pending` **11** (đối soát `ls` ngày 07/08/2026)  
 > **Tài liệu điều hành**: [Thao tác thủ công & Dữ liệu chờ: MANUAL.md](./MANUAL.md)
 
 ---
@@ -158,7 +158,7 @@ app/api/**  →  packages/core  →  Supabase Postgres
 | Ticket | Tên | Vai trò | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|
 | `200-01` | Migration Supabase + seed dữ liệu thật + RLS | BE | `000-01` | `done` ✅ |
-| `200-02` | API tính giá theo từng đêm | BE | `200-01` | `pending` |
+| `200-02` | API tính giá theo từng đêm | BE | `200-01` | `done` ✅ |
 | `200-03` | API tạo đơn & chống đặt trùng (`SELECT FOR UPDATE`) | BE | `200-02` | `pending` |
 | `200-04` | API xác nhận thanh toán (giả lập) & vòng đời đơn | BE | `200-03` | `pending` |
 | `200-05` | Cron nhả phòng quá hạn & No-Show | BE | `200-04` | `pending` |
@@ -207,9 +207,9 @@ app/api/**  →  packages/core  →  Supabase Postgres
 |---|:---:|:---:|:---:|:---:|
 | **000 — Nền tảng** | 3 | 0 | 0 | **3** ✅ |
 | **100 — Giao diện (GD1)** | 5 | 1 | 0 | **4** ✅ |
-| **200 — Database & API (GD2)** | 8 | 7 | 0 | 1 |
+| **200 — Database & API (GD2)** | 8 | 6 | 0 | 2 |
 | **300 — Go-Live (GD3)** | 4 | 4 | 0 | 0 |
-| **TỔNG CỘNG** | **20** | **12** | **0** | **8** |
+| **TỔNG CỘNG** | **20** | **11** | **0** | **9** |
 
 > 📌 **Tổng số ticket 20**: `100-05` (*System Admin — Quản lý hạng phòng & Ticket sự cố/bảo trì*)
 > là ticket **mới**, tách ra theo hướng ✂️ Cắt 1 ở §8.2, nay đã `done`.
@@ -218,9 +218,9 @@ app/api/**  →  packages/core  →  Supabase Postgres
 
 | Thư mục | Số file | Danh sách |
 |---|:--:|---|
-| `done/` | **8** | `000-01` · `000-02` · `000-03` · `100-01` · `100-02` · `100-04` · `100-05` · `200-01` |
+| `done/` | **9** | `000-01` · `000-02` · `000-03` · `100-01` · `100-02` · `100-04` · `100-05` · `200-01` · `200-02` |
 | `process/` | **0** | — **RỖNG** |
-| `pending/` | **12** | `100-03` · `200-02`…`200-08` · `300-01`…`300-04` |
+| `pending/` | **11** | `100-03` · `200-03`…`200-08` · `300-01`…`300-04` |
 
 > Trạng thái **trước** vòng điều phối này là 12 / 2 / 6. Sau vòng: **12 / 0 / 8** — `100-04` và `100-05`
 > rời `process/` sang `done/` sau khi QC ký vòng 2.
