@@ -11,9 +11,15 @@
  *
  * ⚠️ Giá trị mặc định là dữ liệu ghi nợ `MANUAL.md` M1, chưa phải số tài khoản
  * thật của khách. Không dừng workflow vì việc này.
+ *
+ * Áp design system `@repo/cms-ui` (màn 2/7 nhóm Hệ thống) — cùng `PageHeaderBar`
+ * + `InlineAlert` như các màn Vận hành đã áp. Đây là MÀN FORM MỘT CỘT, không
+ * phải danh sách: không có `DataGrid`/`FilterBar`/`MetricStrip` vì không có gì
+ * để lọc hay liệt kê — chỉ 4 trường cấu hình. Giữ nguyên bố cục dọc, chỉ đổi
+ * toàn bộ màu/khoảng cách sang token `--cms-*` và bỏ card lồng card.
  */
 
-import { CheckCircleIcon, CoinsIcon, SettingsIcon } from '@/components/icons'
+import { CoinsIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
 import { useAuthStore } from '@/stores/auth.store'
@@ -23,6 +29,7 @@ import { S, tr } from '@/strings'
 import { errorOf, pick, validateBankConfig } from '@repo/core'
 
 import type { FieldError, I18nText } from '@repo/core'
+import { InlineAlert, PageHeaderBar } from '@repo/cms-ui'
 import { Button, Field, SelectField } from '@repo/ui'
 import { useEffect, useState } from 'react'
 
@@ -104,101 +111,95 @@ function BankSettingsScreen() {
     const saved = notice === S.bankSaved
 
     return (
-        <div className="h-full flex flex-col min-h-0 bg-slate-100 p-2 gap-2 overflow-y-auto">
-            <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center gap-2 shrink-0">
-                <span className="text-slate-500">
-                    <SettingsIcon size={18} />
-                </span>
-                <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                    {tr(S.bankConfigTitle, locale)}
-                </h1>
-            </div>
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)] overflow-y-auto">
+            {/* HÀNG 1: tiêu đề bên trái — không có `count`/`actions`, màn này
+                không phải danh sách nên không có gì để đếm hay xuất. */}
+            <PageHeaderBar title={tr(S.bankConfigTitle, locale)} />
 
-            {notice && (
-                <div
-                    role="alert"
-                    aria-live="polite"
-                    className={`shrink-0 p-2.5 rounded-md text-xs font-medium border flex items-center gap-2 ${
-                        saved
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                            : 'bg-rose-50 border-rose-200 text-rose-700'
-                    }`}
-                >
-                    {saved && <CheckCircleIcon size={14} />}
-                    {tr(notice, locale)}
-                </div>
-            )}
+            {/* Form một cột, KHÔNG áp DataGrid/FilterBar — chỉ 4 trường cấu
+                hình, không có gì để lọc hay liệt kê (ghi chú theo yêu cầu:
+                "không phù hợp áp máy móc" → giữ nguyên tinh thần form một cột,
+                chỉ token hoá màu/khoảng cách). `max-w-2xl` giữ độ rộng đọc
+                thoải mái, không kéo input dài hết màn rộng. */}
+            <div className="flex-1 min-h-0 px-[var(--cms-pad)] py-4">
+                <div className="max-w-2xl w-full space-y-4">
+                    {notice && (
+                        <InlineAlert tone={saved ? 'emerald' : 'rose'}>{tr(notice, locale)}</InlineAlert>
+                    )}
 
-            <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm max-w-2xl w-full space-y-4">
-                <p className="text-[11px] text-slate-500 leading-relaxed m-0">
-                    {tr(S.ownerOnlyNotice, locale)}
-                </p>
+                    <p className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] leading-relaxed m-0">
+                        {tr(S.ownerOnlyNotice, locale)}
+                    </p>
 
-                <SelectField
-                    label={tr(S.bankName, locale)}
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
-                    error={maybe(errorOf(errors, 'bankName'), locale)}
-                    required
-                >
-                    {BANKS.map((name) => (
-                        <option key={name} value={name}>
-                            {name}
-                        </option>
-                    ))}
-                </SelectField>
+                    <div className="border border-[var(--cms-border)] rounded-[var(--cms-radius)] p-4 space-y-4 bg-[var(--cms-bg)]">
+                        <SelectField
+                            label={tr(S.bankName, locale)}
+                            value={bankName}
+                            onChange={(e) => setBankName(e.target.value)}
+                            error={maybe(errorOf(errors, 'bankName'), locale)}
+                            required
+                        >
+                            {BANKS.map((name) => (
+                                <option key={name} value={name}>
+                                    {name}
+                                </option>
+                            ))}
+                        </SelectField>
 
-                <Field
-                    fieldId="bank-field-accountNumber"
-                    label={tr(S.accountNumber, locale)}
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    inputMode="numeric"
-                    placeholder="9999999999"
-                    hint={tr(S.accountNumberHint, locale)}
-                    required
-                    error={maybe(errorOf(errors, 'accountNumber'), locale)}
-                />
+                        <Field
+                            fieldId="bank-field-accountNumber"
+                            label={tr(S.accountNumber, locale)}
+                            value={accountNumber}
+                            onChange={(e) => setAccountNumber(e.target.value)}
+                            inputMode="numeric"
+                            placeholder="9999999999"
+                            hint={tr(S.accountNumberHint, locale)}
+                            required
+                            error={maybe(errorOf(errors, 'accountNumber'), locale)}
+                        />
 
-                <Field
-                    fieldId="bank-field-accountHolder"
-                    label={tr(S.accountHolder, locale)}
-                    value={accountHolder}
-                    onChange={(e) => setAccountHolder(e.target.value)}
-                    placeholder="RESORT NAM DU HILL"
-                    required
-                    error={maybe(errorOf(errors, 'accountHolder'), locale)}
-                />
+                        <Field
+                            fieldId="bank-field-accountHolder"
+                            label={tr(S.accountHolder, locale)}
+                            value={accountHolder}
+                            onChange={(e) => setAccountHolder(e.target.value)}
+                            placeholder="RESORT NAM DU HILL"
+                            required
+                            error={maybe(errorOf(errors, 'accountHolder'), locale)}
+                        />
 
-                <Field
-                    fieldId="bank-field-defaultDepositPercent"
-                    label={tr(S.defaultDepositPercent, locale)}
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={depositPercent}
-                    onChange={(e) => setDepositPercent(Number(e.target.value))}
-                    required
-                    error={maybe(errorOf(errors, 'defaultDepositPercent'), locale)}
-                />
+                        <Field
+                            fieldId="bank-field-defaultDepositPercent"
+                            label={tr(S.defaultDepositPercent, locale)}
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={depositPercent}
+                            onChange={(e) => setDepositPercent(Number(e.target.value))}
+                            required
+                            error={maybe(errorOf(errors, 'defaultDepositPercent'), locale)}
+                        />
 
-                <div className="flex items-center justify-between gap-3 pt-1">
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                        <CoinsIcon size={14} />
-                        <span>
-                            {pick(
-                                {
-                                    vi: 'Số tài khoản này hiện cho khách ở bước thanh toán.',
-                                    en: 'Guests see this account number at the payment step.',
-                                },
-                                locale,
-                            )}
-                        </span>
-
+                        <div className="flex items-center justify-between gap-3 pt-1 border-t border-[var(--cms-border)]">
+                            <div className="flex items-center gap-2 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] pt-3">
+                                <CoinsIcon size={14} />
+                                <span>
+                                    {pick(
+                                        {
+                                            vi: 'Số tài khoản này hiện cho khách ở bước thanh toán.',
+                                            en: 'Guests see this account number at the payment step.',
+                                        },
+                                        locale,
+                                    )}
+                                </span>
+                            </div>
+                            <div className="pt-3">
+                                <Button onClick={handleSave} disabled={saving}>
+                                    {tr(saving ? S.saving : S.save, locale)}
+                                </Button>
+                            </div>
+                        </div>
                     </div>
-                    <Button onClick={handleSave} disabled={saving}>
-                        {tr(saving ? S.saving : S.save, locale)}
-                    </Button>
                 </div>
             </div>
         </div>
