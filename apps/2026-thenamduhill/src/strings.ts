@@ -326,6 +326,18 @@ export const S = {
     viewBookingAria: t('Xem đơn', 'View booking'),
     allChannelsBooking: t('Tất cả kênh', 'All channels'),
     allRoomTypes: t('Tất cả hạng phòng', 'All room types'),
+    housekeepingSearchPlaceholder: t('Tìm mã phòng (P-101)…', 'Search room code…'),
+    housekeepingSearchAria: t('Tìm phòng theo mã hoặc hạng phòng', 'Search rooms by code or room type'),
+    housekeepingRoomSuffix: t('phòng', 'rooms'),
+    housekeepingAvailableShort: t('Sẵn sàng', 'Ready'),
+    housekeepingOccupiedShort: t('Đang ở', 'Occupied'),
+    housekeepingDirtyShort: t('Cần dọn', 'Needs cleaning'),
+    housekeepingLocked: t('Khoá — trả phòng ở trang Đặt phòng', 'Locked — check out from the Bookings page'),
+    housekeepingNextStatus: t('Bấm để chuyển sang', 'Tap to move to'),
+    housekeepingEmpty: t(
+        'Không có phòng nào ở tình trạng này. Bấm lại ô đã chọn để bỏ lọc.',
+        'No rooms match this status. Tap the selected filter again to clear it.',
+    ),
     kpiAllChannels: t('TẤT CẢ KÊNH', 'ALL CHANNELS'),
     kpiChannelWeb: t('WEBSITE', 'WEBSITE'),
     kpiChannelWalkIn: t('VÃNG LAI', 'WALK-IN'),
@@ -894,6 +906,18 @@ export const UNIT_STATUS_TONE: Record<
     dirty: 'warning',
     cleaning: 'warning',
     maintenance: 'danger',
+}
+
+/** Trạng thái phòng vật lý → tone của `@repo/cms-ui` (dùng cho `DotBadge` và
+ *  `KpiCard` ở màn Buồng phòng). Riêng với `UNIT_STATUS_TONE` ở trên vì đó là
+ *  hệ tone cũ (`success/warning/...`) không khớp `CmsTone` — không đổi lại vì
+ *  không rõ còn nơi nào khác định hình theo tên cũ đó. */
+export const UNIT_STATUS_CMS_TONE: Record<RoomUnitStatus, CmsTone> = {
+    available: 'emerald',
+    occupied: 'blue',
+    dirty: 'rose',
+    cleaning: 'amber',
+    maintenance: 'slate',
 }
 
 export const ROLE_LABEL: Record<Role, I18nText> = {
