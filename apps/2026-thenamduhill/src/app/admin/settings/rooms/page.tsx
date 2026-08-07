@@ -9,17 +9,18 @@
  * Một màn, HAI bộ trường tuỳ vai trò (AC-9): `editor` sửa được tên/mô tả/ảnh
  * nhưng không thấy ô giá gốc. Làm bằng điều kiện render trong cùng một form,
  * không phải hai component — hai bản là hai chỗ phải sửa khi thêm trường.
+ *
+ * Áp design system `@repo/cms-ui` (màn 7/7 nhóm Hệ thống) — đi theo đúng khuôn
+ * `settings/rate-plans/page.tsx` đã áp: cùng là màn CRUD danh mục giá (id/tên
+ * i18n/số tiền/modal), gần với rooms nhất trong nhóm đã xong. Bố cục: hàng 1
+ * tiêu đề+đếm+nút thêm (`PageHeaderBar`), hàng 2 tìm kiếm+`FilterBar` (dải
+ * giá, sức chứa)+Đặt lại, `MetricStrip` 4 KPI, `DataGrid` chiếm hết chỗ còn
+ * lại. Khác `rate-plans` ở chỗ: có KPI (số hạng/tổng phòng vật lý/giá thấp
+ * nhất) vì đây là màn quản lý tồn kho hạng phòng, có số liệu vận hành đáng
+ * theo dõi — không copy máy móc.
  */
 
-import {
-    BuildingIcon,
-    CheckCircleIcon,
-    CoinsIcon,
-    PencilIcon,
-    PlusIcon,
-    TrashIcon,
-    UsersIcon,
-} from '@/components/icons'
+import { PencilIcon, PlusIcon, TrashIcon, UsersIcon } from '@/components/icons'
 import { I18nField } from '@/components/I18nField'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission, useCan } from '@/components/RequirePermission'
@@ -39,16 +40,9 @@ import {
     validateRoomType,
 } from '@repo/core'
 import type { FieldError, I18nText, Room } from '@repo/core'
-import {
-    Badge,
-    Button,
-    DataTable,
-    Field,
-    FilterSelect,
-    Modal,
-    Toolbar,
-    useDataTable,
-} from '@repo/ui'
+import { DataGrid, DotBadge, FilterBar, InlineAlert, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
+import { Button, Field, Modal } from '@repo/ui'
+import type { Column } from '@repo/ui'
 import { useMemo, useState } from 'react'
 
 /** Bộ lọc dải giá — nhóm sẵn để admin không phải gõ số. */
@@ -114,8 +108,6 @@ function RoomSettingsScreen() {
         null,
     )
 
-    const isFiltered = search !== '' || priceBand !== 'all' || capacityBand !== 'all'
-
     const filtered = useMemo(() => {
         const query = search.trim().toLowerCase()
         return rooms.filter((room) => {
@@ -137,113 +129,6 @@ function RoomSettingsScreen() {
             return true
         })
     }, [rooms, roomExtras, search, priceBand, capacityBand])
-
-    const { tableProps } = useDataTable<Room>({
-        data: filtered,
-        rowKey: (room) => room.id,
-        pageSize: 10,
-        columns: [
-            {
-                key: 'id',
-                header: tr(S.colRoomCode, locale),
-                width: '130px',
-                sortable: true,
-                cell: (room) => (
-                    <span className="font-mono text-xs font-bold text-slate-700">{room.id}</span>
-                ),
-            },
-            {
-                key: 'name',
-                header: tr(S.colRoomName, locale),
-                cell: (room) => (
-                    <div>
-                        <div className="font-bold text-xs text-slate-900">{tr(room.name, locale)}</div>
-                        {/* Hiện luôn ngôn ngữ còn lại: biên tập viên thấy ngay
-                            bản dịch có bị bỏ trống hay không (luật R6). */}
-                        <div className="text-[10px] text-slate-400">
-                            {room.area} · {pick({ vi: room.name.en, en: room.name.vi }, locale)}
-                        </div>
-
-                    </div>
-                ),
-            },
-            {
-                key: 'guests',
-                header: tr(S.colCapacity, locale),
-                width: '150px',
-                cell: (room) => {
-                    // Sức chứa phải tách người lớn / trẻ em (luật B2, `100-05` AC-1):
-                    // "2 khách" không cho lễ tân biết có cần chuẩn bị cũi hay không.
-                    const max = roomExtras[room.id]?.maxGuests ?? room.guests
-                    const children = Math.max(0, max - room.guests)
-                    return (
-                        <span className="inline-flex items-center gap-1.5 text-xs text-slate-700">
-                            <UsersIcon size={13} />
-                            <span className="tabular-nums">
-                                {room.guests} {tr(S.adults, locale)}
-                                {children > 0 ? ` · ${children} ${tr(S.children, locale)}` : ''}
-                            </span>
-                        </span>
-                    )
-                },
-            },
-            {
-                key: 'price',
-                header: tr(S.colBasePrice, locale),
-                align: 'right',
-                width: '150px',
-                sortable: true,
-                cell: (room) => (
-                    <span className="font-extrabold text-xs text-slate-900 tabular-nums">
-                        {formatPrice(room.price, locale)}
-                    </span>
-                ),
-            },
-            {
-                key: 'remaining',
-                header: tr(S.colPhysicalUnits, locale),
-                align: 'center',
-                width: '140px',
-                cell: (room) => (
-                    <Badge tone="info">
-                        {room.remaining ?? 4} {tr(S.unitsSuffix, locale)}
-                    </Badge>
-                ),
-            },
-            {
-                key: 'status',
-                header: tr(S.colStatus, locale),
-                width: '140px',
-                cell: () => <Badge tone="success">{tr(S.onSale, locale)}</Badge>,
-            },
-            {
-                key: 'actions',
-                header: tr(S.colActions, locale),
-                align: 'right',
-                width: '100px',
-                cell: (room) => (
-                    <div className="flex items-center justify-end gap-1">
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openModal(room)}
-                            aria-label={`${tr(S.edit, locale)} ${tr(room.name, locale)}`}
-                        >
-                            <PencilIcon size={14} />
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(room)}
-                            aria-label={`${tr(S.delete, locale)} ${tr(room.name, locale)}`}
-                        >
-                            <TrashIcon size={14} />
-                        </Button>
-                    </div>
-                ),
-            },
-        ],
-    })
 
     function openModal(room?: Room) {
         setErrors([])
@@ -396,108 +281,220 @@ function RoomSettingsScreen() {
         if (result) setNotice(S.saveFailed)
     }
 
+    const resetFilters = () => {
+        setSearch('')
+        setPriceBand('all')
+        setCapacityBand('all')
+    }
+
     const cheapest = rooms.length > 0 ? Math.min(...rooms.map((r) => r.price)) : 0
     const totalUnits = rooms.reduce((sum, r) => sum + (r.remaining ?? 4), 0)
 
-    return (
-        <div className="h-full flex flex-col min-h-0 bg-slate-100 p-2 gap-2 overflow-hidden">
-            {/* KPI */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 shrink-0">
-                <KpiCard
-                    label={tr(S.roomTypesTitle, locale)}
-                    value={`${rooms.length} ${tr(S.roomTypesCount, locale)}`}
-                    icon={<BuildingIcon size={16} />}
-                />
-                <KpiCard
-                    label={tr(S.colPhysicalUnits, locale)}
-                    value={`${totalUnits} ${tr(S.unitsSuffix, locale)}`}
-                    icon={<UsersIcon size={16} />}
-                    tone="text-emerald-600"
-                />
-                <KpiCard
-                    label={tr(S.colStatus, locale)}
-                    value={tr(S.onSale, locale)}
-                    icon={<CheckCircleIcon size={16} />}
-                    tone="text-blue-600"
-                />
-                <KpiCard
-                    label={tr(S.colBasePrice, locale)}
-                    value={formatPrice(cheapest, locale)}
-                    icon={<CoinsIcon size={16} />}
-                />
-            </div>
-
-            {notice && (
-                <div
-                    role="alert"
-                    aria-live="polite"
-                    className="shrink-0 p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium"
-                >
-                    {tr(notice, locale)}
-                </div>
-            )}
-
-            {!canEditPrice && (
-                <div className="shrink-0 p-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-md text-[11px]">
-                    {tr(S.priceHiddenForRole, locale)}
-                </div>
-            )}
-
-            {/* Bảng theo format §F6: tiêu đề + đếm, tìm kiếm, bộ lọc + Đặt lại, phân trang, trạng thái rỗng */}
-            <div className="flex-1 min-h-0 bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="flex flex-wrap items-center justify-between gap-2 px-3 pt-3 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                            {tr(S.roomTypesTitle, locale)}
-                        </h1>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 tabular-nums">
-                            {filtered.length} {tr(S.roomTypesCount, locale)}
-                        </span>
+    const columns: Column<Room>[] = [
+        {
+            key: 'id',
+            header: tr(S.colRoomCode, locale),
+            width: '130px',
+            cell: (room) => (
+                <span className="font-mono text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)]">
+                    {room.id}
+                </span>
+            ),
+        },
+        {
+            key: 'name',
+            header: tr(S.colRoomName, locale),
+            cell: (room) => (
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={tr(room.name, locale)}
+                    >
+                        {tr(room.name, locale)}
                     </div>
+                    {/* Hiện luôn ngôn ngữ còn lại: biên tập viên thấy ngay
+                        bản dịch có bị bỏ trống hay không (luật R6). */}
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                        {room.area} · {pick({ vi: room.name.en, en: room.name.vi }, locale)}
+                    </div>
+                </div>
+            ),
+        },
+        {
+            key: 'guests',
+            header: tr(S.colCapacity, locale),
+            width: '150px',
+            cell: (room) => {
+                // Sức chứa phải tách người lớn / trẻ em (luật B2, `100-05` AC-1):
+                // "2 khách" không cho lễ tân biết có cần chuẩn bị cũi hay không.
+                const max = roomExtras[room.id]?.maxGuests ?? room.guests
+                const children = Math.max(0, max - room.guests)
+                return (
+                    <span className="inline-flex items-center gap-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                        <UsersIcon size={13} />
+                        <span className="tabular-nums">
+                            {room.guests} {tr(S.adults, locale)}
+                            {children > 0 ? ` · ${children} ${tr(S.children, locale)}` : ''}
+                        </span>
+                    </span>
+                )
+            },
+        },
+        {
+            key: 'price',
+            header: tr(S.colBasePrice, locale),
+            align: 'right',
+            width: '150px',
+            cell: (room) => (
+                <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)] tabular-nums">
+                    {formatPrice(room.price, locale)}
+                </span>
+            ),
+        },
+        {
+            key: 'remaining',
+            header: tr(S.colPhysicalUnits, locale),
+            align: 'center',
+            width: '140px',
+            cell: (room) => (
+                <DotBadge tone="blue" label={`${room.remaining ?? 4} ${tr(S.unitsSuffix, locale)}`} />
+            ),
+        },
+        {
+            key: 'status',
+            header: tr(S.colStatus, locale),
+            width: '140px',
+            cell: () => <DotBadge tone="emerald" label={tr(S.onSale, locale)} width={108} />,
+        },
+        {
+            key: 'actions',
+            header: tr(S.colActions, locale),
+            align: 'right',
+            width: '90px',
+            cell: (room) => (
+                <div className="flex items-center justify-end gap-1">
+                    <button
+                        type="button"
+                        onClick={() => openModal(room)}
+                        aria-label={`${tr(S.edit, locale)} ${tr(room.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <PencilIcon size={14} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => handleDelete(room)}
+                        aria-label={`${tr(S.delete, locale)} ${tr(room.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <TrashIcon size={14} />
+                    </button>
+                </div>
+            ),
+        },
+    ]
+
+    const filterGroups = [
+        {
+            legend: tr(S.colBasePrice, locale),
+            value: priceBand,
+            onChange: setPriceBand,
+            options: PRICE_BANDS.map((b) => ({ value: b.value, label: b[locale] })),
+        },
+        {
+            legend: tr(S.colCapacity, locale),
+            value: capacityBand,
+            onChange: setCapacityBand,
+            options: CAPACITY_BANDS.map((b) => ({ value: b.value, label: b[locale] })),
+        },
+    ]
+
+    return (
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái, nút thêm hạng phòng bên phải. */}
+            <PageHeaderBar
+                title={tr(S.roomTypesTitle, locale)}
+                count={{ value: filtered.length, suffix: tr(S.roomTypesCount, locale) }}
+                actions={
                     <Button onClick={() => openModal()}>
                         <PlusIcon size={16} />
                         <span>{tr(S.addRoomType, locale)}</span>
                     </Button>
+                }
+            />
+
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (dải giá, sức chứa) — cùng
+                khuôn rate-plans.tsx: input thô token hoá vì `FilterBar` không
+                nhận chữ tự do, đặt cạnh pill lọc trong cùng khối, Đặt lại ở cuối. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={tr(S.searchRoomType, locale)}
+                    aria-label={tr(S.searchRoomType, locale)}
+                    className="w-44 sm:w-64 px-3 py-1 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 28 }}
+                />
+
+                <FilterBar
+                    groups={filterGroups}
+                    resultText={`${filtered.length} ${tr(S.roomTypesCount, locale)}`}
+                    onReset={resetFilters}
+                />
+            </div>
+
+            {notice && (
+                <div className="px-[var(--cms-pad)] pt-3">
+                    <InlineAlert tone="rose">{tr(notice, locale)}</InlineAlert>
                 </div>
+            )}
 
-                <Toolbar
-                    searchValue={search}
-                    onSearchChange={setSearch}
-                    searchPlaceholder={tr(S.searchRoomType, locale)}
-                    isFiltered={isFiltered}
-                    onReset={() => {
-                        setSearch('')
-                        setPriceBand('all')
-                        setCapacityBand('all')
-                    }}
-                    resetLabel={tr(S.reset, locale)}
-                >
-                    <FilterSelect
+            {!canEditPrice && (
+                <div className="px-[var(--cms-pad)] pt-3">
+                    <InlineAlert tone="amber">{tr(S.priceHiddenForRole, locale)}</InlineAlert>
+                </div>
+            )}
+
+            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời (P11 Calm). */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard
+                        label={tr(S.roomTypesTitle, locale)}
+                        value={`${rooms.length}`}
+                        note={tr(S.roomTypesCount, locale)}
+                        tone="slate"
+                    />
+                    <KpiCard
+                        label={tr(S.colPhysicalUnits, locale)}
+                        value={`${totalUnits}`}
+                        note={tr(S.unitsSuffix, locale)}
+                        tone="emerald"
+                    />
+                    <KpiCard label={tr(S.colStatus, locale)} value={tr(S.onSale, locale)} tone="blue" />
+                    <KpiCard
                         label={tr(S.colBasePrice, locale)}
-                        value={priceBand}
-                        onChange={setPriceBand}
-                        options={PRICE_BANDS.map((b) => ({ value: b.value, label: b[locale] }))}
+                        value={formatPrice(cheapest, locale)}
+                        tone="slate"
                     />
-                    <FilterSelect
-                        label={tr(S.colCapacity, locale)}
-                        value={capacityBand}
-                        onChange={setCapacityBand}
-                        options={CAPACITY_BANDS.map((b) => ({ value: b.value, label: b[locale] }))}
-                    />
-                </Toolbar>
+                </MetricStrip>
+            </div>
 
-                <DataTable<Room>
-                    {...tableProps}
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều
+                cao là ưu tiên số 1 cho màn lễ tân/quản lý dùng hằng ngày. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <DataGrid<Room>
                     caption={tr(S.roomTypesTitle, locale)}
-                    pagination={{
-                        ...tableProps.pagination,
-                        prevLabel: tr(S.paginationPrev, locale),
-                        nextLabel: tr(S.paginationNext, locale),
-                        pageSizeLabel: tr(S.paginationPageSize, locale),
-                        summaryText: (a, b, c) =>
-                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.roomTypesCount, locale)}`,
-                    }}
-                    empty={tr(S.emptyRoomTypes, locale)}
+                    columns={columns}
+                    rows={filtered}
+                    rowKey={(room) => room.id}
+                    empty={
+                        <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                            {tr(S.emptyRoomTypes, locale)}
+                        </div>
+                    }
                 />
             </div>
 
@@ -517,7 +514,7 @@ function RoomSettingsScreen() {
                         </>
                     }
                 >
-                    <div className="space-y-3 text-xs">
+                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
                         {!editing && (
                             <Field
                                 fieldId="room-field-id"
@@ -613,7 +610,7 @@ function RoomSettingsScreen() {
                         </>
                     }
                 >
-                    <div className="space-y-2 text-xs text-slate-700 leading-relaxed">
+                    <div className="space-y-2 text-[length:var(--cms-text-body)] text-[var(--cms-text)] leading-relaxed">
                         <p className="m-0">
                             {tr(draft.name, locale)}:{' '}
                             <strong className="tabular-nums">
@@ -628,7 +625,7 @@ function RoomSettingsScreen() {
                             <strong className="tabular-nums">{priceConfirm.days}</strong>{' '}
                             {tr(S.priceChangeImpact, locale)}
                         </p>
-                        <p className="m-0 font-semibold text-slate-900">
+                        <p className="m-0 font-semibold text-[var(--cms-text)]">
                             {tr(S.bookingsUnaffected, locale)}
                         </p>
                     </div>
@@ -641,30 +638,4 @@ function RoomSettingsScreen() {
 /** Lỗi song ngữ → chuỗi đã dịch, hoặc `undefined` khi không có lỗi. */
 function maybe(text: I18nText | undefined, locale: 'vi' | 'en'): string | undefined {
     return text ? tr(text, locale) : undefined
-}
-
-function KpiCard({
-    label,
-    value,
-    icon,
-    tone = 'text-slate-900',
-}: {
-    label: string
-    value: string
-    icon: React.ReactNode
-    tone?: string
-}) {
-    return (
-        <div className="bg-white p-2.5 rounded border border-slate-200 shadow-sm flex items-center justify-between">
-            <div className="min-w-0">
-                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider truncate">
-                    {label}
-                </div>
-                <div className={`text-base font-extrabold mt-0.5 truncate ${tone}`}>{value}</div>
-            </div>
-            <div className="w-8 h-8 rounded bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
-                {icon}
-            </div>
-        </div>
-    )
 }
