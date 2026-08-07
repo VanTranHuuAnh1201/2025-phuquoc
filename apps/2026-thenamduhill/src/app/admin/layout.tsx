@@ -7,8 +7,6 @@ import {
     ExternalIcon,
     FileTextIcon,
     GridIcon,
-    MenuIcon,
-    PlusIcon,
     SettingsIcon,
     TagIcon,
     TicketIcon,
@@ -19,7 +17,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { ROLE_LABEL, tr } from '@/strings'
 import type { Permission } from '@repo/core'
 import { can, isStaffRole } from '@repo/core'
-import { useRailCollapse } from '@repo/ui'
+import { AppShell, type ShellNavItem } from '@repo/cms-ui'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -42,38 +40,38 @@ const NAV_SECTIONS: NavSection[] = [
         prefix: 'operations',
         title: 'OPERATIONS',
         items: [
-            { href: '/admin', label: 'Dashboard', icon: <GridIcon size={16} /> },
-            { href: '/admin/orders', label: 'Quản lý Đơn hàng', icon: <FileTextIcon size={16} />, permission: 'booking.view.all' },
-            { href: '/admin/inventory', label: 'Tồn kho & Giá', icon: <CalendarIcon size={16} />, permission: 'inventory.view' },
-            { href: '/admin/housekeeping', label: 'Buồng phòng', icon: <BedIcon size={16} /> },
-            { href: '/admin/customers', label: 'Khách hàng (CRM)', icon: <UsersIcon size={16} />, permission: 'booking.view.all' },
+            { href: '/admin', label: 'Dashboard', icon: <GridIcon size={20} /> },
+            { href: '/admin/orders', label: 'Quản lý Đơn hàng', icon: <FileTextIcon size={20} />, permission: 'booking.view.all' },
+            { href: '/admin/inventory', label: 'Tồn kho & Giá', icon: <CalendarIcon size={20} />, permission: 'inventory.view' },
+            { href: '/admin/housekeeping', label: 'Buồng phòng', icon: <BedIcon size={20} /> },
+            { href: '/admin/customers', label: 'Khách hàng (CRM)', icon: <UsersIcon size={20} />, permission: 'booking.view.all' },
         ],
     },
     {
         prefix: 'content',
         title: 'CONTENT',
         items: [
-            { href: '/admin/content/pages', label: 'Trang (Pages)', icon: <FileTextIcon size={16} />, permission: 'content.edit' },
-            { href: '/admin/content/media', label: 'Media', icon: <GridIcon size={16} />, permission: 'content.edit' },
-            { href: '/admin/promotions', label: 'Khuyến mãi', icon: <TagIcon size={16} />, permission: 'promotion.edit' },
+            { href: '/admin/content/pages', label: 'Trang (Pages)', icon: <FileTextIcon size={20} />, permission: 'content.edit' },
+            { href: '/admin/content/media', label: 'Media', icon: <GridIcon size={20} />, permission: 'content.edit' },
+            { href: '/admin/promotions', label: 'Khuyến mãi', icon: <TagIcon size={20} />, permission: 'promotion.edit' },
         ],
     },
     {
         prefix: 'system',
         title: 'SYSTEM / SETUP',
         items: [
-            { href: '/admin/settings', label: 'Setup & Cấu hình', icon: <SettingsIcon size={16} />, permission: 'content.edit' },
-            { href: '/admin/settings/rooms', label: 'Hạng phòng', icon: <BedIcon size={16} />, permission: 'content.edit' },
-            { href: '/admin/settings/rate-plans', label: 'Gói giá', icon: <TagIcon size={16} />, permission: 'price.edit' },
-            { href: '/admin/settings/addons', label: 'Phụ thu & Dịch vụ', icon: <CoinsIcon size={16} />, permission: 'price.edit' },
-            { href: '/admin/settings/tickets', label: 'Ticket sự cố', icon: <TicketIcon size={16} />, permission: 'content.edit' },
-            { href: '/admin/settings/accounts', label: 'Tài khoản & RBAC', icon: <UsersIcon size={16} />, permission: 'account.manage' },
-            { href: '/admin/settings/general', label: 'Cài đặt Ngân hàng & ZNS', icon: <SettingsIcon size={16} />, permission: 'settings.bank' },
+            { href: '/admin/settings', label: 'Setup & Cấu hình', icon: <SettingsIcon size={20} />, permission: 'content.edit' },
+            { href: '/admin/settings/rooms', label: 'Hạng phòng', icon: <BedIcon size={20} />, permission: 'content.edit' },
+            { href: '/admin/settings/rate-plans', label: 'Gói giá', icon: <TagIcon size={20} />, permission: 'price.edit' },
+            { href: '/admin/settings/addons', label: 'Phụ thu & Dịch vụ', icon: <CoinsIcon size={20} />, permission: 'price.edit' },
+            { href: '/admin/settings/tickets', label: 'Ticket sự cố', icon: <TicketIcon size={20} />, permission: 'content.edit' },
+            { href: '/admin/settings/accounts', label: 'Tài khoản & RBAC', icon: <UsersIcon size={20} />, permission: 'account.manage' },
+            { href: '/admin/settings/general', label: 'Cài đặt Ngân hàng & ZNS', icon: <SettingsIcon size={20} />, permission: 'settings.bank' },
         ],
     },
 ]
 
-const TOP_NAV_ITEMS = [
+const TOP_NAV_ITEMS: ShellNavItem[] = [
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/orders', label: 'Quản lý Đơn hàng' },
     { href: '/admin/inventory', label: 'Tồn kho & Giá' },
@@ -96,11 +94,6 @@ function AdminShell({ children }: { children: React.ReactNode }) {
     const router = useRouter()
     const user = useAuthStore((s) => s.user)
     const logout = useAuthStore((s) => s.logout)
-
-    // Reusing useRailCollapse hook from @repo/ui for collapse/expand
-    const { collapsed, toggle, railRef } = useRailCollapse({
-        storageKey: 'ndh-cms-sidebar-collapsed',
-    })
 
     const [userDropdownOpen, setUserDropdownOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -126,7 +119,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
     if (!hydrated || !user || !isStaffRole(user.role)) return null
 
-    // Filter visible items based on permissions
+    // Lọc mục theo quyền — mỗi vai trò thấy đúng phần việc của mình (§B8).
     const visibleSections = NAV_SECTIONS.map((section) => ({
         ...section,
         items: section.items.filter(
@@ -134,238 +127,118 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         ),
     })).filter((section) => section.items.length > 0)
 
+    // AppShell chỉ nhận một mảng phẳng railItems — gộp mọi section lại vì
+    // rail 64px cố định không còn chỗ cho tiêu đề nhóm (khác cây menu cũ).
+    const railItems: ShellNavItem[] = visibleSections.flatMap((section) => section.items)
+
     const userInitial = user.fullName ? user.fullName.charAt(0).toUpperCase() : 'A'
+    const roleLabel = tr(ROLE_LABEL[user.role], locale)
 
     return (
-        <div
-            data-theme="h1"
-            className="h-screen w-full flex overflow-hidden bg-slate-100 text-slate-900 font-sans"
-        >
-            {/* Left Sidebar with Logo & Collapsible Tree Navigation */}
-            <aside
-                ref={railRef as any}
-                className={`h-screen sticky top-0 left-0 z-50 shrink-0 bg-[#0F172A] text-slate-300 flex flex-col border-r border-slate-800 transition-all duration-200 ease-in-out ${
-                    collapsed ? 'w-14' : 'w-60'
-                }`}
-            >
-                {/* Sidebar Header with Fixed Logo & Collapse Toggle */}
-                <div
-                    className={`border-b border-slate-800/80 shrink-0 transition-all ${
-                        collapsed
-                            ? 'py-3 flex flex-col items-center justify-center gap-2.5'
-                            : 'h-13 px-3 flex items-center justify-between'
-                    }`}
-                >
-                    <div className="flex items-center gap-2 min-w-0">
-                        {/* Fixed 28x28px Company Logo Image */}
-                        <div className="w-7 h-7 min-w-[28px] min-h-[28px] max-w-[28px] max-h-[28px] rounded-md overflow-hidden bg-slate-800 shrink-0 border border-slate-700/60 shadow-xs flex items-center justify-center relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/brand/logo.png"
-                                alt="The Nam Du Hill Logo"
-                                className="w-full h-full object-contain p-0.5"
-                            />
-                        </div>
-                        {!collapsed && (
-                            <div className="min-w-0">
-                                <div className="font-extrabold text-xs text-white tracking-wide truncate">
-                                    THE NAM DU HILL
-                                </div>
-                            </div>
-                        )}
+        <AppShell
+            railItems={railItems}
+            tabItems={TOP_NAV_ITEMS}
+            currentPath={pathname}
+            brand={
+                <Link href="/admin" title="THE NAM DU HILL" aria-label="THE NAM DU HILL">
+                    <div className="w-8 h-8 rounded-[var(--cms-radius-sm)] overflow-hidden bg-[var(--cms-bg-subtle)] border border-[var(--cms-border)] flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/brand/logo.png"
+                            alt="The Nam Du Hill Logo"
+                            className="w-full h-full object-contain p-0.5"
+                        />
                     </div>
-
-                    {/* Collapse / Expand Toggle Button: Beside logo when expanded, directly below logo when collapsed */}
+                </Link>
+            }
+            headerRight={
+                <div className="flex items-center gap-2.5">
+                    {/* CTA chính */}
                     <button
                         type="button"
-                        onClick={toggle}
-                        title={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'}
-                        className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0"
+                        onClick={() => router.push('/admin/orders/new')}
+                        className="flex items-center gap-1 py-1.5 px-3 bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white font-semibold text-[length:var(--cms-text-body)] rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
-                        <MenuIcon size={16} />
-                    </button>
-                </div>
-
-                {/* Clean Vertical Navigation Tree */}
-                <nav className="flex-1 px-2 py-2 space-y-3 overflow-y-auto custom-scrollbar">
-                    {visibleSections.map((section) => (
-                        <div key={section.prefix} className="space-y-0.5">
-                            {!collapsed && (
-                                <div className="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                                    {section.title}
-                                </div>
-                            )}
-
-                            <div className="space-y-0.5">
-                                {section.items.map((item) => {
-                                    const active =
-                                        item.href === '/admin'
-                                            ? pathname === '/admin'
-                                            : pathname.startsWith(item.href)
-                                    return (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            title={collapsed ? item.label : undefined}
-                                            className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
-                                                active
-                                                    ? 'bg-slate-800 text-blue-400 font-semibold border-l-2 border-blue-500'
-                                                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                                            } ${collapsed ? 'justify-center px-0' : ''}`}
-                                        >
-                                            <span className={active ? 'text-blue-400' : 'text-slate-400'}>
-                                                {item.icon}
-                                            </span>
-                                            {!collapsed && <span className="truncate">{item.label}</span>}
-                                        </Link>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    ))}
-                </nav>
-
-                {/* Footer User Profile & Dropdown */}
-                <div className="p-2 border-t border-slate-800/80 bg-[#090D1A] shrink-0 relative" ref={dropdownRef}>
-                    <button
-                        type="button"
-                        onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                        className={`w-full flex items-center gap-2 p-1 rounded-md hover:bg-slate-800/70 transition-colors text-left ${
-                            collapsed ? 'justify-center' : 'justify-between'
-                        }`}
-                    >
-                        <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                                {userInitial}
-                            </div>
-                            {!collapsed && (
-                                <div className="min-w-0">
-                                    <div className="text-xs font-semibold text-white truncate">
-                                        {user.fullName || 'Admin User'}
-                                    </div>
-                                    <div className="text-[10px] text-slate-400 truncate">
-                                        {tr(ROLE_LABEL[user.role], locale)}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {!collapsed && (
-                            <span className="text-slate-400 text-[9px]">▲</span>
-                        )}
+                        <span>+ Đặt phòng mới</span>
                     </button>
 
-                    {/* User Dropdown Menu */}
-                    {userDropdownOpen && (
-                        <div
-                            className={`absolute bottom-11 z-50 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl p-2 text-xs text-slate-200 space-y-2 ${
-                                collapsed ? 'left-14 w-48' : 'left-2 right-2'
-                            }`}
-                        >
-                            <div className="px-2 py-1 border-b border-slate-700">
-                                <div className="font-semibold text-white truncate">
-                                    {user.fullName || 'Admin User'}
-                                </div>
-                                <div className="text-[10px] text-slate-400">
-                                    {user.email || 'Staff Account'}
-                                </div>
-                            </div>
-
-                            <Link
-                                href="/h1"
-                                target="_blank"
-                                className="flex items-center justify-between px-2 py-1 text-slate-300 hover:bg-slate-700/60 rounded transition-colors"
+                    {/* Chuyển ngôn ngữ */}
+                    <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)]">
+                        {(['vi', 'en'] as const).map((code) => (
+                            <button
+                                key={code}
+                                type="button"
+                                onClick={() => setLocale(code)}
+                                aria-pressed={locale === code}
+                                className={`px-2 py-1 text-[length:var(--cms-text-meta)] font-bold uppercase rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                    locale === code
+                                        ? 'bg-[var(--cms-bg)] text-[var(--cms-text)] shadow-[var(--cms-shadow-pop)]'
+                                        : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                                }`}
                             >
-                                <span>Xem Trang Client</span>
-                                <ExternalIcon size={12} />
-                            </Link>
-
-                            <div className="border-t border-slate-700 pt-1">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setUserDropdownOpen(false)
-                                        logout()
-                                        router.replace('/login')
-                                    }}
-                                    className="w-full text-left px-2 py-1 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 rounded font-medium transition-colors"
-                                >
-                                    Đăng xuất
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </aside>
-
-            {/* Main Workspace with Streamlined Top-Nav Bar */}
-            <div className="flex-1 h-screen overflow-y-auto flex flex-col min-w-0 bg-slate-100">
-                {/* Streamlined Top-Nav Header (Height 40px) */}
-                <header className="h-10 bg-white border-b border-slate-200 px-3 flex items-center justify-between shrink-0 z-30 text-xs">
-                    {/* Left: Operational Tabs */}
-                    <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar h-full">
-                        {TOP_NAV_ITEMS.map((tab) => {
-                            const active =
-                                tab.href === '/admin'
-                                    ? pathname === '/admin'
-                                    : pathname.startsWith(tab.href)
-                            return (
-                                <Link
-                                    key={tab.href}
-                                    href={tab.href}
-                                    className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors whitespace-nowrap ${
-                                        active
-                                            ? 'bg-blue-50 text-blue-600'
-                                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </Link>
-                            )
-                        })}
+                                {code}
+                            </button>
+                        ))}
                     </div>
 
-                    {/* Right: Primary Action Buttons, Role Switcher & Controls */}
-                    <div className="flex items-center gap-2.5 shrink-0 ml-2">
-                        {/* Primary CTA Button */}
+                    {/* Dropdown người dùng — hiện vai trò THẬT, không phải role switcher giả */}
+                    <div className="relative" ref={dropdownRef}>
                         <button
                             type="button"
-                            onClick={() => router.push('/admin/orders/new')}
-                            className="flex items-center gap-1 py-1 px-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded transition-colors shadow-xs"
+                            onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                            className="flex items-center gap-2 py-1 px-1.5 rounded-[var(--cms-radius)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            <PlusIcon size={14} />
-                            <span>+ Đặt phòng mới</span>
+                            <div className="w-6 h-6 rounded-full bg-[var(--cms-accent)] text-white flex items-center justify-center font-bold text-[length:var(--cms-text-meta)] shrink-0">
+                                {userInitial}
+                            </div>
+                            <div className="hidden sm:block text-left min-w-0">
+                                <div className="text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)] truncate leading-tight">
+                                    {user.fullName || 'Admin User'}
+                                </div>
+                                <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] truncate leading-tight">
+                                    {roleLabel}
+                                </div>
+                            </div>
                         </button>
 
-                        {/* Staff Role Switcher */}
-                        <div className="hidden sm:flex items-center bg-slate-100 p-0.5 rounded border border-slate-200 text-[11px]">
-                            <span className="px-2 py-0.2 text-slate-500">Lễ tân</span>
-                            <span className="px-2 py-0.2 font-bold bg-blue-600 text-white rounded shadow-xs">Manager</span>
-                            <span className="px-2 py-0.2 text-slate-500">Chủ cơ sở</span>
-                        </div>
+                        {userDropdownOpen && (
+                            <div className="absolute top-full right-0 mt-1 z-50 w-56 bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] shadow-[var(--cms-shadow-pop)] p-2 text-[length:var(--cms-text-body)] text-[var(--cms-text)] space-y-1">
+                                <div className="px-2 py-1.5 border-b border-[var(--cms-border)]">
+                                    <div className="font-semibold truncate">{user.fullName || 'Admin User'}</div>
+                                    <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] truncate">
+                                        {user.email || roleLabel}
+                                    </div>
+                                </div>
 
-                        {/* Language Selector */}
-                        <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200">
-                            {(['vi', 'en'] as const).map((code) => (
-                                <button
-                                    key={code}
-                                    type="button"
-                                    onClick={() => setLocale(code)}
-                                    className={`px-1.5 py-0.2 text-[10px] font-bold uppercase rounded ${
-                                        locale === code ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
-                                    }`}
+                                <Link
+                                    href="/h1"
+                                    target="_blank"
+                                    className="flex items-center justify-between px-2 py-1.5 text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                                 >
-                                    {code}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </header>
+                                    <span>Xem Trang Client</span>
+                                    <ExternalIcon size={14} />
+                                </Link>
 
-                <main className="flex-1 p-3 min-w-0 w-full flex flex-col overflow-hidden h-full min-h-0">
-                    {children}
-                </main>
-            </div>
-        </div>
+                                <div className="border-t border-[var(--cms-border)] pt-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setUserDropdownOpen(false)
+                                            logout()
+                                            router.replace('/login')
+                                        }}
+                                        className="w-full text-left px-2 py-1.5 text-[var(--cms-tone-rose)] hover:bg-[var(--cms-tone-rose-bg)] rounded-[var(--cms-radius-sm)] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                                    >
+                                        Đăng xuất
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            }
+        >
+            {children}
+        </AppShell>
     )
 }
