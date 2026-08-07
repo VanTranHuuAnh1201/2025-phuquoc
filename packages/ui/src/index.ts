@@ -13,7 +13,7 @@
  *
  * Ranh giới với hai package láng giềng:
  *
- *     ui           primitive rời — Button, Modal, Field, DataTable
+ *     ui           primitive rời — Button, Modal, Field, DataTable, Sidebar
  *     ui-layout    bố cục trang  — Header, Hero, Breadcrumbs, Footer
  *     domain-hotel nghiệp vụ     — CheckoutPage, ToursPage, DiningPage
  */
@@ -47,14 +47,25 @@ export { Badge } from './Badge'
 export type { BadgeProps, BadgeTone } from './Badge'
 
 export { DataTable } from './DataTable'
-export type { Column, DataTableProps } from './DataTable'
+export type { Column, DataTableProps, SortDir } from './DataTable'
+
+export { useDataTable } from './useDataTable'
+export type {
+  FetchParams,
+  FetchResult,
+  DataTableConfig,
+  UseDataTableReturn,
+} from './useDataTable'
+
+export { Pagination } from './Pagination'
+export type { PaginationProps } from './Pagination'
 
 export { Field, SelectField, TextAreaField, CheckField } from './Field'
 export type {
-    FieldProps,
-    SelectFieldProps,
-    TextAreaFieldProps,
-    CheckFieldProps,
+  FieldProps,
+  SelectFieldProps,
+  TextAreaFieldProps,
+  CheckFieldProps,
 } from './Field'
 
 export { Modal } from './Modal'
@@ -65,3 +76,10 @@ export type { StatCardProps } from './StatCard'
 
 export { Toolbar, FilterSelect } from './Toolbar'
 export type { ToolbarProps, FilterSelectProps } from './Toolbar'
+
+// ---------------------------------------------------- Sidebar components
+export { useRailCollapse } from './Sidebar/useRailCollapse'
+export type { RailCollapseOptions, RailCollapseReturn } from './Sidebar/useRailCollapse'
+
+export { SidebarRecentList } from './Sidebar/SidebarRecentList'
+export type { SidebarRecentItem, SidebarRecentListProps } from './Sidebar/SidebarRecentList'

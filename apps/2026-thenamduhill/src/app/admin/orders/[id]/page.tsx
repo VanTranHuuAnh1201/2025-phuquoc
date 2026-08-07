@@ -32,6 +32,7 @@ import {
     TextAreaField,
 } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
+import { priceLineLabel } from '@/components/PriceBreakdown'
 import { useAuthStore } from '@/stores/auth.store'
 import { useBookingStore } from '@/stores/booking.store'
 import { useNotifyStore } from '@/stores/notify.store'
@@ -243,7 +244,7 @@ export default function AdminBookingDetail({
                         {booking.priceLines.map((line, i) => (
                             <Row
                                 key={i}
-                                label={`${line.kind} · ${line.quantity}`}
+                                label={priceLineLabel(line, locale)}
                                 value={formatPrice(line.total, locale)}
                             />
                         ))}

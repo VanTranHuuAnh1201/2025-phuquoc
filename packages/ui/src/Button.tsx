@@ -15,9 +15,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const PADDING: Record<ButtonSize, string> = {
-    sm: 'var(--space-2) var(--space-4)',
-    md: 'var(--space-3) var(--space-6)',
-    lg: 'var(--space-4) var(--space-8)',
+    sm: '6px 14px',
+    md: '10px 20px',
+    lg: '12px 24px',
 }
 
 const FONT_SIZE: Record<ButtonSize, string> = {
@@ -44,6 +44,21 @@ const SURFACE: Record<ButtonVariant, { background: string; color: string; border
     },
 }
 
+// Chiều cao TỐI THIỂU, không phải chiều cao cố định.
+//
+// Dùng minHeight để nút còn cao lên được khi nhãn xuống dòng (nhãn tiếng Việt
+// dài hơn tiếng Anh ~30%, ở 375px là xuống dòng thật) — `height` cứng làm chữ
+// tràn ra ngoài viền.
+//
+// `lg` là cỡ của CTA chính, phải ≥ 44px theo FE5 và WCAG 2.2 §2.5.8 (target
+// chạm). 42px trượt ngưỡng đúng 2px — đủ để hỏng, không đủ để ai nhìn ra.
+// `sm`/`md` là nút phụ trong bảng CMS, ngưỡng áp dụng là 24×24px.
+const MIN_HEIGHT: Record<ButtonSize, number> = {
+    sm: 32,
+    md: 38,
+    lg: 44,
+}
+
 export function Button({
     variant = 'primary',
     size = 'md',
@@ -56,11 +71,14 @@ export function Button({
             {...rest}
             style={{
                 ...SURFACE[variant],
+                minHeight: MIN_HEIGHT[size],
                 padding: PADDING[size],
-                fontSize: FONT_SIZE[size],
-                fontFamily: 'var(--font-body)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                whiteSpace: 'nowrap',
                 fontWeight: 600,
-                borderRadius: 'var(--radius-pill)',
+                borderRadius: 'var(--radius-sm, 6px)',
                 cursor: rest.disabled ? 'not-allowed' : 'pointer',
                 opacity: rest.disabled ? 0.55 : 1,
                 transition: `background var(--duration) var(--ease), transform var(--duration) var(--ease)`,

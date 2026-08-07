@@ -1,8 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * FE tự kiểm ticket 100-02 — CMS đơn hàng.
- * File tạm của FE, xoá sau khi SA/QC verify xong.
+ * Kiểm thử hồi quy CMS đơn hàng (ticket 100-02).
+ *
+ * SA quyết giữ lại bộ này làm hồi quy thường trực: nó khoá hai thứ dễ vỡ âm
+ * thầm — bảng §F6 (lọc, chọn nhiều, phân trang, đổi thẻ dưới 640px) và ràng
+ * buộc "giá lễ tân khớp giá khách từng đồng" của luật R8.
  */
 
 const DESKTOP = { width: 1440, height: 900 }

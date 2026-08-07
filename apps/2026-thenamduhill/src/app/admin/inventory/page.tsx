@@ -51,78 +51,67 @@ export default function InventoryPage() {
     const current = editing ? inventory[inventoryKey(editing.roomTypeId, editing.date)] : undefined
 
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
-            <header
-                style={{
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'space-between',
-                    gap: 'var(--space-4)',
-                    flexWrap: 'wrap',
-                }}
-            >
-                <div>
-                    <h1 style={{ margin: 0, fontSize: 'var(--text-2xl)', fontFamily: 'var(--font-display)' }}>
+        <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-hidden p-3 bg-slate-100">
+            {/* High-density Unified Top Header Bar */}
+            <div className="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
+                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
                         {tr(S.inventoryCalendar, locale)}
                     </h1>
-                    <p style={{ margin: 'var(--space-2) 0 0', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                    <span className="text-xs text-slate-500 hidden sm:inline">
                         {locale === 'vi'
-                            ? 'Bấm vào một ô để sửa giá, đóng bán hoặc đặt số đêm tối thiểu.'
-                            : 'Click a cell to change price, close sales, or set a minimum stay.'}
-                    </p>
+                            ? 'Bấm ô để sửa giá, đóng bán hoặc đêm tối thiểu.'
+                            : 'Click cell to adjust price or restrictions.'}
+                    </span>
                 </div>
 
-                <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setOffset(offset - DAYS_VISIBLE)}
-                        aria-label={locale === 'vi' ? 'Hai tuần trước' : 'Previous two weeks'}
-                    >
-                        <ChevronLeftIcon size={16} />
-                    </Button>
-                    <span style={{ fontSize: 'var(--text-sm)', minWidth: 150, textAlign: 'center' }}>
-                        {dates[0]} → {dates[dates.length - 1]}
-                    </span>
-                    <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setOffset(offset + DAYS_VISIBLE)}
-                        aria-label={locale === 'vi' ? 'Hai tuần sau' : 'Next two weeks'}
-                    >
-                        <ChevronRightIcon size={16} />
-                    </Button>
+                <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center bg-slate-100 border border-slate-300 rounded-md p-0.5">
+                        <button
+                            type="button"
+                            onClick={() => setOffset(offset - DAYS_VISIBLE)}
+                            className="p-1 hover:bg-white rounded transition-colors"
+                            aria-label={locale === 'vi' ? 'Hai tuần trước' : 'Previous two weeks'}
+                        >
+                            <ChevronLeftIcon size={16} />
+                        </button>
+                        <span className="text-xs font-semibold px-2 text-slate-800">
+                            {dates[0]} → {dates[dates.length - 1]}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setOffset(offset + DAYS_VISIBLE)}
+                            className="p-1 hover:bg-white rounded transition-colors"
+                            aria-label={locale === 'vi' ? 'Hai tuần sau' : 'Next two weeks'}
+                        >
+                            <ChevronRightIcon size={16} />
+                        </button>
+                    </div>
+
                     {offset !== 0 && (
-                        <Button variant="ghost" size="sm" onClick={() => setOffset(0)}>
+                        <button
+                            type="button"
+                            onClick={() => setOffset(0)}
+                            className="h-8 px-2.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
+                        >
                             {locale === 'vi' ? 'Hôm nay' : 'Today'}
-                        </Button>
+                        </button>
                     )}
                 </div>
-            </header>
+            </div>
 
             {error && (
                 <div
                     role="alert"
-                    style={{
-                        padding: 'var(--space-4)',
-                        background: 'var(--danger-bg)',
-                        color: 'var(--danger)',
-                        borderRadius: 'var(--radius)',
-                        fontSize: 'var(--text-sm)',
-                    }}
+                    className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium shrink-0"
                 >
                     {error === 'version-conflict' ? tr(S.versionConflict, locale) : error}
                 </div>
             )}
 
-            <div
-                style={{
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-lg)',
-                    overflowX: 'auto',
-                }}
-            >
+            {/* Matrix Table Container - Maximized Full Height */}
+            <div className="w-full flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-auto">
+
                 <table style={{ borderCollapse: 'collapse', minWidth: 900 }}>
                     <caption
                         style={{

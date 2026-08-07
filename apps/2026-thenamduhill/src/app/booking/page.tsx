@@ -11,7 +11,7 @@
  * Theme chỉ cấp `tokens.css`; đổi mẫu là đổi đúng một thuộc tính ở đây.
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -275,10 +275,22 @@ function BookingFlow() {
                 /* Dưới 900px sheet chiếm chỗ ở đáy màn. Không chừa đệm thì nó
                    NẰM ĐÈ lên nút "Tiếp tục" — nút vẫn đủ 44px và vẫn hiện,
                    nhưng bấm không được. Đây là lỗi dễ bỏ sót nhất của bố cục
-                   này vì nhìn ảnh chụp không thấy. */
+                   này vì nhìn ảnh chụp không thấy.
+
+                   Đệm bám theo chiều cao THẬT của sheet, do chính sheet đo và
+                   phát ra biến --booking-sheet-height (xem SummarySheet). Hằng
+                   số cũ 96px chỉ đúng khi sheet đóng; khách mở breakdown ra xem
+                   giá — đúng thao tác mà bước này mời gọi — là nút hành động bị
+                   nuốt.
+
+                   56px dự phòng là mốc chạm tối thiểu của nút thu gọn, dùng cho
+                   khoảnh khắc trước khi phép đo đầu tiên kịp chạy. Cộng thêm
+                   một bậc thang token để nút không dính sát mép sheet. */
                 @media (max-width: 899px) {
                     .booking-main[data-sheet='on'] {
-                        padding-bottom: 96px;
+                        padding-bottom: calc(
+                            var(--booking-sheet-height, 56px) + var(--space-3)
+                        );
                     }
                 }
             `}</style>
@@ -412,9 +424,47 @@ function SummaryCard({ quote }: { quote: NonNullable<ReturnType<typeof useCurren
 function SummarySheet({ quote }: { quote: NonNullable<ReturnType<typeof useCurrentQuote>> }) {
     const { locale } = useLocale()
     const [open, setOpen] = useState(false)
+    const sheetRef = useRef<HTMLDivElement | null>(null)
+
+    // Sheet nằm `position: fixed` nên nó KHÔNG chiếm chỗ trong luồng bố cục —
+    // trang không tự biết đáy mình đang bị che bao nhiêu. Trước đây đệm đáy là
+    // hằng số 96px tính theo sheet ĐÓNG (59.5px); mở ra sheet cao 428–463px thì
+    // 96px không còn đủ và sheet nuốt luôn nút "Đặt phòng"/"Tiếp tục" — nút vẫn
+    // render, vẫn đủ 44px, chỉ là bấm vào trúng sheet.
+    //
+    // Đo chiều cao THẬT rồi phát ra biến CSS để `.booking-main` chừa đúng bấy
+    // nhiêu. Không dùng hằng số thứ hai cho trạng thái mở: chiều cao sheet còn
+    // đổi theo số dòng khuyến mãi/addon, theo độ dài chuỗi VI↔EN và theo lúc
+    // font tải xong — mọi con số cứng đều sẽ sai ở một trong các trường hợp đó.
+    //
+    // ResizeObserver thay vì đo trong effect theo `open`: nó bắt được CẢ những
+    // lần cao lên mà React không render lại (font swap, đổi ngôn ngữ, breakdown
+    // dài thêm).
+    useEffect(() => {
+        const el = sheetRef.current
+        if (!el) return
+
+        const publish = () => {
+            document.documentElement.style.setProperty(
+                '--booking-sheet-height',
+                `${Math.ceil(el.getBoundingClientRect().height)}px`,
+            )
+        }
+
+        publish()
+        const observer = new ResizeObserver(publish)
+        observer.observe(el)
+
+        return () => {
+            observer.disconnect()
+            // Sheet biến mất (về bước 1, hoặc bỏ chọn phòng) thì trả lại đệm —
+            // giữ lại là chừa một khoảng trống chết ở cuối trang.
+            document.documentElement.style.removeProperty('--booking-sheet-height')
+        }
+    }, [])
 
     return (
-        <div className="booking-sheet">
+        <div className="booking-sheet" ref={sheetRef}>
             <button
                 type="button"
                 className="booking-sheet__toggle"
@@ -531,8 +581,17 @@ function SummarySheet({ quote }: { quote: NonNullable<ReturnType<typeof useCurre
 
                 .booking-sheet__body {
                     /* Cuộn TRONG sheet: breakdown dài (nhiều khuyến mãi, nhiều
-                       addon) không được đẩy cao quá màn rồi che hết trang. */
-                    max-height: 70vh;
+                       addon) không được đẩy cao quá màn rồi che hết trang.
+
+                       50vh chứ không phải 70vh: cộng nút thu gọn thì bản 70vh
+                       ăn tới ~76% màn, chỉ chừa lại một khe hẹp cho chính trang
+                       khách đang điền. Đệm đáy ở .booking-main đã lo việc nút
+                       hành động không bị che, nhưng khách vẫn phải NHÌN THẤY
+                       phần trang mình đang thao tác — mở bảng giá không có
+                       nghĩa là từ bỏ cả màn hình. Ở 812px cao, 50vh cho breakdown
+                       ~406px, vẫn đủ hiện trọn bảng giá thường gặp mà không phải
+                       cuộn trong sheet. */
+                    max-height: 50vh;
                     overflow-y: auto;
                     padding: var(--space-3);
                     border-top: 1px solid var(--border);

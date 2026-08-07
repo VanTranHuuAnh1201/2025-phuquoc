@@ -23,35 +23,45 @@ export interface PriceBreakdownProps {
     explainPromotions?: boolean
 }
 
+/**
+ * Nhãn hiển thị của một dòng giá.
+ *
+ * Tách ra khỏi component vì màn chi tiết đơn của lễ tân
+ * (`admin/orders/[id]`) dựng bảng từ `Booking.priceLines` đã lưu chứ không từ
+ * `Quote` sống, nên không dùng lại được cả component — nhưng **phải** dùng
+ * chung đúng quy tắc đặt nhãn này. Có hai bản sao là sớm muộn lệch nhau, và
+ * `kind` là mã nội bộ nên lệch nghĩa là lộ chữ "extra-bed" ra cho khách.
+ */
+export function priceLineLabel(line: BookingPriceLine, locale: Locale): string {
+    if (line.label) return pick(line.label, locale)
+    const property = getPropertySync()
+    switch (line.kind) {
+        case 'room': {
+            const room = property.rooms.find((r) => r.id === line.refId)
+            const name = room ? pick(room.name, locale) : tr(S.roomCharge, locale)
+            return `${name} · ${line.quantity} ${tr(S.nights, locale)}`
+        }
+        case 'extra-bed':
+            return `${tr(S.extraBed, locale)} · ${line.quantity}`
+        case 'child':
+            return `${tr(S.childCharge, locale)} · ${line.quantity}`
+        case 'addon': {
+            const addon = property.addons.find((a) => a.id === line.refId)
+            const name = addon ? pick(addon.name, locale) : line.refId
+            return `${name} · ${line.quantity}`
+        }
+        case 'surcharge':
+            return line.refId
+    }
+}
+
 export function PriceBreakdown({
     quote,
     locale,
     showDeposit = true,
     explainPromotions = false,
 }: PriceBreakdownProps) {
-    const property = getPropertySync()
-
-    const labelOf = (line: BookingPriceLine): string => {
-        if (line.label) return pick(line.label, locale)
-        switch (line.kind) {
-            case 'room': {
-                const room = property.rooms.find((r) => r.id === line.refId)
-                const name = room ? pick(room.name, locale) : tr(S.roomCharge, locale)
-                return `${name} · ${line.quantity} ${tr(S.nights, locale)}`
-            }
-            case 'extra-bed':
-                return `${tr(S.extraBed, locale)} · ${line.quantity}`
-            case 'child':
-                return `${tr(S.childCharge, locale)} · ${line.quantity}`
-            case 'addon': {
-                const addon = property.addons.find((a) => a.id === line.refId)
-                const name = addon ? pick(addon.name, locale) : line.refId
-                return `${name} · ${line.quantity}`
-            }
-            case 'surcharge':
-                return line.refId
-        }
-    }
+    const labelOf = (line: BookingPriceLine): string => priceLineLabel(line, locale)
 
     return (
         <div style={{ display: 'grid', gap: 'var(--space-3)' }}>

@@ -12,13 +12,15 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 
 const INPUT_STYLE: React.CSSProperties = {
     width: '100%',
-    padding: 'var(--space-3) var(--space-4)',
-    fontSize: 'var(--text-base)',
+    height: 40,
+    padding: '0 var(--space-3)',
+    fontSize: 'var(--text-sm)',
     fontFamily: 'var(--font-body)',
     color: 'var(--text)',
     background: 'var(--surface)',
     border: '1px solid var(--border-strong)',
-    borderRadius: 'var(--radius)',
+    borderRadius: 'var(--radius-sm, 6px)',
+    boxSizing: 'border-box',
 }
 
 interface FieldShellProps {

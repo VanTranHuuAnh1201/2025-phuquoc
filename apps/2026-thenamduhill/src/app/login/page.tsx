@@ -96,18 +96,19 @@ function AuthScreen() {
                 minHeight: '100vh',
                 display: 'grid',
                 placeItems: 'center',
-                padding: 'var(--space-6)',
-                background: 'var(--surface-alt)',
+                padding: 'var(--space-4) var(--space-4)',
+                background: 'linear-gradient(135deg, var(--brand-darker, #0b192c) 0%, #0f2d52 50%, var(--brand-mid, #163b6c) 100%)',
                 fontFamily: 'var(--font-body)',
                 color: 'var(--text)',
+                position: 'relative',
             }}
         >
-            <div style={{ width: '100%', maxWidth: 420 }}>
+            <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 10 }}>
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'flex-end',
-                        marginBottom: 'var(--space-4)',
+                        marginBottom: 'var(--space-3)',
                     }}
                 >
                     <AccountBar />
@@ -115,30 +116,34 @@ function AuthScreen() {
 
                 <div
                     style={{
-                        background: 'var(--surface)',
-                        border: '1px solid var(--border)',
-                        borderRadius: 'var(--radius-lg)',
-                        padding: 'var(--space-8)',
-                        boxShadow: 'var(--shadow)',
+                        background: 'var(--surface, #ffffff)',
+                        border: '1px solid var(--border-muted, #e5e7eb)',
+                        borderRadius: 'var(--radius-lg, 16px)',
+                        padding: 'var(--space-6) var(--space-6)',
+                        boxShadow: 'var(--shadow-lg, 0 20px 60px rgba(0,0,0,0.25))',
                     }}
                 >
-                    <header style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
+                    <header style={{ textAlign: 'center', marginBottom: 'var(--space-5)' }}>
                         <div
                             style={{
-                                fontSize: 'var(--text-xl)',
+                                fontSize: 'var(--text-base)',
                                 fontFamily: 'var(--font-display)',
                                 fontWeight: 700,
-                                color: 'var(--brand)',
-                                letterSpacing: '0.02em',
+                                color: 'var(--accent-text, #9a6600)',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase',
+                                marginBottom: 4,
                             }}
                         >
                             THE NAM DU HILL
                         </div>
                         <h1
                             style={{
-                                margin: 'var(--space-5) 0 var(--space-2)',
-                                fontSize: 'var(--text-2xl)',
+                                margin: '0 0 var(--space-2)',
+                                fontSize: '1.625rem',
                                 fontFamily: 'var(--font-display)',
+                                color: 'var(--brand-dark, #0f2d52)',
+                                fontWeight: 700,
                             }}
                         >
                             {tr(isLogin ? S.loginTitle : S.registerTitle, locale)}
@@ -147,7 +152,8 @@ function AuthScreen() {
                             style={{
                                 margin: 0,
                                 fontSize: 'var(--text-sm)',
-                                color: 'var(--text-muted)',
+                                color: 'var(--text-muted, #4b5563)',
+                                lineHeight: 1.5,
                             }}
                         >
                             {next && isLogin
@@ -281,7 +287,7 @@ function AuthScreen() {
                             </div>
                         )}
 
-                        <Button type="submit" size="lg" disabled={pending}>
+                        <Button type="submit" size="md" disabled={pending} style={{ width: '100%' }}>
                             {pending
                                 ? tr(isLogin ? S.loginProcessing : S.registerProcessing, locale)
                                 : tr(isLogin ? S.login : S.register, locale)}
@@ -313,8 +319,10 @@ function AuthScreen() {
                         href="/"
                         style={{
                             fontSize: 'var(--text-sm)',
-                            color: 'var(--text-muted)',
+                            color: 'rgba(255, 255, 255, 0.85)',
                             textDecoration: 'none',
+                            fontWeight: 500,
+                            transition: 'color 0.2s',
                         }}
                     >
                         ← {tr(S.backHome, locale)}

@@ -21,6 +21,7 @@ import { addDays, can, formatPrice, getPropertySync, pick, ratePlans } from '@re
 import type { Channel, GuestCount } from '@repo/core'
 import { Badge, Button, CheckField, Field, SelectField, TextAreaField } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
+import { PriceBreakdown } from '@/components/PriceBreakdown'
 import { useAuthStore } from '@/stores/auth.store'
 import { useBookingStore } from '@/stores/booking.store'
 import { useQuoteOf } from '@/stores/useQuote'
@@ -484,42 +485,14 @@ export default function NewBookingPage() {
 
                         {quote && availability?.available && (
                             <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
-                                {quote.lines.map((line, index) => (
-                                    <SummaryRow
-                                        key={index}
-                                        label={`${line.kind} · ${line.quantity}`}
-                                        value={formatPrice(line.total, locale)}
-                                    />
-                                ))}
-                                <hr style={{ border: 0, borderTop: '1px solid var(--border)' }} />
-                                <SummaryRow
-                                    label={tr(S.subtotal, locale)}
-                                    value={formatPrice(quote.subtotal, locale)}
-                                    muted
-                                />
-                                {quote.promotion.applied.map((promo) => (
-                                    <SummaryRow
-                                        key={promo.promotionId}
-                                        label={pick(promo.name, locale)}
-                                        value={`−${formatPrice(promo.discount, locale)}`}
-                                        tone="success"
-                                    />
-                                ))}
-                                <hr style={{ border: 0, borderTop: '1px solid var(--border)' }} />
-                                <SummaryRow
-                                    label={tr(S.totalAmount, locale)}
-                                    value={formatPrice(quote.totalAmount, locale)}
-                                    strong
-                                />
-                                <SummaryRow
-                                    label={tr(S.deposit, locale)}
-                                    value={formatPrice(quote.depositAmount, locale)}
-                                />
-                                <SummaryRow
-                                    label={tr(S.balanceDue, locale)}
-                                    value={formatPrice(quote.balanceDue, locale)}
-                                    muted
-                                />
+                                {/*
+                                 * CÙNG component với luồng khách (`booking/page.tsx`), không
+                                 * phải bảng dựng lại. `labelOf()` trong đó tra tên hạng phòng
+                                 * và tên addon rồi trả nhãn song ngữ, nên lễ tân không còn
+                                 * nhìn thấy mã nội bộ kiểu "extra-bed" (luật C7/FE6), và số
+                                 * hai bên khớp vì dùng chung một nhánh hiển thị (R8/C10).
+                                 */}
+                                <PriceBreakdown quote={quote} locale={locale} showDeposit />
                                 <p
                                     style={{
                                         margin: 0,
@@ -590,40 +563,5 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
             </h2>
             {children}
         </section>
-    )
-}
-
-function SummaryRow({
-    label,
-    value,
-    strong,
-    muted,
-    tone,
-}: {
-    label: string
-    value: string
-    strong?: boolean
-    muted?: boolean
-    tone?: 'success'
-}) {
-    return (
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: 'var(--space-4)',
-                fontSize: strong ? 'var(--text-lg)' : 'var(--text-sm)',
-                fontWeight: strong ? 700 : 400,
-                color:
-                    tone === 'success'
-                        ? 'var(--success)'
-                        : muted
-                          ? 'var(--text-muted)'
-                          : 'var(--text)',
-            }}
-        >
-            <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-            <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
-        </div>
     )
 }

@@ -22,117 +22,280 @@ export default function CustomersPage() {
     const bookings = useBookingStore((s) => s.bookings)
 
     const [search, setSearch] = useState('')
+    const [tierFilter, setTierFilter] = useState('all')
+    const [page, setPage] = useState(1)
+    const PAGE_SIZE = 10
 
     const rows = useMemo(() => {
         const needle = search.trim().toLowerCase()
         return customers
-            .filter(
-                (c) =>
-                    !needle ||
+            .filter((c) => {
+                if (tierFilter === 'returning' && c.stayCount <= 1) return false
+                if (tierFilter === 'vip' && c.totalSpent < 10000000) return false
+                if (tierFilter === 'new' && c.stayCount > 1) return false
+                if (!needle) return true
+                return (
                     c.fullName.toLowerCase().includes(needle) ||
                     c.phone.includes(needle) ||
-                    c.email.toLowerCase().includes(needle),
-            )
+                    c.email.toLowerCase().includes(needle)
+                )
+            })
             .sort((a, b) => b.totalSpent - a.totalSpent)
-    }, [customers, search])
+    }, [customers, search, tierFilter])
+
+    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE))
+    const safePage = Math.min(page, totalPages)
+    const pageRows = rows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
     const returning = customers.filter((c) => c.stayCount > 1).length
+    const vipCount = customers.filter((c) => c.totalSpent >= 10000000).length
     const totalRevenue = customers.reduce((sum, c) => sum + c.totalSpent, 0)
+    const avgSpent = customers.length > 0 ? totalRevenue / customers.length : 0
 
     const bookingCount = (customerId: string) =>
         bookings.filter((b) => b.customerId === customerId).length
 
+    const resetFilters = () => {
+        setSearch('')
+        setTierFilter('all')
+        setPage(1)
+    }
+
+    const exportCsv = () => {
+        const header = ['Tên khách', 'Số điện thoại', 'Email', 'Số đơn', 'Số đêm ở', 'Tổng chi tiêu']
+        const body = rows.map((c) => [
+            c.fullName,
+            c.phone,
+            c.email || '',
+            String(bookingCount(c.id)),
+            String(c.stayCount),
+            String(c.totalSpent),
+        ])
+        const csv = [header, ...body]
+            .map((line) => line.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(','))
+            .join('\r\n')
+        const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `customers-${new Date().toISOString().slice(0, 10)}.csv`
+        link.click()
+        URL.revokeObjectURL(url)
+    }
+
     const columns: Column<Customer>[] = [
         {
             key: 'name',
-            header: locale === 'vi' ? 'Khách hàng' : 'Guest',
+            header: locale === 'vi' ? 'KHÁCH HÀNG & SĐT' : 'GUEST & PHONE',
             cell: (c) => (
                 <div>
-                    <div style={{ fontWeight: 600 }}>{c.fullName}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {c.phone}
-                    </div>
+                    <div className="font-semibold text-slate-900">{c.fullName}</div>
+                    <div className="text-xs text-slate-500 font-mono">{c.phone}</div>
                 </div>
             ),
         },
-        { key: 'email', header: tr(S.email, locale), cell: (c) => c.email || '—' },
+        {
+            key: 'email',
+            header: tr(S.email, locale),
+            cell: (c) => <span className="text-xs text-slate-600">{c.email || '—'}</span>,
+        },
+        {
+            key: 'tier',
+            header: locale === 'vi' ? 'PHÂN HẠNG' : 'TIER',
+            width: '130px',
+            cell: (c) => {
+                if (c.totalSpent >= 10000000) {
+                    return (
+                        <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-amber-50 text-amber-800 border-amber-300 shrink-0">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                            <span className="truncate">Khách VIP</span>
+                        </span>
+                    )
+                }
+                if (c.stayCount > 1) {
+                    return (
+                        <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-emerald-50 text-emerald-800 border-emerald-300 shrink-0">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                            <span className="truncate">Quay lại</span>
+                        </span>
+                    )
+                }
+                return (
+                    <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-slate-50 text-slate-700 border-slate-200 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                        <span className="truncate">Khách mới</span>
+                    </span>
+                )
+            },
+        },
         {
             key: 'bookings',
-            header: tr(S.orders, locale),
+            header: locale === 'vi' ? 'SỐ ĐƠN' : 'BOOKINGS',
             align: 'right',
-            cell: (c) => bookingCount(c.id),
+            width: '90px',
+            cell: (c) => <span className="text-xs font-semibold text-slate-800">{bookingCount(c.id)}</span>,
         },
         {
             key: 'stays',
-            header: locale === 'vi' ? 'Đã ở' : 'Stays',
+            header: locale === 'vi' ? 'ĐÃ Ở' : 'STAYS',
             align: 'right',
-            cell: (c) => c.stayCount,
+            width: '90px',
+            cell: (c) => <span className="text-xs font-semibold text-slate-800">{c.stayCount} đêm</span>,
         },
         {
             key: 'spent',
-            header: locale === 'vi' ? 'Tổng chi tiêu' : 'Total spent',
+            header: locale === 'vi' ? 'TỔNG CHI TIÊU' : 'TOTAL SPENT',
             align: 'right',
-            cell: (c) => <strong>{formatPrice(c.totalSpent, locale)}</strong>,
+            width: '140px',
+            cell: (c) => (
+                <span className="font-bold text-amber-700 text-xs">
+                    {formatPrice(c.totalSpent, locale)}
+                </span>
+            ),
         },
     ]
 
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
-            <header>
-                <h1 style={{ margin: 0, fontSize: 'var(--text-2xl)', fontFamily: 'var(--font-display)' }}>
-                    {tr(S.customers, locale)}
-                </h1>
-                <p style={{ margin: 'var(--space-2) 0 0', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-                    {rows.length} {locale === 'vi' ? 'khách' : 'guests'}
-                </p>
-            </header>
+        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2.5 p-3 bg-slate-100 overflow-hidden">
+            {/* Top Bar: Title + All Filters & Actions in Header */}
+            <div className="w-full bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
+                {/* Left: Title & Count */}
+                <div className="flex items-center gap-2 shrink-0">
+                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
+                        {tr(S.customers, locale)}
+                    </h1>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                        {rows.length} {locale === 'vi' ? 'khách' : 'guests'}
+                    </span>
+                </div>
 
-            <div
-                style={{
-                    display: 'grid',
-                    gap: 'var(--space-4)',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                }}
-            >
-                <StatCard label={locale === 'vi' ? 'Tổng khách' : 'Total guests'} value={customers.length} />
-                <StatCard
-                    label={locale === 'vi' ? 'Khách quay lại' : 'Returning guests'}
-                    value={returning}
-                    tone="success"
-                    note={
-                        customers.length > 0
-                            ? `${Math.round((returning / customers.length) * 100)}%`
-                            : undefined
-                    }
-                />
-                <StatCard
-                    label={locale === 'vi' ? 'Doanh thu tích luỹ' : 'Lifetime revenue'}
-                    value={formatPrice(totalRevenue, locale)}
-                />
+                {/* Right: All Filters & Actions */}
+                <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    {/* Search Field */}
+                    <div className="relative w-44 sm:w-56">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value)
+                                setPage(1)
+                            }}
+                            placeholder={locale === 'vi' ? 'Tìm tên, SĐT, email…' : 'Search name, phone, email…'}
+                            className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
+                        />
+                    </div>
+
+                    {/* Tier Select */}
+                    <select
+                        value={tierFilter}
+                        onChange={(e) => {
+                            setTierFilter(e.target.value)
+                            setPage(1)
+                        }}
+                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                    >
+                        <option value="all">{locale === 'vi' ? 'Tất cả phân hạng' : 'All tiers'}</option>
+                        <option value="vip">{locale === 'vi' ? 'Khách VIP (>10 triệu)' : 'VIP (>10m VND)'}</option>
+                        <option value="returning">{locale === 'vi' ? 'Khách quay lại (>1 lần)' : 'Returning (>1 stay)'}</option>
+                        <option value="new">{locale === 'vi' ? 'Khách mới (1 lần)' : 'New guests (1 stay)'}</option>
+                    </select>
+
+                    {/* Reset Button */}
+                    {(search || tierFilter !== 'all') && (
+                        <button
+                            type="button"
+                            onClick={resetFilters}
+                            className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
+                        >
+                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                        </button>
+                    )}
+
+                    {/* Export CSV */}
+                    <button
+                        type="button"
+                        onClick={exportCsv}
+                        className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-md transition-colors inline-flex items-center gap-1 shrink-0"
+                    >
+                        <span>{tr(S.exportExcel, locale)}</span>
+                    </button>
+                </div>
             </div>
 
-            <div
-                style={{
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-lg)',
-                    overflow: 'hidden',
-                }}
-            >
-                <Toolbar
-                    searchValue={search}
-                    onSearchChange={setSearch}
-                    searchPlaceholder={
-                        locale === 'vi' ? 'Tìm tên, số điện thoại, email…' : 'Search name, phone, email…'
-                    }
-                    isFiltered={Boolean(search)}
-                    onReset={() => setSearch('')}
-                    resetLabel={tr(S.reset, locale)}
-                />
+            {/* KPI Statistics Summary Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
+                {/* Total Customers */}
+                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                        {locale === 'vi' ? 'TẤT CẢ KHÁCH' : 'TOTAL GUESTS'}
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{customers.length} khách</span>
+                        <span className="text-[11px] font-semibold text-amber-700">
+                            {formatPrice(totalRevenue, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Returning Guests */}
+                <div className="bg-white p-2.5 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
+                            KHÁCH QUAY LẠI
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{returning} khách</span>
+                        <span className="text-[11px] font-semibold text-emerald-700">
+                            {customers.length > 0 ? `${Math.round((returning / customers.length) * 100)}%` : '0%'}
+                        </span>
+                    </div>
+                </div>
+
+                {/* VIP Guests */}
+                <div className="bg-white p-2.5 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
+                            KHÁCH VIP (&gt;10TR)
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{vipCount} khách</span>
+                    </div>
+                </div>
+
+                {/* New Guests */}
+                <div className="bg-white p-2.5 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
+                            KHÁCH MỚI (1 LẦN)
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{customers.length - returning} khách</span>
+                    </div>
+                </div>
+
+                {/* Average Spent */}
+                <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                        CHI TIÊU TB / KHÁCH
+                    </div>
+                    <div className="text-base font-bold text-slate-900 mt-1">
+                        {formatPrice(avgSpent, locale)}
+                    </div>
+                </div>
+            </div>
+
+            {/* DataTable Component - Maximized Full Height */}
+            <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                 <DataTable
                     caption={tr(S.customers, locale)}
                     columns={columns}
-                    rows={rows}
+                    rows={pageRows}
                     rowKey={(c) => c.id}
                     empty={
                         search
@@ -144,7 +307,45 @@ export default function CustomersPage() {
                               : 'No guests yet.'
                     }
                 />
+
+                {rows.length > 0 && (
+                    <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
+                        <span>
+                            {locale === 'vi' ? 'Hiển thị' : 'Showing'}{' '}
+                            <strong className="text-slate-900 font-semibold">
+                                {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, rows.length)}
+                            </strong>{' '}
+                            {locale === 'vi' ? 'trong' : 'of'}{' '}
+                            <strong className="text-slate-900 font-semibold">{rows.length}</strong>{' '}
+                            {locale === 'vi' ? 'khách' : 'guests'}
+                        </span>
+
+                        <div className="flex items-center gap-1.5">
+                            <button
+                                type="button"
+                                disabled={safePage === 1}
+                                onClick={() => setPage(safePage - 1)}
+                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            >
+                                ← {locale === 'vi' ? 'Trước' : 'Prev'}
+                            </button>
+                            <span className="px-2 font-semibold text-slate-700">
+                                {safePage} / {totalPages}
+                            </span>
+                            <button
+                                type="button"
+                                disabled={safePage === totalPages}
+                                onClick={() => setPage(safePage + 1)}
+                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {locale === 'vi' ? 'Sau' : 'Next'} →
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
 }
+
+

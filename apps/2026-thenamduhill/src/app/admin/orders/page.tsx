@@ -131,6 +131,27 @@ export default function AdminOrdersPage() {
         URL.revokeObjectURL(url)
     }
 
+    // Hook phải nằm TRƯỚC mọi nhánh return sớm (rules-of-hooks): nhánh thiếu
+    // quyền ở dưới làm số hook giữa hai lần render lệch nhau, React đọc sai ô
+    // trạng thái. Đặt ở đây thì mọi nhánh đều chạy đúng thứ tự hook.
+    const stats = useMemo(() => {
+        return {
+            total: filtered.length,
+            totalRevenue: filtered.reduce((acc, curr) => acc + curr.totalAmount, 0),
+            website: filtered.filter((i) => i.channel === 'web').length,
+            websiteRev: filtered.filter((i) => i.channel === 'web').reduce((acc, curr) => acc + curr.totalAmount, 0),
+            walkIn: filtered.filter((i) => i.channel === 'walk-in').length,
+            walkInRev: filtered.filter((i) => i.channel === 'walk-in').reduce((acc, curr) => acc + curr.totalAmount, 0),
+            ota: filtered.filter((i) => i.channel === 'ota').length,
+            otaRev: filtered.filter((i) => i.channel === 'ota').reduce((acc, curr) => acc + curr.totalAmount, 0),
+            phone: filtered.filter((i) => i.channel === 'phone').length,
+            phoneRev: filtered.filter((i) => i.channel === 'phone').reduce((acc, curr) => acc + curr.totalAmount, 0),
+        }
+    }, [filtered])
+
+    // Chặn thiếu quyền: đặt SAU toàn bộ hook (xem ghi chú rules-of-hooks ở trên).
+    // Đây chỉ là lớp tiện lợi cho người dùng — chặn thật nằm ở Route Handler
+    // bằng requirePermission() (luật BE2), không dựa vào UI.
     if (user && !canViewAll) {
         return (
             <p role="alert" style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
@@ -143,271 +164,333 @@ export default function AdminOrdersPage() {
 
     const columns: Column<Booking>[] = [
         {
-            key: 'code',
-            header: tr(S.bookingCode, locale),
-            cell: (b) => (
-                <div>
-                    <div style={{ fontWeight: 600 }}>{b.code}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {new Date(b.createdAt).toLocaleString(
-                            locale === 'vi' ? 'vi-VN' : 'en-US',
-                            { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' },
-                        )}
-                        {' · '}
-                        {tr(CHANNEL_LABEL[b.channel], locale)}
-                    </div>
-                </div>
-            ),
+            key: 'channel',
+            header: locale === 'vi' ? 'KÊNH ĐẶT' : 'CHANNEL',
+            width: '160px',
+            cell: (b) => {
+                const toneMap: Record<string, string> = {
+                    web: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    'walk-in': 'bg-blue-50 text-blue-700 border-blue-200',
+                    ota: 'bg-purple-50 text-purple-700 border-purple-200',
+                    phone: 'bg-amber-50 text-amber-700 border-amber-200',
+                }
+                const dotMap: Record<string, string> = {
+                    web: 'bg-emerald-500',
+                    'walk-in': 'bg-blue-500',
+                    ota: 'bg-purple-500',
+                    phone: 'bg-amber-500',
+                }
+                return (
+                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[144px] text-left shrink-0 ${toneMap[b.channel] || 'bg-slate-100'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotMap[b.channel] || 'bg-slate-400'}`} />
+                        <span className="truncate">{tr(CHANNEL_LABEL[b.channel], locale)}</span>
+                    </span>
+                )
+            },
         },
         {
-            key: 'guest',
-            header: locale === 'vi' ? 'Khách hàng' : 'Guest',
+            key: 'code',
+            header: locale === 'vi' ? 'KHÁCH HÀNG & MÃ ĐƠN' : 'GUEST & CODE',
             cell: (b) => (
                 <div>
-                    <div>{b.guest.fullName}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {b.guest.phone}
+                    <div className="font-semibold text-slate-900 hover:text-blue-600 transition-colors">
+                        {b.guest.fullName}
+                    </div>
+                    <div className="text-xs text-slate-500 font-mono">
+                        {b.code} · {b.guest.phone}
                     </div>
                 </div>
             ),
         },
         {
             key: 'room',
-            header: tr(S.roomTypeLabel, locale),
-            cell: (b) => (
-                <div>
-                    <div>{roomName(b.roomTypeId)}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {b.nights} {tr(S.nights, locale)} ·{' '}
-                        {b.guests.adults + b.guests.children.length} {tr(S.guests, locale)}
-                    </div>
-                </div>
-            ),
+            header: locale === 'vi' ? 'HẠNG PHÒNG' : 'ROOM TYPE',
+            cell: (b) => <span className="text-slate-700 font-medium text-xs">{roomName(b.roomTypeId)}</span>,
+        },
+        {
+            key: 'nights',
+            header: locale === 'vi' ? 'SỐ ĐÊM' : 'NIGHTS',
+            width: '90px',
+            align: 'center',
+            cell: (b) => <span className="text-slate-700 font-semibold text-xs">{b.nights} {tr(S.nights, locale)}</span>,
         },
         {
             key: 'dates',
-            header: `${tr(S.checkIn, locale)} – ${tr(S.checkOut, locale)}`,
+            header: locale === 'vi' ? 'CHECK-IN / CHECK-OUT' : 'DATES',
+            width: '160px',
+            cell: (b) => <span className="text-slate-600 text-xs">{b.checkIn} → {b.checkOut}</span>,
+        },
+        {
+            key: 'status',
+            header: locale === 'vi' ? 'TRẠNG THÁI' : 'STATUS',
+            width: '130px',
+            cell: (b) => {
+                const statusStyles: Record<string, string> = {
+                    checked_in: 'bg-blue-50 text-blue-700 border-blue-200',
+                    confirmed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    pending_payment: 'bg-amber-50 text-amber-700 border-amber-200',
+                    checked_out: 'bg-slate-100 text-slate-700 border-slate-200',
+                    cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
+                    no_show: 'bg-purple-50 text-purple-700 border-purple-200',
+                }
+                const dotStyles: Record<string, string> = {
+                    checked_in: 'bg-blue-500',
+                    confirmed: 'bg-emerald-500',
+                    pending_payment: 'bg-amber-500',
+                    checked_out: 'bg-slate-500',
+                    cancelled: 'bg-rose-500',
+                    no_show: 'bg-purple-500',
+                }
+                return (
+                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 ${statusStyles[b.status] || 'bg-slate-100'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotStyles[b.status] || 'bg-slate-400'}`} />
+                        <span className="truncate">{tr(STATUS_LABEL[b.status], locale)}</span>
+                    </span>
+                )
+            },
+        },
+        {
+            key: 'total',
+            header: locale === 'vi' ? 'TỔNG TIỀN' : 'TOTAL',
+            align: 'right',
+            width: '130px',
             cell: (b) => (
-                <span style={{ whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
-                    {b.checkIn.slice(5)} → {b.checkOut.slice(5)}
+                <span className="font-bold text-slate-900 text-xs">
+                    {formatPrice(b.totalAmount, locale)}
                 </span>
             ),
         },
         {
-            key: 'total',
-            header: tr(S.totalAmount, locale),
-            align: 'right',
-            cell: (b) => (
-                <div>
-                    <div style={{ fontWeight: 600 }}>{formatPrice(b.totalAmount, locale)}</div>
-                    {b.paidAmount < b.totalAmount && (
-                        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--warning)' }}>
-                            {locale === 'vi' ? 'còn' : 'due'}{' '}
-                            {formatPrice(b.totalAmount - b.paidAmount, locale)}
-                        </div>
-                    )}
-                </div>
-            ),
-        },
-        {
-            key: 'status',
-            header: locale === 'vi' ? 'Trạng thái' : 'Status',
-            cell: (b) => (
-                <Badge tone={STATUS_TONE[b.status]}>{tr(STATUS_LABEL[b.status], locale)}</Badge>
-            ),
-        },
-        {
             key: 'actions',
-            header: '',
+            header: locale === 'vi' ? 'THAO TÁC' : 'ACTION',
             align: 'right',
+            width: '100px',
             inCard: false,
             cell: (b) => (
-                <Link
-                    href={`/admin/orders/${b.id}`}
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label={`${tr(S.view, locale)} ${locale === 'vi' ? 'đơn' : 'booking'} ${b.code}`}
-                    style={{
-                        display: 'inline-grid',
-                        placeItems: 'center',
-                        width: 28,
-                        height: 28,
-                        color: 'var(--text-muted)',
-                    }}
-                >
-                    <EyeIcon size={16} />
-                </Link>
+                <div className="flex items-center justify-end gap-1 text-slate-500">
+                    <Link
+                        href={`/admin/orders/${b.id}`}
+                        className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors"
+                        title={tr(S.view, locale)}
+                    >
+                        <EyeIcon size={16} />
+                    </Link>
+                </div>
             ),
         },
     ]
 
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
-            <header
-                style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                    gap: 'var(--space-4)',
-                    flexWrap: 'wrap',
-                }}
-            >
-                <div>
-                    <h1
-                        style={{
-                            margin: 0,
-                            fontSize: 'var(--text-2xl)',
-                            fontFamily: 'var(--font-display)',
-                        }}
-                    >
-                        {tr(S.orders, locale)}
+        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2.5 p-3 bg-slate-100 overflow-hidden">
+            {/* Top Bar: Title + All Filters & Actions in Header */}
+            <div className="w-full bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
+                {/* Left: Title & Count */}
+                <div className="flex items-center gap-2 shrink-0">
+                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
+                        {locale === 'vi' ? 'Danh sách đặt phòng' : 'Bookings'}
                     </h1>
-                    <p
-                        style={{
-                            margin: 'var(--space-2) 0 0',
-                            fontSize: 'var(--text-sm)',
-                            color: 'var(--text-muted)',
-                        }}
-                    >
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
                         {filtered.length} {locale === 'vi' ? 'đơn' : 'bookings'}
-                        {isFiltered &&
-                            ` / ${bookings.length} ${locale === 'vi' ? 'tổng' : 'total'}`}
-                    </p>
+                    </span>
                 </div>
 
-                {canCreate && (
-                    <Button onClick={() => router.push('/admin/orders/new')}>
-                        <span
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 'var(--space-2)',
-                                whiteSpace: 'nowrap',
+                {/* Right: All Filters & Actions */}
+                <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    {/* Search Field */}
+                    <div className="relative w-44 sm:w-56">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value)
+                                setPage(1)
                             }}
-                        >
-                            <PlusIcon size={16} />
-                            {tr(S.newBooking, locale)}
-                        </span>
-                    </Button>
-                )}
-            </header>
-
-            <div
-                style={{
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-lg)',
-                    overflow: 'hidden',
-                }}
-            >
-                <Toolbar
-                    searchValue={search}
-                    onSearchChange={(value) => {
-                        setSearch(value)
-                        setPage(1)
-                    }}
-                    searchPlaceholder={
-                        locale === 'vi'
-                            ? 'Tìm mã đơn, tên khách, số điện thoại…'
-                            : 'Search code, guest name, phone…'
-                    }
-                    isFiltered={isFiltered}
-                    onReset={resetFilters}
-                    resetLabel={tr(S.reset, locale)}
-                    actions={
-                        <Button variant="secondary" size="sm" onClick={exportCsv}>
-                            <span
-                                style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 'var(--space-2)',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                <DownloadIcon size={14} />
-                                {tr(S.exportExcel, locale)}
-                            </span>
-                        </Button>
-                    }
-                >
-                    <FilterSelect
-                        label={locale === 'vi' ? 'Trạng thái' : 'Status'}
-                        value={status}
-                        onChange={(value) => {
-                            setStatus(value)
-                            setPage(1)
-                        }}
-                        options={[
-                            {
-                                value: '',
-                                label: `${tr(S.all, locale)} ${locale === 'vi' ? 'trạng thái' : 'statuses'}`,
-                            },
-                            ...STATUSES.map((s) => ({
-                                value: s,
-                                label: tr(STATUS_LABEL[s], locale),
-                            })),
-                        ]}
-                    />
-                    <FilterSelect
-                        label={tr(S.roomTypeLabel, locale)}
-                        value={roomType}
-                        onChange={(value) => {
-                            setRoomType(value)
-                            setPage(1)
-                        }}
-                        options={[
-                            {
-                                value: '',
-                                label: `${tr(S.all, locale)} ${locale === 'vi' ? 'hạng phòng' : 'room types'}`,
-                            },
-                            ...property.rooms.map((r) => ({
-                                value: r.id,
-                                label: pick(r.name, locale),
-                            })),
-                        ]}
-                    />
-                    <FilterSelect
-                        label={tr(S.channel, locale)}
-                        value={channel}
-                        onChange={(value) => {
-                            setChannel(value)
-                            setPage(1)
-                        }}
-                        options={[
-                            {
-                                value: '',
-                                label: `${tr(S.all, locale)} ${locale === 'vi' ? 'kênh' : 'channels'}`,
-                            },
-                            ...CHANNELS.map((c) => ({
-                                value: c,
-                                label: tr(CHANNEL_LABEL[c], locale),
-                            })),
-                        ]}
-                    />
-                </Toolbar>
-
-                {selected.length > 0 && (
-                    <div
-                        role="status"
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 'var(--space-3)',
-                            flexWrap: 'wrap',
-                            padding: 'var(--space-3) var(--space-4)',
-                            background: 'var(--surface-tint)',
-                            borderBottom: '1px solid var(--border)',
-                            fontSize: 'var(--text-sm)',
-                        }}
-                    >
-                        <strong>
-                            {selected.length} {tr(S.selectedCount, locale)}
-                        </strong>
-                        <Button variant="ghost" size="sm" onClick={() => setSelected([])}>
-                            {tr(S.clearSelection, locale)}
-                        </Button>
+                            placeholder={locale === 'vi' ? 'Tìm mã đơn, tên, sđt…' : 'Search code, guest, phone…'}
+                            className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
+                        />
                     </div>
-                )}
 
+                    {/* Channel Select */}
+                    <select
+                        value={channel}
+                        onChange={(e) => {
+                            setChannel(e.target.value)
+                            setPage(1)
+                        }}
+                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                    >
+                        <option value="">{locale === 'vi' ? 'Tất cả kênh' : 'All channels'}</option>
+                        <option value="web">Website Trực Tuyến</option>
+                        <option value="walk-in">Khách Vãng Lai</option>
+                        <option value="ota">Agoda / Booking.com</option>
+                        <option value="phone">Hotline / Điện thoại</option>
+                    </select>
+
+                    {/* Status Select */}
+                    <select
+                        value={status}
+                        onChange={(e) => {
+                            setStatus(e.target.value)
+                            setPage(1)
+                        }}
+                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                    >
+                        <option value="">{locale === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
+                        {STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                                {tr(STATUS_LABEL[s], locale)}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Room Type Select */}
+                    <select
+                        value={roomType}
+                        onChange={(e) => {
+                            setRoomType(e.target.value)
+                            setPage(1)
+                        }}
+                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                    >
+                        <option value="">{locale === 'vi' ? 'Tất cả hạng phòng' : 'All room types'}</option>
+                        {property.rooms.map((r) => (
+                            <option key={r.id} value={r.id}>
+                                {pick(r.name, locale)}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Reset Button */}
+                    {isFiltered && (
+                        <button
+                            type="button"
+                            onClick={resetFilters}
+                            className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
+                        >
+                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                        </button>
+                    )}
+
+                    {/* Export CSV */}
+                    <button
+                        type="button"
+                        onClick={exportCsv}
+                        className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-md transition-colors inline-flex items-center gap-1 shrink-0"
+                    >
+                        <DownloadIcon size={13} />
+                        <span>{tr(S.exportExcel, locale)}</span>
+                    </button>
+
+                    {/* Primary Action Button */}
+                    {canCreate && (
+                        <button
+                            type="button"
+                            onClick={() => router.push('/admin/orders/new')}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 border border-amber-400/50"
+                        >
+                            <PlusIcon size={14} />
+                            <span>+ Đặt phòng mới</span>
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Channel KPI Statistics Summary Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
+                {/* Total Stats */}
+                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                        {locale === 'vi' ? 'TẤT CẢ KÊNH' : 'ALL CHANNELS'}
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{stats.total} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-[11px] font-semibold text-amber-700">
+                            {formatPrice(stats.totalRevenue, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Website Stats */}
+                <div className="bg-white p-2.5 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
+                            WEBSITE TRỰC TUYẾN
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{stats.website} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-[11px] font-semibold text-emerald-700">
+                            {formatPrice(stats.websiteRev, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Walk-in Stats */}
+                <div className="bg-white p-2.5 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
+                            KHÁCH VÃNG LAI
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{stats.walkIn} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-[11px] font-semibold text-blue-700">
+                            {formatPrice(stats.walkInRev, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* OTA Stats */}
+                <div className="bg-white p-2.5 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
+                            AGODA / BOOKING.COM
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{stats.ota} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-[11px] font-semibold text-purple-700">
+                            {formatPrice(stats.otaRev, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Phone/Hotline Stats */}
+                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">
+                            HOTLINE / ĐIỆN THOẠI
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    </div>
+                    <div className="flex items-baseline justify-between mt-1">
+                        <span className="text-base font-bold text-slate-900">{stats.phone} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-[11px] font-semibold text-amber-700">
+                            {formatPrice(stats.phoneRev, locale)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Selection banner */}
+            {selected.length > 0 && (
+                <div className="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-md flex items-center justify-between text-xs text-amber-900 shrink-0">
+                    <span><strong>{selected.length}</strong> {tr(S.selectedCount, locale)}</span>
+                    <button
+                        type="button"
+                        onClick={() => setSelected([])}
+                        className="text-xs font-semibold text-amber-700 hover:underline"
+                    >
+                        {tr(S.clearSelection, locale)}
+                    </button>
+                </div>
+            )}
+
+            {/* DataTable Component - Maximized Full Height */}
+            <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
                 <DataTable
                     caption={tr(S.orders, locale)}
                     columns={columns}
@@ -418,145 +501,41 @@ export default function AdminOrdersPage() {
                     selectedKeys={selected}
                     onSelectionChange={setSelected}
                     selectAllLabel={tr(S.selectAllRows, locale)}
-                    rowLabel={(b) =>
-                        `${locale === 'vi' ? 'Chọn đơn' : 'Select booking'} ${b.code}`
-                    }
-                    renderCard={(b) => (
-                        <>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 'var(--space-3)',
-                                }}
-                            >
-                                <strong style={{ fontSize: 'var(--text-sm)' }}>{b.code}</strong>
-                                <Badge tone={STATUS_TONE[b.status]}>
-                                    {tr(STATUS_LABEL[b.status], locale)}
-                                </Badge>
-                            </div>
-                            <div style={{ fontSize: 'var(--text-sm)' }}>
-                                {b.guest.fullName} · {b.guest.phone}
-                            </div>
-                            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                                {roomName(b.roomTypeId)} · {b.checkIn.slice(5)} →{' '}
-                                {b.checkOut.slice(5)} · {b.nights} {tr(S.nights, locale)}
-                            </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 'var(--space-3)',
-                                    marginTop: 'var(--space-2)',
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        fontWeight: 600,
-                                        fontVariantNumeric: 'tabular-nums',
-                                    }}
-                                >
-                                    {formatPrice(b.totalAmount, locale)}
-                                </span>
-                                <Link
-                                    href={`/admin/orders/${b.id}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    aria-label={`${tr(S.view, locale)} ${locale === 'vi' ? 'đơn' : 'booking'} ${b.code}`}
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 'var(--space-2)',
-                                        minHeight: 44,
-                                        padding: '0 var(--space-3)',
-                                        fontSize: 'var(--text-sm)',
-                                        color: 'var(--brand)',
-                                        textDecoration: 'none',
-                                    }}
-                                >
-                                    <EyeIcon size={16} />
-                                    {tr(S.view, locale)}
-                                </Link>
-                            </div>
-                        </>
-                    )}
-                    empty={
-                        isFiltered ? (
-                            <div style={{ display: 'grid', gap: 'var(--space-4)', justifyItems: 'center' }}>
-                                <span>
-                                    {locale === 'vi'
-                                        ? 'Chưa có đơn nào khớp bộ lọc. Bấm "Đặt lại" để xem tất cả.'
-                                        : 'No bookings match these filters. Click "Reset" to see all.'}
-                                </span>
-                                <Button variant="secondary" size="sm" onClick={resetFilters}>
-                                    {tr(S.reset, locale)}
-                                </Button>
-                            </div>
-                        ) : (
-                            <div style={{ display: 'grid', gap: 'var(--space-4)', justifyItems: 'center' }}>
-                                <span>
-                                    {locale === 'vi'
-                                        ? 'Chưa có đơn nào. Bấm "Tạo đơn thủ công" để nhập đơn đầu tiên.'
-                                        : 'No bookings yet. Click "New booking" to enter the first one.'}
-                                </span>
-                                {canCreate && (
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() => router.push('/admin/orders/new')}
-                                    >
-                                        {tr(S.newBooking, locale)}
-                                    </Button>
-                                )}
-                            </div>
-                        )
-                    }
+                    rowLabel={(b) => `${locale === 'vi' ? 'Chọn đơn' : 'Select booking'} ${b.code}`}
                 />
 
                 {filtered.length > 0 && (
-                    <div
-                        style={{
-                            padding: 'var(--space-4)',
-                            borderTop: '1px solid var(--border)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            gap: 'var(--space-4)',
-                            flexWrap: 'wrap',
-                            fontSize: 'var(--text-sm)',
-                            color: 'var(--text-muted)',
-                        }}
-                    >
+                    <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
                         <span>
                             {locale === 'vi' ? 'Hiển thị' : 'Showing'}{' '}
-                            <strong style={{ color: 'var(--text)' }}>
-                                {(safePage - 1) * PAGE_SIZE + 1}–
-                                {Math.min(safePage * PAGE_SIZE, filtered.length)}
+                            <strong className="text-slate-900 font-semibold">
+                                {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}
                             </strong>{' '}
                             {locale === 'vi' ? 'trong' : 'of'}{' '}
-                            <strong style={{ color: 'var(--text)' }}>{filtered.length}</strong>{' '}
+                            <strong className="text-slate-900 font-semibold">{filtered.length}</strong>{' '}
                             {locale === 'vi' ? 'đơn' : 'bookings'}
                         </span>
 
-                        <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-                            <PageButton
+                        <div className="flex items-center gap-1.5">
+                            <button
+                                type="button"
                                 disabled={safePage === 1}
                                 onClick={() => setPage(safePage - 1)}
-                                label={locale === 'vi' ? 'Trang trước' : 'Previous page'}
+                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
                                 ← {locale === 'vi' ? 'Trước' : 'Prev'}
-                            </PageButton>
-                            <span style={{ padding: '0 var(--space-2)' }}>
+                            </button>
+                            <span className="px-2 font-semibold text-slate-700">
                                 {safePage} / {totalPages}
                             </span>
-                            <PageButton
+                            <button
+                                type="button"
                                 disabled={safePage === totalPages}
                                 onClick={() => setPage(safePage + 1)}
-                                label={locale === 'vi' ? 'Trang sau' : 'Next page'}
+                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
                                 {locale === 'vi' ? 'Sau' : 'Next'} →
-                            </PageButton>
+                            </button>
                         </div>
                     </div>
                 )}
@@ -564,6 +543,7 @@ export default function AdminOrdersPage() {
         </div>
     )
 }
+
 
 function PageButton({
     disabled,
