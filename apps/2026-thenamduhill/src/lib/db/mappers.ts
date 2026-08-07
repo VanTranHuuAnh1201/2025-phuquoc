@@ -160,3 +160,45 @@ export function mapChildPolicy(settingRow?: Record<string, any>): ChildPolicy {
         childRate: Number(policy.childRate ?? policy.child_rate ?? 150000),
     }
 }
+
+/**
+ * Maps a row from `bookings` table to Core Booking type.
+ */
+export function mapBookingRow(row: Record<string, any>): any {
+    return {
+        id: String(row.id),
+        code: String(row.code),
+        status: String(row.status),
+        checkIn: String(row.check_in),
+        checkOut: String(row.check_out),
+        roomTypeId: String(row.room_type_id),
+        ratePlanId: row.rate_plan_id ? String(row.rate_plan_id) : undefined,
+        guests: {
+            adults: Number(row.num_adults ?? 1),
+            children: Array.isArray(row.child_ages) ? row.child_ages.map(Number) : [],
+        },
+        addons: typeof row.addons === 'object' && row.addons !== null ? row.addons : {},
+        guest: {
+            fullName: String(row.guest_full_name ?? ''),
+            phone: String(row.guest_phone ?? ''),
+            email: String(row.guest_email ?? ''),
+            idNumber: row.guest_id_number ? String(row.guest_id_number) : undefined,
+            estimatedArrivalTime: row.guest_estimated_arrival_time ? String(row.guest_estimated_arrival_time) : undefined,
+            specialRequests: row.guest_special_requests ? String(row.guest_special_requests) : undefined,
+            taxCode: row.guest_tax_code ? String(row.guest_tax_code) : undefined,
+            companyName: row.guest_company_name ? String(row.guest_company_name) : undefined,
+        },
+        channel: String(row.channel ?? 'web'),
+        createdAt: String(row.created_at ?? ''),
+        subtotal: Number(row.subtotal ?? 0),
+        discountTotal: Number(row.discount_total ?? 0),
+        totalAmount: Number(row.total_amount ?? 0),
+        paidAmount: Number(row.paid_amount ?? 0),
+        depositAmount: Number(row.deposit_amount ?? 0),
+        holdExpiresAt: row.hold_expires_at ? String(row.hold_expires_at) : undefined,
+        assignedRoomUnitId: row.assigned_room_unit_id ? String(row.assigned_room_unit_id) : undefined,
+        customerId: row.customer_id ? String(row.customer_id) : undefined,
+    }
+}
+
+

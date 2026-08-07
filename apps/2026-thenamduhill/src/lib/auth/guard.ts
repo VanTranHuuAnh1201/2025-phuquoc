@@ -185,3 +185,34 @@ export function withAuthGuard(
         }
     }
 }
+
+export function withAuthGuardParams<P>(
+    handler: (req: Request, actor: Actor, ctx: { params: Promise<P> }) => Promise<Response>,
+    permission?: Permission | readonly Permission[],
+): (req: Request, ctx: { params: Promise<P> }) => Promise<Response> {
+    return async (req: Request, ctx: { params: Promise<P> }): Promise<Response> => {
+        let actor: Actor
+        try {
+            actor = permission === undefined
+                ? await requireAuth(req)
+                : await requirePermission(req, permission)
+        } catch (e) {
+            if (e instanceof AuthError) return fail(e.status, e.code, e.i18n)
+            console.error('[auth] Lỗi không lường trước khi xác thực', { error: e })
+            return serverError()
+        }
+
+        try {
+            return await handler(req, actor, ctx)
+        } catch (e) {
+            if (e instanceof AuthError) return fail(e.status, e.code, e.i18n)
+            console.error('[api] Handler ném lỗi', {
+                path: new URL(req.url).pathname,
+                actorId: actor.id,
+                error: e,
+            })
+            return serverError()
+        }
+    }
+}
+
