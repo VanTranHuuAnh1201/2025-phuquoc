@@ -1,12 +1,30 @@
 'use client'
 
+/**
+ * Tài khoản & Phân quyền RBAC — màn 4/7 nhóm Hệ thống.
+ *
+ * Áp design system `@repo/cms-ui` — cùng bố cục 2 hàng + MetricStrip +
+ * DataGrid như `/admin/customers`. Nền TRẮNG, phân tách bằng đường kẻ 1px,
+ * không còn card lồng card/shadow trang trí của bản cũ.
+ *
+ * GIỮ NGUYÊN toàn bộ logic: `useAccountsData()` gọi REST thật
+ * (`/api/admin/accounts`), `RequirePermission anyOf={['account.manage']}`
+ * chặn cả menu lẫn gõ thẳng URL (100-05 AC-6). Modal tạo tài khoản vẫn chỉ
+ * cập nhật state cục bộ vì backend chưa có POST — không tự thêm hành vi mới.
+ *
+ * Vai trò/trạng thái là 2 hệ tone riêng (không dùng chung một bảng): vai trò
+ * cần 5 tone phân biệt rõ rệt vì đây là màn PHÂN QUYỀN — nhầm superadmin với
+ * lễ tân bằng mắt là rủi ro bảo mật, không chỉ lỗi trình bày.
+ */
+
+import { useMemo, useState } from 'react'
 import { PlusIcon, SearchIcon, TrashIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
-import { S, tr } from '@/strings'
-import { DataTable, useDataTable, type Column, Modal, Field, SelectField } from '@repo/ui'
-import { useState } from 'react'
 import { useAccountsData } from '@/hooks/useAdminData'
+import { S, tr } from '@/strings'
+import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
+import { Field, Modal, SelectField, type Column } from '@repo/ui'
 
 export interface AccountRowItem {
     id: string
@@ -21,61 +39,36 @@ export interface AccountRowItem {
     lastActive: string
 }
 
-const RESORT_ACCOUNTS: AccountRowItem[] = [
-    {
-        id: 'usr-001',
-        username: 'admin.namdu',
-        fullName: 'Nguyễn Văn Hải (SuperAdmin)',
-        email: 'admin@thenamduhill.vn',
-        role: 'superadmin',
-        roleLabel: 'Super Admin',
-        phone: '0912 345 678',
-        status: 'active',
-        statusLabel: 'Hoạt động',
-        lastActive: 'Hôm nay 15:30',
-    },
-    {
-        id: 'usr-002',
-        username: 'owner.namdu',
-        fullName: 'Trần Thị Mai (Chủ đầu tư)',
-        email: 'owner@thenamduhill.vn',
-        role: 'owner',
-        roleLabel: 'Chủ cơ sở (Owner)',
-        phone: '0988 765 432',
-        status: 'active',
-        statusLabel: 'Hoạt động',
-        lastActive: 'Hôm qua 18:20',
-    },
-    {
-        id: 'usr-003',
-        username: 'reception.tuan',
-        fullName: 'Lê Văn Tuấn (Lễ tân ca sáng)',
-        email: 'letan.tuan@thenamduhill.vn',
-        role: 'receptionist',
-        roleLabel: 'Lễ tân (Receptionist)',
-        phone: '0903 112 233',
-        status: 'active',
-        statusLabel: 'Hoạt động',
-        lastActive: 'Hôm nay 08:00',
-    },
-    {
-        id: 'usr-004',
-        username: 'housekeeping.huong',
-        fullName: 'Phạm Thu Hương (Tổ trưởng Buồng)',
-        email: 'buongphong.huong@thenamduhill.vn',
-        role: 'housekeeping',
-        roleLabel: 'Buồng phòng (Housekeeping)',
-        phone: '0934 556 677',
-        status: 'active',
-        statusLabel: 'Hoạt động',
-        lastActive: '05/08/2026',
-    },
-]
+/** Vai trò → tone `@repo/cms-ui`. Khai TƯỜNG MINH từng key (không nội suy
+ *  chuỗi) — Tailwind quét class bằng regex tĩnh, ghép động không sinh ra. */
+const ROLE_TONE: Record<AccountRowItem['role'], CmsTone> = {
+    superadmin: 'rose',
+    owner: 'amber',
+    manager: 'violet',
+    receptionist: 'blue',
+    housekeeping: 'emerald',
+}
+
+const STATUS_TONE: Record<AccountRowItem['status'], CmsTone> = {
+    active: 'emerald',
+    suspended: 'rose',
+    invited: 'amber',
+}
+
+/** Nhãn vai trò song ngữ — khoá `{vi,en}` trong `strings.ts` (luật C7/R6),
+ *  không phải chuỗi tiếng Việt cứng như bản cũ. */
+const ROLE_LABEL_KEY: Record<AccountRowItem['role'], typeof S.roleOwner> = {
+    superadmin: S.roleSuperadmin,
+    owner: S.roleOwner,
+    manager: S.roleManager,
+    receptionist: S.roleReceptionist,
+    housekeeping: S.roleHousekeeping,
+}
 
 export default function AccountsSettingsPage() {
     return (
-        // Quản trị tài khoản: chỉ `owner` (`account.manage`). Ẩn menu không phải
-        // phân quyền — gõ thẳng URL cũng phải bị chặn (`100-05` AC-6).
+        // Quản trị tài khoản: chỉ `owner` (`account.manage`). Ẩn menu không
+        // phải phân quyền — gõ thẳng URL cũng phải bị chặn (100-05 AC-6).
         <RequirePermission anyOf={['account.manage']}>
             <AccountsSettingsScreen />
         </RequirePermission>
@@ -84,12 +77,13 @@ export default function AccountsSettingsPage() {
 
 function AccountsSettingsScreen() {
     const { locale } = useLocale()
-    const { accounts, setAccounts } = useAccountsData()
+    const { accounts, setAccounts, loading, error } = useAccountsData()
     const [search, setSearch] = useState('')
     const [roleFilter, setRoleFilter] = useState('all')
     const [statusFilter, setStatusFilter] = useState('all')
 
-    // Modal Create State
+    // Modal tạo tài khoản — chỉ cập nhật state cục bộ, backend chưa có POST
+    // (đúng hành vi bản cũ, không tự thêm gọi API mới).
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [username, setUsername] = useState('')
     const [fullName, setFullName] = useState('')
@@ -97,16 +91,41 @@ function AccountsSettingsScreen() {
     const [phone, setPhone] = useState('')
     const [role, setRole] = useState<AccountRowItem['role']>('receptionist')
 
+    const rows: AccountRowItem[] = accounts
+
+    const filteredData = useMemo(() => {
+        const needle = search.trim().toLowerCase()
+        return rows.filter((item) => {
+            if (needle) {
+                const matchUser = item.username.toLowerCase().includes(needle)
+                const matchName = item.fullName.toLowerCase().includes(needle)
+                const matchEmail = item.email.toLowerCase().includes(needle)
+                if (!matchUser && !matchName && !matchEmail) return false
+            }
+            if (roleFilter !== 'all' && item.role !== roleFilter) return false
+            if (statusFilter !== 'all' && item.status !== statusFilter) return false
+            return true
+        })
+    }, [rows, search, roleFilter, statusFilter])
+
     const columns: Column<AccountRowItem>[] = [
         {
             key: 'username',
             header: tr(S.colUsername, locale),
-            width: '220px',
-            sortable: true,
             cell: (row) => (
-                <div>
-                    <div className="font-bold text-xs text-slate-900">{row.username}</div>
-                    <div className="text-[11px] text-slate-500 font-mono">{row.email}</div>
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.username}
+                    >
+                        {row.username}
+                    </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono"
+                        title={row.email}
+                    >
+                        {row.email}
+                    </div>
                 </div>
             ),
         },
@@ -114,112 +133,64 @@ function AccountsSettingsScreen() {
             key: 'fullName',
             header: tr(S.colFullName, locale),
             cell: (row) => (
-                <div>
-                    <div className="font-semibold text-xs text-slate-900">{row.fullName}</div>
-                    <div className="text-[10px] text-slate-400">{tr(S.phoneShort, locale)}: {row.phone}</div>
+                <div className="min-w-0">
+                    <div
+                        className="truncate text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.fullName}
+                    >
+                        {row.fullName}
+                    </div>
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                        {tr(S.phoneShort, locale)}: {row.phone}
+                    </div>
                 </div>
             ),
         },
         {
             key: 'role',
             header: tr(S.colRole, locale),
-            width: '200px',
-            cell: (row) => {
-                const toneMap: Record<string, string> = {
-                    superadmin: 'bg-rose-50 text-rose-700 border-rose-200 font-bold',
-                    owner: 'bg-amber-50 text-amber-700 border-amber-200 font-bold',
-                    manager: 'bg-purple-50 text-purple-700 border-purple-200 font-medium',
-                    receptionist: 'bg-blue-50 text-blue-700 border-blue-200 font-medium',
-                    housekeeping: 'bg-emerald-50 text-emerald-700 border-emerald-200 font-medium',
-                }
-                const dotMap: Record<string, string> = {
-                    superadmin: 'bg-rose-500',
-                    owner: 'bg-amber-500',
-                    manager: 'bg-purple-500',
-                    receptionist: 'bg-blue-500',
-                    housekeeping: 'bg-emerald-500',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs border rounded-[4px] w-[180px] text-left shrink-0 ${toneMap[row.role] || 'bg-slate-100'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotMap[row.role]}`} />
-                        <span className="truncate">{row.roleLabel}</span>
-                    </span>
-                )
-            },
+            width: '190px',
+            cell: (row) => <DotBadge tone={ROLE_TONE[row.role]} label={row.roleLabel} width={172} />,
         },
         {
             key: 'lastActive',
             header: tr(S.colLastActive, locale),
-            width: '140px',
-            cell: (row) => <span className="text-xs text-slate-600 font-mono">{row.lastActive}</span>,
+            width: '130px',
+            cell: (row) => (
+                <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono">
+                    {row.lastActive}
+                </span>
+            ),
         },
         {
             key: 'status',
             header: tr(S.colStatus, locale),
-            width: '130px',
-            cell: (row) => {
-                const statusStyles: Record<string, string> = {
-                    active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    suspended: 'bg-rose-50 text-rose-700 border-rose-200',
-                    invited: 'bg-amber-50 text-amber-700 border-amber-200',
-                }
-                const dotStyles: Record<string, string> = {
-                    active: 'bg-emerald-500',
-                    suspended: 'bg-rose-500',
-                    invited: 'bg-amber-500',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2 py-0.5 text-xs font-semibold border rounded-[4px] w-[100px] text-left shrink-0 ${statusStyles[row.status] || 'bg-slate-100'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotStyles[row.status] || 'bg-slate-400'}`} />
-                        <span className="truncate">{row.statusLabel}</span>
-                    </span>
-                )
-            },
+            width: '120px',
+            cell: (row) => <DotBadge tone={STATUS_TONE[row.status]} label={row.statusLabel} width={100} />,
         },
         {
             key: 'action',
             header: tr(S.colActions, locale),
             align: 'right',
-            width: '90px',
+            width: '80px',
             cell: (row) => (
-                <div className="flex items-center justify-end gap-1 text-slate-500">
+                <div className="flex items-center justify-end">
                     <button
                         type="button"
                         onClick={() => {
-                            if (confirm('Xác nhận xóa tài khoản này?')) {
-                                setAccounts((prev) => prev.filter((a) => a.id !== row.id))
+                            if (confirm(tr(S.deleteAccountConfirm, locale))) {
+                                setAccounts((prev: AccountRowItem[]) => prev.filter((a) => a.id !== row.id))
                             }
                         }}
-                        className="p-1 hover:text-rose-600 hover:bg-slate-100 rounded transition-colors"
-                        title="Xóa tài khoản"
+                        className="p-1 text-[var(--cms-text-muted)] hover:text-[var(--cms-tone-rose)] rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        aria-label={`${tr(S.deleteAccountAria, locale)} ${row.username}`}
                     >
-                        <TrashIcon size={16} />
+                        <TrashIcon size={15} />
                     </button>
                 </div>
             ),
         },
     ]
-
-    const filteredData = accounts.filter((item) => {
-        if (search) {
-            const q = search.toLowerCase()
-            const matchUser = item.username.toLowerCase().includes(q)
-            const matchName = item.fullName.toLowerCase().includes(q)
-            const matchEmail = item.email.toLowerCase().includes(q)
-            if (!matchUser && !matchName && !matchEmail) return false
-        }
-        if (roleFilter !== 'all' && item.role !== roleFilter) return false
-        if (statusFilter !== 'all' && item.status !== statusFilter) return false
-        return true
-    })
-
-    const { tableProps } = useDataTable<AccountRowItem>({
-        data: filteredData,
-        columns,
-        rowKey: (row) => row.id,
-        selectable: true,
-        pageSize: 10,
-    })
 
     const handleReset = () => {
         setSearch('')
@@ -229,26 +200,19 @@ function AccountsSettingsScreen() {
 
     const handleCreateAccount = () => {
         if (!username.trim() || !fullName.trim()) return
-        const roleLabels: Record<AccountRowItem['role'], string> = {
-            superadmin: 'Super Admin',
-            owner: 'Chủ cơ sở (Owner)',
-            manager: 'Quản lý (Manager)',
-            receptionist: 'Lễ tân (Receptionist)',
-            housekeeping: 'Buồng phòng (Housekeeping)',
-        }
         const newAcc: AccountRowItem = {
-            id: `usr-00${accounts.length + 1}`,
+            id: `usr-local-${Date.now()}`,
             username,
             fullName,
             email: email || `${username}@thenamduhill.vn`,
             phone: phone || '0900 000 000',
             role,
-            roleLabel: roleLabels[role],
+            roleLabel: tr(ROLE_LABEL_KEY[role], locale),
             status: 'active',
-            statusLabel: 'Hoạt động',
-            lastActive: 'Mới tạo',
+            statusLabel: tr(S.accountActive, locale),
+            lastActive: tr(S.accountJustCreated, locale),
         }
-        setAccounts([newAcc, ...accounts])
+        setAccounts((prev: AccountRowItem[]) => [newAcc, ...prev])
         setIsModalOpen(false)
         setUsername('')
         setFullName('')
@@ -256,230 +220,209 @@ function AccountsSettingsScreen() {
         setPhone('')
     }
 
-    const stats = {
-        total: filteredData.length,
-        active: filteredData.filter((i) => i.status === 'active').length,
-        superadmin: filteredData.filter((i) => i.role === 'superadmin' || i.role === 'owner').length,
-        reception: filteredData.filter((i) => i.role === 'receptionist').length,
-    }
+    const stats = useMemo(
+        () => ({
+            total: rows.length,
+            active: rows.filter((i) => i.status === 'active').length,
+            admin: rows.filter((i) => i.role === 'superadmin' || i.role === 'owner').length,
+            reception: rows.filter((i) => i.role === 'receptionist').length,
+        }),
+        [rows],
+    )
+
+    const roleGroups = [
+        {
+            legend: tr(S.colRole, locale),
+            value: roleFilter,
+            onChange: setRoleFilter,
+            options: [
+                { value: 'all', label: tr(S.allRoles, locale) },
+                { value: 'superadmin', label: tr(S.roleSuperadminOwnerFilter, locale) },
+                { value: 'receptionist', label: tr(ROLE_LABEL_KEY.receptionist, locale) },
+                { value: 'housekeeping', label: tr(ROLE_LABEL_KEY.housekeeping, locale) },
+            ],
+        },
+        {
+            legend: tr(S.colStatus, locale),
+            value: statusFilter,
+            onChange: setStatusFilter,
+            options: [
+                { value: 'all', label: tr(S.allStatuses, locale) },
+                { value: 'active', label: tr(S.accountActive, locale) },
+                { value: 'suspended', label: tr(S.accountSuspended, locale) },
+            ],
+        },
+    ]
 
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2 overflow-hidden">
-            {/* Top Bar: Title + All Filters & Actions in Header (Today Format) */}
-            <div className="w-full bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2 shrink-0">
-                {/* Left: Title & Count */}
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.accountsTitle, locale)}
-                    </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {stats.total} {tr(S.accountsCount, locale)}
-                    </span>
-                </div>
-
-                {/* Right: All Filters & Actions in Header */}
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder={tr(S.searchAccount, locale)}
-                            aria-label={tr(S.searchAccount, locale)}
-                            className="w-full pl-7 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
-                        />
-                        <div className="absolute left-2 top-1.5 text-slate-400">
-                            <SearchIcon size={13} />
-                        </div>
-                    </div>
-
-                    {/* Role Select */}
-                    <select
-                        value={roleFilter}
-                        onChange={(e) => setRoleFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">{tr(S.allRoles, locale)}</option>
-                        <option value="superadmin">Super Admin / Owner</option>
-                        <option value="receptionist">Lễ tân</option>
-                        <option value="housekeeping">Buồng phòng</option>
-                    </select>
-
-                    {/* Status Select */}
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">{tr(S.allStatuses, locale)}</option>
-                        <option value="active">{tr(S.accountActive, locale)}</option>
-                        <option value="suspended">{tr(S.accountSuspended, locale)}</option>
-                    </select>
-
-                    {/* Reset Button */}
-                    <button
-                        type="button"
-                        onClick={handleReset}
-                        className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
-                    >
-                        {tr(S.reset, locale)}
-                    </button>
-
-                    {/* Primary Action Button */}
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái, nút Thêm tài khoản bên phải. */}
+            <PageHeaderBar
+                title={tr(S.accountsTitle, locale)}
+                count={{ value: stats.total, suffix: tr(S.accountsCount, locale) }}
+                actions={
                     <button
                         type="button"
                         onClick={() => setIsModalOpen(true)}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 min-h-[32px]"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
                         <PlusIcon size={14} />
                         <span>{tr(S.addAccount, locale)}</span>
                     </button>
-                </div>
-            </div>
+                }
+            />
 
-            {/* KPI Statistics Summary Cards (Today Format) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
-                {/* Total Stats */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        TỔNG SỐ TÀI KHOẢN
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.total} tài khoản</span>
-                        <span className="text-[11px] font-semibold text-amber-700">RBAC System</span>
-                    </div>
-                </div>
-
-                {/* Active Stats */}
-                <div className="bg-white p-2 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
-                            ĐANG HOẠT ĐỘNG
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.active} tài khoản</span>
-                        <span className="text-[11px] font-semibold text-emerald-700">100% Sẵn sàng</span>
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (vai trò, trạng thái) +
+                kết quả + Đặt lại — border-t 1px phân tách khỏi hàng 1. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <div className="relative w-44 sm:w-56">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder={tr(S.searchAccount, locale)}
+                        aria-label={tr(S.searchAccount, locale)}
+                        className="w-full pl-7 pr-2 py-1 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        style={{ minHeight: 28 }}
+                    />
+                    <div className="absolute left-2 top-1.5 text-[var(--cms-text-muted)]">
+                        <SearchIcon size={13} />
                     </div>
                 </div>
 
-                {/* SuperAdmin Stats */}
-                <div className="bg-white p-2 rounded-sm border border-rose-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-rose-700 uppercase tracking-wider">
-                            QUẢN TRỊ VIÊN
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.superadmin} admin</span>
-                        <span className="text-[11px] font-semibold text-rose-700">Full Access</span>
-                    </div>
-                </div>
-
-                {/* Receptionist Stats */}
-                <div className="bg-white p-2 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            LỄ TÂN & VẬN HÀNH
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.reception} tài khoản</span>
-                        <span className="text-[11px] font-semibold text-blue-700">Ca trực hàng ngày</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Table Container (Today Format) */}
-            <div className="flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <DataTable<AccountRowItem>
-                    {...tableProps}
-                    caption={tr(S.accountsTitle, locale)}
-                    pagination={{
-                        ...tableProps.pagination,
-                        prevLabel: tr(S.paginationPrev, locale),
-                        nextLabel: tr(S.paginationNext, locale),
-                        pageSizeLabel: tr(S.paginationPageSize, locale),
-                        summaryText: (a, b, c) =>
-                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.accountsCount, locale)}`,
-                    }}
-                    empty={tr(S.emptyAccounts, locale)}
+                <FilterBar
+                    groups={roleGroups}
+                    resultText={`${filteredData.length} ${tr(S.accountsCount, locale)}`}
+                    onReset={handleReset}
                 />
             </div>
 
-            {/* Modal Create Account */}
+            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời (P11 Calm). */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard label={tr(S.accountsKpiTotal, locale)} value={`${stats.total}`} tone="slate" />
+                    <KpiCard
+                        label={tr(S.accountsKpiActive, locale)}
+                        value={`${stats.active}`}
+                        note={stats.total > 0 ? `${Math.round((stats.active / stats.total) * 100)}%` : '0%'}
+                        tone="emerald"
+                    />
+                    <KpiCard
+                        label={tr(S.accountsKpiAdmin, locale)}
+                        value={`${stats.admin}`}
+                        note={tr(S.accountsFullAccessNote, locale)}
+                        tone="rose"
+                    />
+                    <KpiCard
+                        label={tr(S.accountsKpiReception, locale)}
+                        value={`${stats.reception}`}
+                        note={tr(S.accountsDailyShiftNote, locale)}
+                        tone="blue"
+                    />
+                </MetricStrip>
+            </div>
+
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                {error && (
+                    <div className="px-[var(--cms-pad)] pt-3">
+                        <div
+                            role="alert"
+                            aria-live="polite"
+                            className="rounded-[var(--cms-radius)] border px-3 py-2 text-[length:var(--cms-text-body)] leading-snug border-[var(--cms-tone-rose-dot)] bg-[var(--cms-tone-rose-bg)] text-[var(--cms-tone-rose)]"
+                        >
+                            {tr(S.loadAccountsFailed, locale)}
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex-1 flex flex-col min-h-0">
+                    <DataGrid<AccountRowItem>
+                        caption={tr(S.accountsTitle, locale)}
+                        columns={columns}
+                        rows={filteredData}
+                        rowKey={(row) => row.id}
+                        loading={loading}
+                        loadingText={tr(S.loadingAccounts, locale)}
+                        empty={
+                            <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                {tr(rows.length === 0 ? S.emptyAccountsAll : S.emptyAccounts, locale)}
+                            </div>
+                        }
+                    />
+                </div>
+            </div>
+
+            {/* Modal tạo tài khoản — giữ `Modal`/`Field`/`SelectField` của
+                `@repo/ui`, chỉ đổi nhãn/placeholder sang song ngữ qua `tr()`. */}
             {isModalOpen && (
                 <Modal
                     open={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    title="Cấp Tài Khoản & Phân Quyền Mới"
+                    title={tr(S.createAccountModalTitle, locale)}
                     footer={
                         <>
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded"
+                                className="px-3 py-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
-                                Hủy
+                                {tr(S.cancel, locale)}
                             </button>
                             <button
                                 type="button"
                                 onClick={handleCreateAccount}
-                                className="px-3 py-1.5 text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded"
+                                className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold text-white bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
-                                Tạo Tài Khoản
+                                {tr(S.createAccountCta, locale)}
                             </button>
                         </>
                     }
                 >
-                    <div className="space-y-3 text-xs">
+                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
                         <div className="grid grid-cols-2 gap-3">
                             <Field
-                                label="Tên đăng nhập (Username)"
+                                label={tr(S.fieldUsername, locale)}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Ví dụ: letan.namdu"
+                                placeholder={tr(S.fieldUsernamePlaceholder, locale)}
                                 required
                             />
                             <SelectField
-                                label="Vai trò hệ thống (RBAC Role)"
+                                label={tr(S.fieldRbacRole, locale)}
                                 value={role}
                                 onChange={(e) => setRole(e.target.value as AccountRowItem['role'])}
                             >
-                                <option value="receptionist">Lễ tân (Receptionist)</option>
-                                <option value="housekeeping">Buồng phòng (Housekeeping)</option>
-                                <option value="manager">Quản lý (Manager)</option>
-                                <option value="owner">Chủ cơ sở (Owner)</option>
-                                <option value="superadmin">Super Admin</option>
+                                <option value="receptionist">{tr(ROLE_LABEL_KEY.receptionist, locale)}</option>
+                                <option value="housekeeping">{tr(ROLE_LABEL_KEY.housekeeping, locale)}</option>
+                                <option value="manager">{tr(ROLE_LABEL_KEY.manager, locale)}</option>
+                                <option value="owner">{tr(ROLE_LABEL_KEY.owner, locale)}</option>
+                                <option value="superadmin">{tr(ROLE_LABEL_KEY.superadmin, locale)}</option>
                             </SelectField>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <Field
-                                label="Họ và Tên người dùng"
+                                label={tr(S.fieldFullName, locale)}
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
-                                placeholder="Ví dụ: Nguyễn Văn Hải"
+                                placeholder={tr(S.fieldFullNamePlaceholder, locale)}
                                 required
                             />
                             <Field
-                                label="Số điện thoại"
+                                label={tr(S.fieldPhone, locale)}
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="Ví dụ: 0912 345 678"
+                                placeholder={tr(S.fieldPhonePlaceholder, locale)}
                             />
                         </div>
 
                         <Field
-                            label="Địa chỉ Email"
+                            label={tr(S.email, locale)}
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Ví dụ: user@thenamduhill.vn"
+                            placeholder={tr(S.fieldEmailPlaceholder, locale)}
                         />
                     </div>
                 </Modal>
