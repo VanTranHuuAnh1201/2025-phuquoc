@@ -10,7 +10,7 @@
  * từ chối chứ không âm thầm đè lên (xem `.claude/rules/booking-domain.md` §B7).
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
     addDays,
     availableUnits,
@@ -24,6 +24,7 @@ import {
 } from '@repo/core'
 import type { Inventory } from '@repo/core'
 import { Button, CheckField, Field, Modal } from '@repo/ui'
+import { DotBadge, InlineAlert, PageHeaderBar } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission, useCan } from '@/components/RequirePermission'
 import { useBookingStore } from '@/stores/booking.store'
@@ -67,81 +68,73 @@ function InventoryScreen() {
     const current = editing ? inventory[inventoryKey(editing.roomTypeId, editing.date)] : undefined
 
     return (
-        <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-hidden p-3 bg-slate-100">
-            {/* High-density Unified Top Header Bar */}
-            <div className="bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 shrink-0">
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.inventoryCalendar, locale)}
-                    </h1>
-                    <span className="text-xs text-slate-500 hidden sm:inline">
-                        {pick(
-                            {
-                                vi: 'Bấm ô để sửa giá, đóng bán hoặc đêm tối thiểu.',
-                                en: 'Click cell to adjust price or restrictions.',
-                            },
-                            locale,
+        <div className="flex-1 flex flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* Hàng 1: tiêu đề trái + cụm điều hướng khoảng ngày phải — đúng bố
+                cục `PageHeaderBar` chuẩn của dashboard, không card lồng card. */}
+            <PageHeaderBar
+                title={tr(S.inventoryCalendar, locale)}
+                actions={
+                    <>
+                        {/* Bộ chọn 14 / 30 ngày — AC-13 */}
+                        <select
+                            value={rangeLength}
+                            onChange={(e) => setRangeLength(Number(e.target.value) as RangeLength)}
+                            aria-label={tr(S.dateRangeLabel, locale)}
+                            className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <option value={14}>{tr(S.days14, locale)}</option>
+                            <option value={30}>{tr(S.days30, locale)}</option>
+                        </select>
+
+                        <div className="flex items-center gap-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-0.5">
+                            <button
+                                type="button"
+                                onClick={() => setOffset(offset - rangeLength)}
+                                className="flex min-w-[24px] min-h-[24px] items-center justify-center rounded-[var(--cms-radius-sm)] p-1 transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--cms-accent)]"
+                                aria-label={tr(S.previousRange, locale)}
+                            >
+                                <ChevronLeftIcon size={16} />
+                            </button>
+                            <span className="px-2 text-[length:var(--cms-text-body)] font-semibold tabular-nums text-[var(--cms-text)]">
+                                {dates[0]} → {dates[dates.length - 1]}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setOffset(offset + rangeLength)}
+                                className="flex min-w-[24px] min-h-[24px] items-center justify-center rounded-[var(--cms-radius-sm)] p-1 transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--cms-accent)]"
+                                aria-label={tr(S.nextRange, locale)}
+                            >
+                                <ChevronRightIcon size={16} />
+                            </button>
+                        </div>
+
+                        {offset !== 0 && (
+                            <button
+                                type="button"
+                                onClick={() => setOffset(0)}
+                                className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                            >
+                                {tr(S.todayLabel, locale)}
+                            </button>
                         )}
-                    </span>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                    {/* Bộ chọn 14 / 30 ngày — AC-13 */}
-                    <select
-                        value={rangeLength}
-                        onChange={(e) => setRangeLength(Number(e.target.value) as RangeLength)}
-                        aria-label={tr(S.dateRangeLabel, locale)}
-                        className="h-8 px-2 text-xs font-medium bg-slate-100 border border-slate-300 rounded-md text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                    >
-                        <option value={14}>{tr(S.days14, locale)}</option>
-                        <option value={30}>{tr(S.days30, locale)}</option>
-                    </select>
-
-                    <div className="flex items-center bg-slate-100 border border-slate-300 rounded-md p-0.5">
-                        <button
-                            type="button"
-                            onClick={() => setOffset(offset - rangeLength)}
-                            className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:bg-white rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                            aria-label={tr(S.previousRange, locale)}
-                        >
-                            <ChevronLeftIcon size={16} />
-                        </button>
-                        <span className="text-xs font-semibold px-2 text-slate-800 tabular-nums">
-                            {dates[0]} → {dates[dates.length - 1]}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={() => setOffset(offset + rangeLength)}
-                            className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:bg-white rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                            aria-label={tr(S.nextRange, locale)}
-                        >
-                            <ChevronRightIcon size={16} />
-                        </button>
-                    </div>
-
-                    {offset !== 0 && (
-                        <button
-                            type="button"
-                            onClick={() => setOffset(0)}
-                            className="h-8 px-2.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
-                        >
-                            {tr(S.todayLabel, locale)}
-                        </button>
-                    )}
-                </div>
-            </div>
+                    </>
+                }
+            />
 
             {error && (
-                <div
-                    role="alert"
-                    className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium shrink-0"
-                >
-                    {error === 'version-conflict' ? tr(S.versionConflict, locale) : error}
+                <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2">
+                    <InlineAlert tone="rose">
+                        {error === 'version-conflict' ? tr(S.versionConflict, locale) : error}
+                    </InlineAlert>
                 </div>
             )}
 
-            {/* Matrix Table Container - Maximized Full Height */}
-            <div className="w-full flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-auto">
+            {/* Ma trận hạng phòng × ngày — không phải bảng 1-record-1-hàng nên
+                KHÔNG dùng DataGrid (Column<T>[] không biểu diễn được cột động
+                theo ngày + ô có 4 tầng thông tin tương tác). Giữ <table> viết
+                tay, chỉ đổi hệ token sang --cms-* để nhất quán với phần còn
+                lại của CMS; wrapper bỏ shadow/rounded, chỉ còn viền 1px (P7). */}
+            <div className="w-full flex-1 min-h-0 border-t border-[var(--cms-border)] overflow-auto">
 
                 <table style={{ borderCollapse: 'collapse', minWidth: 900 }}>
                     <caption
@@ -163,7 +156,7 @@ function InventoryScreen() {
                                     ...headerCell,
                                     position: 'sticky',
                                     left: 0,
-                                    background: 'var(--surface-alt)',
+                                    background: 'var(--cms-bg-subtle)',
                                     zIndex: 2,
                                     minWidth: 160,
                                     textAlign: 'left',
@@ -177,9 +170,14 @@ function InventoryScreen() {
                                     scope="col"
                                     style={{
                                         ...headerCell,
+                                        // Cuối tuần tô nhẹ bằng --cms-accent-weak (token
+                                        // thật của hệ cms-ui, dùng sẵn cho trạng thái
+                                        // "được chọn nhẹ") — phân biệt được với ngày
+                                        // thường (--cms-bg-subtle) mà không bịa thêm
+                                        // biến mới riêng cho một mình chỗ này.
                                         background: isWeekend(date)
-                                            ? 'var(--surface-tint)'
-                                            : 'var(--surface-alt)',
+                                            ? 'var(--cms-accent-weak)'
+                                            : 'var(--cms-bg-subtle)',
                                         minWidth: 64,
                                     }}
                                 >
@@ -203,19 +201,19 @@ function InventoryScreen() {
                                         ...bodyCell,
                                         position: 'sticky',
                                         left: 0,
-                                        background: 'var(--surface)',
+                                        background: 'var(--cms-bg)',
                                         zIndex: 1,
                                         textAlign: 'left',
                                         fontWeight: 600,
-                                        fontSize: 'var(--text-sm)',
+                                        fontSize: 'var(--cms-text-body)',
                                     }}
                                 >
                                     {pick(room.name, locale)}
                                     <div
                                         style={{
                                             fontWeight: 400,
-                                            fontSize: 'var(--text-xs)',
-                                            color: 'var(--text-muted)',
+                                            fontSize: 'var(--cms-text-meta)',
+                                            color: 'var(--cms-text-muted)',
                                         }}
                                     >
                                         {formatPrice(room.price, locale)}
@@ -233,12 +231,15 @@ function InventoryScreen() {
                                         inventory: inv,
                                     })
 
+                                    // Tone đổi sang hệ --cms-tone-* (cùng bộ DotBadge
+                                    // dùng ở dashboard) — ngưỡng nghiệp vụ free===0 /
+                                    // free<=2 giữ nguyên, không đụng (booking-domain).
                                     const tone =
                                         free === 0
-                                            ? { bg: 'var(--danger-bg)', fg: 'var(--danger)' }
+                                            ? { bg: 'var(--cms-tone-rose-bg)', fg: 'var(--cms-tone-rose)' }
                                             : free <= 2
-                                              ? { bg: 'var(--warning-bg)', fg: 'var(--warning)' }
-                                              : { bg: 'transparent', fg: 'var(--text)' }
+                                              ? { bg: 'var(--cms-tone-amber-bg)', fg: 'var(--cms-tone-amber)' }
+                                              : { bg: 'transparent', fg: 'var(--cms-text)' }
 
                                     return (
                                         <td key={date} style={{ ...bodyCell, padding: 2 }}>
@@ -251,24 +252,23 @@ function InventoryScreen() {
                                                 aria-label={`${pick(room.name, locale)} ${date}: ${free}/${inv?.totalUnits ?? 0}`}
                                                 style={{
                                                     width: '100%',
-                                                    padding: 'var(--space-2)',
+                                                    padding: 6,
                                                     display: 'grid',
                                                     gap: 2,
                                                     background: tone.bg,
                                                     border: `1px solid ${
                                                         inv?.priceOverride !== undefined
-                                                            ? 'var(--brand)'
+                                                            ? 'var(--cms-accent)'
                                                             : 'transparent'
                                                     }`,
-                                                    borderRadius: 'var(--radius-sm)',
+                                                    borderRadius: 'var(--cms-radius-sm)',
                                                     cursor: 'pointer',
-                                                    fontFamily: 'var(--font-body)',
                                                     color: tone.fg,
                                                 }}
                                             >
                                                 <span
                                                     style={{
-                                                        fontSize: 'var(--text-xs)',
+                                                        fontSize: 'var(--cms-text-meta)',
                                                         fontWeight: 700,
                                                         fontVariantNumeric: 'tabular-nums',
                                                     }}
@@ -282,7 +282,7 @@ function InventoryScreen() {
                                                         style={{
                                                             fontSize: 9,
                                                             fontWeight: 700,
-                                                            color: 'var(--danger)',
+                                                            color: 'var(--cms-tone-rose)',
                                                         }}
                                                     >
                                                         {tr(S.soldOutShort, locale)}
@@ -293,7 +293,7 @@ function InventoryScreen() {
                                                         style={{
                                                             fontSize: 9,
                                                             fontWeight: 700,
-                                                            color: 'var(--warning)',
+                                                            color: 'var(--cms-tone-amber)',
                                                         }}
                                                     >
                                                         {tr(S.lowStockShort, locale)}
@@ -302,19 +302,19 @@ function InventoryScreen() {
                                                 <span
                                                     style={{
                                                         fontSize: 10,
-                                                        color: 'var(--text-muted)',
+                                                        color: 'var(--cms-text-muted)',
                                                         fontVariantNumeric: 'tabular-nums',
                                                     }}
                                                 >
                                                     {Math.round(price / 1000)}k
                                                 </span>
                                                 {inv?.closedToArrival && (
-                                                    <span style={{ fontSize: 9, color: 'var(--danger)' }}>
+                                                    <span style={{ fontSize: 9, color: 'var(--cms-tone-rose)' }}>
                                                         CTA
                                                     </span>
                                                 )}
                                                 {inv?.minNights && (
-                                                    <span style={{ fontSize: 9, color: 'var(--info)' }}>
+                                                    <span style={{ fontSize: 9, color: 'var(--cms-tone-blue)' }}>
                                                         ≥{inv.minNights}
                                                     </span>
                                                 )}
@@ -360,40 +360,20 @@ function InventoryScreen() {
 
 function Legend() {
     const { locale } = useLocale()
-    const items = [
-        { color: 'var(--danger-bg)', label: tr(S.soldOutShort, locale) },
-        { color: 'var(--warning-bg)', label: pick({ vi: 'Sắp hết (≤2)', en: 'Low (≤2)' }, locale) },
-        {
-            color: 'transparent',
-            border: 'var(--brand)',
-            label: pick({ vi: 'Đã đè giá', en: 'Price overridden' }, locale),
-        },
-    ]
     return (
-        <div
-            style={{
-                display: 'flex',
-                gap: 'var(--space-5)',
-                flexWrap: 'wrap',
-                fontSize: 'var(--text-xs)',
-                color: 'var(--text-muted)',
-            }}
-        >
-            {items.map((item) => (
-                <span key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <span
-                        aria-hidden="true"
-                        style={{
-                            width: 14,
-                            height: 14,
-                            background: item.color,
-                            border: `1px solid ${item.border ?? 'var(--border)'}`,
-                            borderRadius: 3,
-                        }}
-                    />
-                    {item.label}
-                </span>
-            ))}
+        <div className="flex flex-wrap items-center gap-4 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+            {/* Hai tone hết phòng/sắp hết tái dùng thẳng DotBadge — cùng
+                component dashboard đang dùng cho badge trạng thái đơn, thay vì
+                tự vẽ lại ô vuông màu. */}
+            <DotBadge tone="rose" label={tr(S.soldOutShort, locale)} />
+            <DotBadge tone="amber" label={pick({ vi: 'Sắp hết (≤2)', en: 'Low (≤2)' }, locale)} />
+            <span className="flex items-center gap-2">
+                <span
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 rounded-[3px] border-2 border-[var(--cms-accent)]"
+                />
+                {pick({ vi: 'Đã đè giá', en: 'Price overridden' }, locale)}
+            </span>
             <span>CTA = {pick({ vi: 'cấm nhận phòng', en: 'closed to arrival' }, locale)}</span>
             <span>≥N = {pick({ vi: 'số đêm tối thiểu', en: 'minimum nights' }, locale)}</span>
         </div>
@@ -595,19 +575,19 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const headerCell: React.CSSProperties = {
-    padding: 'var(--space-2)',
-    fontSize: 'var(--text-xs)',
+    padding: 8,
+    fontSize: 'var(--cms-text-meta)',
     fontWeight: 600,
-    color: 'var(--text-muted)',
-    background: 'var(--surface-alt)',
-    borderBottom: '1px solid var(--border)',
+    color: 'var(--cms-text-muted)',
+    background: 'var(--cms-bg-subtle)',
+    borderBottom: '1px solid var(--cms-border)',
     textAlign: 'center',
     whiteSpace: 'nowrap',
 }
 
 const bodyCell: React.CSSProperties = {
-    padding: 'var(--space-2)',
-    borderBottom: '1px solid var(--border)',
+    padding: 8,
+    borderBottom: '1px solid var(--cms-border)',
     textAlign: 'center',
     verticalAlign: 'middle',
 }
