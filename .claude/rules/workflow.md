@@ -199,3 +199,57 @@ Một lượt yêu cầu coi là xong khi:
 - [ ] `OVERVIEW.md §7` khớp với thư mục thật
 - [ ] Báo cáo cuối theo mẫu W5
 - [ ] Nếu có FAIL sau 2 vòng sửa → đã phân tích nguyên nhân, không im lặng
+
+---
+
+## W8 — Setup Test E2E Playwright Sau Khi Hoàn Thành Release v1.0.0
+
+Khi tất cả các ticket thuộc bản release `v1.0.0` được hoàn thành và nghiệm thu (di chuyển 100% ticket sang `done/`), tự động kích hoạt vai trò `qc_lead` / `ndh-qc` để thực hiện setup bộ kiểm thử tự động E2E bằng **Playwright**:
+- Đạt độ phủ **≥ 90%** trên các chức năng chính.
+- Ưu tiên tập trung test **luồng logic nghiệp vụ** trước (Đặt phòng 5 bước, Tìm kiếm & tính giá, Quản lý trạng thái đơn CMS, Check-in/Check-out, Phân quyền RBAC, Chống overbooking).
+
+### W8.1 — Điều kiện kích hoạt (không mơ hồ)
+
+Chỉ kích hoạt khi **cả hai** đúng:
+
+1. `pending/` và `process/` của release đó **rỗng** — kiểm bằng `ls`, không tin bảng §5 `OVERVIEW.md`.
+2. `ndh-pm` đã đối soát thư mục thật ↔ `OVERVIEW.md §5` và ghi nhận **KHỚP 100%**.
+
+Thiếu một trong hai → **chưa chạy W8**, tiếp tục dây chuyền W1 cho ticket còn lại.
+
+### W8.2 — Thứ tự viết test (logic trước, giao diện sau)
+
+Viết theo đúng thứ tự này, **không đảo**: mỗi tầng dưới chỉ có nghĩa khi tầng trên đã xanh.
+
+| # | Nhóm | Vì sao ưu tiên |
+|:--:|---|---|
+| 1 | Tính giá từng đêm + khuyến mãi cộng dồn **nhân** | Sai một đồng là sai mọi đơn. Đối chiếu §B4 |
+| 2 | Chống overbooking (2 request đồng thời) | Bán trùng phòng là lỗi không sửa được bằng lời xin lỗi |
+| 3 | Vòng đời đơn — không nhảy cóc trạng thái | Đồ thị §B1, mọi chuyển đổi ghi `ActivityLog` |
+| 4 | Phân quyền RBAC 5 vai trò | Lễ tân **không** sửa được giá (§B8) |
+| 5 | Đặt phòng 5 bước + giữ giỏ qua login | Luồng khách cuối, §F2 |
+| 6 | CMS check-in / check-out | Màn lễ tân dùng hằng ngày |
+| 7 | Giao diện: mobile 375px không cuộn ngang, badge có chữ | Sau cùng — §F6 |
+
+### W8.3 — Test phải chứng minh được, không chỉ chạy xanh
+
+| Luật | |
+|---|---|
+| Mỗi spec có `expect()` thật | **Cấm** spec chỉ chụp ảnh rồi kết luận PASS |
+| Mỗi nhóm ở W8.2 có **≥1 negative test** | Đường hạnh phúc xanh không chứng minh gì về đường lỗi |
+| Bắt `pageerror` + `console.error` | Lỗi runtime im lặng là thứ build xanh không thấy |
+| Test chạy lại được nhiều lần | Seed **không idempotent** (R7) — test tự dọn dữ liệu mình tạo |
+| Ảnh chụp | `e2e-out/`, `playwright-report/` **đã `.gitignore`** — không commit vào cây mã nguồn |
+
+Con số **≥90%** đo trên **danh sách chức năng chính ở W8.2**, không phải line coverage
+của trình bao phủ mã. Ghi rõ mẫu số: *"27/29 luồng nghiệp vụ có test"*, không ghi "90%" trần.
+
+### W8.4 — Không được làm
+
+| # | |
+|---|---|
+| 1 | **Không nới DoD của ticket** để test dễ xanh. Test bám AC đã ký, không ngược lại |
+| 2 | **Không sửa code sản phẩm** để chiều test — QC không có quyền sửa code (W6.4) |
+| 3 | **Không chạy `pnpm build`** khi dev server đang mở — dùng `build:safe` (C12) |
+| 4 | Test FAIL → mở ticket `900-*` kèm triệu chứng tái hiện, **không** xoá/skip test |
+

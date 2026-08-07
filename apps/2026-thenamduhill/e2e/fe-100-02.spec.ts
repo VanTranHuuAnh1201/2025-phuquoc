@@ -43,7 +43,7 @@ test('FE 100-02 desktop 1440 — owner: bảng, lọc, chọn nhiều, phân tra
     await page.waitForLoadState('networkidle')
 
     // AC-1: tiêu đề + đếm
-    const count = await page.locator('header p').first().innerText()
+    const count = await page.getByText(/^\d+ (đơn|bookings)$/).first().innerText()
     console.log('AC-1 đếm:', count)
 
     // AC-1: ô tìm, bộ lọc, xuất Excel, tạo đơn
@@ -92,7 +92,7 @@ test('FE 100-02 desktop 1440 — owner: bảng, lọc, chọn nhiều, phân tra
     const firstCode = (await page.locator('tbody tr').first().locator('td').nth(1).innerText()).split('\n')[0]
     await page.locator('input[type=search]').fill(firstCode)
     await page.waitForTimeout(400)
-    console.log('AC-2 tìm', firstCode, '→ số dòng:', await page.locator('tbody tr').count(), '| đếm:', await page.locator('header p').first().innerText())
+    console.log('AC-2 tìm', firstCode, '→ số dòng:', await page.locator('tbody tr').count(), '| đếm:', await page.getByText(/^\d+ (đơn|bookings)$/).first().innerText())
 
     // AC-3: Đặt lại
     await page.getByRole('button', { name: /^Đặt lại$/ }).first().click()
@@ -127,16 +127,24 @@ test('FE 100-02 mobile 375 — AC-7 không cuộn ngang', async ({ page }) => {
     console.log('AC-7 metrics:', JSON.stringify(metrics))
     expect(metrics.bodyScrollWidth).toBeLessThanOrEqual(metrics.innerWidth)
 
-    // thẻ có checkbox + nút Xem ≥44px
+    // thẻ có checkbox, và cả thẻ là vùng chạm mở chi tiết
     const cardCheckbox = page.locator('.dt-cards input[type=checkbox]').first()
     console.log('AC-7 checkbox thẻ aria-label:', await cardCheckbox.getAttribute('aria-label'))
-    const viewLink = page.locator('.dt-cards a').first()
-    console.log('AC-7 nút Xem box:', JSON.stringify(await viewLink.boundingBox()))
+
+    // Cột THAO TÁC khai `inCard: false` nên thẻ mobile KHÔNG có link Xem —
+    // điều hướng đi qua `onRowClick` trên chính thẻ (`DataTable.tsx:297`).
+    // Đo vùng chạm của thẻ thay cho nút, target phải ≥ 44px (FE5/D4).
+    const card = page.locator('.dt-cards').locator('> div').first()
+    const cardBox = await card.boundingBox()
+    console.log('AC-7 vùng chạm thẻ:', JSON.stringify(cardBox))
+    expect(cardBox!.height).toBeGreaterThanOrEqual(44)
 
     await page.screenshot({ path: 'e2e-out/fe-100-02-mobile-orders.png', fullPage: false })
 
     // mở chi tiết + form nhận phòng ở 375px
-    await page.locator('.dt-cards a').first().click()
+    // `force` để bỏ qua lớp phủ của dev overlay Next — không phải lỗi app,
+    // `onRowClick` đã nối đúng ở `orders/page.tsx:504`.
+    await card.click({ force: true })
     await page.waitForURL(/\/admin\/orders\/bk-/)
     await page.waitForLoadState('networkidle')
     const detailWidth = await page.evaluate(() => ({
@@ -224,7 +232,7 @@ test('FE 100-02 — AC-13 lễ tân không thấy nút vượt quyền', async (
     console.log('AC-13 lễ tân thấy mục Khuyến mãi:', await page.getByRole('link', { name: /Khuyến mãi/ }).count())
 
     // mở một đơn đã huỷ để soi nút duyệt hoàn tiền
-    await page.locator('select').first().selectOption({ label: 'Đã huỷ' })
+    await page.getByLabel(/Lọc theo trạng thái đơn/).selectOption({ label: 'Đã huỷ' })
     await page.waitForTimeout(400)
     const cancelledRows = await page.locator('tbody tr').count()
     console.log('AC-13 số đơn đã huỷ:', cancelledRows)
@@ -254,7 +262,7 @@ test('FE 100-02 — AC-9/10/11/12 chi tiết + nhận phòng', async ({ page }) 
     await page.waitForLoadState('networkidle')
 
     // AC-9: đơn confirmed → có [Nhận phòng]
-    await page.locator('select').first().selectOption({ label: 'Đã xác nhận' })
+    await page.getByLabel(/Lọc theo trạng thái đơn/).selectOption({ label: 'Đã xác nhận' })
     await page.waitForTimeout(400)
     await page.locator('tbody tr').first().click()
     await page.waitForURL(/\/admin\/orders\/bk-/)
