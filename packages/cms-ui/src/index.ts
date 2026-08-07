@@ -9,4 +9,5 @@
  * nhắc "phòng", "đơn hàng", "tồn kho". Chỉ có `label`, `value`, `tone`.
  */
 
-export {}
+export { DotBadge } from './DotBadge'
+export type { DotBadgeProps, CmsTone } from './DotBadge'
