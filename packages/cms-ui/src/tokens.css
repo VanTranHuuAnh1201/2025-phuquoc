@@ -1,0 +1,99 @@
+/**
+ * CMS DESIGN SYSTEM — token dùng chung cho mọi sản phẩm trong monorepo.
+ *
+ * VÌ SAO PHẠM VI `[data-cms]` CHỨ KHÔNG PHẢI `:root`: CMS và trang client
+ * chạy trong CÙNG một Next app. Ghi đè ở `:root` sẽ rò sang `/h1`–`/h4` và
+ * phá token của cả 4 theme. `[data-cms]` chỉ có hiệu lực bên trong shell CMS.
+ *
+ * VÌ SAO CÓ KHỐI ÁNH XẠ Ở CUỐI: `DataTable`, `Button`, `Field` của `@repo/ui`
+ * đọc token qua `var(--border)`, `var(--text-muted)`, `var(--surface-alt)`…
+ * Ánh xạ `--cms-*` sang đúng những tên đó thì chúng tự đổi diện mạo mà không
+ * phải sửa một dòng nào trong package dùng chung (luật R5).
+ */
+
+[data-cms] {
+    /* --- nền & đường kẻ ------------------------------------------------
+     * Nền TRẮNG, phân tách bằng đường kẻ 1px thay cho shadow. Đây là nguồn
+     * gốc trực tiếp của cảm giác "clean" — shadow chỉ dành cho lớp nổi thật
+     * (dropdown, modal), không dùng cho card tĩnh (P7). */
+    --cms-bg: #ffffff;
+    --cms-bg-subtle: #f8fafc;
+    --cms-border: #e5e7eb;
+
+    --cms-text: #111827;
+    --cms-text-muted: #6b7280;
+
+    --cms-accent: #2563eb;
+    --cms-accent-weak: #eff6ff;
+
+    /* --- tone trạng thái ------------------------------------------------
+     * Sáu tone vì `F6` bắt badge phân biệt được ≥6 trạng thái đơn
+     * (pending_payment / confirmed / checked_in / checked_out / cancelled /
+     * no_show). Vượt trần 12 token màu của P2 — ngoại lệ đã giải trình
+     * trong spec §3, không phải bỏ sót. */
+    --cms-tone-emerald: #047857;
+    --cms-tone-emerald-bg: #ecfdf5;
+    --cms-tone-emerald-dot: #10b981;
+
+    --cms-tone-blue: #1d4ed8;
+    --cms-tone-blue-bg: #eff6ff;
+    --cms-tone-blue-dot: #3b82f6;
+
+    --cms-tone-violet: #6d28d9;
+    --cms-tone-violet-bg: #f5f3ff;
+    --cms-tone-violet-dot: #8b5cf6;
+
+    --cms-tone-amber: #b45309;
+    --cms-tone-amber-bg: #fffbeb;
+    --cms-tone-amber-dot: #f59e0b;
+
+    --cms-tone-rose: #be123c;
+    --cms-tone-rose-bg: #fff1f2;
+    --cms-tone-rose-dot: #f43f5e;
+
+    --cms-tone-slate: #334155;
+    --cms-tone-slate-bg: #f8fafc;
+    --cms-tone-slate-dot: #94a3b8;
+
+    /* --- kích thước (hệ 8pt, trích từ ảnh mẫu quy về 1440px) ----------- */
+    --cms-rail-w: 64px;
+    --cms-header-h: 48px;
+    --cms-tabbar-h: 40px;
+    --cms-row-h: 48px;
+    --cms-gap: 16px;
+    --cms-pad: 24px;
+
+    /* --- chữ -----------------------------------------------------------
+     * Số KPI weight 400, KHÔNG đậm. Đây là chi tiết làm nên vẻ clean của
+     * ảnh mẫu — số lớn mà nhẹ, để hierarchy do CỠ gánh chứ không do độ đậm. */
+    --cms-text-metric: 36px;
+    --cms-text-title: 24px;
+    --cms-text-label: 12px;
+    --cms-text-body: 13px;
+    --cms-text-meta: 11px;
+
+    --cms-radius: 6px;
+    --cms-radius-sm: 4px;
+
+    /* Shadow chỉ 2 bậc, chỉ cho lớp nổi thật. */
+    --cms-shadow-pop: 0 4px 12px rgb(17 24 39 / 0.08);
+    --cms-shadow-modal: 0 16px 40px rgb(17 24 39 / 0.16);
+
+    /* --------------------------------------------------------------------
+     * ÁNH XẠ SANG TOKEN CỦA `@repo/ui`.
+     * Nhờ khối này, `DataTable`/`Button`/`Field` đổi diện mạo theo CMS mà
+     * không phải sửa `packages/ui`. Đổi giá trị ở trên là đổi cả hai nơi.
+     * ------------------------------------------------------------------ */
+    --surface: var(--cms-bg);
+    --surface-alt: var(--cms-bg-subtle);
+    --border: var(--cms-border);
+    --border-strong: var(--cms-border);
+    --text: var(--cms-text);
+    --text-muted: var(--cms-text-muted);
+    --brand: var(--cms-accent);
+    --focus-ring: var(--cms-accent);
+    --radius-sm: var(--cms-radius-sm);
+    --radius: var(--cms-radius);
+    --text-xs: var(--cms-text-meta);
+    --text-sm: var(--cms-text-body);
+}

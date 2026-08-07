@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
         '@repo/utils',
         '@repo/core',
         '@repo/ui',
+        '@repo/cms-ui',
         '@repo/ui-layout',
         '@repo/domain-hotel',
         '@repo/theme-h1',

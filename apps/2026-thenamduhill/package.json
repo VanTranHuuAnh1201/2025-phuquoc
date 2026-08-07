@@ -11,6 +11,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@repo/cms-ui": "workspace:*",
     "@repo/core": "workspace:*",
     "@repo/domain-hotel": "workspace:*",
     "@repo/styling-css": "workspace:*",

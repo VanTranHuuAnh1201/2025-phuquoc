@@ -84,6 +84,9 @@ importers:
 
   apps/2026-thenamduhill:
     dependencies:
+      '@repo/cms-ui':
+        specifier: workspace:*
+        version: link:../../packages/cms-ui
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -288,6 +291,25 @@ importers:
       eslint-config-next:
         specifier: 15.5.4
         version: 15.5.4(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/cms-ui:
+    dependencies:
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
+    devDependencies:
+      '@repo/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^19
+        version: 19.2.18
+      react:
+        specifier: ^19.1.1
+        version: 19.2.8
       typescript:
         specifier: ^5
         version: 5.9.3
