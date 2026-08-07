@@ -13,6 +13,17 @@ import { createClient } from '@/utils/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
+/**
+ * Payload thô gửi lên từ client — mọi field `unknown` vì `request.json()`
+ * không tự ép kiểu; validate bên dưới thu hẹp trước khi dùng (luật C1).
+ */
+interface AvailabilitySearchRequestBody {
+    checkIn?: unknown
+    checkOut?: unknown
+    guests?: { adults?: unknown; children?: unknown }
+    ratePlanId?: unknown
+}
+
 export async function POST(request: Request) {
     try {
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1'
@@ -24,7 +35,7 @@ export async function POST(request: Request) {
             })
         }
 
-        let body: any
+        let body: AvailabilitySearchRequestBody
         try {
             body = await request.json()
         } catch {
@@ -37,7 +48,10 @@ export async function POST(request: Request) {
         const { checkIn, checkOut, guests, ratePlanId } = body ?? {}
 
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!checkIn || !dateRegex.test(checkIn) || !checkOut || !dateRegex.test(checkOut)) {
+        if (
+            typeof checkIn !== 'string' || !dateRegex.test(checkIn) ||
+            typeof checkOut !== 'string' || !dateRegex.test(checkOut)
+        ) {
             return fail(400, 'INVALID_INPUT', {
                 vi: 'Ngày nhận/trả phòng không đúng định dạng YYYY-MM-DD.',
                 en: 'Check-in and check-out dates must be in YYYY-MM-DD format.',
@@ -53,7 +67,7 @@ export async function POST(request: Request) {
 
         const adults = Number(guests?.adults ?? 1)
         const children = Array.isArray(guests?.children)
-            ? guests.children.map((c: any) => Number(c))
+            ? guests.children.map((c: unknown) => Number(c))
             : []
 
         const cookieStore = await cookies()
@@ -121,7 +135,7 @@ export async function POST(request: Request) {
         })
 
         return ok({ rooms: searchResults })
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[availability search API error]', err)
         return serverError()
     }

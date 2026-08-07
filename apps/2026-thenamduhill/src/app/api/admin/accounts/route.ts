@@ -1,7 +1,23 @@
-import { fail, ok, serverError } from '@/lib/auth/errors'
+import { ok, serverError } from '@/lib/auth/errors'
 import { createAdminClient } from '@/utils/supabase/admin'
 
 export const dynamic = 'force-dynamic'
+
+/**
+ * Hàng thô từ bảng `accounts` — key rắn (snake_case), giá trị chưa ép kiểu.
+ * `.select('*')` của Supabase trả `any` khi client chưa gắn generic schema;
+ * khai type biên này để thu hẹp về `unknown` field-by-field thay vì `any`
+ * (luật C1), theo đúng pattern `DbRow` ở `src/lib/db/mappers.ts`.
+ */
+interface AccountRow {
+    id: string
+    email?: string | null
+    full_name?: string | null
+    role?: string | null
+    phone?: string | null
+    active?: boolean | null
+    created_at?: string | null
+}
 
 export async function GET() {
     try {
@@ -16,7 +32,7 @@ export async function GET() {
             return ok([])
         }
 
-        const mapped = (accounts || []).map((a: any) => ({
+        const mapped = ((accounts ?? []) as AccountRow[]).map((a) => ({
             id: a.id,
             username: a.email ? a.email.split('@')[0] : a.id.slice(0, 8),
             fullName: a.full_name || a.email || 'N/A',
@@ -30,7 +46,7 @@ export async function GET() {
         }))
 
         return ok(mapped)
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[GET /api/admin/accounts error]', err)
         return serverError()
     }

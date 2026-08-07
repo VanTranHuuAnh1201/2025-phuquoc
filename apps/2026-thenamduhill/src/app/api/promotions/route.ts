@@ -1,4 +1,4 @@
-import { fail, ok, serverError } from '@/lib/auth/errors'
+import { ok, serverError } from '@/lib/auth/errors'
 import { createAdminClient } from '@/utils/supabase/admin'
 
 export const dynamic = 'force-dynamic'
@@ -17,7 +17,7 @@ export async function GET() {
         }
 
         return ok(promotions || [])
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[GET /api/promotions error]', err)
         return serverError()
     }

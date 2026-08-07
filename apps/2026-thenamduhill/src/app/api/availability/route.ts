@@ -17,6 +17,22 @@ import { createClient } from '@/utils/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
+/**
+ * Payload thô gửi lên từ client — mọi field đều optional/`unknown` vì
+ * `request.json()` không tự ép kiểu. Các khối validate bên dưới thu hẹp
+ * từng field trước khi dùng, thay vì tin `any`.
+ */
+interface AvailabilityRequestBody {
+    roomTypeId?: unknown
+    checkIn?: unknown
+    checkOut?: unknown
+    guests?: { adults?: unknown; children?: unknown }
+    ratePlanId?: unknown
+    addons?: unknown
+    promoCode?: unknown
+    channel?: unknown
+}
+
 export async function POST(request: Request) {
     try {
         // Rate limiting
@@ -29,7 +45,7 @@ export async function POST(request: Request) {
             })
         }
 
-        let body: any
+        let body: AvailabilityRequestBody
         try {
             body = await request.json()
         } catch {
@@ -59,7 +75,10 @@ export async function POST(request: Request) {
         }
 
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!checkIn || !dateRegex.test(checkIn) || !checkOut || !dateRegex.test(checkOut)) {
+        if (
+            typeof checkIn !== 'string' || !dateRegex.test(checkIn) ||
+            typeof checkOut !== 'string' || !dateRegex.test(checkOut)
+        ) {
             return fail(400, 'INVALID_INPUT', {
                 vi: 'Ngày nhận/trả phòng không đúng định dạng YYYY-MM-DD.',
                 en: 'Check-in and check-out dates must be in YYYY-MM-DD format.',
@@ -86,10 +105,15 @@ export async function POST(request: Request) {
 
         const adults = Number(guests?.adults ?? 1)
         const children = Array.isArray(guests?.children)
-            ? guests.children.map((c: any) => Number(c))
+            ? guests.children.map((c: unknown) => Number(c))
             : []
         const channel: Channel = rawChannel === 'phone' || rawChannel === 'walk-in' || rawChannel === 'ota' ? rawChannel : 'web'
-        const addonsInput: Record<string, number> = typeof rawAddons === 'object' && rawAddons !== null ? rawAddons : {}
+        // rawAddons là map { addonId: số lượng } gửi từ client — thu hẹp bằng
+        // typeof thay vì `any` rồi ép kiểu tường minh, giữ nguyên hành vi cũ.
+        const addonsInput: Record<string, number> =
+            typeof rawAddons === 'object' && rawAddons !== null
+                ? (rawAddons as Record<string, number>)
+                : {}
 
         const cookieStore = await cookies()
         const supabase = createClient(cookieStore)
@@ -200,7 +224,7 @@ export async function POST(request: Request) {
             ...quote,
             promotionMessages,
         })
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[availability API error]', err)
         return serverError()
     }

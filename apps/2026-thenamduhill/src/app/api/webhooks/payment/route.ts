@@ -52,8 +52,9 @@ export async function POST(req: Request) {
                 { status: 401 }
             )
         }
-    } catch (err: any) {
-        console.warn('[webhook/payment] Rejected: Exception during HMAC validation:', err?.message)
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err)
+        console.warn('[webhook/payment] Rejected: Exception during HMAC validation:', message)
         return NextResponse.json(
             { success: false, error: 'UNAUTHENTICATED', message: 'HMAC verification failed' },
             { status: 401 }
