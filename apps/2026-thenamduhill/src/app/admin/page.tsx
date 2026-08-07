@@ -15,51 +15,18 @@
  *    `RoomUnit` chỉ được lễ tân gán lúc check-in, không suy ra từ vị trí mảng.
  */
 
-import { EyeIcon, CalendarIcon, ChevronDownIcon } from '@/components/icons'
+import { EyeIcon, CalendarIcon, MenuIcon } from '@/components/icons'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
-import type { Column } from '@repo/ui'
+import { useRailCollapse, type Column } from '@repo/ui'
 import { getPropertySync, pick, formatPrice } from '@repo/core'
 import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
-
-/** Khoá `localStorage` RIÊNG cho trạng thái ẩn/hiện MetricStrip — round 3
- *  mục 3 yêu cầu KHÔNG dùng chung khoá sidebar (`namduhill-cms-rail-collapsed`
- *  ở `AppShell`), vì đây là hai lựa chọn độc lập của người dùng: có thể muốn
- *  sidebar thu gọn nhưng vẫn thấy KPI, hoặc ngược lại. */
-const METRICS_COLLAPSE_KEY = 'namduhill-cms-dashboard-metrics-collapsed'
-
-/** Đọc/ghi trạng thái ẩn/hiện MetricStrip qua `localStorage`. Không dùng
- *  `useRailCollapse` của `@repo/ui` vì hook đó gắn kèm hành vi click-outside
- *  tự thu gọn — đúng cho sidebar (không gian hẹp, tạm mở), SAI cho một khối
- *  nội dung tĩnh mà người dùng bấm ẩn/hiện có chủ đích (round 3 mục 3). */
-function useMetricsCollapsed(): [boolean, (next: boolean) => void] {
-    const [collapsed, setCollapsed] = useState(false)
-
-    useEffect(() => {
-        try {
-            setCollapsed(localStorage.getItem(METRICS_COLLAPSE_KEY) === '1')
-        } catch {
-            // localStorage không khả dụng (SSR/trình duyệt chặn) — giữ mặc định hiện.
-        }
-    }, [])
-
-    const update = (next: boolean) => {
-        setCollapsed(next)
-        try {
-            localStorage.setItem(METRICS_COLLAPSE_KEY, next ? '1' : '0')
-        } catch {
-            // Không lưu được thì vẫn cho đổi trạng thái trong phiên hiện tại.
-        }
-    }
-
-    return [collapsed, update]
-}
 
 /** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
 const STATUS_TONE_MAP: Record<BookingStatus, CmsTone> = {
@@ -107,7 +74,15 @@ export default function AdminDashboard() {
     const property = getPropertySync()
 
     const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
-    const [metricsCollapsed, setMetricsCollapsed] = useMetricsCollapsed()
+    // Round 4 mục 4: DÙNG NGUYÊN `useRailCollapse` có sẵn của `@repo/ui` thay
+    // vì tự viết hook riêng (round 3 đã sai chỗ này). `storageKey` riêng để
+    // không đụng khoá sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`) —
+    // đây là hai lựa chọn độc lập của người dùng. Không dùng `railRef`/hành
+    // vi click-outside của hook (đúng cho sidebar, không cần cho khối tĩnh
+    // này) — chỉ lấy `collapsed`/`toggle`, bỏ qua phần còn lại.
+    const { collapsed: metricsCollapsed, toggle: toggleMetrics } = useRailCollapse({
+        storageKey: 'namduhill-cms-dashboard-metrics-collapsed',
+    })
     const [shift, setShift] = useState<'all' | 'morning' | 'afternoon'>('all')
     const [segment, setSegment] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
     const [tab, setTab] = useState<'all' | 'pending' | 'arrivals'>('all')
@@ -326,12 +301,10 @@ export default function AdminDashboard() {
             .slice(0, 8)
     }, [logs])
 
-    // Round 3 mục 2: gộp tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" (trước là
-    // một tầng `<div>` riêng ~52px bên dưới) làm NHÓM PILL THỨ BA ngay trong
-    // `shiftGroups` — cùng cơ chế `<fieldset>`/pill với CA TRỰC, HẠNG PHÒNG.
-    // Cả 3 nhóm giờ render chung một hàng trong `FilterBar`, tự `flex-wrap`
-    // xuống dòng khi màn hẹp (đúng tinh thần ảnh mẫu Sales Cloud: mọi filter
-    // dồn về một hàng).
+    // Round 4 mục 2: chủ dự án xem thực tế và yêu cầu NGƯỢC LẠI round 3 —
+    // tách tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" ra khỏi hàng filter,
+    // xuống hàng riêng. `shiftGroups` quay lại đúng 2 nhóm (CA TRỰC, HẠNG
+    // PHÒNG); tab trạng thái render riêng ở khối bên dưới `PageHeaderBar`.
     const shiftGroups = [
         {
             legend: tr(S.shiftFilterLabel, locale),
@@ -354,16 +327,6 @@ export default function AdminDashboard() {
                 { value: 'deluxe', label: tr(S.segmentDeluxe, locale) },
             ],
         },
-        {
-            legend: tr(S.status, locale),
-            value: tab,
-            onChange: (v: string) => setTab(v as typeof tab),
-            options: [
-                { value: 'all', label: tr(S.tabAllRooms, locale) },
-                { value: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
-                { value: 'pending', label: tr(S.tabPendingDeposit, locale) },
-            ],
-        },
     ]
 
     return (
@@ -380,43 +343,12 @@ export default function AdminDashboard() {
                         resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
                     />
                 }
-                actions={
-                    <>
-                        {/* Nút ẩn/hiện MetricStrip (round 3 mục 3) — lễ tân trực cả
-                            ngày cần BẢNG hơn KPI thường trực. `aria-expanded` báo
-                            đúng trạng thái, `aria-controls` trỏ tới id của khối bị
-                            điều khiển để screen reader biết vùng nào vừa đổi. */}
-                        <button
-                            type="button"
-                            onClick={() => setMetricsCollapsed(!metricsCollapsed)}
-                            aria-expanded={!metricsCollapsed}
-                            aria-controls="dashboard-metric-strip"
-                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                        >
-                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
-                            <ChevronDownIcon size={14} />
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
-                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                        >
-                            {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
-                        </button>
-                        <Link
-                            href="/admin/orders/new"
-                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                        >
-                            {tr(S.newBookingCta, locale)}
-                        </Link>
-                    </>
-                }
             />
 
             {/* Ẩn hẳn khỏi DOM (không phải `display:none` giữ chỗ) khi thu gọn
                 — tiết kiệm TRỌN chiều cao ~96px của MetricStrip, đúng yêu cầu
                 round 3 mục 3 "phải tiết kiệm trọn ~96px". `id` khớp
-                `aria-controls` của nút toggle ở trên. */}
+                `aria-controls` của nút toggle ở dưới. */}
             {!metricsCollapsed && (
                 <div id="dashboard-metric-strip" className="px-[var(--cms-pad)] pb-3">
                     <MetricStrip>
@@ -447,9 +379,70 @@ export default function AdminDashboard() {
                 </div>
             )}
 
-            {/* Tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" (round 1) ĐÃ GỘP vào
-                `shiftGroups` làm nhóm pill thứ ba trong `FilterBar` ở trên
-                (round 3 mục 2) — không còn tầng `<div>` riêng ~52px ở đây. */}
+            {/* Round 4 mục 2: chủ dự án yêu cầu NGƯỢC LẠI round 3 — tách tab
+                trạng thái ra khỏi hàng filter, xuống MỘT HÀNG RIÊNG. Ba nút
+                hành động (Ẩn số liệu/Sơ đồ Tape Chart/+ Đặt phòng mới) trước
+                nằm trong `actions` của `PageHeaderBar` — chuyển XUỐNG CÙNG
+                HÀNG với tab trạng thái (đúng yêu cầu "sắp xếp lại cho hợp lý
+                khi tab trạng thái xuống cùng hàng đó"): tab bên trái, hành
+                động bên phải, cùng một hàng `justify-between`. */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] text-[length:var(--cms-text-body)]">
+                    {(
+                        [
+                            { key: 'all', label: tr(S.tabAllRooms, locale) },
+                            { key: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
+                            { key: 'pending', label: tr(S.tabPendingDeposit, locale) },
+                        ] as const
+                    ).map((t2) => (
+                        <button
+                            key={t2.key}
+                            type="button"
+                            aria-pressed={tab === t2.key}
+                            onClick={() => setTab(t2.key)}
+                            className={`px-3 py-1 rounded-[var(--cms-radius-sm)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                tab === t2.key
+                                    ? 'bg-[var(--cms-accent)] text-white'
+                                    : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                            }`}
+                        >
+                            {t2.label}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex shrink-0 items-center gap-2">
+                    {/* Nút ẩn/hiện MetricStrip (giữ lại từ round 3 — đo được hữu
+                        ích: zoom150% 2→3 hàng). Round 4: icon đổi sang `MenuIcon`
+                        có sẵn (round 3 tự chế `ChevronDownIcon` — đã gỡ), trạng
+                        thái đổi sang `useRailCollapse` có sẵn (round 3 tự viết
+                        hook riêng — đã gỡ). `aria-expanded`/`aria-controls` giữ
+                        nguyên cho a11y. */}
+                    <button
+                        type="button"
+                        onClick={toggleMetrics}
+                        aria-expanded={!metricsCollapsed}
+                        aria-controls="dashboard-metric-strip"
+                        className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <MenuIcon size={14} />
+                        <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
+                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
+                    </button>
+                    <Link
+                        href="/admin/orders/new"
+                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        {tr(S.newBookingCta, locale)}
+                    </Link>
+                </div>
+            </div>
 
             {/* Lưới 2 cột: bảng đơn (3/4) · dòng sự kiện thật trong ngày (1/4).
                 Round 1 dùng 2/3+1/3 — cột "Vừa diễn ra" thường chỉ có 1-2 dòng

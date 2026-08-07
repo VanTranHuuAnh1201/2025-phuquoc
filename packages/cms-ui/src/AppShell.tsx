@@ -173,10 +173,16 @@ export function AppShell({ zones, currentPath, brand, headerRight, children }: A
                                         key={item.href}
                                         href={item.href}
                                         aria-current={active ? 'page' : undefined}
-                                        className={`flex h-8 shrink-0 items-center whitespace-nowrap rounded-[var(--cms-radius)] px-3 text-[length:var(--cms-text-body)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                        // Gạch chân 2px LUÔN chiếm chỗ trong box model
+                                        // (`border-b-2` áp cho cả 2 nhánh), chỉ đổi MÀU
+                                        // theo `active` — cùng kỹ thuật đã dùng ở
+                                        // `KpiCard` (border-b-transparent mặc định) để
+                                        // không nhảy layout khi chuyển tab (fix round 4
+                                        // mục 1: tab active bị mất viền dưới).
+                                        className={`flex h-8 shrink-0 items-center whitespace-nowrap border-b-2 px-3 text-[length:var(--cms-text-body)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
                                             active
-                                                ? 'bg-[var(--cms-accent-weak)] text-[var(--cms-accent)]'
-                                                : 'text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)]'
+                                                ? 'border-[var(--cms-accent)] bg-[var(--cms-accent-weak)] text-[var(--cms-accent)]'
+                                                : 'border-transparent text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)]'
                                         }`}
                                     >
                                         {item.label}
@@ -191,7 +197,20 @@ export function AppShell({ zones, currentPath, brand, headerRight, children }: A
                     )}
                 </header>
 
-                <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+                {/* Round 4 mục 3: TRUY THẬT chuỗi `min-h-0`/`h-full` từ đây
+                    xuống `DataGrid` mới lộ ra đứt ở ĐÚNG CHỖ NÀY — `<main>`
+                    có `min-h-0 flex-1` (đúng cho CHÍNH nó là flex item của
+                    `<div className="flex h-screen ... flex-col">` cha) nhưng
+                    THIẾU `flex flex-col` để làm CHA của con bên trong. Không
+                    có `display:flex` ở đây, con `page.tsx` (`className="flex
+                    ... flex-1 flex-col min-h-0"`) không có gì để `flex-1`
+                    tính theo — toàn bộ chuỗi `flex-1`/`min-h-0`/`h-full` phía
+                    dưới (page.tsx root → grid 2 cột → DataGrid → dt-wrapper)
+                    ĐỀU VÔ NGHĨA vì gốc của chuỗi chưa từng là flex container.
+                    Đây là nguyên nhân THẬT của bảng rỗng không giãn hết cao —
+                    round 2 sửa CSS `height:100%` ở `.dt-table` (đúng nhưng
+                    không đủ, vì `.dt-table` cũng nằm trong chuỗi đứt này). */}
+                <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</main>
             </div>
         </div>
     )

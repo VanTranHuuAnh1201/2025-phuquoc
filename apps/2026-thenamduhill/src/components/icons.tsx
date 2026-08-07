@@ -123,17 +123,6 @@ export function ChevronRightIcon({ size = 18 }: IconProps) {
     )
 }
 
-/** Dùng chung cho cả hai hướng lên/xuống — xoay 180° bằng `className` ở nơi
- *  gọi (vd nút thu gọn MetricStrip) thay vì thêm một icon `ChevronUpIcon`
- *  trùng lặp hình học. */
-export function ChevronDownIcon({ size = 18 }: IconProps) {
-    return (
-        <svg {...svgProps(size)}>
-            <path d="m6 9 6 6 6-6" />
-        </svg>
-    )
-}
-
 export function CalendarIcon({ size = 20 }: IconProps) {
     return (
         <svg {...svgProps(size)}>
