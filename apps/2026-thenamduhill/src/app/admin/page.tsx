@@ -17,16 +17,72 @@
 
 import { EyeIcon, CalendarIcon, MenuIcon } from '@/components/icons'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
-import { useRailCollapse, type Column } from '@repo/ui'
+import type { Column } from '@repo/ui'
 import { getPropertySync, pick, formatPrice } from '@repo/core'
 import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
+
+/** Khoá `localStorage` cho trạng thái ẩn/hiện MetricStrip — riêng với khoá
+ *  sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`), vẫn giữ nguyên như
+ *  round 4 chốt. */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-dashboard-metrics-collapsed'
+
+/**
+ * State ẩn/hiện MetricStrip, đọc/ghi thẳng `localStorage` — KHÔNG dùng
+ * `useRailCollapse`.
+ *
+ * VÌ SAO round 4 SAI KHI DÙNG `useRailCollapse` Ở ĐÂY (bug ngoài 5 round, đã
+ * điều tra lại): hook đó gắn kèm một `document.addEventListener('click', ...,
+ * true)` để tự thu gọn khi click RA NGOÀI phần tử gắn `railRef`. Round 4
+ * không truyền `railRef` vào bất kỳ DOM node nào (không có `<aside>` cho nút
+ * này) — `railRef.current` luôn là `null`, nên điều kiện `railRef.current
+ * ?.contains(target)` LUÔN sai, nghĩa là MỌI click ở bất kỳ đâu trên trang
+ * (kể cả click ngay trên chính nút toggle, vì listener chạy ở capture phase
+ * TRƯỚC `onClick` của nút) đều bị hook coi là "click ra ngoài" và ép
+ * `collapsed = true` ngay lập tức — nút bấm mở ra rồi tự đóng lại trong cùng
+ * một cú click, trông như "không hoạt động". `useRailCollapse` đúng cho
+ * sidebar (có `<aside>` thật để `railRef` bám vào) — sai cho một nút toggle
+ * không có vùng bao để theo dõi click-outside.
+ *
+ * Mặc định HIỆN (`false`) khi `localStorage` chưa có gì — đúng yêu cầu round
+ * này, cùng hành vi mặc định `useRailCollapse` từng có nên không đổi trải
+ * nghiệm người dùng mới.
+ */
+function useMetricsCollapsed(): [boolean, () => void] {
+    const [collapsed, setCollapsed] = useState(false)
+
+    // Đọc từ `localStorage` sau khi mount — tránh đọc `window`/`localStorage`
+    // lúc render đầu (SSR không có các API này, và Next 15 hydrate phía
+    // client trước khi effect chạy nên không lệch hydration).
+    useEffect(() => {
+        try {
+            const stored = localStorage.getItem(METRICS_COLLAPSED_KEY)
+            if (stored !== null) setCollapsed(stored === '1')
+        } catch {
+            // localStorage không khả dụng — giữ mặc định HIỆN.
+        }
+    }, [])
+
+    const toggle = () => {
+        setCollapsed((prev) => {
+            const next = !prev
+            try {
+                localStorage.setItem(METRICS_COLLAPSED_KEY, next ? '1' : '0')
+            } catch {
+                // Không lưu được thì vẫn đổi trạng thái trong phiên hiện tại.
+            }
+            return next
+        })
+    }
+
+    return [collapsed, toggle]
+}
 
 /** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
 const STATUS_TONE_MAP: Record<BookingStatus, CmsTone> = {
@@ -64,6 +120,32 @@ interface BookingRow {
     status: BookingStatus
 }
 
+type TimeRange = 'day' | 'week' | 'month' | 'year'
+
+/** Số ngày lùi lại từ hôm nay cho từng phạm vi — "Tuần" tính cả hôm nay nên
+ *  lùi 6 ngày (7 ngày liên tiếp), tương tự "Tháng" lùi 29 (30 ngày), "Năm"
+ *  lùi 364 (365 ngày). "Ngày" lùi 0 = chỉ đúng hôm nay. */
+const RANGE_DAYS_BACK: Record<TimeRange, number> = {
+    day: 0,
+    week: 6,
+    month: 29,
+    year: 364,
+}
+
+/** Ngày bắt đầu của khoảng, dạng `YYYY-MM-DD` — so sánh CHUỖI trực tiếp với
+ *  `checkInDate`/`checkOutDate` (đã là `YYYY-MM-DD`), đúng luật C6: không ép
+ *  qua `Date` object để so ngày lịch. */
+function rangeStartDate(range: TimeRange, today: string): string {
+    const daysBack = RANGE_DAYS_BACK[range]
+    if (daysBack === 0) return today
+    // `today` luôn là `YYYY-MM-DD` (từ `todayKey()`), parse UTC theo đúng
+    // cách `packages/core/src/pricing.ts` đã làm cho ngày lịch không giờ —
+    // không tự "sửa" thành ép múi giờ địa phương (ghi trong `common.md` C6).
+    const d = new Date(`${today}T00:00:00Z`)
+    d.setUTCDate(d.getUTCDate() - daysBack)
+    return d.toISOString().slice(0, 10)
+}
+
 const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
 
 export default function AdminDashboard() {
@@ -74,15 +156,13 @@ export default function AdminDashboard() {
     const property = getPropertySync()
 
     const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
-    // Round 4 mục 4: DÙNG NGUYÊN `useRailCollapse` có sẵn của `@repo/ui` thay
-    // vì tự viết hook riêng (round 3 đã sai chỗ này). `storageKey` riêng để
-    // không đụng khoá sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`) —
-    // đây là hai lựa chọn độc lập của người dùng. Không dùng `railRef`/hành
-    // vi click-outside của hook (đúng cho sidebar, không cần cho khối tĩnh
-    // này) — chỉ lấy `collapsed`/`toggle`, bỏ qua phần còn lại.
-    const { collapsed: metricsCollapsed, toggle: toggleMetrics } = useRailCollapse({
-        storageKey: 'namduhill-cms-dashboard-metrics-collapsed',
-    })
+    // Sửa lại sau 5 round: `useRailCollapse` (round 4) SAI chỗ này — xem giải
+    // thích đầy đủ tại định nghĩa `useMetricsCollapsed` phía trên. Sidebar ở
+    // `AppShell` VẪN dùng `useRailCollapse` bình thường, không đổi.
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed()
+    // Bộ lọc phạm vi thời gian (việc ngoài 5 round) — chi phối KPI + bảng.
+    // Mặc định 'day' theo đúng yêu cầu.
+    const [timeRange, setTimeRange] = useState<'day' | 'week' | 'month' | 'year'>('day')
     const [shift, setShift] = useState<'all' | 'morning' | 'afternoon'>('all')
     const [segment, setSegment] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
     const [tab, setTab] = useState<'all' | 'pending' | 'arrivals'>('all')
@@ -117,7 +197,14 @@ export default function AdminDashboard() {
         [rawBookings, locale],
     )
 
+    // Bộ lọc phạm vi thời gian chi phối cả bảng lẫn KPI (`stats` bên dưới) —
+    // "hôm nay" chỉ là trường hợp `range='day'`. Lọc theo `checkInDate` nằm
+    // trong `[rangeStart, today]`: đơn nhận phòng trong khoảng đang xem.
+    const today = todayKey()
+    const rangeStart = rangeStartDate(timeRange, today)
+
     const filteredData = bookings.filter((item) => {
+        if (item.checkInDate < rangeStart || item.checkInDate > today) return false
         if (tab === 'pending' && item.status !== 'pending_payment') return false
         if (tab === 'arrivals' && item.status !== 'confirmed') return false
         if (segment !== 'all') {
@@ -261,26 +348,31 @@ export default function AdminDashboard() {
     ]
 
     const stats = useMemo(() => {
-        const today = todayKey()
         // BUG round 1 (fix round 2 mục 6): "khách nhận phòng hôm nay" đếm MỌI
         // đơn `confirmed`, bất kể ngày check-in là hôm nay hay tháng sau — đó
         // là lý do "13 khách nhận phòng" nhưng "công suất 11%" không khớp
         // nhau: hai con số không cùng đang đo "hôm nay". Sửa: phải lọc thêm
         // `checkIn === today` để đúng nghĩa "hôm nay".
-        const checkInToday = bookings.filter((b) => b.status === 'confirmed' && b.checkInDate === today).length
-        const checkOutToday = bookings.filter((b) => b.status === 'checked_in' && b.checkOutDate === today).length
+        //
+        // Việc ngoài 5 round (bộ lọc phạm vi thời gian): "khách nhận/trả
+        // phòng" giờ đếm trong CẢ KHOẢNG `[rangeStart, today]`, không chỉ
+        // đúng hôm nay — `range='day'` (mặc định) thu hẹp về đúng hành vi cũ
+        // (`rangeStart === today`), nên không đổi kết quả khi chưa đổi bộ lọc.
+        const checkInRange = bookings.filter(
+            (b) => b.status === 'confirmed' && b.checkInDate >= rangeStart && b.checkInDate <= today,
+        ).length
+        const checkOutRange = bookings.filter(
+            (b) => b.status === 'checked_in' && b.checkOutDate >= rangeStart && b.checkOutDate <= today,
+        ).length
         const pendingDeposit = bookings.filter((b) => b.status === 'pending_payment').length
-        // Công suất phòng HÔM NAY = số phòng đang thật sự có khách hôm nay /
-        // tổng số phòng vật lý khả dụng để bán (B0: `RoomUnit`, không phải số
-        // hạng phòng). "Đang có khách hôm nay" = `checked_in` (đã nhận phòng,
-        // chưa trả) HOẶC `confirmed` mà HÔM NAY nằm trong khoảng lưu trú
-        // [checkIn, checkOut) — round 1 đếm MỌI đơn confirmed/checked_in bất
-        // kể ngày, ra 11% trong khi có 13 lượt nhận phòng hôm nay là vô lý
-        // (13 > 11% của bất kỳ số phòng thực tế nào ở quy mô resort này).
-        // Không có field "ngừng bán/bảo trì dài hạn" tách biệt trong
-        // `RoomUnit.status` để loại khỏi mẫu số — coi TOÀN BỘ `roomUnits` là
-        // khả dụng để bán là giả định hợp lý duy nhất với dữ liệu hiện có,
-        // KHÔNG bịa thêm khái niệm không có trong `@repo/core`.
+        // Công suất phòng LUÔN là ảnh chụp HÔM NAY, không đổi theo phạm vi —
+        // "công suất trung bình một tuần/tháng" là một khái niệm khác (đòi
+        // hỏi dữ liệu lịch sử theo từng ngày mà `Booking` hiện có không đủ để
+        // tính đúng — chỉ có ngày nhận/trả, không có snapshot mỗi ngày quá
+        // khứ). Giữ nguyên là số ĐÚNG cho ngày hôm nay còn hơn suy diễn sai
+        // cho cả khoảng (không bịa khái niệm không có trong `@repo/core`,
+        // cùng nguyên tắc round 2 mục 6). Công thức: số phòng đang thật sự có
+        // khách hôm nay / tổng số phòng vật lý khả dụng để bán (B0).
         const occupiedToday = bookings.filter(
             (b) =>
                 b.status === 'checked_in' ||
@@ -288,8 +380,8 @@ export default function AdminDashboard() {
         ).length
         const occupancyRate =
             roomUnits.length > 0 ? Math.round((occupiedToday / roomUnits.length) * 100) : 0
-        return { checkInToday, checkOutToday, pendingDeposit, occupancyRate }
-    }, [bookings, roomUnits])
+        return { checkInToday: checkInRange, checkOutToday: checkOutRange, pendingDeposit, occupancyRate }
+    }, [bookings, roomUnits, rangeStart, today])
 
     // Sự kiện thật trong `ActivityLog`, không phải dữ liệu bịa. Lấy 8 dòng gần
     // nhất trong ngày hôm nay, mới nhất trước.
@@ -358,9 +450,35 @@ export default function AdminDashboard() {
                 title={tr(S.dashboardTitle, locale)}
                 actions={
                     <>
-                        {/* Nút ẩn/hiện MetricStrip — dùng `useRailCollapse` +
-                            `MenuIcon` có sẵn của `@repo/ui`/`icons.tsx`, không tự
-                            chế (round 4 mục 4, giữ nguyên round này). */}
+                        {/* Bộ lọc phạm vi thời gian (việc ngoài 5 round) — đặt
+                            CẠNH nút "Ẩn số liệu" theo đúng vị trí chủ dự án chọn:
+                            cùng nhóm "điều khiển phạm vi dữ liệu". DÙNG DROPDOWN
+                            gọn (`<select>`), không phải 4 pill — ràng buộc ngân
+                            sách chiều cao của hàng 1 (không được cao thêm/wrap)
+                            khiến 4 pill riêng không khả thi, một `<select>` cao
+                            bằng đúng các nút khác bên cạnh là lựa chọn duy nhất
+                            không phá layout. `aria-label` bù cho việc không có
+                            `<label>` hiện — tên bộ lọc đã rõ qua các option. */}
+                        <select
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+                            aria-label={tr(S.timeRangeLabel, locale)}
+                            // Cùng `px-3 py-1.5` với các nút liền kề (không phải
+                            // giá trị `h-[…]` tự chế) — chiều cao TỰ khớp nhau vì
+                            // cùng công thức padding + line-height, đúng thang 8pt
+                            // (P5) thay vì một con số px lẻ riêng cho ô này.
+                            className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <option value="day">{tr(S.timeRangeDay, locale)}</option>
+                            <option value="week">{tr(S.timeRangeWeek, locale)}</option>
+                            <option value="month">{tr(S.timeRangeMonth, locale)}</option>
+                            <option value="year">{tr(S.timeRangeYear, locale)}</option>
+                        </select>
+                        {/* Nút ẩn/hiện MetricStrip — trạng thái đọc từ
+                            `useMetricsCollapsed` (state riêng, xem định nghĩa đầu
+                            file — KHÔNG còn `useRailCollapse` sau khi sửa bug click-
+                            outside). Icon `MenuIcon` vẫn dùng đồ có sẵn của
+                            `icons.tsx`, không tự chế. */}
                         <button
                             type="button"
                             onClick={toggleMetrics}
@@ -398,7 +516,11 @@ export default function AdminDashboard() {
                 thang 8pt (P5): 10px/12px là bội số 2, không phải số lẻ tuỳ
                 tiện — 12px (`py-3`) tại đây tạo chênh lệch rõ ràng hơn với
                 10px (`py-2.5`) của hàng 1. */}
-            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+            {/* `cms-row-filters` là móc cho quy tắc màn-thấp ở `tokens.css`
+                (giảm padding dọc khi viewport ngắn). Không dùng biến thể
+                `[@media(max-height:…)]:` của Tailwind vì class đó không được
+                sinh ra — đã kiểm trên CSS phục vụ thật. */}
+            <div className="cms-row-filters border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
                 <FilterBar
                     groups={shiftGroups}
                     resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
@@ -458,8 +580,26 @@ export default function AdminDashboard() {
                 nội dung mà chiếm 1/3 màn hình, lãng phí không gian đúng lúc
                 bảng đơn (nội dung chính, cần thấy nhiều đơn nhất) cần nó nhất
                 (fix round 2 mục 7). 1/4 vẫn đủ rộng để đọc "HH:mm · hành động
-                · mã đơn" trên một dòng ở 1440px. */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
+                · mã đơn" trên một dòng ở 1440px.
+
+                MẮT XÍCH THIẾU ở zoom150% (điều tra thêm sau round 4, đọc từng
+                cấp như coordinator yêu cầu — không đoán): dưới breakpoint `lg`
+                (1024px, Tailwind mặc định), `grid-cols-1` biến 2 con
+                (bảng + hoạt động) thành HAI HÀNG grid xếp dọc thay vì 2 CỘT
+                cùng hàng. `grid-auto-rows` mặc định là `auto` — hàng grid
+                KHÔNG đọc `flex-1`/`h-full` của phần tử con (những class đó
+                chỉ có tác dụng trong `display:flex`, không có tác dụng lên
+                KÍCH THƯỚC TRACK của `display:grid`). Round 4 đã thông chuỗi
+                flex từ `<main>` xuống `.dt-table`, nhưng chuỗi đó đứt lại ở
+                CHÍNH BƯỚC CHUYỂN flex→grid này khi ở dưới `lg:` — container
+                `flex-1` có chiều cao thật, nhưng hàng chứa bảng bên trong grid
+                vẫn tự co theo nội dung (giống hệt triệu chứng round 4: 87px
+                thay vì 177px). `grid-rows-[1fr_auto]` SỬA ĐÚNG CHỖ: hàng đầu
+                (bảng) nhận `1fr` = phần còn lại của container, hàng sau (dòng
+                hoạt động) `auto` = co theo nội dung. Ở `lg:` trở lên đổi lại
+                `lg:grid-rows-1` (một hàng, hai cột) — hành vi cũ giữ nguyên,
+                không hồi quy màn rộng. */}
+            <div className="grid grid-cols-1 grid-rows-[1fr_auto] lg:grid-cols-4 lg:grid-rows-1 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
                 <div className="lg:col-span-3 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
                     {viewMode === 'console' ? (
                         // `flex flex-col min-h-0` BẮT BUỘC ở wrapper này: `DataGrid`

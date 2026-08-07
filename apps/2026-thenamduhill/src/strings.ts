@@ -721,6 +721,15 @@ export const S = {
     // để screen reader biết đang ẩn hay hiện, và biết vùng nào bị điều khiển.
     hideMetrics: t('Ẩn số liệu', 'Hide metrics'),
     showMetrics: t('Hiện số liệu', 'Show metrics'),
+    // Bộ lọc phạm vi thời gian (việc ngoài 5 round chính thức) — chi phối cả
+    // KPI lẫn bảng: "Ngày" = hôm nay, "Tuần" = 7 ngày gần nhất (tính cả hôm
+    // nay), "Tháng" = 30 ngày, "Năm" = 365 ngày. Mặc định "Ngày" — đúng ý
+    // nghĩa ban đầu của các KPI (VD "khách nhận phòng hôm nay").
+    timeRangeLabel: t('Phạm vi', 'Range'),
+    timeRangeDay: t('Ngày', 'Day'),
+    timeRangeWeek: t('Tuần', 'Week'),
+    timeRangeMonth: t('Tháng', 'Month'),
+    timeRangeYear: t('Năm', 'Year'),
     recentActivity: t('VỪA DIỄN RA', 'RECENT ACTIVITY'),
     todayLabelShort: t('hôm nay', 'today'),
     tapeChartView: t('Sơ đồ Tape Chart ▾', 'Tape chart view ▾'),

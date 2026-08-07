@@ -43,7 +43,15 @@ export interface FilterBarProps {
 
 export function FilterBar({ groups, resultText, onReset }: FilterBarProps) {
     return (
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        // `cms-filterbar` là móc cho quy tắc màn-thấp trong `tokens.css`:
+        // ở viewport ngắn, hàng filter chuyển sang cuộn ngang thay vì wrap
+        // 2 dòng (xem giải thích đầy đủ tại quy tắc đó).
+        //
+        // VÌ SAO KHÔNG DÙNG `[@media(max-height:…)]:` CỦA TAILWIND: đã thử và
+        // class KHÔNG được sinh ra (kiểm bằng cách grep CSS phục vụ thật) —
+        // cùng họ với bẫy R14. Quy tắc phụ thuộc viewport để trong CSS thuần
+        // thì chắc chắn có mặt, không phụ thuộc bộ quét.
+        <div className="cms-filterbar flex flex-wrap items-center gap-x-5 gap-y-2">
             {groups.map((group) => (
                 // `gap-x-5` GIỮA các fieldset (khoảng cách nhóm) rộng hơn
                 // `gap-1.5` BÊN TRONG một fieldset (khoảng cách giữa các pill

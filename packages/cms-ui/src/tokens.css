@@ -155,3 +155,75 @@
      * (~30.8px) + hở dòng (~12.4px) ≈ 56px, khớp thực tế đo bằng Playwright. */
     padding: 6px 12px !important;
 }
+
+/* ------------------------------------------------------- màn hình THẤP
+ *
+ * Laptop 1366×768 chỉ còn ~640px viewport sau thanh trình duyệt; zoom 150%
+ * còn ~427px CSS. Ở đó hàng filter wrap thành 2 dòng và ăn thêm ~40px —
+ * ĐO ĐƯỢC bằng Playwright: bảng tụt từ 2 hàng xuống 1, tức mất gần hết thứ
+ * lễ tân cần nhìn cả ngày.
+ *
+ * Đánh đổi có chủ đích: cho hàng filter cuộn NGANG trong chính nó và giảm
+ * padding dọc, để trả chỗ lại cho bảng. `F6` chỉ cấm BẢNG cuộn ngang —
+ * một dải filter cuộn ngang là chấp nhận được, mất bảng thì không.
+ *
+ * VÌ SAO Ở ĐÂY CHỨ KHÔNG PHẢI CLASS TAILWIND: đã thử
+ * `[@media(max-height:560px)]:flex-nowrap` và class KHÔNG được sinh ra —
+ * kiểm bằng cách grep CSS phục vụ thật, cùng họ với bẫy R14. CSS thuần
+ * trong file này thì chắc chắn có mặt, không phụ thuộc bộ quét.
+ */
+@media (max-height: 560px) {
+    [data-cms] .cms-filterbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    [data-cms] .cms-row-filters {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+}
+
+/* `<legend>` trong `<fieldset>` là phần tử đặc biệt: kể cả khi đã `sr-only`,
+ * trình duyệt vẫn dành cho nó một dòng trong dòng chảy của fieldset. Đo được
+ * ở zoom 150%: fieldset "Trạng thái" cao 80px trong khi hai fieldset kia 41px
+ * — chênh đúng phần legend chiếm chỗ.
+ *
+ * `position: absolute` kéo legend ra khỏi dòng chảy mà vẫn giữ nguyên trong
+ * cây a11y (khác hẳn `display: none`, thứ sẽ xoá nó khỏi screen reader và
+ * làm mất tên nhóm — chính điều `D4` cấm). */
+[data-cms] .cms-filterbar legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Pill filter KHÔNG bao giờ được xuống dòng.
+ *
+ * Ở màn thấp, `flex-nowrap` (quy tắc trên) ép các fieldset hẹp lại, và chữ
+ * trong pill dài như "Check-in hôm nay" tự xuống 2 dòng — đo được: nút cao
+ * 80px thay vì 32px, kéo cả hàng filter lên 82px và ăn mất chỗ của bảng.
+ * Đây là hệ quả ngược của chính `flex-nowrap`, không phải lỗi có sẵn.
+ *
+ * `white-space: nowrap` giữ pill đúng một dòng; phần tràn đã có `overflow-x`
+ * của `.cms-filterbar` xử lý bằng cuộn ngang. */
+[data-cms] .cms-filterbar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+[data-cms] .cms-filterbar fieldset {
+    flex-shrink: 0;
+}
+
+/* Dòng "N đơn khớp bộ lọc" cũng phải một dòng. Đo được: khi flex-nowrap ép
+ * hẹp, span này xuống 3 dòng và cao 83px — chính nó (không phải pill) là thứ
+ * giữ hàng filter ở 85px sau khi đã sửa nút và fieldset. */
+[data-cms] .cms-filterbar > span {
+    white-space: nowrap;
+    flex-shrink: 0;
+}

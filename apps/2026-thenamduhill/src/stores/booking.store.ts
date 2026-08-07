@@ -180,7 +180,23 @@ export const useBookingStore = create<BookingState>()(
                         const res = await fetch('/api/bookings', { credentials: 'include' })
                         if (!res.ok) return
                         const json = await res.json()
-                        if (json && Array.isArray(json.data)) {
+                        // BUG THẬT (không phải suy đoán — đã đọc lại toàn bộ đường đi):
+                        // `GET /api/bookings` trả `200 { success:true, data:[] }` khi
+                        // bảng `bookings` trên Supabase CHƯA SEED — đây là kết quả hợp
+                        // lệ về mặt API (không lỗi mạng, không lỗi HTTP), không phải
+                        // "API hỏng". Bản cũ `set({ bookings: json.data })` VÔ ĐIỀU KIỆN
+                        // ghi đè 31 đơn demo-seed bằng mảng rỗng đó, rồi `persist`
+                        // (`namduhill.bookings`) lưu lại trạng thái rỗng — F5 lại đọc
+                        // đúng cái rỗng đã lưu, KHÔNG BAO GIỜ tự phục hồi được. Bất kỳ
+                        // ai mở CMS trước khi Supabase có dữ liệu thật đều thấy trắng
+                        // trơn vĩnh viễn dù store đã seed sẵn.
+                        //
+                        // Sửa: CHỈ ghi đè khi API thật sự trả về ĐƠN — mảng rỗng bị coi
+                        // là "chưa có dữ liệu thật từ backend", giữ nguyên seed demo
+                        // đang có (giai đoạn 1 theo `app-flows.md §F7`: demo Zustand
+                        // vẫn là nguồn thật cho tới khi backend thật sẵn sàng — mảng
+                        // rỗng không phải tín hiệu "hãy xoá sạch dữ liệu demo").
+                        if (json && Array.isArray(json.data) && json.data.length > 0) {
                             set({ bookings: json.data })
                         }
                     } catch {
@@ -522,7 +538,7 @@ export const useBookingStore = create<BookingState>()(
         }),
         {
             name: 'namduhill.bookings',
-            version: 2,
+            version: 3,
             migrate: (persistedState: any, version: number) => {
                 if (version === 1 && persistedState && Array.isArray(persistedState.bookings)) {
                     persistedState.bookings = persistedState.bookings.map((b: any) => {
@@ -539,6 +555,23 @@ export const useBookingStore = create<BookingState>()(
                         }
                         return b
                     })
+                }
+                // v2 → v3: SỬA DỮ LIỆU ĐÃ HỎNG do bug ghi đè mảng rỗng (xem comment
+                // tại `fetchBookingsFromApi`). Chỉ sửa mã nguồn thì máy ĐÃ TỪNG mở
+                // `/admin` trước bản vá vẫn còn `bookings: []` nằm trong
+                // `localStorage` — persist đọc lại đúng cái rỗng đó, code mới không
+                // tự chạy lại để phục hồi. `initialState()` LUÔN seed sẵn 31 đơn nên
+                // một store hợp lệ không bao giờ tự nhiên rỗng — `bookings: []` sau
+                // khi rehydrate là DẤU HIỆU CHẮC CHẮN của đúng bug này, không phải
+                // trạng thái người dùng chủ động tạo ra (không có nút "xoá hết đơn"
+                // nào trong UI). An toàn để tự phục hồi bằng seed demo.
+                if (
+                    version <= 2 &&
+                    persistedState &&
+                    Array.isArray(persistedState.bookings) &&
+                    persistedState.bookings.length === 0
+                ) {
+                    return { ...persistedState, ...initialState() }
                 }
                 return persistedState
             },
