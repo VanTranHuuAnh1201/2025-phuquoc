@@ -7,9 +7,22 @@
  *
  * Xoá là xoá MỀM (§6.12): `Booking.addons` của đơn cũ tham chiếu tới id này,
  * xoá cứng thì đơn cũ mất tên dịch vụ.
+ *
+ * Áp design system `@repo/cms-ui` (màn 3/7 nhóm Hệ thống) — cùng bố cục
+ * `PageHeaderBar` + `FilterBar` + `DataGrid` như `/admin/customers` đã áp.
+ * Đây là màn DANH SÁCH + CRUD (không phải form một cột như `settings/general`)
+ * nên đi theo đúng khuôn customers.tsx: hàng 1 tiêu đề+đếm+nút thêm, hàng 2
+ * tìm kiếm+bộ lọc+Đặt lại, bảng chiếm hết chỗ còn lại. Không có KPI vì màn
+ * cấu hình danh mục không có số liệu vận hành đáng theo dõi (không bịa số).
  */
 
-import { CoinsIcon, PencilIcon, PlusIcon, TagIcon, TrashIcon } from '@/components/icons'
+import { useMemo, useState } from 'react'
+import { errorOf, formatPrice, pick, validateAddon } from '@repo/core'
+import type { Addon, FieldError, I18nText } from '@repo/core'
+import type { Column } from '@repo/ui'
+import { DataGrid, DotBadge, FilterBar, InlineAlert, PageHeaderBar } from '@repo/cms-ui'
+import { Button, Field, Modal } from '@repo/ui'
+import { CoinsIcon, PencilIcon, PlusIcon, TrashIcon } from '@/components/icons'
 import { I18nField } from '@/components/I18nField'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
@@ -18,19 +31,6 @@ import { useBookingStore } from '@/stores/booking.store'
 import { useCatalogStore } from '@/stores/catalog.store'
 import { useAddons } from '@/stores/useCatalog'
 import { S, tr } from '@/strings'
-import { errorOf, formatPrice, pick, validateAddon } from '@repo/core'
-import type { Addon, FieldError, I18nText } from '@repo/core'
-import {
-    Badge,
-    Button,
-    DataTable,
-    Field,
-    FilterSelect,
-    Modal,
-    Toolbar,
-    useDataTable,
-} from '@repo/ui'
-import { useMemo, useState } from 'react'
 
 const PRICE_BANDS = [
     { value: 'all', vi: 'Mọi mức giá', en: 'All price bands' },
@@ -74,8 +74,6 @@ function AddonSettingsScreen() {
     const [notice, setNotice] = useState<I18nText | null>(null)
     const [saving, setSaving] = useState(false)
 
-    const isFiltered = search !== '' || priceBand !== 'all'
-
     const filtered = useMemo(() => {
         const query = search.trim().toLowerCase()
         return addons.filter((addon) => {
@@ -91,92 +89,6 @@ function AddonSettingsScreen() {
             return true
         })
     }, [addons, search, priceBand])
-
-    const { tableProps } = useDataTable<Addon>({
-        data: filtered,
-        rowKey: (addon) => addon.id,
-        pageSize: 10,
-        columns: [
-            {
-                key: 'id',
-                header: tr(S.colRoomCode, locale),
-                width: '150px',
-                sortable: true,
-                cell: (addon) => (
-                    <span className="font-mono text-xs font-bold text-slate-700">{addon.id}</span>
-                ),
-            },
-            {
-                key: 'name',
-                header: tr(S.colRoomName, locale),
-                cell: (addon) => (
-                    <div>
-                        <div className="font-bold text-xs text-slate-900">{tr(addon.name, locale)}</div>
-                        <div className="text-[10px] text-slate-400">
-                            {pick({ vi: addon.name.en, en: addon.name.vi }, locale)}
-                        </div>
-                    </div>
-                ),
-            },
-            {
-                key: 'unit',
-                header: tr(S.colAddonUnit, locale),
-                width: '160px',
-                cell: (addon) => (
-                    <span className="text-xs text-slate-700">{tr(addon.unit, locale)}</span>
-                ),
-            },
-            {
-                key: 'price',
-                header: tr(S.colBasePrice, locale),
-                align: 'right',
-                width: '150px',
-                sortable: true,
-                cell: (addon) => (
-                    <span className="font-extrabold text-xs text-slate-900 tabular-nums">
-                        {formatPrice(addon.price, locale)}
-                    </span>
-                ),
-            },
-            {
-                key: 'status',
-                header: tr(S.colStatus, locale),
-                width: '140px',
-                cell: (addon) =>
-                    removedIds.includes(addon.id) ? (
-                        <Badge tone="neutral">{tr(S.stoppedSelling, locale)}</Badge>
-                    ) : (
-                        <Badge tone="success">{tr(S.onSale, locale)}</Badge>
-                    ),
-            },
-            {
-                key: 'actions',
-                header: tr(S.colActions, locale),
-                align: 'right',
-                width: '100px',
-                cell: (addon) => (
-                    <div className="flex items-center justify-end gap-1">
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openModal(addon)}
-                            aria-label={`${tr(S.edit, locale)} ${tr(addon.name, locale)}`}
-                        >
-                            <PencilIcon size={14} />
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(addon)}
-                            aria-label={`${tr(S.delete, locale)} ${tr(addon.name, locale)}`}
-                        >
-                            <TrashIcon size={14} />
-                        </Button>
-                    </div>
-                ),
-            },
-        ],
-    })
 
     function openModal(addon?: Addon) {
         setErrors([])
@@ -274,68 +186,167 @@ function AddonSettingsScreen() {
         if (result) setNotice(S.saveFailed)
     }
 
-    return (
-        <div className="h-full flex flex-col min-h-0 bg-slate-100 p-2 gap-2 overflow-hidden">
-            {notice && (
-                <div
-                    role="alert"
-                    aria-live="polite"
-                    className="shrink-0 p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium"
-                >
-                    {tr(notice, locale)}
-                </div>
-            )}
+    const resetFilters = () => {
+        setSearch('')
+        setPriceBand('all')
+    }
 
-            <div className="flex-1 min-h-0 bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="flex flex-wrap items-center justify-between gap-2 px-3 pt-3 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <span className="text-slate-500">
-                            <TagIcon size={16} />
-                        </span>
-                        <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                            {tr(S.addonsTitle, locale)}
-                        </h1>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 tabular-nums">
-                            {filtered.length} {tr(S.addonsCount, locale)}
-                        </span>
+    const columns: Column<Addon>[] = [
+        {
+            key: 'id',
+            header: tr(S.colRoomCode, locale),
+            width: '150px',
+            cell: (addon) => (
+                <span className="font-mono text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)]">
+                    {addon.id}
+                </span>
+            ),
+        },
+        {
+            key: 'name',
+            header: tr(S.colRoomName, locale),
+            cell: (addon) => (
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={tr(addon.name, locale)}
+                    >
+                        {tr(addon.name, locale)}
                     </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]"
+                        title={pick({ vi: addon.name.en, en: addon.name.vi }, locale)}
+                    >
+                        {pick({ vi: addon.name.en, en: addon.name.vi }, locale)}
+                    </div>
+                </div>
+            ),
+        },
+        {
+            key: 'unit',
+            header: tr(S.colAddonUnit, locale),
+            width: '160px',
+            cell: (addon) => (
+                <span className="text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                    {tr(addon.unit, locale)}
+                </span>
+            ),
+        },
+        {
+            key: 'price',
+            header: tr(S.colBasePrice, locale),
+            align: 'right',
+            width: '150px',
+            cell: (addon) => (
+                <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)] tabular-nums">
+                    {formatPrice(addon.price, locale)}
+                </span>
+            ),
+        },
+        {
+            key: 'status',
+            header: tr(S.colStatus, locale),
+            width: '140px',
+            cell: (addon) =>
+                removedIds.includes(addon.id) ? (
+                    <DotBadge tone="slate" label={tr(S.stoppedSelling, locale)} width={108} />
+                ) : (
+                    <DotBadge tone="emerald" label={tr(S.onSale, locale)} width={108} />
+                ),
+        },
+        {
+            key: 'actions',
+            header: tr(S.colActions, locale),
+            align: 'right',
+            width: '90px',
+            cell: (addon) => (
+                <div className="flex items-center justify-end gap-1">
+                    <button
+                        type="button"
+                        onClick={() => openModal(addon)}
+                        aria-label={`${tr(S.edit, locale)} ${tr(addon.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <PencilIcon size={14} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => handleDelete(addon)}
+                        aria-label={`${tr(S.delete, locale)} ${tr(addon.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <TrashIcon size={14} />
+                    </button>
+                </div>
+            ),
+        },
+    ]
+
+    const priceBandGroups = [
+        {
+            legend: tr(S.colBasePrice, locale),
+            value: priceBand,
+            onChange: setPriceBand,
+            options: PRICE_BANDS.map((b) => ({ value: b.value, label: b[locale] })),
+        },
+    ]
+
+    return (
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái, nút thêm dịch vụ bên phải. */}
+            <PageHeaderBar
+                title={tr(S.addonsTitle, locale)}
+                count={{ value: filtered.length, suffix: tr(S.addonsCount, locale) }}
+                actions={
                     <Button onClick={() => openModal()}>
                         <PlusIcon size={16} />
                         <span>{tr(S.addAddon, locale)}</span>
                     </Button>
+                }
+            />
+
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (mức giá) — cùng khuôn
+                customers.tsx: input thô token hoá vì `FilterBar` không nhận
+                chữ tự do, đặt cạnh pill lọc trong cùng khối. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={tr(S.searchAddon, locale)}
+                    aria-label={tr(S.searchAddon, locale)}
+                    className="w-44 sm:w-64 px-3 py-1 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 28 }}
+                />
+
+                <FilterBar
+                    groups={priceBandGroups}
+                    resultText={`${filtered.length} ${tr(S.addonsCount, locale)}`}
+                    onReset={resetFilters}
+                />
+            </div>
+
+            {notice && (
+                <div className="px-[var(--cms-pad)] pt-3">
+                    <InlineAlert tone="rose">{tr(notice, locale)}</InlineAlert>
                 </div>
+            )}
 
-                <Toolbar
-                    searchValue={search}
-                    onSearchChange={setSearch}
-                    searchPlaceholder={tr(S.searchAddon, locale)}
-                    isFiltered={isFiltered}
-                    onReset={() => {
-                        setSearch('')
-                        setPriceBand('all')
-                    }}
-                    resetLabel={tr(S.reset, locale)}
-                >
-                    <FilterSelect
-                        label={tr(S.colBasePrice, locale)}
-                        value={priceBand}
-                        onChange={setPriceBand}
-                        options={PRICE_BANDS.map((b) => ({ value: b.value, label: b[locale] }))}
-                    />
-                </Toolbar>
-
-                <DataTable<Addon>
-                    {...tableProps}
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều
+                cao là ưu tiên số 1. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <DataGrid<Addon>
                     caption={tr(S.addonsTitle, locale)}
-                    pagination={{
-                        ...tableProps.pagination,
-                        prevLabel: tr(S.paginationPrev, locale),
-                        nextLabel: tr(S.paginationNext, locale),
-                        pageSizeLabel: tr(S.paginationPageSize, locale),
-                        summaryText: (a, b, c) =>
-                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.addonsCount, locale)}`,
-                    }}
-                    empty={tr(S.emptyAddons, locale)}
+                    columns={columns}
+                    rows={filtered}
+                    rowKey={(addon) => addon.id}
+                    empty={
+                        <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                            {tr(S.emptyAddons, locale)}
+                        </div>
+                    }
                 />
             </div>
 
@@ -355,7 +366,7 @@ function AddonSettingsScreen() {
                         </>
                     }
                 >
-                    <div className="space-y-3 text-xs">
+                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
                         {!editing && (
                             <Field
                                 fieldId="addon-field-id"
@@ -404,7 +415,7 @@ function AddonSettingsScreen() {
                             error={maybe(errorOf(errors, 'price'), locale)}
                         />
 
-                        <div className="flex items-center gap-2 p-2 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-600">
+                        <div className="flex items-center gap-2 p-2 bg-[var(--cms-bg-subtle)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                             <CoinsIcon size={14} />
                             <span>
                                 {pick(
