@@ -26,6 +26,29 @@ Component trong `cms-ui` chỉ bọc thêm 3 chỗ `@repo/ui` hard-code class.
 - **Không có test framework** trong repo. CLAUDE.md: *"Chưa có test framework —
   không bịa lệnh test."* Verify bằng `pnpm typecheck`, `grep` tự kiểm, và mắt
   trên dev server. **Không** viết `pnpm test`.
+- **Styling engine: Tailwind, đọc token qua arbitrary value.** Component viết
+  `className="bg-[var(--cms-bg)] border-[var(--cms-border)]"`, KHÔNG dùng
+  inline `style={{}}` cho giá trị token. Lý do: nhất quán với 10 màn admin
+  hiện tại (đều Tailwind), và dùng được utility responsive `sm:` / `lg:`.
+  Hệ quả bắt buộc: **`@source` ở Task 1 bước 7 là sống còn** — quên là mọi
+  class trong `cms-ui` không được sinh ra, trang mất sạch style mà build vẫn
+  xanh (`R14`).
+- **Không dùng class màu cứng của Tailwind** (`bg-blue-500`, `text-slate-700`,
+  `border-amber-200`…). Mọi màu qua `var(--cms-*)` (`FE2`/`D0`). Utility về
+  layout/flex/grid/responsive thì dùng bình thường.
+- **CẤM ghép class động.** Tailwind quét source bằng regex tĩnh — class tạo ra
+  lúc chạy không tồn tại trong CSS đầu ra:
+
+  ```tsx
+  /* ❌ SAI — build xanh, badge không có màu */
+  className={`bg-[var(--cms-tone-${tone}-bg)]`}
+
+  /* ✅ ĐÚNG — khai tường minh, Tailwind thấy đủ 6 chuỗi */
+  const TONE_CLASS: Record<CmsTone, string> = { emerald: 'bg-[var(--cms-tone-emerald-bg)]', … }
+  className={TONE_CLASS[tone]}
+  ```
+
+  Áp cho mọi map tone/variant/size trong package.
 - **Không `any`** (`C1`). Không biết kiểu → `unknown` rồi thu hẹp.
 - **Không hex ngoài `tokens.css`** (`D0`).
 - **Không spacing/radius ngoài thang 8pt** (`P5`).
@@ -397,45 +420,42 @@ export interface DotBadgeProps {
     title?: string
 }
 
+/**
+ * Tone → class Tailwind. Khai TƯỜNG MINH từng tone thay vì nội suy chuỗi
+ * (`bg-[var(--cms-tone-${tone})]`) — Tailwind quét source bằng regex tĩnh,
+ * class ghép động lúc chạy KHÔNG được sinh ra. Đây là biến thể của cùng cái
+ * bẫy "build xanh mà mất style" ở R14.
+ */
+const TONE_CLASS: Record<CmsTone, string> = {
+    emerald: 'text-[var(--cms-tone-emerald)] bg-[var(--cms-tone-emerald-bg)] border-[var(--cms-tone-emerald-dot)]',
+    blue: 'text-[var(--cms-tone-blue)] bg-[var(--cms-tone-blue-bg)] border-[var(--cms-tone-blue-dot)]',
+    violet: 'text-[var(--cms-tone-violet)] bg-[var(--cms-tone-violet-bg)] border-[var(--cms-tone-violet-dot)]',
+    amber: 'text-[var(--cms-tone-amber)] bg-[var(--cms-tone-amber-bg)] border-[var(--cms-tone-amber-dot)]',
+    rose: 'text-[var(--cms-tone-rose)] bg-[var(--cms-tone-rose-bg)] border-[var(--cms-tone-rose-dot)]',
+    slate: 'text-[var(--cms-tone-slate)] bg-[var(--cms-tone-slate-bg)] border-[var(--cms-tone-slate-dot)]',
+}
+
+const DOT_CLASS: Record<CmsTone, string> = {
+    emerald: 'bg-[var(--cms-tone-emerald-dot)]',
+    blue: 'bg-[var(--cms-tone-blue-dot)]',
+    violet: 'bg-[var(--cms-tone-violet-dot)]',
+    amber: 'bg-[var(--cms-tone-amber-dot)]',
+    rose: 'bg-[var(--cms-tone-rose-dot)]',
+    slate: 'bg-[var(--cms-tone-slate-dot)]',
+}
+
 export function DotBadge({ tone, label, width, title }: DotBadgeProps) {
     return (
         <span
             title={title}
-            style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '4px 8px',
-                width: width ? `${width}px` : undefined,
-                borderRadius: 'var(--cms-radius-sm)',
-                fontSize: 'var(--cms-text-meta)',
-                fontWeight: 600,
-                lineHeight: 1.4,
-                color: `var(--cms-tone-${tone})`,
-                background: `var(--cms-tone-${tone}-bg)`,
-                border: `1px solid var(--cms-tone-${tone}-dot)`,
-                borderColor: `color-mix(in srgb, var(--cms-tone-${tone}-dot) 35%, transparent)`,
-                whiteSpace: 'nowrap',
-            }}
+            className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-[var(--cms-radius-sm)] text-[length:var(--cms-text-meta)] font-semibold leading-snug border whitespace-nowrap ${TONE_CLASS[tone]}`}
+            style={width ? { width: `${width}px` } : undefined}
         >
             <span
                 aria-hidden="true"
-                style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    flexShrink: 0,
-                    background: `var(--cms-tone-${tone}-dot)`,
-                }}
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${DOT_CLASS[tone]}`}
             />
-            <span
-                style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                }}
-            >
-                {label}
-            </span>
+            <span className="overflow-hidden text-ellipsis">{label}</span>
         </span>
     )
 }
@@ -653,16 +673,7 @@ export interface MetricStripProps {
 
 export function MetricStrip({ children }: MetricStripProps) {
     return (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-                background: 'var(--cms-bg)',
-                border: '1px solid var(--cms-border)',
-                borderRadius: 'var(--cms-radius)',
-                overflow: 'hidden',
-            }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] overflow-hidden">
             {children}
         </div>
     )
