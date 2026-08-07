@@ -1,12 +1,21 @@
 'use client'
 
 /**
- * `AppShell` — khung CMS dùng chung: rail dọc trái + header + tab bar ngang.
+ * `AppShell` — khung CMS dùng chung: rail dọc trái (VÙNG) + header + tab bar
+ * (MÀN trong vùng đang chọn).
+ *
+ * VÌ SAO HAI TẦNG ĐIỀU HƯỚNG, KHÔNG PHẢI RAIL PHẲNG 21 MỤC: bản đầu tiên làm
+ * phẳng toàn bộ menu vào rail 64px chỉ-icon — mất nhãn chữ, mất phân nhóm, và
+ * icon-only 21 mục không phân biệt được bằng mắt (hồi quy so với cây menu cũ).
+ * Theo đúng ảnh mẫu (kiểu Sales Cloud: SALES/SVC/WORK/EXEC/PLAN/RPTS): rail
+ * chỉ giữ ~3-6 VÙNG LỚN (icon + nhãn chữ nhỏ dưới icon), còn tab bar ngang mới
+ * liệt kê các MÀN thuộc vùng đang chọn. Vùng ít nên rail vẫn đọc được dù nhãn
+ * ngắn; màn nhiều thì đã có tab bar cuộn ngang lo.
  *
  * VÌ SAO CHỈ NHẬN PROPS NGUYÊN THUỶ (`href`/`label`/`icon`): đây là tầng nền
- * (R15) — không được biết "đơn hàng", "tồn kho" là gì. App gọi truyền menu
- * đã lọc quyền + đã dịch ngôn ngữ vào, `AppShell` chỉ lo bố cục và trạng thái
- * active/hover/focus.
+ * (R15) — không được biết "đơn hàng", "tồn kho" là gì. App gọi truyền `zones`
+ * đã lọc quyền + đã dịch ngôn ngữ vào, `AppShell` chỉ lo bố cục và suy ra vùng
+ * nào đang active từ `currentPath`.
  *
  * VÌ SAO `data-cms` GẮN Ở PHẦN TỬ GỐC: toàn bộ `tokens.css` ghi trong phạm vi
  * `[data-cms]` (không phải `:root`) để không rò sang trang client `/h1`–`/h4`.
@@ -21,12 +30,19 @@ export interface ShellNavItem {
     icon?: ReactNode
 }
 
+export interface ShellZone {
+    key: string
+    /** Nhãn ngắn hiện dưới icon trong rail, ví dụ "VẬN HÀNH". */
+    label: string
+    icon: ReactNode
+    /** Sinh ra tab bar khi vùng này đang active. */
+    items: ShellNavItem[]
+}
+
 export interface AppShellProps {
-    /** Rail dọc trái, rộng `var(--cms-rail-w)` = 64px. */
-    railItems: ShellNavItem[]
-    /** Tab bar ngang trong header, cao `var(--cms-tabbar-h)` = 40px. */
-    tabItems: ShellNavItem[]
-    /** Đường dẫn hiện tại — dùng để tính mục nào đang active. */
+    /** Rail dọc trái, rộng `var(--cms-rail-w)` = 64px. ~3-6 vùng lớn. */
+    zones: ShellZone[]
+    /** Đường dẫn hiện tại — dùng để suy ra vùng active và mục active. */
     currentPath: string
     /** Logo + tên sản phẩm, hiện ở đầu rail. */
     brand: ReactNode
@@ -35,24 +51,35 @@ export interface AppShellProps {
     children: ReactNode
 }
 
-/**
- * Một mục có đang active không. So khớp chính xác cho trang gốc (`/admin`),
- * còn lại so bằng tiền tố — con của một mục vẫn giữ mục cha sáng.
- */
+/** Một mục có đang active không: so khớp chính xác hoặc theo tiền tố `/`. */
 function isItemActive(href: string, currentPath: string, rootPath: string): boolean {
     if (href === rootPath) return currentPath === rootPath
     return currentPath === href || currentPath.startsWith(`${href}/`)
 }
 
-export function AppShell({ railItems, tabItems, currentPath, brand, headerRight, children }: AppShellProps) {
-    // Mục "gốc" của rail là item đầu tiên (thường là Dashboard) — dùng để
-    // quyết định so khớp chính xác hay so khớp tiền tố cho toàn bộ shell.
-    const rootPath = railItems[0]?.href ?? ''
+/**
+ * Vùng nào đang active: vùng có ít nhất một mục khớp `currentPath`. Không cần
+ * state riêng — suy thẳng từ URL nên back/forward trình duyệt và deep-link
+ * đều tự động đúng vùng. Không khớp vùng nào thì mặc định vùng đầu tiên.
+ */
+function findActiveZone(zones: ShellZone[], currentPath: string): ShellZone | undefined {
+    const matched = zones.find((zone) =>
+        zone.items.some((item) => isItemActive(item.href, currentPath, zone.items[0]?.href ?? ''))
+    )
+    return matched ?? zones[0]
+}
+
+export function AppShell({ zones, currentPath, brand, headerRight, children }: AppShellProps) {
+    const activeZone = findActiveZone(zones, currentPath)
+    const tabItems = activeZone?.items ?? []
+    // Mục "gốc" của tab bar là item đầu của vùng active — quyết định so khớp
+    // chính xác (trang gốc của vùng) hay so khớp tiền tố (trang con).
+    const tabRootPath = tabItems[0]?.href ?? ''
 
     return (
         <div data-cms className="flex h-screen w-full overflow-hidden bg-[var(--cms-bg-subtle)] text-[var(--cms-text)]">
-            {/* Rail dọc trái — chỉ icon, luôn 64px, không thu gọn thêm nữa vì
-                đây đã là bề rộng tối thiểu chứa được target chạm 24px (D4). */}
+            {/* Rail dọc trái — icon + nhãn ngắn, luôn 64px, không thu gọn:
+                chỉ ~3-6 vùng nên bề rộng cố định vẫn đọc được (D4 target 24px). */}
             <aside
                 className="flex h-screen shrink-0 flex-col items-center border-r border-[var(--cms-border)] bg-[var(--cms-bg)]"
                 style={{ width: 'var(--cms-rail-w)' }}
@@ -65,22 +92,26 @@ export function AppShell({ railItems, tabItems, currentPath, brand, headerRight,
                 </div>
 
                 <nav className="flex w-full flex-1 flex-col items-center gap-1 overflow-y-auto py-2">
-                    {railItems.map((item) => {
-                        const active = isItemActive(item.href, currentPath, rootPath)
+                    {zones.map((zone) => {
+                        const active = zone.key === activeZone?.key
+                        // Vào vùng bằng href của mục đầu tiên trong vùng đó.
+                        const href = zone.items[0]?.href ?? '#'
                         return (
                             <a
-                                key={item.href}
-                                href={item.href}
-                                title={item.label}
+                                key={zone.key}
+                                href={href}
+                                title={zone.label}
                                 aria-current={active ? 'page' : undefined}
-                                className={`flex h-10 w-10 items-center justify-center rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                className={`flex w-14 flex-col items-center gap-0.5 rounded-[var(--cms-radius)] py-2 text-center transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
                                     active
                                         ? 'bg-[var(--cms-accent-weak)] text-[var(--cms-accent)]'
                                         : 'text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)]'
                                 }`}
                             >
-                                {item.icon}
-                                <span className="sr-only">{item.label}</span>
+                                {zone.icon}
+                                <span className="w-full truncate px-0.5 text-[9px] font-semibold leading-tight">
+                                    {zone.label}
+                                </span>
                             </a>
                         )
                     })}
@@ -97,14 +128,14 @@ export function AppShell({ railItems, tabItems, currentPath, brand, headerRight,
                     {headerRight}
                 </header>
 
-                {/* Tab bar ngang — điều hướng cấp hai, gạch chân 2px khi active. */}
+                {/* Tab bar ngang — các màn thuộc vùng đang chọn ở rail. */}
                 {tabItems.length > 0 && (
                     <nav
                         className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-[var(--cms-border)] bg-[var(--cms-bg)] px-3"
                         style={{ height: 'var(--cms-tabbar-h)' }}
                     >
                         {tabItems.map((tab) => {
-                            const active = isItemActive(tab.href, currentPath, rootPath)
+                            const active = isItemActive(tab.href, currentPath, tabRootPath)
                             return (
                                 <a
                                     key={tab.href}

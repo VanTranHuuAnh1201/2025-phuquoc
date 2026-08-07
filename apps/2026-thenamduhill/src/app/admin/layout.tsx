@@ -2,6 +2,7 @@
 
 import {
     BedIcon,
+    BuildingIcon,
     CalendarIcon,
     CoinsIcon,
     ExternalIcon,
@@ -14,10 +15,10 @@ import {
 } from '@/components/icons'
 import { LocaleProvider, useLocale } from '@/components/LocaleProvider'
 import { useAuthStore } from '@/stores/auth.store'
-import { ROLE_LABEL, tr } from '@/strings'
+import { ROLE_LABEL, S, tr } from '@/strings'
 import type { Permission } from '@repo/core'
 import { can, isStaffRole } from '@repo/core'
-import { AppShell, type ShellNavItem } from '@repo/cms-ui'
+import { AppShell, type ShellZone } from '@repo/cms-ui'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -29,6 +30,8 @@ interface NavItem {
     permission?: Permission
 }
 
+// Ba nhóm này ánh xạ trực tiếp sang 3 ShellZone của rail — icon zone lấy từ
+// mục đầu tiên trong nhóm (`ZONE_ICON` dưới), nhãn zone qua `S.adminZone*`.
 interface NavSection {
     prefix: 'operations' | 'content' | 'system'
     title: string
@@ -71,14 +74,13 @@ const NAV_SECTIONS: NavSection[] = [
     },
 ]
 
-const TOP_NAV_ITEMS: ShellNavItem[] = [
-    { href: '/admin', label: 'Dashboard' },
-    { href: '/admin/orders', label: 'Quản lý Đơn hàng' },
-    { href: '/admin/inventory', label: 'Tồn kho & Giá' },
-    { href: '/admin/housekeeping', label: 'Buồng phòng' },
-    { href: '/admin/customers', label: 'Khách hàng' },
-    { href: '/admin/settings', label: 'Setup' },
-]
+// Icon riêng cho từng zone ở rail — khác icon của mục đầu trong nhóm để zone
+// tự đứng được như một biểu tượng nhóm, không phải "tình cờ trùng" icon con.
+const ZONE_ICON: Record<NavSection['prefix'], React.ReactNode> = {
+    operations: <GridIcon size={20} />,
+    content: <FileTextIcon size={20} />,
+    system: <BuildingIcon size={20} />,
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -127,17 +129,27 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         ),
     })).filter((section) => section.items.length > 0)
 
-    // AppShell chỉ nhận một mảng phẳng railItems — gộp mọi section lại vì
-    // rail 64px cố định không còn chỗ cho tiêu đề nhóm (khác cây menu cũ).
-    const railItems: ShellNavItem[] = visibleSections.flatMap((section) => section.items)
+    // Ba nhóm sẵn có (operations/content/system) ánh xạ 1:1 sang 3 ShellZone
+    // — rail giữ được phân nhóm và nhãn chữ, tab bar sinh từ items của zone
+    // đang active thay vì một hằng TOP_NAV_ITEMS cứng tách rời khỏi menu.
+    const zones: ShellZone[] = visibleSections.map((section) => ({
+        key: section.prefix,
+        label:
+            section.prefix === 'operations'
+                ? tr(S.adminZoneOperations, locale)
+                : section.prefix === 'content'
+                  ? tr(S.adminZoneContent, locale)
+                  : tr(S.adminZoneSystem, locale),
+        icon: ZONE_ICON[section.prefix],
+        items: section.items,
+    }))
 
     const userInitial = user.fullName ? user.fullName.charAt(0).toUpperCase() : 'A'
     const roleLabel = tr(ROLE_LABEL[user.role], locale)
 
     return (
         <AppShell
-            railItems={railItems}
-            tabItems={TOP_NAV_ITEMS}
+            zones={zones}
             currentPath={pathname}
             brand={
                 <Link href="/admin" title="THE NAM DU HILL" aria-label="THE NAM DU HILL">

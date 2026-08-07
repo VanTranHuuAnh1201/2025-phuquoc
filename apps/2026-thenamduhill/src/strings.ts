@@ -687,6 +687,11 @@ export const S = {
     nightNLabel: t('Đêm thứ {value}', 'Night {value}'),
     todayLabel: t('Hôm nay', 'Today'),
     bookedLabel: t('Đã bán', 'Booked'),
+
+    // ---------------------------------------- CMS: nhãn 3 vùng rail (AppShell)
+    adminZoneOperations: t('Vận hành', 'Operations'),
+    adminZoneContent: t('Nội dung', 'Content'),
+    adminZoneSystem: t('Hệ thống', 'System'),
 } satisfies Record<string, I18nText>
 
 // ============================================================== bảng tra mã

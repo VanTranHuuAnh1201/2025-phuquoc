@@ -13,4 +13,4 @@ export { DotBadge } from './DotBadge'
 export type { DotBadgeProps, CmsTone } from './DotBadge'
 
 export { AppShell } from './AppShell'
-export type { AppShellProps, ShellNavItem } from './AppShell'
+export type { AppShellProps, ShellNavItem, ShellZone } from './AppShell'
