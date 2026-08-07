@@ -105,3 +105,19 @@
     --text-xs: var(--cms-text-meta);
     --text-sm: var(--cms-text-body);
 }
+
+/* --- ghi đè `DataTable` của `@repo/ui` cho `DataGrid` ----------------
+ * `DataTable` hard-code hai chỗ bằng class Tailwind tĩnh mà không có prop
+ * tương ứng để truyền token vào (`hover:bg-slate-50/70` và `padding: 8px
+ * 12px` viết thẳng trong inline style). `DataGrid.tsx` bọc `DataTable`
+ * (không fork) và giải quyết 2 trong 3 chỗ lệch tại đây bằng CSS selector
+ * con — chỗ thứ 3 (wrapper) đã có prop `containerClass` nên xử lý trực tiếp
+ * trong `DataGrid.tsx`, không cần CSS.
+ * ------------------------------------------------------------------ */
+[data-cms] .dt-row:hover {
+    background: var(--cms-bg-subtle);
+}
+
+[data-cms] .dt-table td {
+    height: var(--cms-row-h);
+}

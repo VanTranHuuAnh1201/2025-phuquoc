@@ -20,3 +20,15 @@ export type { MetricStripProps } from './MetricStrip'
 
 export { AppShell } from './AppShell'
 export type { AppShellProps, ShellNavItem, ShellZone } from './AppShell'
+
+export { PageHeaderBar } from './PageHeaderBar'
+export type { PageHeaderBarProps } from './PageHeaderBar'
+
+export { FilterBar } from './FilterBar'
+export type { FilterBarProps, FilterGroup } from './FilterBar'
+
+export { InlineAlert } from './InlineAlert'
+export type { InlineAlertProps } from './InlineAlert'
+
+export { DataGrid } from './DataGrid'
+export type { DataGridProps } from './DataGrid'
