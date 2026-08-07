@@ -3,26 +3,34 @@
 /**
  * Danh sách đơn hàng — bảng chính của CMS.
  *
- * Theo đúng format ở `.claude/rules/app-flows.md` §F6: tiêu đề + đếm, ô tìm,
- * bộ lọc có nút Đặt lại, chọn nhiều, badge có chữ, phân trang, trạng thái rỗng
- * nói rõ việc cần làm.
+ * Áp design system `@repo/cms-ui` (round đổi TRÌNH BÀY, không đổi hành vi):
+ * `PageHeaderBar` → `FilterBar`/select → `MetricStrip` (5 KPI kênh bán) →
+ * banner chọn nhiều (`InlineAlert`) → `DataGrid`. Nền TRẮNG, phân tách bằng
+ * đường kẻ 1px — không còn `bg-slate-100`/card lồng card của bản cũ.
+ *
+ * VÌ SAO STATUS + HẠNG PHÒNG VẪN LÀ `<select>`, KHÔNG PHẢI PILL CỦA `FilterBar`:
+ * `FilterBar` là dải PILL — mỗi lựa chọn một nút rời. Dashboard chỉ có 3 nhóm
+ * 2–4 pill (≈11 pill) vẫn vừa một hàng. Ở đây `status` có 6 giá trị và
+ * `roomType` là danh sách ĐỘNG theo `property.rooms` (5–8 hạng) — đổ hết sang
+ * pill có thể lên tới ~18 nút, tràn hàng nặng hơn dashboard nhiều. Giữ
+ * `<select>` cho hai bộ lọc nhiều giá trị này, chỉ đổi `channel` (4 giá trị cố
+ * định) sang `FilterBar` pill để tận dụng nút Đặt lại + resultText có sẵn.
  *
  * Dưới 640px `DataTable` tự đổi bảng sang thẻ — không bọc `overflow-x` quanh
  * bảng ở đây, đó chính là thứ AC-7 cấm.
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { can, formatPrice, getPropertySync, pick } from '@repo/core'
 import type { Booking, BookingStatus, Channel } from '@repo/core'
-import { Badge, Button, DataTable, FilterSelect, Toolbar } from '@repo/ui'
 import type { Column } from '@repo/ui'
+import { DataGrid, DotBadge, FilterBar, InlineAlert, KpiCard, MetricStrip } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useAuthStore } from '@/stores/auth.store'
-import { useBookingStore } from '@/stores/booking.store'
 import { useBookingsData } from '@/hooks/useAdminData'
-import { CHANNEL_LABEL, S, STATUS_LABEL, STATUS_TONE, tr } from '@/strings'
+import { CHANNEL_CMS_TONE, CHANNEL_LABEL, S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
 import { DownloadIcon, EyeIcon, PlusIcon } from '@/components/icons'
 
 const PAGE_SIZE = 10
@@ -41,7 +49,7 @@ const CHANNELS: Channel[] = ['web', 'phone', 'walk-in', 'ota']
 export default function AdminOrdersPage() {
     const { locale } = useLocale()
     const router = useRouter()
-    const { bookings, loading } = useBookingsData()
+    const { bookings } = useBookingsData()
     const user = useAuthStore((s) => s.user)
     const property = getPropertySync()
 
@@ -150,12 +158,29 @@ export default function AdminOrdersPage() {
         }
     }, [filtered])
 
+    // Nhóm pill duy nhất của FilterBar ở màn này — chỉ "Kênh đặt" (4 giá trị
+    // cố định). Status/roomType giữ `<select>`, xem giải thích ở đầu file.
+    const channelGroups = [
+        {
+            legend: tr(S.filterChannelAria, locale),
+            value: channel,
+            onChange: (v: string) => {
+                setChannel(v)
+                setPage(1)
+            },
+            options: [
+                { value: '', label: tr(S.allChannelsBooking, locale) },
+                ...CHANNELS.map((c) => ({ value: c, label: tr(CHANNEL_LABEL[c], locale) })),
+            ],
+        },
+    ]
+
     // Chặn thiếu quyền: đặt SAU toàn bộ hook (xem ghi chú rules-of-hooks ở trên).
     // Đây chỉ là lớp tiện lợi cho người dùng — chặn thật nằm ở Route Handler
     // bằng requirePermission() (luật BE2), không dựa vào UI.
     if (user && !canViewAll) {
         return (
-            <p role="alert" style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
+            <p role="alert" className="text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                 {pick(
                     {
                         vi: 'Tài khoản của bạn không có quyền xem đơn hàng.',
@@ -172,36 +197,25 @@ export default function AdminOrdersPage() {
             key: 'channel',
             header: pick({ vi: 'KÊNH ĐẶT', en: 'CHANNEL' }, locale),
             width: '160px',
-            cell: (b) => {
-                const toneMap: Record<string, string> = {
-                    web: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    'walk-in': 'bg-blue-50 text-blue-700 border-blue-200',
-                    ota: 'bg-purple-50 text-purple-700 border-purple-200',
-                    phone: 'bg-amber-50 text-amber-700 border-amber-200',
-                }
-                const dotMap: Record<string, string> = {
-                    web: 'bg-emerald-500',
-                    'walk-in': 'bg-blue-500',
-                    ota: 'bg-purple-500',
-                    phone: 'bg-amber-500',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[144px] text-left shrink-0 ${toneMap[b.channel] || 'bg-slate-100'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotMap[b.channel] || 'bg-slate-400'}`} />
-                        <span className="truncate">{tr(CHANNEL_LABEL[b.channel], locale)}</span>
-                    </span>
-                )
-            },
+            cell: (b) => (
+                <DotBadge tone={CHANNEL_CMS_TONE[b.channel]} label={tr(CHANNEL_LABEL[b.channel], locale)} width={144} />
+            ),
         },
         {
             key: 'code',
             header: pick({ vi: 'KHÁCH HÀNG & MÃ ĐƠN', en: 'GUEST & CODE' }, locale),
             cell: (b) => (
-                <div>
-                    <div className="font-semibold text-slate-900 hover:text-blue-600 transition-colors">
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={b.guest.fullName}
+                    >
                         {b.guest.fullName}
                     </div>
-                    <div className="text-xs text-slate-500 font-mono">
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono"
+                        title={`${b.code} · ${b.guest.phone}`}
+                    >
                         {b.code} · {b.guest.phone}
                     </div>
                 </div>
@@ -210,49 +224,38 @@ export default function AdminOrdersPage() {
         {
             key: 'room',
             header: pick({ vi: 'HẠNG PHÒNG', en: 'ROOM TYPE' }, locale),
-            cell: (b) => <span className="text-slate-700 font-medium text-xs">{roomName(b.roomTypeId)}</span>,
+            cell: (b) => (
+                <span className="truncate text-[length:var(--cms-text-body)] text-[var(--cms-text)]" title={roomName(b.roomTypeId)}>
+                    {roomName(b.roomTypeId)}
+                </span>
+            ),
         },
         {
             key: 'nights',
             header: pick({ vi: 'SỐ ĐÊM', en: 'NIGHTS' }, locale),
             width: '90px',
             align: 'center',
-            cell: (b) => <span className="text-slate-700 font-semibold text-xs">{b.nights} {tr(S.nights, locale)}</span>,
+            cell: (b) => (
+                <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                    {b.nights} {tr(S.nights, locale)}
+                </span>
+            ),
         },
         {
             key: 'dates',
             header: pick({ vi: 'CHECK-IN / CHECK-OUT', en: 'DATES' }, locale),
             width: '160px',
-            cell: (b) => <span className="text-slate-600 text-xs">{b.checkIn} → {b.checkOut}</span>,
+            cell: (b) => (
+                <span className="text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                    {b.checkIn} → {b.checkOut}
+                </span>
+            ),
         },
         {
             key: 'status',
             header: pick({ vi: 'TRẠNG THÁI', en: 'STATUS' }, locale),
             width: '130px',
-            cell: (b) => {
-                const statusStyles: Record<string, string> = {
-                    checked_in: 'bg-blue-50 text-blue-700 border-blue-200',
-                    confirmed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    pending_payment: 'bg-amber-50 text-amber-700 border-amber-200',
-                    checked_out: 'bg-slate-100 text-slate-700 border-slate-200',
-                    cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
-                    no_show: 'bg-purple-50 text-purple-700 border-purple-200',
-                }
-                const dotStyles: Record<string, string> = {
-                    checked_in: 'bg-blue-500',
-                    confirmed: 'bg-emerald-500',
-                    pending_payment: 'bg-amber-500',
-                    checked_out: 'bg-slate-500',
-                    cancelled: 'bg-rose-500',
-                    no_show: 'bg-purple-500',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 ${statusStyles[b.status] || 'bg-slate-100'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotStyles[b.status] || 'bg-slate-400'}`} />
-                        <span className="truncate">{tr(STATUS_LABEL[b.status], locale)}</span>
-                    </span>
-                )
-            },
+            cell: (b) => <DotBadge tone={STATUS_CMS_TONE[b.status]} label={tr(STATUS_LABEL[b.status], locale)} width={116} />,
         },
         {
             key: 'total',
@@ -260,7 +263,7 @@ export default function AdminOrdersPage() {
             align: 'right',
             width: '130px',
             cell: (b) => (
-                <span className="font-bold text-slate-900 text-xs">
+                <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)] tabular-nums">
                     {formatPrice(b.totalAmount, locale)}
                 </span>
             ),
@@ -272,10 +275,10 @@ export default function AdminOrdersPage() {
             width: '100px',
             inCard: false,
             cell: (b) => (
-                <div className="flex items-center justify-end gap-1 text-slate-500">
+                <div className="flex items-center justify-end gap-1">
                     <Link
                         href={`/admin/orders/${b.id}`}
-                        className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors"
+                        className="p-1 text-[var(--cms-text-muted)] hover:text-[var(--cms-accent)] rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         title={tr(S.view, locale)}
                         aria-label={`${tr(S.viewBookingAria, locale)} ${b.code}`}
                     >
@@ -287,221 +290,136 @@ export default function AdminOrdersPage() {
     ]
 
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2.5 p-3 bg-slate-100 overflow-hidden">
-            {/* Top Bar: Title + All Filters & Actions in Header */}
-            <div className="w-full bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
-                {/* Left: Title & Count */}
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.orders, locale)}
-                    </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {filtered.length} {tr(S.bookingsCountSuffix, locale)}
-                    </span>
-                </div>
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1 — tiêu đề + đếm trái, ô tìm/xuất/tạo mới phải. */}
+            <PageHeaderBarWithSearch
+                locale={locale}
+                count={filtered.length}
+                search={search}
+                onSearchChange={(v) => {
+                    setSearch(v)
+                    setPage(1)
+                }}
+                onExport={exportCsv}
+                canCreate={canCreate}
+            />
 
-                {/* Right: All Filters & Actions */}
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="search"
-                            aria-label={tr(S.searchBookingsAria, locale)}
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value)
-                                setPage(1)
-                            }}
-                            placeholder={tr(S.search, locale)}
-                            className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
-                        />
-                    </div>
+            {/* HÀNG 2 — bộ lọc: pill Kênh đặt + select Trạng thái/Hạng phòng,
+                kết quả + Đặt lại đẩy về cuối hàng qua props của FilterBar. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <FilterBar groups={channelGroups} />
 
-                    {/* Channel Select */}
-                    <select
-                        aria-label={tr(S.filterChannelAria, locale)}
-                        value={channel}
-                        onChange={(e) => {
-                            setChannel(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="">{pick({ vi: 'Tất cả kênh', en: 'All channels' }, locale)}</option>
-                        <option value="web">Website Trực Tuyến</option>
-                        <option value="walk-in">Khách Vãng Lai</option>
-                        <option value="ota">Agoda / Booking.com</option>
-                        <option value="phone">Hotline / Điện thoại</option>
-                    </select>
+                <select
+                    aria-label={tr(S.filterStatusAria, locale)}
+                    value={status}
+                    onChange={(e) => {
+                        setStatus(e.target.value)
+                        setPage(1)
+                    }}
+                    className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 24 }}
+                >
+                    <option value="">{tr(S.allStatuses, locale)}</option>
+                    {STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                            {tr(STATUS_LABEL[s], locale)}
+                        </option>
+                    ))}
+                </select>
 
-                    {/* Status Select */}
-                    <select
-                        aria-label={tr(S.filterStatusAria, locale)}
-                        value={status}
-                        onChange={(e) => {
-                            setStatus(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="">{pick({ vi: 'Tất cả trạng thái', en: 'All statuses' }, locale)}</option>
-                        {STATUSES.map((s) => (
-                            <option key={s} value={s}>
-                                {tr(STATUS_LABEL[s], locale)}
-                            </option>
-                        ))}
-                    </select>
+                <select
+                    aria-label={tr(S.filterRoomTypeAria, locale)}
+                    value={roomType}
+                    onChange={(e) => {
+                        setRoomType(e.target.value)
+                        setPage(1)
+                    }}
+                    className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 24 }}
+                >
+                    <option value="">{tr(S.allRoomTypes, locale)}</option>
+                    {property.rooms.map((r) => (
+                        <option key={r.id} value={r.id}>
+                            {pick(r.name, locale)}
+                        </option>
+                    ))}
+                </select>
 
-                    {/* Room Type Select */}
-                    <select
-                        aria-label={tr(S.filterRoomTypeAria, locale)}
-                        value={roomType}
-                        onChange={(e) => {
-                            setRoomType(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="">{pick({ vi: 'Tất cả hạng phòng', en: 'All room types' }, locale)}</option>
-                        {property.rooms.map((r) => (
-                            <option key={r.id} value={r.id}>
-                                {pick(r.name, locale)}
-                            </option>
-                        ))}
-                    </select>
+                <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                    {filtered.length} {tr(S.bookingsCountSuffix, locale)}
+                </span>
 
-                    {/* Reset Button */}
-                    {isFiltered && (
-                        <button
-                            type="button"
-                            onClick={resetFilters}
-                            className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
-                        >
-                            {tr(S.reset, locale)}
-                        </button>
-                    )}
-
-                    {/* Export CSV */}
+                {isFiltered && (
                     <button
                         type="button"
-                        onClick={exportCsv}
-                        className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-md transition-colors inline-flex items-center gap-1 shrink-0"
+                        onClick={resetFilters}
+                        style={{ minHeight: 24 }}
+                        className="inline-flex items-center rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text-muted)] transition-colors hover:text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
-                        <DownloadIcon size={13} />
-                        <span>{tr(S.exportExcel, locale)}</span>
+                        {tr(S.reset, locale)}
                     </button>
-
-                    {/* Primary Action Button */}
-                    {canCreate && (
-                        <button
-                            type="button"
-                            onClick={() => router.push('/admin/orders/new')}
-                            className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 border border-amber-400/50"
-                        >
-                            <PlusIcon size={14} />
-                            <span>+ {tr(S.newBooking, locale)}</span>
-                        </button>
-                    )}
-                </div>
+                )}
             </div>
 
-            {/* Channel KPI Statistics Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
-                {/* Total Stats */}
-                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {pick({ vi: 'TẤT CẢ KÊNH', en: 'ALL CHANNELS' }, locale)}
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.total} {tr(S.bookingsCountSuffix, locale)}</span>
-                        <span className="text-[11px] font-semibold text-amber-700">
-                            {formatPrice(stats.totalRevenue, locale)}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Website Stats */}
-                <div className="bg-white p-2.5 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
-                            WEBSITE TRỰC TUYẾN
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.website} {tr(S.bookingsCountSuffix, locale)}</span>
-                        <span className="text-[11px] font-semibold text-emerald-700">
-                            {formatPrice(stats.websiteRev, locale)}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Walk-in Stats */}
-                <div className="bg-white p-2.5 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            KHÁCH VÃNG LAI
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.walkIn} {tr(S.bookingsCountSuffix, locale)}</span>
-                        <span className="text-[11px] font-semibold text-blue-700">
-                            {formatPrice(stats.walkInRev, locale)}
-                        </span>
-                    </div>
-                </div>
-
-                {/* OTA Stats */}
-                <div className="bg-white p-2.5 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
-                            AGODA / BOOKING.COM
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.ota} {tr(S.bookingsCountSuffix, locale)}</span>
-                        <span className="text-[11px] font-semibold text-purple-700">
-                            {formatPrice(stats.otaRev, locale)}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Phone/Hotline Stats */}
-                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">
-                            HOTLINE / ĐIỆN THOẠI
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.phone} {tr(S.bookingsCountSuffix, locale)}</span>
-                        <span className="text-[11px] font-semibold text-amber-700">
-                            {formatPrice(stats.phoneRev, locale)}
-                        </span>
-                    </div>
-                </div>
+            {/* MetricStrip — 5 KPI kênh bán, LUÔN hiện (màn phân tích theo kênh). */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard
+                        label={tr(S.kpiAllChannels, locale)}
+                        value={`${stats.total} ${tr(S.bookingsCountSuffix, locale)}`}
+                        note={formatPrice(stats.totalRevenue, locale)}
+                        tone="slate"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiChannelWeb, locale)}
+                        value={`${stats.website} ${tr(S.bookingsCountSuffix, locale)}`}
+                        note={formatPrice(stats.websiteRev, locale)}
+                        tone="emerald"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiChannelWalkIn, locale)}
+                        value={`${stats.walkIn} ${tr(S.bookingsCountSuffix, locale)}`}
+                        note={formatPrice(stats.walkInRev, locale)}
+                        tone="blue"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiChannelOta, locale)}
+                        value={`${stats.ota} ${tr(S.bookingsCountSuffix, locale)}`}
+                        note={formatPrice(stats.otaRev, locale)}
+                        tone="violet"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiChannelPhone, locale)}
+                        value={`${stats.phone} ${tr(S.bookingsCountSuffix, locale)}`}
+                        note={formatPrice(stats.phoneRev, locale)}
+                        tone="amber"
+                    />
+                </MetricStrip>
             </div>
 
-            {/* Selection banner */}
+            {/* Banner chọn nhiều — chỉ render khi có dòng được chọn. */}
             {selected.length > 0 && (
-                <div className="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-md flex items-center justify-between text-xs text-amber-900 shrink-0">
-                    <span><strong>{selected.length}</strong> {tr(S.selectedCount, locale)}</span>
-                    <button
-                        type="button"
-                        onClick={() => setSelected([])}
-                        className="text-xs font-semibold text-amber-700 hover:underline"
-                    >
-                        {tr(S.clearSelection, locale)}
-                    </button>
+                <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2">
+                    <InlineAlert tone="amber">
+                        <div className="flex items-center justify-between gap-3">
+                            <span>
+                                <strong>{selected.length}</strong> {tr(S.selectedCount, locale)}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setSelected([])}
+                                className="font-semibold underline underline-offset-2"
+                            >
+                                {tr(S.clearSelection, locale)}
+                            </button>
+                        </div>
+                    </InlineAlert>
                 </div>
             )}
 
-            {/* DataTable Component - Maximized Full Height */}
-            <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                <DataTable
+            {/* VÙNG NỘI DUNG — bảng, chiếm hết chỗ còn lại. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <DataGrid
                     caption={tr(S.orders, locale)}
                     columns={columns}
                     rows={pageRows}
@@ -513,15 +431,15 @@ export default function AdminOrdersPage() {
                     selectAllLabel={tr(S.selectAllRows, locale)}
                     rowLabel={(b) => `${pick({ vi: 'Chọn đơn', en: 'Select booking' }, locale)} ${b.code}`}
                     empty={
-                        <div className="py-6 text-center space-y-2">
-                            <p className="text-sm text-slate-600">
+                        <div className="h-full flex flex-col items-center justify-center gap-2 text-center py-6">
+                            <p className="text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                                 {tr(isFiltered ? S.emptyFilterBookings : S.noBookings, locale)}
                             </p>
                             {isFiltered && (
                                 <button
                                     type="button"
                                     onClick={resetFilters}
-                                    className="px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md transition-colors"
+                                    className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1 text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)] transition-colors hover:text-[var(--cms-text)]"
                                 >
                                     {tr(S.resetFilters, locale)}
                                 </button>
@@ -531,14 +449,14 @@ export default function AdminOrdersPage() {
                 />
 
                 {filtered.length > 0 && (
-                    <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
+                    <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2.5 flex items-center justify-between gap-4 flex-wrap text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] shrink-0">
                         <span>
                             {tr(S.showing, locale)}{' '}
-                            <strong className="text-slate-900 font-semibold">
+                            <strong className="font-semibold text-[var(--cms-text)]">
                                 {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}
                             </strong>{' '}
                             {tr(S.of, locale)}{' '}
-                            <strong className="text-slate-900 font-semibold">{filtered.length}</strong>{' '}
+                            <strong className="font-semibold text-[var(--cms-text)]">{filtered.length}</strong>{' '}
                             {tr(S.bookingsCountSuffix, locale)}
                         </span>
 
@@ -547,18 +465,18 @@ export default function AdminOrdersPage() {
                                 type="button"
                                 disabled={safePage === 1}
                                 onClick={() => setPage(safePage - 1)}
-                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 py-1 text-[length:var(--cms-text-meta)] font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 ← {tr(S.paginationPrev, locale)}
                             </button>
-                            <span className="px-2 font-semibold text-slate-700">
+                            <span className="px-2 font-semibold text-[var(--cms-text)]">
                                 {safePage} / {totalPages}
                             </span>
                             <button
                                 type="button"
                                 disabled={safePage === totalPages}
                                 onClick={() => setPage(safePage + 1)}
-                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 py-1 text-[length:var(--cms-text-meta)] font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 {tr(S.paginationNext, locale)} →
                             </button>
@@ -570,38 +488,69 @@ export default function AdminOrdersPage() {
     )
 }
 
-
-function PageButton({
-    disabled,
-    onClick,
-    label,
-    children,
+/**
+ * Hàng 1 — bọc `PageHeaderBar` để nhét ô tìm kiếm vào `actions`.
+ *
+ * VÌ SAO TÁCH THÀNH COMPONENT CON: `PageHeaderBar` không có prop tương ứng
+ * cho ô tìm (gap thật của `@repo/cms-ui` — xem ghi chú khảo sát), nên phần
+ * markup input phải tự viết. Tách ra khỏi thân trang chính để phần logic lọc/
+ * phân trang ở trên không bị chen giữa bởi JSX của một ô input đơn lẻ.
+ */
+function PageHeaderBarWithSearch({
+    locale,
+    count,
+    search,
+    onSearchChange,
+    onExport,
+    canCreate,
 }: {
-    disabled: boolean
-    onClick: () => void
-    label: string
-    children: React.ReactNode
+    locale: 'vi' | 'en'
+    count: number
+    search: string
+    onSearchChange: (v: string) => void
+    onExport: () => void
+    canCreate: boolean
 }) {
     return (
-        <button
-            type="button"
-            disabled={disabled}
-            onClick={onClick}
-            aria-label={label}
-            style={{
-                padding: 'var(--space-2) var(--space-3)',
-                fontSize: 'var(--text-sm)',
-                fontFamily: 'var(--font-body)',
-                color: disabled ? 'var(--text-muted)' : 'var(--text)',
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)',
-                cursor: disabled ? 'not-allowed' : 'pointer',
-                opacity: disabled ? 0.5 : 1,
-                minHeight: 32,
-            }}
-        >
-            {children}
-        </button>
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[var(--cms-border)] px-[var(--cms-pad)] py-2.5">
+            <div className="flex shrink-0 items-baseline gap-2">
+                <h1 className="text-[length:var(--cms-text-title)] font-normal leading-tight text-[var(--cms-text)]">
+                    {tr(S.orders, locale)}
+                </h1>
+                <span className="rounded-[var(--cms-radius-sm)] bg-[var(--cms-bg-subtle)] px-2 py-0.5 text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)] tabular-nums">
+                    {count} {tr(S.bookingsCountSuffix, locale)}
+                </span>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-2">
+                <input
+                    type="search"
+                    aria-label={tr(S.searchBookingsAria, locale)}
+                    value={search}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                    placeholder={tr(S.search, locale)}
+                    className="w-44 sm:w-56 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                />
+
+                <button
+                    type="button"
+                    onClick={onExport}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                >
+                    <DownloadIcon size={14} />
+                    <span>{tr(S.exportExcel, locale)}</span>
+                </button>
+
+                {canCreate && (
+                    <Link
+                        href="/admin/orders/new"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <PlusIcon size={14} />
+                        <span>{tr(S.newBooking, locale)}</span>
+                    </Link>
+                )}
+            </div>
+        </div>
     )
 }

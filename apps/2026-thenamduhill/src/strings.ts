@@ -9,6 +9,7 @@
  */
 
 import { t } from '@repo/core'
+import type { CmsTone } from '@repo/cms-ui'
 import type {
     AvailabilityBlockReason,
     BookingStatus,
@@ -323,6 +324,13 @@ export const S = {
     filterStatusAria: t('Lọc theo trạng thái đơn', 'Filter by booking status'),
     filterRoomTypeAria: t('Lọc theo hạng phòng', 'Filter by room type'),
     viewBookingAria: t('Xem đơn', 'View booking'),
+    allChannelsBooking: t('Tất cả kênh', 'All channels'),
+    allRoomTypes: t('Tất cả hạng phòng', 'All room types'),
+    kpiAllChannels: t('TẤT CẢ KÊNH', 'ALL CHANNELS'),
+    kpiChannelWeb: t('WEBSITE', 'WEBSITE'),
+    kpiChannelWalkIn: t('VÃNG LAI', 'WALK-IN'),
+    kpiChannelOta: t('OTA', 'OTA'),
+    kpiChannelPhone: t('HOTLINE', 'PHONE'),
 
 
     // lỗi ghi dữ liệu — mỗi mã một câu riêng, cấm gộp thành "Có lỗi xảy ra"
@@ -809,6 +817,36 @@ export const STATUS_TONE: Record<
     cancelled: 'danger',
     no_show: 'danger',
     expired: 'neutral',
+}
+
+/**
+ * Trạng thái đơn → tone của `@repo/cms-ui` (dùng cho `DotBadge`/`KpiCard`
+ * trong CMS). Tách riêng khỏi `STATUS_TONE` ở trên vì đó là tone ngữ nghĩa cũ
+ * (`neutral|success|warning|danger|info`) đang phục vụ nơi khác (my-orders,
+ * booking/success) — đổi kiểu của nó sẽ vỡ những chỗ đó. `CmsTone` là bảng màu
+ * khác (`emerald|blue|violet|amber|rose|slate`), một khái niệm khác, một nhà
+ * khác (R12) dù cùng ánh xạ từ `BookingStatus`.
+ */
+export const STATUS_CMS_TONE: Record<BookingStatus, CmsTone> = {
+    pending_payment: 'amber',
+    confirmed: 'blue',
+    checked_in: 'emerald',
+    checked_out: 'slate',
+    cancelled: 'rose',
+    no_show: 'rose',
+    expired: 'slate',
+}
+
+/**
+ * Kênh đặt → tone của `@repo/cms-ui`. Chưa có nơi nào khai trước đó (dashboard
+ * không có cột kênh dạng badge) — khai một lần ở đây để mọi màn CMS khác dùng
+ * lại được, không tự vẽ `toneMap` cục bộ trong từng trang (R12).
+ */
+export const CHANNEL_CMS_TONE: Record<Channel, CmsTone> = {
+    web: 'emerald',
+    'walk-in': 'blue',
+    ota: 'violet',
+    phone: 'amber',
 }
 
 /**
