@@ -12,7 +12,7 @@
  *   5. bảng thứ tự áp dụng trực quan
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
     addDays,
     buildQuote,
@@ -27,16 +27,24 @@ import {
 } from '@repo/core'
 import type { Promotion, PromotionType } from '@repo/core'
 import {
-    Badge,
     Button,
     CheckField,
-    DataTable,
     Field,
     Modal,
     SelectField,
     TextAreaField,
 } from '@repo/ui'
 import type { Column } from '@repo/ui'
+import {
+    DataGrid,
+    DotBadge,
+    FilterBar,
+    InlineAlert,
+    KpiCard,
+    MetricStrip,
+    PageHeaderBar,
+    type CmsTone,
+} from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingStore } from '@/stores/booking.store'
 import { usePromotionStore } from '@/stores/promotion.store'
@@ -50,7 +58,7 @@ import {
     S,
     tr,
 } from '@/strings'
-import { PencilIcon } from '@/components/icons'
+import { PencilIcon, SearchIcon, TicketIcon, GridIcon, InfoIcon } from '@/components/icons'
 
 const TYPES: PromotionType[] = [
     'percent',
@@ -105,20 +113,36 @@ export default function PromotionsPage() {
         setPage(1)
     }
 
+    // Badge cộng dồn/độc quyền — dùng chung tone `emerald`/`amber` với badge
+    // trạng thái ở dashboard (STATUS_TONE_MAP), không tự chế thang màu riêng.
+    const STACKING_TONE: Record<'stackable' | 'exclusive', CmsTone> = {
+        stackable: 'emerald',
+        exclusive: 'amber',
+    }
+    const ACTIVE_TONE: Record<'active' | 'inactive', CmsTone> = {
+        active: 'emerald',
+        inactive: 'slate',
+    }
+
     const columns: Column<Promotion>[] = [
         {
             key: 'name',
             header: tr(S.promoNameAndCode, locale),
             cell: (p) => (
-                <div>
-                    <div className="font-semibold text-slate-900">{pick(p.name, locale)}</div>
-                    <div className="text-xs text-slate-500 font-mono mt-0.5">
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={pick(p.name, locale)}
+                    >
+                        {pick(p.name, locale)}
+                    </div>
+                    <div className="mt-0.5 text-[length:var(--cms-text-meta)] font-mono">
                         {p.code ? (
-                            <span className="px-1.5 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded font-semibold text-[11px]">
+                            <span className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-tone-amber-dot)] bg-[var(--cms-tone-amber-bg)] px-1.5 py-0.5 font-semibold text-[var(--cms-tone-amber)]">
                                 {p.code}
                             </span>
                         ) : (
-                            <span className="text-slate-400 italic">
+                            <span className="italic text-[var(--cms-text-muted)]">
                                 {tr(S.autoApplied, locale)}
                             </span>
                         )}
@@ -130,9 +154,13 @@ export default function PromotionsPage() {
             key: 'type',
             header: tr(S.promoType, locale),
             cell: (p) => (
-                <div>
-                    <div className="font-medium text-slate-800 text-xs">{tr(PROMO_TYPE_LABEL[p.type], locale)}</div>
-                    <div className="text-xs text-slate-500">{describeValue(p, locale)}</div>
+                <div className="min-w-0">
+                    <div className="truncate text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                        {tr(PROMO_TYPE_LABEL[p.type], locale)}
+                    </div>
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                        {describeValue(p, locale)}
+                    </div>
                 </div>
             ),
         },
@@ -141,11 +169,11 @@ export default function PromotionsPage() {
             header: tr(S.stayWindow, locale),
             cell: (p) =>
                 p.conditions.stayFrom || p.conditions.stayTo ? (
-                    <span className="text-xs text-slate-600 font-mono whitespace-nowrap">
+                    <span className="whitespace-nowrap font-mono text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                         {p.conditions.stayFrom ?? '…'} → {p.conditions.stayTo ?? '…'}
                     </span>
                 ) : (
-                    <span className="text-xs text-slate-400">
+                    <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                         {tr(S.allDates, locale)}
                     </span>
                 ),
@@ -155,10 +183,11 @@ export default function PromotionsPage() {
             header: tr(S.stacking, locale),
             width: '130px',
             cell: (p) => (
-                <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 ${p.stackable ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${p.stackable ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                    <span className="truncate">{p.stackable ? tr(S.stackableShort, locale) : tr(S.exclusiveShort, locale)}</span>
-                </span>
+                <DotBadge
+                    tone={STACKING_TONE[p.stackable ? 'stackable' : 'exclusive']}
+                    label={p.stackable ? tr(S.stackableShort, locale) : tr(S.exclusiveShort, locale)}
+                    width={108}
+                />
             ),
         },
         {
@@ -167,7 +196,7 @@ export default function PromotionsPage() {
             align: 'right',
             width: '100px',
             cell: (p) => (
-                <span className="text-xs font-semibold text-slate-800">
+                <span className="text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)] tabular-nums">
                     {p.usageCount}
                     {p.usageLimit !== undefined ? ` / ${p.usageLimit}` : ''}
                 </span>
@@ -184,13 +213,14 @@ export default function PromotionsPage() {
                         e.stopPropagation()
                         toggle(p.id)
                     }}
-                    title={p.active ? 'Bấm để tắt' : 'Bấm để bật'}
-                    className="rounded-[4px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+                    title={p.active ? tr(S.clickToDisable, locale) : tr(S.clickToEnable, locale)}
+                    className="rounded-[var(--cms-radius-sm)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                 >
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 cursor-pointer transition-colors ${p.active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${p.active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                        <span className="truncate">{p.active ? tr(S.statusActive, locale) : tr(S.statusDisabled, locale)}</span>
-                    </span>
+                    <DotBadge
+                        tone={ACTIVE_TONE[p.active ? 'active' : 'inactive']}
+                        label={p.active ? tr(S.statusActive, locale) : tr(S.statusDisabled, locale)}
+                        width={108}
+                    />
                 </button>
             ),
         },
@@ -208,10 +238,11 @@ export default function PromotionsPage() {
                             e.stopPropagation()
                             setInfoPromo(p)
                         }}
-                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                        className="rounded-[var(--cms-radius-sm)] p-1 text-[var(--cms-accent)] transition-colors hover:bg-[var(--cms-accent-weak)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         title={tr(S.viewCalcFormula, locale)}
+                        aria-label={`${tr(S.viewCalcFormula, locale)} — ${pick(p.name, locale)}`}
                     >
-                        <span className="w-4 h-4 rounded-full border border-blue-500 flex items-center justify-center text-[10px] font-bold">i</span>
+                        <InfoIcon size={16} />
                     </button>
                     <button
                         type="button"
@@ -219,8 +250,9 @@ export default function PromotionsPage() {
                             e.stopPropagation()
                             setEditing(p)
                         }}
-                        className="p-1 text-slate-400 hover:text-amber-600 hover:bg-slate-100 rounded transition-colors"
+                        className="rounded-[var(--cms-radius-sm)] p-1 text-[var(--cms-text-muted)] transition-colors hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         title={tr(S.edit, locale)}
+                        aria-label={`${tr(S.edit, locale)} — ${pick(p.name, locale)}`}
                     >
                         <PencilIcon size={16} />
                     </button>
@@ -229,175 +261,162 @@ export default function PromotionsPage() {
         },
     ]
 
+    // Bộ lọc kiểu KM + trạng thái đưa vào `FilterBar` — cùng pattern dashboard
+    // (`shiftGroups`), không tự vẽ `<select>` cứng nữa. Ô tìm kiếm tự do
+    // (theo tên/mã) KHÔNG có slot trong `FilterBar` (component chỉ có nhóm
+    // pill rời rạc) nên giữ input riêng, style bằng token `--cms-*`.
+    const filterGroups = [
+        {
+            legend: tr(S.promoType, locale),
+            value: typeFilter,
+            onChange: (v: string) => {
+                setTypeFilter(v)
+                setPage(1)
+            },
+            options: [
+                { value: 'all', label: tr(S.allTypes, locale) },
+                ...TYPES.map((tKey) => ({ value: tKey, label: tr(PROMO_TYPE_LABEL[tKey], locale) })),
+            ],
+        },
+        {
+            legend: tr(S.promoStatus, locale),
+            value: statusFilter,
+            onChange: (v: string) => {
+                setStatusFilter(v)
+                setPage(1)
+            },
+            options: [
+                { value: 'all', label: tr(S.allStatuses, locale) },
+                { value: 'active', label: tr(S.statusActive, locale) },
+                { value: 'inactive', label: tr(S.statusDisabled, locale) },
+            ],
+        },
+    ]
+
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2 p-3 bg-slate-100 overflow-hidden">
-            {/* Top Bar: Title + Tab Switcher + Filters & Actions */}
-            <div className="w-full bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
-                {/* Left: Title, Count & Tab Navigation */}
-                <div className="flex items-center gap-3 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.promotions, locale)}
-                    </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {activeCount} {tr(S.statusActive, locale).toLowerCase()} / {promotions.length}
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái · tab Danh sách/Công thức + nút
+                Thêm khuyến mãi bên phải — cùng pattern `PageHeaderBar` của
+                dashboard. `filters` KHÔNG dùng ở đây vì bộ lọc kiểu/trạng thái
+                cần cả hàng riêng cùng ô tìm kiếm (xem hàng 2 bên dưới). */}
+            <PageHeaderBar
+                title={tr(S.promotions, locale)}
+                count={{ value: activeCount, suffix: `/ ${promotions.length} ${tr(S.activePromoCount, locale)}` }}
+                actions={
+                    <>
+                        <div
+                            role="tablist"
+                            aria-label={tr(S.promotions, locale)}
+                            className="flex items-center gap-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-0.5"
+                        >
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={activeTab === 'list'}
+                                onClick={() => setActiveTab('list')}
+                                className={`flex items-center gap-1.5 rounded-[var(--cms-radius-sm)] px-2.5 py-1 text-[length:var(--cms-text-body)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                    activeTab === 'list'
+                                        ? 'bg-[var(--cms-bg)] text-[var(--cms-text)]'
+                                        : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                                }`}
+                            >
+                                <TicketIcon size={14} />
+                                {tr(S.listView, locale)}
+                            </button>
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={activeTab === 'calc'}
+                                onClick={() => setActiveTab('calc')}
+                                className={`flex items-center gap-1.5 rounded-[var(--cms-radius-sm)] px-2.5 py-1 text-[length:var(--cms-text-body)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                    activeTab === 'calc'
+                                        ? 'bg-[var(--cms-bg)] text-[var(--cms-text)]'
+                                        : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                                }`}
+                            >
+                                <GridIcon size={14} />
+                                {tr(S.formulasAndCalc, locale)}
+                            </button>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setEditing(blankPromotion())}
+                            className="rounded-[var(--cms-radius)] bg-[var(--cms-accent)] px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold text-white transition-colors hover:bg-[var(--cms-accent)]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            + {tr(S.newPromotion, locale)}
+                        </button>
+                    </>
+                }
+            />
+
+            {/* HÀNG 2: ô tìm kiếm + bộ lọc kiểu/trạng thái + số kết quả + Đặt
+                lại — đúng format §F6 (ô tìm kiếm, bộ lọc, nút Đặt lại). */}
+            <div className="cms-row-filters flex flex-wrap items-center gap-3 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                <div className="relative">
+                    <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--cms-text-muted)]">
+                        <SearchIcon size={14} />
                     </span>
-
-                    {/* View Switcher Tabs */}
-                    <div className="flex items-center p-0.5 bg-slate-100 rounded-md border border-slate-200 shrink-0">
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('list')}
-                            className={`px-2.5 py-1 text-xs font-semibold rounded transition-all ${
-                                activeTab === 'list'
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
-                            }`}
-                        >
-                            📋 {tr(S.listView, locale)}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('calc')}
-                            className={`px-2.5 py-1 text-xs font-semibold rounded transition-all ${
-                                activeTab === 'calc'
-                                    ? 'bg-white text-slate-900 shadow-sm'
-                                    : 'text-slate-600 hover:text-slate-900'
-                            }`}
-                        >
-                            🧮 {tr(S.formulasAndCalc, locale)}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Right: All Filters & Actions */}
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value)
-                                setPage(1)
-                            }}
-                            placeholder={tr(S.search, locale)}
-                            className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
-                        />
-                    </div>
-
-                    {/* Type Select */}
-                    <select
-                        value={typeFilter}
+                    <input
+                        type="text"
+                        value={search}
                         onChange={(e) => {
-                            setTypeFilter(e.target.value)
+                            setSearch(e.target.value)
                             setPage(1)
                         }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">{tr(S.allTypes, locale)}</option>
-                        {TYPES.map((tKey) => (
-                            <option key={tKey} value={tKey}>
-                                {tr(PROMO_TYPE_LABEL[tKey], locale)}
-                            </option>
-                        ))}
-                    </select>
-
-                    {/* Status Select */}
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => {
-                            setStatusFilter(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">{tr(S.allStatuses, locale)}</option>
-                        <option value="active">{tr(S.statusActive, locale)}</option>
-                        <option value="inactive">{tr(S.statusDisabled, locale)}</option>
-                    </select>
-
-                    {/* Reset Button */}
-                    {(search || typeFilter !== 'all' || statusFilter !== 'all') && (
-                        <button
-                            type="button"
-                            onClick={resetFilters}
-                            className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
-                        >
-                            {tr(S.reset, locale)}
-                        </button>
-                    )}
-
-
-                    {/* Primary Action Button */}
-                    <button
-                        type="button"
-                        onClick={() => setEditing(blankPromotion())}
-                        className="inline-flex items-center justify-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 border border-amber-400/50 min-h-[32px]"
-                    >
-                        <span>+ {tr(S.newPromotion, locale)}</span>
-                    </button>
+                        placeholder={tr(S.searchPromoPlaceholder, locale)}
+                        className="w-48 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] py-1.5 pl-8 pr-2 text-[length:var(--cms-text-body)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] sm:w-64"
+                    />
                 </div>
+
+                <FilterBar
+                    groups={filterGroups}
+                    resultText={`${filtered.length} ${tr(S.promotions, locale).toLowerCase()}`}
+                    onReset={resetFilters}
+                />
             </div>
 
-            {/* Promotions KPI Statistics Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
-                {/* Total Promotions */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {tr(S.totalPromos, locale)}
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">{promotions.length} mã</div>
-                </div>
-
-                {/* Active Promotions */}
-                <div className="bg-white p-2 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
-                            ĐANG KÍCH HOẠT
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">{activeCount} mã</div>
-                </div>
-
-                {/* Stackable Promotions */}
-                <div className="bg-white p-2 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            CHO PHÉP CỘNG DỒN
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">{stackableCount} mã</div>
-                </div>
-
-                {/* Total Usage Count */}
-                <div className="bg-white p-2 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
-                            TỔNG LƯỢT ĐÃ DÙNG
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">{totalUsage} lượt</div>
-                </div>
-
-                {/* Conflict Warnings */}
-                <div className="bg-white p-2 rounded-sm border border-rose-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-rose-700 uppercase tracking-wider">
-                            XUNG ĐỘT PHÁT HIỆN
-                        </span>
-                        <span className={`w-1.5 h-1.5 rounded-full ${conflicts.length > 0 ? 'bg-rose-500' : 'bg-slate-300'}`} />
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">{conflicts.length} cảnh báo</div>
-                </div>
+            {/* Dải KPI liền mạch — cùng `MetricStrip`/`KpiCard` của dashboard,
+                không còn 5 card rời tự vẽ shadow/viền màu riêng. */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard
+                        label={tr(S.kpiTotalPromos, locale)}
+                        value={`${promotions.length}`}
+                        note={tr(S.kpiUnitPromo, locale)}
+                        tone="slate"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiActivePromos, locale)}
+                        value={`${activeCount}`}
+                        note={tr(S.kpiUnitPromo, locale)}
+                        tone="emerald"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiStackablePromos, locale)}
+                        value={`${stackableCount}`}
+                        note={tr(S.kpiUnitPromo, locale)}
+                        tone="blue"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiTotalUsage, locale)}
+                        value={`${totalUsage}`}
+                        note={tr(S.kpiUnitTurns, locale)}
+                        tone="violet"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiConflicts, locale)}
+                        value={`${conflicts.length}`}
+                        note={tr(S.kpiUnitWarnings, locale)}
+                        tone={conflicts.length > 0 ? 'rose' : 'slate'}
+                    />
+                </MetricStrip>
             </div>
 
-            {/* TAB 1: Standalone High-Density Datatable View (100% Today Parity) */}
+            {/* TAB 1: bảng danh sách — dùng `DataGrid` (bọc `DataTable` cho
+                diện mạo CMS phẳng, không shadow/rounded-lg riêng). */}
             {activeTab === 'list' && (
-                <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                    <DataTable
+                <div className="flex w-full flex-1 flex-col min-h-0 overflow-hidden">
+                    <DataGrid<Promotion>
                         caption={tr(S.promotions, locale)}
                         columns={columns}
                         rows={pageRows}
@@ -406,14 +425,14 @@ export default function PromotionsPage() {
                     />
 
                     {filtered.length > 0 && (
-                        <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0">
+                        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2.5 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] shrink-0">
                             <span>
                                 {tr(S.showing, locale)}{' '}
-                                <strong className="text-slate-900 font-semibold">
+                                <strong className="font-semibold text-[var(--cms-text)]">
                                     {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}
                                 </strong>{' '}
                                 {tr(S.of, locale)}{' '}
-                                <strong className="text-slate-900 font-semibold">{filtered.length}</strong>{' '}
+                                <strong className="font-semibold text-[var(--cms-text)]">{filtered.length}</strong>{' '}
                                 {tr(S.promotions, locale)}
                             </span>
 
@@ -422,18 +441,18 @@ export default function PromotionsPage() {
                                     type="button"
                                     disabled={safePage === 1}
                                     onClick={() => setPage(safePage - 1)}
-                                    className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 py-1 font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                                 >
                                     ← {tr(S.paginationPrev, locale)}
                                 </button>
-                                <span className="px-2 font-semibold text-slate-700">
+                                <span className="px-2 font-semibold text-[var(--cms-text)]">
                                     {safePage} / {totalPages}
                                 </span>
                                 <button
                                     type="button"
                                     disabled={safePage === totalPages}
                                     onClick={() => setPage(safePage + 1)}
-                                    className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2.5 py-1 font-medium text-[var(--cms-text)] transition-colors hover:bg-[var(--cms-bg-subtle)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                                 >
                                     {tr(S.paginationNext, locale)} →
                                 </button>
@@ -445,9 +464,11 @@ export default function PromotionsPage() {
 
             {/* TAB 2: Dedicated Calculation & Engine Mechanics View - Side-by-Side Single Screen */}
             {activeTab === 'calc' && (
-                <div className="w-full flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
-                    {/* Left Column (5 Cols): Formulas, Rules & Priority Order */}
-                    <div className="lg:col-span-5 flex flex-col space-y-2.5 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+                <div className="grid w-full flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden p-3 lg:grid-cols-12">
+                    {/* Cột trái (5/12): công thức, cảnh báo xung đột, thứ tự
+                        áp dụng — không phải bảng dữ liệu nên KHÔNG dùng
+                        `DataGrid`, giữ layout 2 cột đặc thù của màn này. */}
+                    <div className="custom-scrollbar flex min-h-0 flex-col space-y-2.5 overflow-y-auto pr-1 lg:col-span-5">
                         <HowItWorks />
 
                         {conflicts.length > 0 && (
@@ -457,8 +478,9 @@ export default function PromotionsPage() {
                         <ApplyOrder promotions={promotions.filter((p) => p.active)} />
                     </div>
 
-                    {/* Right Column (7 Cols): Live Formula Engine Price Calculator */}
-                    <div className="lg:col-span-7 flex flex-col min-h-0 overflow-y-auto custom-scrollbar pr-1">
+                    {/* Cột phải (7/12): công cụ xem trước cách tính, chạy
+                        đúng engine thật qua `buildQuote()`. */}
+                    <div className="custom-scrollbar flex min-h-0 flex-col overflow-y-auto pr-1 lg:col-span-7">
                         <PreviewCalculator />
                     </div>
                 </div>
@@ -499,83 +521,106 @@ function CalculationInfoModal({
     return (
         <Modal
             open={true}
-            title={`ℹ️ ${tr(S.formulaAndCalcDetails, locale)}: ${pick(promotion.name, locale)}`}
+            title={`${tr(S.formulaAndCalcDetails, locale)}: ${pick(promotion.name, locale)}`}
             onClose={onClose}
         >
-            <div className="space-y-4 text-xs text-slate-700">
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
+            <div className="space-y-4 text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                <div className="flex items-center justify-between rounded-[var(--cms-radius)] border border-[var(--cms-tone-amber-dot)] bg-[var(--cms-tone-amber-bg)] p-3">
                     <div>
-                        <div className="font-bold text-amber-900 text-sm">{pick(promotion.name, locale)}</div>
-                        <div className="font-mono text-amber-800 font-semibold mt-0.5">
+                        <div className="text-[length:var(--cms-text-title)] font-semibold text-[var(--cms-tone-amber)]">
+                            {pick(promotion.name, locale)}
+                        </div>
+                        <div className="mt-0.5 font-mono font-semibold text-[var(--cms-tone-amber)]">
                             {tr(S.codeLabel, locale)}: {promotion.code || tr(S.automatic, locale)}
                         </div>
                     </div>
-                    <span className={`px-2.5 py-1 text-xs font-semibold rounded border ${promotion.active ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
-                        {promotion.active ? tr(S.active, locale) : tr(S.disabled, locale)}
-                    </span>
+                    <DotBadge
+                        tone={promotion.active ? 'emerald' : 'slate'}
+                        label={promotion.active ? tr(S.active, locale) : tr(S.disabled, locale)}
+                    />
                 </div>
 
-                {/* Formula Breakdown */}
-                <div className="bg-white p-3 border border-slate-200 rounded-lg space-y-2">
-                    <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] border-b pb-1">
-                        1. Công thức giảm giá ({tr(PROMO_TYPE_LABEL[promotion.type], locale)})
+                {/* Công thức giảm giá */}
+                <div className="space-y-2 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3">
+                    <h4 className="border-b border-[var(--cms-border)] pb-1 text-[length:var(--cms-text-label)] font-bold uppercase tracking-wider text-[var(--cms-text)]">
+                        {tr(S.formulaBreakdownTitle, locale)} ({tr(PROMO_TYPE_LABEL[promotion.type], locale)})
                     </h4>
-                    <p className="text-slate-600 font-medium">
+                    <p className="font-medium text-[var(--cms-text-muted)]">
                         {describeValue(promotion, locale)}
                     </p>
-                    <div className="p-2 bg-slate-50 border border-slate-200 rounded text-slate-700 font-mono text-[11px]">
+                    <div className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-2 font-mono text-[length:var(--cms-text-meta)] text-[var(--cms-text)]">
                         {tr(PROMO_TYPE_HINT[promotion.type], locale)}
                     </div>
                 </div>
 
-                {/* Stacking & Priority Rules */}
-                <div className="bg-white p-3 border border-slate-200 rounded-lg space-y-2">
-                    <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] border-b pb-1">
-                        2. Quy tắc thứ tự & Cộng dồn (Priority & Stacking)
+                {/* Quy tắc thứ tự & cộng dồn */}
+                <div className="space-y-2 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3">
+                    <h4 className="border-b border-[var(--cms-border)] pb-1 text-[length:var(--cms-text-label)] font-bold uppercase tracking-wider text-[var(--cms-text)]">
+                        {tr(S.stackingRulesTitle, locale)}
                     </h4>
                     <div className="grid grid-cols-2 gap-2">
-                        <div className="p-2 bg-slate-50 rounded border border-slate-200">
-                            <span className="text-slate-500 font-medium block">Thứ tự ưu tiên:</span>
-                            <span className="font-bold text-slate-900">Độ ưu tiên #{promotion.priority}</span>
+                        <div className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-2">
+                            <span className="block font-medium text-[var(--cms-text-muted)]">
+                                {tr(S.priorityOrderLabel, locale)}:
+                            </span>
+                            <span className="font-bold text-[var(--cms-text)]">
+                                {tr(S.priorityValueLabel, locale).replace('{value}', String(promotion.priority))}
+                            </span>
                         </div>
-                        <div className="p-2 bg-slate-50 rounded border border-slate-200">
-                            <span className="text-slate-500 font-medium block">Chế độ cộng dồn:</span>
-                            <span className={`font-bold ${promotion.stackable ? 'text-emerald-700' : 'text-amber-700'}`}>
+                        <div className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-2">
+                            <span className="block font-medium text-[var(--cms-text-muted)]">
+                                {tr(S.stackingModeLabel, locale)}:
+                            </span>
+                            <span
+                                className={`font-bold ${
+                                    promotion.stackable ? 'text-[var(--cms-tone-emerald)]' : 'text-[var(--cms-tone-amber)]'
+                                }`}
+                            >
                                 {promotion.stackable ? tr(S.stackable, locale) : tr(S.exclusive, locale)}
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Conditions */}
-                <div className="bg-white p-3 border border-slate-200 rounded-lg space-y-2">
-                    <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px] border-b pb-1">
-                        3. Điều kiện áp dụng (Conditions)
+                {/* Điều kiện áp dụng */}
+                <div className="space-y-2 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3">
+                    <h4 className="border-b border-[var(--cms-border)] pb-1 text-[length:var(--cms-text-label)] font-bold uppercase tracking-wider text-[var(--cms-text)]">
+                        {tr(S.conditionsAppliedTitle, locale)}
                     </h4>
-                    <ul className="list-disc pl-4 space-y-1 text-slate-600">
+                    <ul className="list-disc space-y-1 pl-4 text-[var(--cms-text-muted)]">
                         <li>
-                            Khung ngày ở: {promotion.conditions.stayFrom || promotion.conditions.stayTo ? `${promotion.conditions.stayFrom ?? '…'} ${tr(S.to, locale)} ${promotion.conditions.stayTo ?? '…'}` : tr(S.allDates, locale)}
+                            {tr(S.stayWindowConditionLabel, locale)}:{' '}
+                            {promotion.conditions.stayFrom || promotion.conditions.stayTo
+                                ? `${promotion.conditions.stayFrom ?? '…'} ${tr(S.to, locale)} ${promotion.conditions.stayTo ?? '…'}`
+                                : tr(S.allDates, locale)}
                         </li>
                         {promotion.conditions.minNights && (
-                            <li>Yêu cầu số đêm tối thiểu: <strong>{promotion.conditions.minNights} đêm</strong></li>
+                            <li>
+                                {tr(S.minNightsRequiredLabel, locale)}:{' '}
+                                <strong>
+                                    {promotion.conditions.minNights} {tr(S.nightsUnit, locale)}
+                                </strong>
+                            </li>
                         )}
                         {promotion.conditions.minAmount && (
-                            <li>Giá trị đơn tối thiểu: <strong>{formatPrice(promotion.conditions.minAmount, locale)}</strong></li>
+                            <li>
+                                {tr(S.minAmountRequiredLabel, locale)}:{' '}
+                                <strong>{formatPrice(promotion.conditions.minAmount, locale)}</strong>
+                            </li>
                         )}
                         {promotion.usageLimit && (
-                            <li>Giới hạn số lần dùng: <strong>{promotion.usageCount} / {promotion.usageLimit} lượt</strong></li>
+                            <li>
+                                {tr(S.usageLimitReachedLabel, locale)}:{' '}
+                                <strong>
+                                    {promotion.usageCount} / {promotion.usageLimit} {tr(S.turnsUnit, locale)}
+                                </strong>
+                            </li>
                         )}
                     </ul>
                 </div>
 
                 <div className="flex justify-end pt-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-md shadow-sm transition-colors"
-                    >
-                        {tr(S.close, locale)}
-                    </button>
+                    <Button onClick={onClose}>{tr(S.close, locale)}</Button>
                 </div>
             </div>
         </Modal>
@@ -597,38 +642,37 @@ function HowItWorks() {
     ]
 
     return (
-        <section className="bg-white rounded-lg border border-slate-200 shadow-sm p-3 space-y-2">
+        <section className="space-y-2 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3">
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
                 aria-expanded={open}
-                className="w-full flex items-center justify-between text-xs font-bold text-slate-900 hover:text-amber-600 transition-colors"
+                className="flex w-full items-center justify-between text-[length:var(--cms-text-body)] font-bold text-[var(--cms-text)] transition-colors hover:text-[var(--cms-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
             >
-                <span className="flex items-center gap-1.5">
-                    <span>💡</span>
-                    <span>
-                        {pick(
-                            {
-                                vi: 'Quy tắc thuật toán tính khuyến mãi',
-                                en: 'Promotion Calculation Rules',
-                            },
-                            locale,
-                        )}
-                    </span>
+                <span>
+                    {pick(
+                        {
+                            vi: 'Quy tắc thuật toán tính khuyến mãi',
+                            en: 'Promotion Calculation Rules',
+                        },
+                        locale,
+                    )}
                 </span>
-                <span className="text-slate-400 text-sm font-mono">{open ? '▾' : '▸'}</span>
+                <span className="font-mono text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                    {open ? '▾' : '▸'}
+                </span>
             </button>
 
             {open && (
-                <div className="space-y-2 text-xs text-slate-700 pt-1">
-                    <ol className="list-decimal pl-4 space-y-1 text-slate-600 font-medium">
+                <div className="space-y-2 pt-1 text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                    <ol className="list-decimal space-y-1 pl-4 font-medium text-[var(--cms-text-muted)]">
                         {steps.map((step, i) => (
                             <li key={i}>{step}</li>
                         ))}
                     </ol>
 
-                    <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-md text-[11px]">
-                        <strong className="text-slate-900 block font-semibold">
+                    <div className="rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-2.5 text-[length:var(--cms-text-meta)]">
+                        <strong className="block font-semibold text-[var(--cms-text)]">
                             {pick(
                                 {
                                     vi: 'Ví dụ tính phép nhân cộng dồn (1.000.000đ, 10% + 20%):',
@@ -637,11 +681,11 @@ function HowItWorks() {
                                 locale,
                             )}
                         </strong>
-                        <div className="mt-1 font-mono space-y-0.5">
-                            <div className="text-rose-600">
+                        <div className="mt-1 space-y-0.5 font-mono">
+                            <div className="text-[var(--cms-tone-rose)]">
                                 ✗ Cộng dồn %: 1.000.000 × 30% = giảm 300.000đ
                             </div>
-                            <div className="text-emerald-700 font-bold">
+                            <div className="font-bold text-[var(--cms-tone-emerald)]">
                                 ✓ Nhân nối tiếp: 1.000.000 × 0.9 × 0.8 = 720.000đ (Giảm 280.000đ)
                             </div>
                         </div>
@@ -668,37 +712,24 @@ function ConflictWarnings({
     }
 
     return (
-        <section
-            style={{
-                background: 'var(--warning-bg)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-lg)',
-                padding: 'var(--space-5)',
-            }}
-        >
-            <h2
-                style={{
-                    margin: '0 0 var(--space-3)',
-                    fontSize: 'var(--text-base)',
-                    color: 'var(--warning)',
-                }}
-            >
+        <InlineAlert tone="amber">
+            <h2 className="mb-2 font-bold">
                 {tr(S.conflictWarning, locale)} ({conflicts.length})
             </h2>
-            <ul style={{ margin: 0, paddingLeft: 'var(--space-6)', display: 'grid', gap: 'var(--space-3)' }}>
+            <ul className="m-0 grid list-disc gap-2 pl-5">
                 {conflicts.map((conflict, i) => (
-                    <li key={i} style={{ fontSize: 'var(--text-sm)', lineHeight: 1.6 }}>
+                    <li key={i} className="leading-relaxed">
                         <strong>
                             {nameOf(conflict.a)} ↔ {nameOf(conflict.b)}
                         </strong>
-                        <div style={{ color: 'var(--text-muted)' }}>
+                        <div>
                             {conflict.kind === 'both-exclusive'
                                 ? tr(S.conflictBothExclusive, locale)
                                 : tr(S.conflictSamePriority, locale)}
                             {conflict.winnerId && (
                                 <>
                                     {' '}
-                                    <strong style={{ color: 'var(--text)' }}>
+                                    <strong>
                                         {tr(S.winnerIs, locale)}: {nameOf(conflict.winnerId)}
                                     </strong>{' '}
                                     (
@@ -716,7 +747,7 @@ function ConflictWarnings({
                     </li>
                 ))}
             </ul>
-        </section>
+        </InlineAlert>
     )
 }
 
@@ -729,44 +760,24 @@ function ApplyOrder({ promotions }: { promotions: Promotion[] }) {
     if (ordered.length === 0) return null
 
     return (
-        <section
-            style={{
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-lg)',
-                padding: 'var(--space-5)',
-            }}
-        >
-            <h2 style={{ margin: '0 0 var(--space-4)', fontSize: 'var(--text-base)', fontFamily: 'var(--font-display)' }}>
+        <section className="rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3">
+            <h2 className="mb-3 text-[length:var(--cms-text-body)] font-bold text-[var(--cms-text)]">
                 {tr(S.applyOrder, locale)}
             </h2>
-            <ol
-                style={{
-                    display: 'flex',
-                    gap: 'var(--space-2)',
-                    flexWrap: 'wrap',
-                    margin: 0,
-                    padding: 0,
-                    listStyle: 'none',
-                    alignItems: 'center',
-                }}
-            >
+            <ol className="m-0 flex list-none flex-wrap items-center gap-2 p-0">
                 {ordered.map((promo, index) => (
-                    <li key={promo.id} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                        {index > 0 && <span style={{ color: 'var(--text-muted)' }}>→</span>}
+                    <li key={promo.id} className="flex items-center gap-2">
+                        {index > 0 && <span className="text-[var(--cms-text-muted)]">→</span>}
                         <span
-                            style={{
-                                padding: 'var(--space-2) var(--space-3)',
-                                background: promo.stackable ? 'var(--surface-tint)' : 'var(--warning-bg)',
-                                border: `1px solid ${promo.stackable ? 'var(--border)' : 'var(--warning)'}`,
-                                borderRadius: 'var(--radius)',
-                                fontSize: 'var(--text-xs)',
-                                whiteSpace: 'nowrap',
-                            }}
+                            className={`whitespace-nowrap rounded-[var(--cms-radius)] border px-3 py-2 text-[length:var(--cms-text-meta)] ${
+                                promo.stackable
+                                    ? 'border-[var(--cms-border)] bg-[var(--cms-bg-subtle)]'
+                                    : 'border-[var(--cms-tone-amber-dot)] bg-[var(--cms-tone-amber-bg)]'
+                            }`}
                         >
                             <strong>{promo.priority}</strong> · {pick(promo.name, locale)}
                             {!promo.stackable && (
-                                <span style={{ color: 'var(--warning)' }}>
+                                <span className="text-[var(--cms-tone-amber)]">
                                     {' '}
                                     ({pick({ vi: 'độc quyền', en: 'exclusive' }, locale)})
                                 </span>
@@ -819,20 +830,20 @@ function PreviewCalculator() {
     const rejected = quote?.promotion.evaluations.filter((e) => !e.eligible) ?? []
 
     return (
-        <section className="bg-white rounded-lg border border-slate-200 shadow-sm p-3.5 space-y-3 flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
+        <section className="custom-scrollbar flex flex-1 flex-col space-y-3 overflow-y-auto rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-3.5">
             <div>
-                <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>🧮</span>
+                <h2 className="flex items-center gap-1.5 text-[length:var(--cms-text-label)] font-bold uppercase tracking-wider text-[var(--cms-text)]">
+                    <GridIcon size={14} />
                     <span>{tr(S.previewTitle, locale)}</span>
                 </h2>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="mt-0.5 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                     {tr(S.previewHint, locale)}
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 flex-1 min-h-0">
+            <div className="grid flex-1 grid-cols-1 gap-3 md:grid-cols-12 min-h-0">
                 {/* Inputs Form */}
-                <div className="md:col-span-5 bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-2.5 shrink-0 self-start">
+                <div className="shrink-0 space-y-2.5 self-start rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-2.5 md:col-span-5">
                     <SelectField
                         label={tr(S.roomType, locale)}
                         value={roomTypeId}
@@ -879,30 +890,26 @@ function PreviewCalculator() {
                 </div>
 
                 {/* Calculation Engine Result Output */}
-                <div className="md:col-span-7 bg-slate-50 p-3 rounded-lg border border-slate-200 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+                <div className="custom-scrollbar flex flex-col justify-between overflow-y-auto rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] p-3 md:col-span-7">
                     {quote ? (
                         <div className="space-y-3">
                             <PriceBreakdown quote={quote} locale={locale} explainPromotions />
 
                             {rejected.length > 0 && (
-                                <div className="pt-2.5 border-t border-slate-200">
-                                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                                        {pick(
-                                            {
-                                                vi: 'Khuyến mãi không đủ điều kiện',
-                                                en: 'Promotions not applied',
-                                            },
-                                            locale,
-                                        )}
+                                <div className="border-t border-[var(--cms-border)] pt-2.5">
+                                    <div className="mb-1.5 text-[length:var(--cms-text-label)] font-bold uppercase tracking-wider text-[var(--cms-text-muted)]">
+                                        {tr(S.promosNotAppliedLabel, locale)}
                                     </div>
                                     <ul className="space-y-1">
                                         {rejected.map((item) => (
                                             <li
                                                 key={item.promotion.id}
-                                                className="flex items-center justify-between text-[11px] text-slate-600 bg-white px-2 py-1 rounded border border-slate-200"
+                                                className="flex items-center justify-between rounded-[var(--cms-radius-sm)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-2 py-1 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]"
                                             >
-                                                <span className="font-medium text-slate-800">{pick(item.promotion.name, locale)}</span>
-                                                <span className="text-[10px] font-semibold text-rose-600">
+                                                <span className="font-medium text-[var(--cms-text)]">
+                                                    {pick(item.promotion.name, locale)}
+                                                </span>
+                                                <span className="font-semibold text-[var(--cms-tone-rose)]">
                                                     {item.reason
                                                         ? tr(REJECT_REASON_LABEL[item.reason], locale)
                                                         : ''}
@@ -914,7 +921,7 @@ function PreviewCalculator() {
                             )}
                         </div>
                     ) : (
-                        <p className="text-xs text-slate-500 italic">
+                        <p className="italic text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                             {tr(S.selectRoomPreview, locale)}
                         </p>
                     )}

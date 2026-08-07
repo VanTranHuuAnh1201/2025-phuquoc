@@ -267,6 +267,15 @@ export function SearchIcon({ size = 18 }: IconProps) {
     )
 }
 
+export function InfoIcon({ size = 18 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5M12 8h.01" />
+        </svg>
+    )
+}
+
 export function CoinsIcon({ size = 20 }: IconProps) {
     return (
         <svg {...svgProps(size)}>
