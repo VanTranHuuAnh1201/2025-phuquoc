@@ -695,7 +695,7 @@ export const S = {
 
     // ------------------------------------------------- CMS: dashboard /admin
     dashboardKicker: t('VẬN HÀNH — HÔM NAY', 'OPERATIONS — TODAY'),
-    dashboardTitle: t('Tổng quan vận hành', 'Operations overview'),
+    dashboardTitle: t('Tổng quan hôm nay', "Today's overview"),
     matchingBookings: t('phòng/đơn khớp điều kiện', 'bookings match the filters'),
     shiftFilterLabel: t('CA TRỰC', 'SHIFT'),
     shiftAll: t('Tất cả', 'All'),
@@ -706,9 +706,9 @@ export const S = {
     segmentBungalow: t('Bungalow', 'Bungalow'),
     segmentDeluxe: t('Deluxe', 'Deluxe'),
     kpiOccupancyRate: t('CÔNG SUẤT PHÒNG', 'OCCUPANCY RATE'),
-    kpiCheckInToday: t('CHECK-IN HÔM NAY', 'CHECK-IN TODAY'),
-    kpiCheckOutToday: t('CHECK-OUT HÔM NAY', 'CHECK-OUT TODAY'),
-    kpiPendingDeposit: t('CHỜ DUYỆT CỌC', 'AWAITING DEPOSIT'),
+    kpiCheckInToday: t('KHÁCH NHẬN PHÒNG', 'GUESTS ARRIVING'),
+    kpiCheckOutToday: t('KHÁCH TRẢ PHÒNG', 'GUESTS DEPARTING'),
+    kpiPendingDeposit: t('CHỜ XÁC NHẬN CỌC', 'AWAITING DEPOSIT CONFIRMATION'),
     kpiUnitSuffix: t('lượt', 'stays'),
     kpiOrderSuffix: t('đơn', 'bookings'),
     expectedBeforeNoon: t('Dự kiến trước 12:00', 'Expected before 12:00'),
@@ -722,7 +722,7 @@ export const S = {
         'Lịch mở/khoá phòng theo từng mốc giờ và ngày. Hỗ trợ kéo thả đổi phòng trực tiếp.',
         'Open/block schedule per room per day. Drag-and-drop room swaps.',
     ),
-    tabAllRooms: t('Tất cả phòng', 'All rooms'),
+    tabAllRooms: t('Toàn bộ đơn', 'All bookings'),
     tabArrivalsToday: t('Check-in hôm nay', 'Arrivals today'),
     tabPendingDeposit: t('Chờ cọc', 'Awaiting deposit'),
     newBookingCta: t('+ Đặt phòng mới', '+ New booking'),
@@ -742,13 +742,27 @@ export const S = {
         'Chưa có hoạt động nào hôm nay. Hoạt động sẽ hiện ở đây khi có đơn được duyệt cọc, check-in hoặc check-out.',
         'No activity yet today. Activity will appear here once a deposit is approved, or a guest checks in or out.',
     ),
+    // Khác `noActivityToday`: đây là khi CHƯA TỪNG có log nào (store rỗng),
+    // không phải "không có gì hôm nay". Gộp chung sẽ khiến admin nghĩ hôm qua
+    // có hoạt động mà hôm nay không — sai sự thật khi store trống hoàn toàn.
+    noActivityEver: t(
+        'Chưa có hoạt động nào được ghi nhận. Nhật ký sẽ xuất hiện khi có đơn đầu tiên.',
+        'No activity has been logged yet. The log will fill in once the first booking happens.',
+    ),
+    // Phân biệt "chưa có dữ liệu" (store rỗng — bấm Đặt lại vô ích) với
+    // "bộ lọc không khớp" (`emptyFilterBookings` — bấm Đặt lại thì ra kết
+    // quả). Gộp chung dẫn admin đi sai hướng khi bảng trống vì CHƯA CÓ đơn.
+    noBookingsAtAll: t(
+        'Chưa có đơn đặt phòng nào. Đơn sẽ hiện ở đây khi khách đặt trên website hoặc lễ tân tạo tại quầy.',
+        'No bookings yet. Bookings will appear here once a guest books online or reception creates one at the desk.',
+    ),
 } satisfies Record<string, I18nText>
 
 // ============================================================== bảng tra mã
 
 export const STATUS_LABEL: Record<BookingStatus, I18nText> = {
     pending_payment: t('Chờ thanh toán', 'Awaiting payment'),
-    confirmed: t('Đã xác nhận', 'Confirmed'),
+    confirmed: t('Đã cọc — chờ nhận', 'Deposit paid — awaiting arrival'),
     checked_in: t('Đang lưu trú', 'Checked in'),
     checked_out: t('Đã trả phòng', 'Checked out'),
     cancelled: t('Đã huỷ', 'Cancelled'),

@@ -120,4 +120,14 @@
 
 [data-cms] .dt-table td {
     height: var(--cms-row-h);
+    /* `!important` BẮT BUỘC ở đây: `DataTable` ghi `padding: 8px 12px` bằng
+     * inline style (không phải class), và inline style luôn thắng bất kỳ
+     * class/selector CSS nào bất kể độ đặc hiệu — chỉ `!important` mới ghi
+     * đè được. Đo bằng Playwright trước khi sửa: `height: 48px` ở trên
+     * KHÔNG có tác dụng vì `padding-block: 8px` + line-height nội dung vẫn
+     * đẩy hàng lên 69px (padding cộng thêm ngoài height khai báo, vì `td`
+     * không phải `box-sizing: border-box` trong ngữ cảnh này). Giảm padding
+     * dọc xuống 4px thì 4+4+40(dòng 2 tầng chữ ở ô "khách & SĐT")≈48px, khớp
+     * token `--cms-row-h`. */
+    padding: 4px 12px !important;
 }

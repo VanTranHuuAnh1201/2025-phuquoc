@@ -44,8 +44,8 @@ const NAV_SECTIONS: NavSection[] = [
         title: 'OPERATIONS',
         items: [
             { href: '/admin', label: 'Dashboard', icon: <GridIcon size={20} /> },
-            { href: '/admin/orders', label: 'Quản lý Đơn hàng', icon: <FileTextIcon size={20} />, permission: 'booking.view.all' },
-            { href: '/admin/inventory', label: 'Tồn kho & Giá', icon: <CalendarIcon size={20} />, permission: 'inventory.view' },
+            { href: '/admin/orders', label: 'Đặt phòng', icon: <FileTextIcon size={20} />, permission: 'booking.view.all' },
+            { href: '/admin/inventory', label: 'Phòng trống & Giá', icon: <CalendarIcon size={20} />, permission: 'inventory.view' },
             { href: '/admin/housekeeping', label: 'Buồng phòng', icon: <BedIcon size={20} /> },
             { href: '/admin/customers', label: 'Khách hàng (CRM)', icon: <UsersIcon size={20} />, permission: 'booking.view.all' },
         ],
@@ -164,15 +164,11 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 </Link>
             }
             headerRight={
-                <div className="flex items-center gap-2.5">
-                    {/* CTA chính */}
-                    <button
-                        type="button"
-                        onClick={() => router.push('/admin/orders/new')}
-                        className="flex items-center gap-1 py-1.5 px-3 bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white font-semibold text-[length:var(--cms-text-body)] rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        <span>+ Đặt phòng mới</span>
-                    </button>
+                <>
+                    {/* CTA "+ Đặt phòng mới" đã BỎ khỏi header (fix round 1, mục 2):
+                        nó lặp lại y hệt nút trong `PageHeaderBar` của từng trang, hai
+                        CTA cùng cấp cách nhau ~100px dọc vi phạm P10 (mỗi section
+                        không quá 1 CTA chính). Giữ đúng một bản trong `PageHeaderBar`. */}
 
                     {/* Chuyển ngôn ngữ */}
                     <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)]">
@@ -193,23 +189,20 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                         ))}
                     </div>
 
-                    {/* Dropdown người dùng — hiện vai trò THẬT, không phải role switcher giả */}
+                    {/* Khối user chỉ còn AVATAR ICON (fix round 1, mục 3) — tên đầy
+                        đủ + vai trò chuyển hẳn vào dropdown, không chiếm chỗ ngang
+                        trên header nữa. */}
                     <div className="relative" ref={dropdownRef}>
                         <button
                             type="button"
                             onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                            className="flex items-center gap-2 py-1 px-1.5 rounded-[var(--cms-radius)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                            aria-haspopup="true"
+                            aria-expanded={userDropdownOpen}
+                            aria-label={`${user.fullName || 'Admin User'} — ${roleLabel}`}
+                            className="flex items-center justify-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            <div className="w-6 h-6 rounded-full bg-[var(--cms-accent)] text-white flex items-center justify-center font-bold text-[length:var(--cms-text-meta)] shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-[var(--cms-accent)] text-white flex items-center justify-center font-bold text-[length:var(--cms-text-body)] shrink-0">
                                 {userInitial}
-                            </div>
-                            <div className="hidden sm:block text-left min-w-0">
-                                <div className="text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)] truncate leading-tight">
-                                    {user.fullName || 'Admin User'}
-                                </div>
-                                <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] truncate leading-tight">
-                                    {roleLabel}
-                                </div>
                             </div>
                         </button>
 
@@ -247,7 +240,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                             </div>
                         )}
                     </div>
-                </div>
+                </>
             }
         >
             {children}

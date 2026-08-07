@@ -372,7 +372,11 @@ export default function AdminDashboard() {
                                 }}
                                 empty={
                                     <div className="py-8 text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
-                                        {tr(S.emptyFilterBookings, locale)}
+                                        {/* Phân biệt "chưa có đơn nào" (store rỗng — bấm Đặt lại
+                                            vô ích) với "bộ lọc không khớp" (đổi bộ lọc thì ra kết
+                                            quả). Gộp chung dẫn admin đi sai hướng (fix round 1
+                                            mục 7). */}
+                                        {tr(bookings.length === 0 ? S.noBookingsAtAll : S.emptyFilterBookings, locale)}
                                     </div>
                                 }
                             />
@@ -405,7 +409,10 @@ export default function AdminDashboard() {
                     <div className="flex-1 overflow-y-auto px-2 py-2">
                         {todayActivities.length === 0 ? (
                             <p className="p-3 text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
-                                {tr(S.noActivityToday, locale)}
+                                {/* Cùng nguyên tắc với bảng đơn: log RỖNG HOÀN TOÀN (chưa
+                                    từng có hoạt động) khác với "không có gì HÔM NAY" (có log
+                                    cũ, chỉ là không log nào rơi vào hôm nay). */}
+                                {tr(logs.length === 0 ? S.noActivityEver : S.noActivityToday, locale)}
                             </p>
                         ) : (
                             <div className="space-y-1">
