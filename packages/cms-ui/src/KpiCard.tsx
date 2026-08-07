@@ -52,13 +52,16 @@ export function KpiCard({
     onClick,
 }: KpiCardProps) {
     const Element = onClick ? 'button' : 'div'
-    const accentClass = selected ? `border-b-2 ${TONE_UNDERLINE[tone]}` : ''
+    // Viền dưới LUÔN chiếm 2px trong box model (`border-b-2 border-b-transparent`
+    // mặc định), chỉ đổi MÀU khi `selected` bật/tắt — nếu không, bật/tắt
+    // `border-b-2` làm chiều cao ô nhảy 2px mỗi lần chọn (P12 — pixel quality).
+    const accentClass = selected ? TONE_UNDERLINE[tone] : 'border-b-transparent'
 
     return (
         <Element
             type={onClick ? 'button' : undefined}
             onClick={onClick}
-            className={`cms-kpi flex flex-col items-start justify-between p-4 text-left transition-colors [&:hover]:bg-[var(--cms-bg-subtle)] ${accentClass} ${onClick ? 'cursor-pointer' : ''}`}
+            className={`cms-kpi flex flex-col items-start justify-between p-4 text-left border-b-2 transition-colors [&:hover]:bg-[var(--cms-bg-subtle)] ${accentClass} ${onClick ? 'cursor-pointer' : ''}`}
         >
             {/* NHÃN */}
             <span className="mb-3 block text-[length:var(--cms-text-label)] font-semibold uppercase tracking-wide text-[var(--cms-text-muted)]">

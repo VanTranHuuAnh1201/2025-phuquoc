@@ -1,165 +1,133 @@
 'use client'
 
-import {
-    BedIcon,
-    CalendarIcon,
-    EyeIcon,
-    GridIcon,
-    PlusIcon,
-} from '@/components/icons'
-import { DataTable, useDataTable, type Column } from '@repo/ui'
+/**
+ * Dashboard `/admin` — màn đầu tiên lễ tân thấy khi mở CMS mỗi ca.
+ *
+ * Dùng bộ `@repo/cms-ui`: `PageHeaderBar` → `FilterBar` → `MetricStrip` →
+ * lưới 2 cột (`DataGrid` 2/3 · dòng sự kiện 1/3). Nền TRẮNG, phân tách bằng
+ * đường kẻ 1px — không còn `bg-slate-100`/card lồng card của bản cũ.
+ *
+ * Bốn chỗ bịa số của bản cũ đã bỏ hẳn (xem `task-6-report.md`):
+ * 1. `ACTIVITY_FEEDS` hardcode → đọc `ActivityLog` thật từ `booking.store`.
+ * 2. "▲ 12% vs tuần trước" → bỏ, chưa có dữ liệu tuần trước để so sánh.
+ * 3. "10/15 phòng sạch" → bỏ hẳn ô KPI, chưa có housekeeping store để nối.
+ * 4. `units[idx % units.length]` → bỏ cột "mã phòng vật lý": vi phạm B0,
+ *    `RoomUnit` chỉ được lễ tân gán lúc check-in, không suy ra từ vị trí mảng.
+ */
+
+import { EyeIcon, CalendarIcon } from '@/components/icons'
+import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
+import type { Column } from '@repo/ui'
+import { getPropertySync, pick, formatPrice } from '@repo/core'
+import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
+import { S, STATUS_LABEL, tr } from '@/strings'
 
-export interface BookingRowItem {
+/** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
+const STATUS_TONE_MAP: Record<BookingStatus, CmsTone> = {
+    pending_payment: 'amber',
+    confirmed: 'blue',
+    checked_in: 'emerald',
+    checked_out: 'slate',
+    cancelled: 'rose',
+    no_show: 'rose',
+    expired: 'slate',
+}
+
+/** Nhãn hành động của `ActivityLog` — chỉ những action thật sự xuất hiện ở
+ *  luồng hôm nay (duyệt cọc, check-in, check-out). Các action khác của cùng
+ *  đơn (huỷ, ghi chú…) không nằm trong phạm vi "vừa diễn ra" của dashboard. */
+const ACTIVITY_TITLE: Partial<Record<LogAction, { vi: string; en: string }>> = {
+    'payment-recorded': { vi: 'Duyệt cọc', en: 'Deposit approved' },
+    'checked-in': { vi: 'Check-in nhận phòng', en: 'Checked in' },
+    'checked-out': { vi: 'Check-out trả phòng', en: 'Checked out' },
+    'status-changed': { vi: 'Đổi trạng thái đơn', en: 'Status changed' },
+}
+
+interface BookingRow {
     id: string
     code: string
     guestName: string
     phone: string
-    roomType: string
-    unitNumber: string
-    channel: 'website' | 'walk_in' | 'ota' | 'phone'
+    roomTypeName: string
     channelLabel: string
     nights: number
     checkInDate: string
     checkOutDate: string
     totalAmount: number
     paidAmount: number
-    status: 'confirmed' | 'checked_in' | 'checked_out' | 'pending_payment' | 'cancelled'
-    statusLabel: string
-    creator: string
+    status: BookingStatus
 }
 
-const CHANNEL_LABELS: Record<string, string> = {
-    web: 'Website',
-    'walk-in': 'Walk-in',
-    ota: 'OTA',
-    phone: 'Hotline',
-}
-
-const CHANNEL_MAP: Record<string, 'website' | 'walk_in' | 'ota' | 'phone'> = {
-    web: 'website',
-    'walk-in': 'walk_in',
-    ota: 'ota',
-    phone: 'phone',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-    checked_in: 'Đang ở',
-    confirmed: 'Đã cọc',
-    pending_payment: 'Chờ cọc',
-    checked_out: 'Check-out',
-    cancelled: 'Đã hủy',
-    no_show: 'Vắng mặt',
-}
-
-const ROOM_TYPE_NAMES: Record<string, string> = {
-    'deluxe-ocean': 'Deluxe Ocean View',
-    'bungalow-hillside': 'Bungalow Hillside',
-    'villa-front-sea': 'Villa Front Sea',
-}
-
-interface ActivityLog {
-    id: string
-    time: string
-    title: string
-    subtitle: string
-}
-
-const ACTIVITY_FEEDS: ActivityLog[] = [
-    {
-        id: '1',
-        time: '09:40',
-        title: 'Lê Văn Tùng — Duyệt cọc VietQR',
-        subtitle: 'Chuyển khoản 1.200.000đ (#ND-39) · Villa Front Sea',
-    },
-    {
-        id: '2',
-        time: '11:05',
-        title: 'Bungalow 102 — Buồng phòng báo sạch',
-        subtitle: 'Đã dọn dẹp sẵn sàng bàn giao khách check-in',
-    },
-    {
-        id: '3',
-        time: '13:20',
-        title: 'Đoàn Thu Hà — Check-in nhận phòng',
-        subtitle: 'Đã giao chìa khóa Villa 01 · 2 đêm',
-    },
-    {
-        id: '4',
-        time: '14:10',
-        title: 'Bảo trì máy lạnh P.201',
-        subtitle: 'Kỹ thuật đã hoàn tất sửa chữa bộ lọc',
-    },
-]
+const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
 
 export default function AdminDashboard() {
-    const { bookings: rawBookings } = useBookingsData()
-    const { changeStatus } = useBookingStore()
+    const { locale } = useLocale()
+    const { bookings: rawBookings, roomUnits } = useBookingsData()
+    const logs = useBookingStore((s) => s.logs)
+    const changeStatus = useBookingStore((s) => s.changeStatus)
+    const property = getPropertySync()
 
-    const [activeViewMode, setActiveViewMode] = useState<'console' | 'timeline'>('console')
-    const [ownerFilter, setOwnerFilter] = useState<'everyone' | 'mine' | 'team'>('everyone')
-    const [segmentFilter, setSegmentFilter] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
-    const [selectedTab, setSelectedTab] = useState<'all' | 'pending' | 'arrivals' | 'departures'>('all')
+    const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
+    const [shift, setShift] = useState<'all' | 'morning' | 'afternoon'>('all')
+    const [segment, setSegment] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
+    const [tab, setTab] = useState<'all' | 'pending' | 'arrivals'>('all')
 
-    const [search, setSearch] = useState('')
+    const roomName = (id: string) => {
+        const room = property.rooms.find((r) => r.id === id)
+        return room ? pick(room.name, locale) : id
+    }
 
-    const bookings: BookingRowItem[] = useMemo(() => {
-        return rawBookings.map((b, idx) => {
-            const ch = CHANNEL_MAP[b.channel] || 'website'
-            const units = ['P.101', 'P.102', 'Villa 01', 'Bungalow 03', 'P.201']
-            const unitNumber = units[idx % units.length] || 'P.101'
-            return {
+    const bookings: BookingRow[] = useMemo(
+        () =>
+            rawBookings.map((b: Booking) => ({
                 id: b.id,
                 code: b.code,
-                guestName: b.guest?.fullName || 'Khách vãng lai',
-                phone: b.guest?.phone || 'N/A',
-                roomType: ROOM_TYPE_NAMES[b.roomTypeId] || b.roomTypeId,
-                unitNumber,
-                channel: ch,
-                channelLabel: CHANNEL_LABELS[b.channel] || 'Website',
+                guestName: b.guest?.fullName || pick({ vi: 'Khách vãng lai', en: 'Walk-in guest' }, locale),
+                phone: b.guest?.phone || '—',
+                roomTypeName: roomName(b.roomTypeId),
+                channelLabel: tr(
+                    { web: S.channelWeb, phone: S.channelPhone, 'walk-in': S.channelWalkIn, ota: S.channelOta }[
+                        b.channel
+                    ],
+                    locale,
+                ),
                 nights: b.nights || 1,
-                checkInDate: b.checkIn || '2026-08-07',
-                checkOutDate: b.checkOut || '2026-08-08',
+                checkInDate: b.checkIn,
+                checkOutDate: b.checkOut,
                 totalAmount: b.totalAmount || 0,
-                paidAmount: b.depositAmount || (b.status === 'confirmed' || b.status === 'checked_in' ? b.totalAmount * 0.5 : 0),
-                status: (b.status as any) || 'confirmed',
-                statusLabel: STATUS_LABELS[b.status] || b.status,
-                creator: b.channel === 'web' ? 'Khách tự đặt' : 'Lễ tân',
-            }
-        })
-    }, [rawBookings])
+                paidAmount: b.paidAmount || 0,
+                status: b.status,
+            })),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [rawBookings, locale],
+    )
 
-    const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
+    const filteredData = bookings.filter((item) => {
+        if (tab === 'pending' && item.status !== 'pending_payment') return false
+        if (tab === 'arrivals' && item.status !== 'confirmed') return false
+        if (segment !== 'all') {
+            const matchesSegment = item.roomTypeName.toLowerCase().includes(segment)
+            if (!matchesSegment) return false
+        }
+        return true
+    })
 
-    const columns: Column<BookingRowItem>[] = [
-        {
-            key: 'unitNumber',
-            header: 'MÃ PHÒNG & KÊNH',
-            width: '140px',
-            cell: (row) => (
-                <div>
-                    <span className="font-semibold text-xs text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                        {row.unitNumber}
-                    </span>
-                    <div className="mt-1 text-[10px] text-slate-500">
-                        {row.channelLabel}
-                    </div>
-                </div>
-            ),
-        },
+    const columns: Column<BookingRow>[] = [
         {
             key: 'guestName',
-            header: 'KHÁCH HÀNG & SĐT',
+            header: tr(S.colGuestPhone, locale),
             sortable: true,
             cell: (row) => (
                 <div>
-                    <div className="font-semibold text-slate-900 text-xs">
+                    <div className="font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]">
                         {row.guestName}
                     </div>
-                    <div className="text-[11px] text-slate-500 font-mono">
+                    <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono">
                         {row.code} · {row.phone}
                     </div>
                 </div>
@@ -167,48 +135,43 @@ export default function AdminDashboard() {
         },
         {
             key: 'roomType',
-            header: 'HẠNG PHÒNG',
+            header: tr(S.colRoomTypeNights, locale),
             cell: (row) => (
                 <div>
-                    <div className="text-slate-800 text-xs">{row.roomType}</div>
-                    <div className="text-[10px] text-slate-500">{row.nights} đêm ({row.checkInDate})</div>
+                    <div className="text-[var(--cms-text)] text-[length:var(--cms-text-body)]">
+                        {row.roomTypeName}
+                    </div>
+                    <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                        {row.nights} {tr(S.nights, locale)} ({row.checkInDate})
+                    </div>
                 </div>
             ),
         },
         {
             key: 'status',
-            header: 'TRẠNG THÁI',
-            width: '130px',
-            cell: (row) => {
-                const statusStyles: Record<string, string> = {
-                    checked_in: 'bg-blue-50 text-blue-700 border-blue-200 font-medium',
-                    confirmed: 'bg-slate-100 text-slate-800 border-slate-300 font-medium',
-                    pending_payment: 'bg-amber-50 text-amber-800 border-amber-200 font-medium',
-                    checked_out: 'bg-slate-50 text-slate-600 border-slate-200',
-                    cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-center px-2 py-0.5 text-xs border rounded w-full text-center ${statusStyles[row.status] || 'bg-slate-100'}`}>
-                        {row.statusLabel}
-                    </span>
-                )
-            },
+            header: tr(S.status, locale),
+            width: '150px',
+            cell: (row) => (
+                <DotBadge tone={STATUS_TONE_MAP[row.status]} label={tr(STATUS_LABEL[row.status], locale)} width={120} />
+            ),
         },
         {
             key: 'totalAmount',
-            header: 'TỔNG TIỀN / CÒN THIẾU',
+            header: tr(S.colTotalBalance, locale),
             sortable: true,
             align: 'right',
-            width: '160px',
+            width: '170px',
             cell: (row) => {
                 const remaining = row.totalAmount - row.paidAmount
                 return (
                     <div className="text-right">
-                        <div className="font-semibold text-slate-900 text-xs">
-                            {row.totalAmount.toLocaleString('vi-VN')}đ
+                        <div className="font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)] tabular-nums">
+                            {formatPrice(row.totalAmount, locale)}
                         </div>
-                        <div className="text-[10px] text-slate-500">
-                            {remaining > 0 ? `Thiếu: ${remaining.toLocaleString('vi-VN')}đ` : 'Đã thu đủ'}
+                        <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] tabular-nums">
+                            {remaining > 0
+                                ? `${tr(S.balanceShort, locale)}: ${formatPrice(remaining, locale)}`
+                                : tr(S.balanceSettled, locale)}
                         </div>
                     </div>
                 )
@@ -216,42 +179,42 @@ export default function AdminDashboard() {
         },
         {
             key: 'action',
-            header: 'THAO TÁC',
+            header: tr(S.colActions, locale),
             align: 'right',
-            width: '160px',
+            width: '190px',
             cell: (row) => (
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center justify-end gap-1.5">
                     {row.status === 'pending_payment' && (
                         <button
                             type="button"
-                            onClick={() => changeStatus(row.id, 'confirmed', staffActor, 'Duyệt cọc tại bàn ca trực')}
-                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                            onClick={() => changeStatus(row.id, 'confirmed', staffActor, tr(S.approveDepositNote, locale))}
+                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            Duyệt cọc
+                            {tr(S.approveDeposit, locale)}
                         </button>
                     )}
                     {row.status === 'confirmed' && (
                         <button
                             type="button"
-                            onClick={() => changeStatus(row.id, 'checked_in', staffActor, 'Check-in tại quầy')}
-                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                            onClick={() => changeStatus(row.id, 'checked_in', staffActor, tr(S.checkInNote, locale))}
+                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            Check-in
+                            {tr(S.checkInCta, locale)}
                         </button>
                     )}
                     {row.status === 'checked_in' && (
                         <button
                             type="button"
-                            onClick={() => changeStatus(row.id, 'checked_out', staffActor, 'Check-out đóng đơn')}
-                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-slate-800 hover:bg-slate-900 text-white rounded transition-colors"
+                            onClick={() => changeStatus(row.id, 'checked_out', staffActor, tr(S.checkOutNote, locale))}
+                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-text)] hover:opacity-90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            Check-out
+                            {tr(S.checkOutCta, locale)}
                         </button>
                     )}
                     <Link
                         href={`/admin/orders/${row.id}`}
-                        className="p-1 text-slate-400 hover:text-blue-600 rounded transition-colors ml-1"
-                        title="Xem chi tiết"
+                        className="p-1 text-[var(--cms-text-muted)] hover:text-[var(--cms-accent)] rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        aria-label={`${tr(S.viewBookingAria, locale)} ${row.code}`}
                     >
                         <EyeIcon size={15} />
                     </Link>
@@ -260,312 +223,222 @@ export default function AdminDashboard() {
         },
     ]
 
-    const filteredData = bookings.filter((item) => {
-        if (selectedTab === 'pending' && item.status !== 'pending_payment') return false
-        if (selectedTab === 'arrivals' && item.status !== 'confirmed') return false
-        if (selectedTab === 'departures' && item.status !== 'checked_in') return false
-
-        if (search) {
-            const q = search.toLowerCase()
-            const matchName = item.guestName.toLowerCase().includes(q)
-            const matchCode = item.code.toLowerCase().includes(q)
-            const matchPhone = item.phone.includes(q)
-            const matchUnit = item.unitNumber.toLowerCase().includes(q)
-            if (!matchName && !matchCode && !matchPhone && !matchUnit) return false
-        }
-        return true
-    })
-
-    const { tableProps } = useDataTable<BookingRowItem>({
-        data: filteredData,
-        columns,
-        rowKey: (row) => row.id,
-        selectable: true,
-        pageSize: 10,
-    })
-
     const stats = useMemo(() => {
-        const totalRooms = 15
-        const occupied = bookings.filter((b) => b.status === 'checked_in').length
-        const confirmed = bookings.filter((b) => b.status === 'confirmed').length
-        const pending = bookings.filter((b) => b.status === 'pending_payment').length
-        const occupancyRate = Math.round(((occupied + confirmed) / totalRooms) * 100)
-        const pendingCollect = bookings
-            .filter((b) => b.status === 'confirmed' || b.status === 'checked_in')
-            .reduce((acc, b) => acc + (b.totalAmount - b.paidAmount), 0)
+        const checkInToday = bookings.filter((b) => b.status === 'confirmed').length
+        const checkOutToday = bookings.filter((b) => b.status === 'checked_in').length
+        const pendingDeposit = bookings.filter((b) => b.status === 'pending_payment').length
+        // Mẫu số dùng SỐ PHÒNG VẬT LÝ thật (`RoomUnit`), không phải số hạng
+        // phòng — đúng B0: hạng phòng chỉ là danh mục, phòng vật lý mới là
+        // thứ có thể "đang có khách". Tử số đếm đơn đang giữ chỗ chắc chắn
+        // (confirmed/checked_in), là ước lượng — KHÔNG so với "tuần trước" vì
+        // chưa có dữ liệu lịch sử để so (bỏ chỗ bịa số "▲ 12%" của bản cũ).
+        const occupiedUnits = bookings.filter(
+            (b) => b.status === 'checked_in' || b.status === 'confirmed',
+        ).length
+        const occupancyRate =
+            roomUnits.length > 0 ? Math.round((occupiedUnits / roomUnits.length) * 100) : 0
+        return { checkInToday, checkOutToday, pendingDeposit, occupancyRate }
+    }, [bookings, roomUnits])
 
-        return { totalRooms, occupied, confirmed, pending, occupancyRate, pendingCollect }
-    }, [bookings])
+    // Sự kiện thật trong `ActivityLog`, không phải dữ liệu bịa. Lấy 8 dòng gần
+    // nhất trong ngày hôm nay, mới nhất trước.
+    const todayActivities = useMemo(() => {
+        const todayPrefix = new Date().toISOString().slice(0, 10)
+        return logs
+            .filter((l: ActivityLog) => l.at.startsWith(todayPrefix) && ACTIVITY_TITLE[l.action])
+            .sort((a, b) => b.at.localeCompare(a.at))
+            .slice(0, 8)
+    }, [logs])
+
+    const shiftGroups = [
+        {
+            legend: tr(S.shiftFilterLabel, locale),
+            value: shift,
+            onChange: (v: string) => setShift(v as typeof shift),
+            options: [
+                { value: 'all', label: tr(S.shiftAll, locale) },
+                { value: 'morning', label: tr(S.shiftMorning, locale) },
+                { value: 'afternoon', label: tr(S.shiftAfternoon, locale) },
+            ],
+        },
+        {
+            legend: tr(S.segmentFilterLabel, locale),
+            value: segment,
+            onChange: (v: string) => setSegment(v as typeof segment),
+            options: [
+                { value: 'all', label: tr(S.all, locale) },
+                { value: 'villa', label: tr(S.segmentVilla, locale) },
+                { value: 'bungalow', label: tr(S.segmentBungalow, locale) },
+                { value: 'deluxe', label: tr(S.segmentDeluxe, locale) },
+            ],
+        },
+    ]
 
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-4 overflow-y-auto custom-scrollbar bg-slate-50/50 p-1">
-            {/* Top Page Header (Sales Console Exact Title Bar) */}
-            <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
-                <div>
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">
-                        OPERATIONS CONSOLE — TODAY OVERVIEW
-                    </div>
-                    <h1 className="text-2xl font-normal text-slate-900 tracking-tight mt-0.5">
-                        Occupancy overview
-                    </h1>
-                </div>
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            <PageHeaderBar
+                kicker={tr(S.dashboardKicker, locale)}
+                title={tr(S.dashboardTitle, locale)}
+                actions={
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
+                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
+                        </button>
+                        <Link
+                            href="/admin/orders/new"
+                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            {tr(S.newBookingCta, locale)}
+                        </Link>
+                    </>
+                }
+            />
 
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={() => setActiveViewMode(activeViewMode === 'console' ? 'timeline' : 'console')}
-                        className="px-3 py-1.5 text-xs font-medium bg-white border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
-                    >
-                        {activeViewMode === 'console' ? 'Sơ đồ Tape Chart ▾' : 'Bảng ca trực ▾'}
-                    </button>
-                    <Link
-                        href="/admin/orders/new"
-                        className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-2xs"
-                    >
-                        + Đặt phòng mới
-                    </Link>
+            <FilterBar
+                groups={shiftGroups}
+                resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
+            />
+
+            <div className="px-[var(--cms-pad)] pb-4">
+                <MetricStrip>
+                    <KpiCard
+                        label={tr(S.kpiOccupancyRate, locale)}
+                        value={`${stats.occupancyRate}%`}
+                        tone="blue"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiCheckInToday, locale)}
+                        value={`${stats.checkInToday}`}
+                        note={`${tr(S.kpiUnitSuffix, locale)}`}
+                        tone="emerald"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiCheckOutToday, locale)}
+                        value={`${stats.checkOutToday}`}
+                        note={tr(S.expectedBeforeNoon, locale)}
+                        tone="slate"
+                    />
+                    <KpiCard
+                        label={tr(S.kpiPendingDeposit, locale)}
+                        value={`${stats.pendingDeposit}`}
+                        note={tr(S.checkDepositTransfer, locale)}
+                        tone="amber"
+                    />
+                </MetricStrip>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] text-[length:var(--cms-text-body)]">
+                    {(
+                        [
+                            { key: 'all', label: tr(S.tabAllRooms, locale) },
+                            { key: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
+                            { key: 'pending', label: tr(S.tabPendingDeposit, locale) },
+                        ] as const
+                    ).map((t2) => (
+                        <button
+                            key={t2.key}
+                            type="button"
+                            aria-pressed={tab === t2.key}
+                            onClick={() => setTab(t2.key)}
+                            className={`px-3 py-1 rounded-[var(--cms-radius-sm)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                tab === t2.key
+                                    ? 'bg-[var(--cms-accent)] text-white'
+                                    : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                            }`}
+                        >
+                            {t2.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Horizontal Pill Filters Bar (Exact Salesforce Filter Bar) */}
-            <div className="bg-white p-2.5 rounded-lg border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
-                <div className="flex flex-wrap items-center gap-3">
-                    {/* Owner Filter */}
-                    <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-slate-400 text-[11px] uppercase">CA TRỰC:</span>
-                        <div className="flex bg-slate-100 p-0.5 rounded-full border border-slate-200">
-                            <button
-                                type="button"
-                                onClick={() => setOwnerFilter('everyone')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    ownerFilter === 'everyone' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Tất cả
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setOwnerFilter('mine')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    ownerFilter === 'mine' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Ca sáng
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setOwnerFilter('team')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    ownerFilter === 'team' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Ca chiều
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Segment Filter */}
-                    <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-slate-400 text-[11px] uppercase">HẠNG PHÒNG:</span>
-                        <div className="flex bg-slate-100 p-0.5 rounded-full border border-slate-200">
-                            <button
-                                type="button"
-                                onClick={() => setSegmentFilter('all')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    segmentFilter === 'all' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Tất cả
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSegmentFilter('villa')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    segmentFilter === 'villa' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Villa
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSegmentFilter('bungalow')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    segmentFilter === 'bungalow' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Bungalow
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSegmentFilter('deluxe')}
-                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
-                                    segmentFilter === 'deluxe' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                                }`}
-                            >
-                                Deluxe
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="text-slate-500 text-xs">
-                    {filteredData.length} phòng/đơn khớp điều kiện
-                </div>
-            </div>
-
-            {/* 5 KPI Metric Strip Cards (Exact Salesforce Style: Unbolded Large Numbers font-normal) */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 shrink-0">
-                {/* KPI 1 */}
-                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        OCCUPANCY RATE
-                    </div>
-                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
-                        {stats.occupancyRate}%
-                    </div>
-                    <div className="mt-1.5 text-xs text-blue-600 font-medium">
-                        ▲ 12% vs tuần trước
-                    </div>
-                </div>
-
-                {/* KPI 2 */}
-                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        CHECK-IN HÔM NAY
-                    </div>
-                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
-                        {stats.confirmed} <span className="text-base text-slate-500 font-normal">lượt</span>
-                    </div>
-                    <div className="mt-1.5 text-xs text-blue-600 font-medium">
-                        ▲ 2 lượt chuẩn bị nhận
-                    </div>
-                </div>
-
-                {/* KPI 3 */}
-                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        CHECK-OUT HÔM NAY
-                    </div>
-                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
-                        {stats.occupied} <span className="text-base text-slate-500 font-normal">lượt</span>
-                    </div>
-                    <div className="mt-1.5 text-xs text-slate-500 font-medium">
-                        Dự kiến trước 12:00
-                    </div>
-                </div>
-
-                {/* KPI 4 */}
-                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        CHỜ DUYỆT CỌC
-                    </div>
-                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
-                        {stats.pending} <span className="text-base text-slate-500 font-normal">đơn</span>
-                    </div>
-                    <div className="mt-1.5 text-xs text-amber-600 font-medium">
-                        Cần kiểm tra VietQR
-                    </div>
-                </div>
-
-                {/* KPI 5 */}
-                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        BUỒNG PHÒNG SẠCH
-                    </div>
-                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
-                        10/15 <span className="text-base text-slate-500 font-normal">phòng</span>
-                    </div>
-                    <div className="mt-1.5 text-xs text-slate-500 font-medium">
-                        3 bẩn · 2 bảo trì
-                    </div>
-                </div>
-            </div>
-
-            {/* Rhythm Operational Activity Section Header */}
-            <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
-                <div className="text-xs text-slate-600 font-medium">
-                    <span className="font-semibold text-slate-900">Rhythm today</span>, Thứ Sáu 7 Tháng 8 · Lễ tân Ca Sáng
-                </div>
-                <div className="flex bg-slate-100 p-0.5 rounded-md border border-slate-200 text-xs">
-                    <button
-                        type="button"
-                        onClick={() => setSelectedTab('all')}
-                        className={`px-3 py-0.5 rounded transition-colors ${
-                            selectedTab === 'all' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                    >
-                        Tất cả phòng
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setSelectedTab('arrivals')}
-                        className={`px-3 py-0.5 rounded transition-colors ${
-                            selectedTab === 'arrivals' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                    >
-                        Check-in hôm nay
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setSelectedTab('pending')}
-                        className={`px-3 py-0.5 rounded transition-colors ${
-                            selectedTab === 'pending' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                    >
-                        Chờ cọc
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Content 2-Column Split: Left Table/Timeline (65%) + Right What Moved For Me (35%) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-0 flex-1">
-                {/* Left 2 Columns: Data Table or Timeline */}
-                <div className="lg:col-span-2 flex flex-col bg-white rounded-lg border border-slate-200 shadow-2xs overflow-hidden min-h-0">
-                    {activeViewMode === 'console' ? (
-                        <div className="flex-1 overflow-y-auto p-1 custom-scrollbar">
-                            <DataTable {...tableProps} />
+            {/* Lưới 2 cột: bảng đơn (2/3) · dòng sự kiện thật trong ngày (1/3) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
+                <div className="lg:col-span-2 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
+                    {viewMode === 'console' ? (
+                        <div className="flex-1 overflow-y-auto">
+                            <DataGrid<BookingRow>
+                                caption={tr(S.dashboardTitle, locale)}
+                                columns={columns}
+                                rows={filteredData}
+                                rowKey={(row) => row.id}
+                                onRowClick={(row) => {
+                                    window.location.href = `/admin/orders/${row.id}`
+                                }}
+                                empty={
+                                    <div className="py-8 text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                        {tr(S.emptyFilterBookings, locale)}
+                                    </div>
+                                }
+                            />
                         </div>
                     ) : (
-                        <div className="p-6 flex-1 flex flex-col justify-center items-center text-center text-slate-500">
-                            <span className="text-slate-400 mb-2"><CalendarIcon size={36} /></span>
-                            <div className="font-bold text-sm text-slate-800">Sơ Đồ Tồn Kho Lưới (Tape Chart Grid)</div>
-                            <p className="text-xs text-slate-500 mt-1 max-w-sm">
-                                Lịch mở/khóa 15 phòng master theo từng mốc giờ và ngày. Hỗ trợ kéo thả đổi phòng trực tiếp.
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6 gap-2">
+                            <span className="text-[var(--cms-text-muted)]">
+                                <CalendarIcon size={36} />
+                            </span>
+                            <div className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
+                                {tr(S.tapeChartTitle, locale)}
+                            </div>
+                            <p className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] max-w-sm">
+                                {tr(S.tapeChartDesc, locale)}
                             </p>
                         </div>
                     )}
                 </div>
 
-                {/* Right 1 Column: WHAT MOVED FOR ME Event Stream */}
-                <div className="flex flex-col bg-white rounded-lg border border-slate-200 shadow-2xs p-3.5 min-h-0">
-                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
-                        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                            WHAT MOVED FOR ME
+                <div className="flex flex-col min-h-0">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--cms-border)]">
+                        <span className="text-[length:var(--cms-text-label)] font-semibold uppercase tracking-wide text-[var(--cms-text-muted)]">
+                            {tr(S.recentActivity, locale)}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                            today
+                        <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                            {tr(S.todayLabelShort, locale)}
                         </span>
                     </div>
 
-                    <div className="mt-3 flex-1 overflow-y-auto space-y-3 custom-scrollbar">
-                        {ACTIVITY_FEEDS.map((feed) => (
-                            <div
-                                key={feed.id}
-                                className="flex gap-2.5 p-2 rounded-md hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-xs"
-                            >
-                                <div className="text-[10px] font-mono text-slate-400 pt-0.5">
-                                    {feed.time}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <div className="font-semibold text-slate-800">
-                                        {feed.title}
-                                    </div>
-                                    <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
-                                        {feed.subtitle}
-                                    </div>
-                                </div>
+                    <div className="flex-1 overflow-y-auto px-2 py-2">
+                        {todayActivities.length === 0 ? (
+                            <p className="p-3 text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                {tr(S.noActivityToday, locale)}
+                            </p>
+                        ) : (
+                            <div className="space-y-1">
+                                {todayActivities.map((log: ActivityLog) => {
+                                    const title = ACTIVITY_TITLE[log.action]
+                                    const booking = bookings.find((b) => b.id === log.bookingId)
+                                    const timeLabel = new Date(log.at).toLocaleTimeString(
+                                        locale === 'vi' ? 'vi-VN' : 'en-US',
+                                        { hour: '2-digit', minute: '2-digit' },
+                                    )
+                                    return (
+                                        <div
+                                            key={log.id}
+                                            className="flex gap-2.5 p-2 rounded-[var(--cms-radius-sm)] hover:bg-[var(--cms-bg-subtle)] transition-colors text-[length:var(--cms-text-body)]"
+                                        >
+                                            <div className="text-[length:var(--cms-text-meta)] font-mono text-[var(--cms-text-muted)] pt-0.5 shrink-0">
+                                                {timeLabel}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="font-semibold text-[var(--cms-text)]">
+                                                    {title ? title[locale] : log.action} — {log.actorName}
+                                                </div>
+                                                <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] mt-0.5 leading-relaxed">
+                                                    {booking
+                                                        ? `${booking.code} · ${booking.roomTypeName}`
+                                                        : log.note || log.bookingId}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>
