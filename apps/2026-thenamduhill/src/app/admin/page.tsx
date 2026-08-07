@@ -25,6 +25,7 @@ import { useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
+import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
 
 /** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
@@ -150,9 +151,15 @@ export default function AdminDashboard() {
         {
             key: 'status',
             header: tr(S.status, locale),
-            width: '150px',
+            width: '164px',
             cell: (row) => (
-                <DotBadge tone={STATUS_TONE_MAP[row.status]} label={tr(STATUS_LABEL[row.status], locale)} width={120} />
+                // width=140: đủ chỗ cho nhãn dài nhất trong `STATUS_LABEL`
+                // ("Hết hạn giữ chỗ"/"Hold expired") + chấm màu + padding,
+                // không cắt chữ (D4). Round 1 dùng 120px và "Đã cọc — chờ
+                // nhận" bị cắt còn "Đã cọc — chờ n…" — đã rút ngắn nhãn
+                // (xem `STATUS_LABEL.confirmed`) NHƯNG cũng nới width ở đây
+                // để chống tái phát khi có nhãn dài khác trong tương lai.
+                <DotBadge tone={STATUS_TONE_MAP[row.status]} label={tr(STATUS_LABEL[row.status], locale)} width={140} />
             ),
         },
         {
@@ -224,19 +231,33 @@ export default function AdminDashboard() {
     ]
 
     const stats = useMemo(() => {
-        const checkInToday = bookings.filter((b) => b.status === 'confirmed').length
-        const checkOutToday = bookings.filter((b) => b.status === 'checked_in').length
+        const today = todayKey()
+        // BUG round 1 (fix round 2 mục 6): "khách nhận phòng hôm nay" đếm MỌI
+        // đơn `confirmed`, bất kể ngày check-in là hôm nay hay tháng sau — đó
+        // là lý do "13 khách nhận phòng" nhưng "công suất 11%" không khớp
+        // nhau: hai con số không cùng đang đo "hôm nay". Sửa: phải lọc thêm
+        // `checkIn === today` để đúng nghĩa "hôm nay".
+        const checkInToday = bookings.filter((b) => b.status === 'confirmed' && b.checkInDate === today).length
+        const checkOutToday = bookings.filter((b) => b.status === 'checked_in' && b.checkOutDate === today).length
         const pendingDeposit = bookings.filter((b) => b.status === 'pending_payment').length
-        // Mẫu số dùng SỐ PHÒNG VẬT LÝ thật (`RoomUnit`), không phải số hạng
-        // phòng — đúng B0: hạng phòng chỉ là danh mục, phòng vật lý mới là
-        // thứ có thể "đang có khách". Tử số đếm đơn đang giữ chỗ chắc chắn
-        // (confirmed/checked_in), là ước lượng — KHÔNG so với "tuần trước" vì
-        // chưa có dữ liệu lịch sử để so (bỏ chỗ bịa số "▲ 12%" của bản cũ).
-        const occupiedUnits = bookings.filter(
-            (b) => b.status === 'checked_in' || b.status === 'confirmed',
+        // Công suất phòng HÔM NAY = số phòng đang thật sự có khách hôm nay /
+        // tổng số phòng vật lý khả dụng để bán (B0: `RoomUnit`, không phải số
+        // hạng phòng). "Đang có khách hôm nay" = `checked_in` (đã nhận phòng,
+        // chưa trả) HOẶC `confirmed` mà HÔM NAY nằm trong khoảng lưu trú
+        // [checkIn, checkOut) — round 1 đếm MỌI đơn confirmed/checked_in bất
+        // kể ngày, ra 11% trong khi có 13 lượt nhận phòng hôm nay là vô lý
+        // (13 > 11% của bất kỳ số phòng thực tế nào ở quy mô resort này).
+        // Không có field "ngừng bán/bảo trì dài hạn" tách biệt trong
+        // `RoomUnit.status` để loại khỏi mẫu số — coi TOÀN BỘ `roomUnits` là
+        // khả dụng để bán là giả định hợp lý duy nhất với dữ liệu hiện có,
+        // KHÔNG bịa thêm khái niệm không có trong `@repo/core`.
+        const occupiedToday = bookings.filter(
+            (b) =>
+                b.status === 'checked_in' ||
+                (b.status === 'confirmed' && b.checkInDate <= today && b.checkOutDate > today),
         ).length
         const occupancyRate =
-            roomUnits.length > 0 ? Math.round((occupiedUnits / roomUnits.length) * 100) : 0
+            roomUnits.length > 0 ? Math.round((occupiedToday / roomUnits.length) * 100) : 0
         return { checkInToday, checkOutToday, pendingDeposit, occupancyRate }
     }, [bookings, roomUnits])
 
@@ -276,9 +297,18 @@ export default function AdminDashboard() {
 
     return (
         <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* Gộp title + filter thành MỘT hàng (fix round 2 mục 1/2) — bỏ
+                hẳn kicker "VẬN HÀNH — HÔM NAY" vì tab "Dashboard" đang active
+                trên header (AppShell) đã nói rõ đang ở đâu, lặp lại tốn một
+                dòng dọc. `filters` tự `flex-wrap` xuống hàng 2 khi màn hẹp. */}
             <PageHeaderBar
-                kicker={tr(S.dashboardKicker, locale)}
                 title={tr(S.dashboardTitle, locale)}
+                filters={
+                    <FilterBar
+                        groups={shiftGroups}
+                        resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
+                    />
+                }
                 actions={
                     <>
                         <button
@@ -296,11 +326,6 @@ export default function AdminDashboard() {
                         </Link>
                     </>
                 }
-            />
-
-            <FilterBar
-                groups={shiftGroups}
-                resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
             />
 
             <div className="px-[var(--cms-pad)] pb-4">
@@ -357,11 +382,21 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Lưới 2 cột: bảng đơn (2/3) · dòng sự kiện thật trong ngày (1/3) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
-                <div className="lg:col-span-2 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
+            {/* Lưới 2 cột: bảng đơn (3/4) · dòng sự kiện thật trong ngày (1/4).
+                Round 1 dùng 2/3+1/3 — cột "Vừa diễn ra" thường chỉ có 1-2 dòng
+                nội dung mà chiếm 1/3 màn hình, lãng phí không gian đúng lúc
+                bảng đơn (nội dung chính, cần thấy nhiều đơn nhất) cần nó nhất
+                (fix round 2 mục 7). 1/4 vẫn đủ rộng để đọc "HH:mm · hành động
+                · mã đơn" trên một dòng ở 1440px. */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
+                <div className="lg:col-span-3 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
                     {viewMode === 'console' ? (
-                        <div className="flex-1 overflow-y-auto">
+                        // `flex flex-col min-h-0` BẮT BUỘC ở wrapper này: `DataGrid`
+                        // bên trong dùng `h-full` để cao hết khung cha — thiếu
+                        // `min-h-0` thì flex item mặc định `min-height: auto` co
+                        // theo NỘI DUNG, `h-full` vô nghĩa và bảng rỗng vẫn để lại
+                        // khoảng trắng (fix round 2 mục 3).
+                        <div className="flex-1 flex flex-col min-h-0">
                             <DataGrid<BookingRow>
                                 caption={tr(S.dashboardTitle, locale)}
                                 columns={columns}
@@ -371,7 +406,11 @@ export default function AdminDashboard() {
                                     window.location.href = `/admin/orders/${row.id}`
                                 }}
                                 empty={
-                                    <div className="py-8 text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                    // `h-full flex items-center justify-center` thay vì
+                                    // `py-8 text-center`: nội dung rỗng giờ giãn ĐẦY khung
+                                    // (kế thừa từ CSS `height:100%` bắc cầu ở tokens.css),
+                                    // không co lại theo chiều cao dòng chữ.
+                                    <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                                         {/* Phân biệt "chưa có đơn nào" (store rỗng — bấm Đặt lại
                                             vô ích) với "bộ lọc không khớp" (đổi bộ lọc thì ra kết
                                             quả). Gộp chung dẫn admin đi sai hướng (fix round 1

@@ -59,7 +59,15 @@
     --cms-rail-w: 64px;
     --cms-header-h: 48px;
     --cms-tabbar-h: 40px;
-    --cms-row-h: 48px;
+    /* 56px, KHÔNG PHẢI 48px: round 1 đặt 48px theo ảnh mẫu tĩnh, nhưng nội
+     * dung thật của cột "khách hàng & SĐT" là HAI DÒNG chữ (tên + mã đơn·SĐT)
+     * — 48px chỉ đủ nếu ép padding dọc xuống 2px, lúc đó hai dòng dính sát
+     * nhau, khó đọc. Đo thật bằng Playwright ra 61px ở round 2 sau khi đã áp
+     * padding 4px round 1. Chốt 56px: padding 4px×2 + line-height 2 dòng
+     * (11px × 1.4 × 2 ≈ 30.8px) + khoảng hở ~13px giữa 2 dòng ≈ 56px khớp
+     * thực tế đo được — token nói ĐÚNG sự thật thay vì ép 48 rồi CSS không
+     * theo. */
+    --cms-row-h: 56px;
     --cms-gap: 16px;
     --cms-pad: 24px;
 
@@ -118,16 +126,32 @@
     background: var(--cms-bg-subtle);
 }
 
+/* --- bảng RỖNG cũng phải giãn hết chiều cao còn lại (fix round 2 mục 3) ---
+ * `<table>` mặc định cao theo NỘI DUNG — khi rỗng chỉ có một `<tr><td>` chứa
+ * thông báo, bảng co lại còn vài chục px và để lại khoảng trắng lớn phía
+ * dưới (đúng như ảnh chủ dự án gửi). `.dt-table` cha đã có `flex-1 min-h-0`
+ * nhưng con `<table>` không tự kế thừa chiều cao đó trừ khi được set tường
+ * minh — `height: 100%` bắc cầu qua `tbody`/`tr`/`td` để `empty` render dài
+ * hết khung, thay vì co theo nội dung của chính nó. */
+[data-cms] .dt-table table {
+    height: 100%;
+}
+[data-cms] .dt-table tbody tr:has(td[colspan]) {
+    height: 100%;
+}
+[data-cms] .dt-table td[colspan] {
+    height: 100%;
+    vertical-align: middle;
+}
+
 [data-cms] .dt-table td {
     height: var(--cms-row-h);
-    /* `!important` BẮT BUỘC ở đây: `DataTable` ghi `padding: 8px 12px` bằng
-     * inline style (không phải class), và inline style luôn thắng bất kỳ
-     * class/selector CSS nào bất kể độ đặc hiệu — chỉ `!important` mới ghi
-     * đè được. Đo bằng Playwright trước khi sửa: `height: 48px` ở trên
-     * KHÔNG có tác dụng vì `padding-block: 8px` + line-height nội dung vẫn
-     * đẩy hàng lên 69px (padding cộng thêm ngoài height khai báo, vì `td`
-     * không phải `box-sizing: border-box` trong ngữ cảnh này). Giảm padding
-     * dọc xuống 4px thì 4+4+40(dòng 2 tầng chữ ở ô "khách & SĐT")≈48px, khớp
-     * token `--cms-row-h`. */
-    padding: 4px 12px !important;
+    /* `!important` vẫn BẮT BUỘC — không phải do giá trị 56px, mà do CƠ CHẾ:
+     * `DataTable` ghi `padding: 8px 12px` bằng INLINE STYLE (không phải
+     * class), và inline style luôn thắng mọi class/selector CSS bất kể độ
+     * đặc hiệu. Không có cách nào khác ngoài `!important` để ghi đè. Giá trị
+     * đổi từ round 1 (4px) → round 2 (6px) vì token `--cms-row-h` đổi từ 48
+     * lên 56 (xem comment tại khai báo token): 6px×2 + nội dung 2 dòng
+     * (~30.8px) + hở dòng (~12.4px) ≈ 56px, khớp thực tế đo bằng Playwright. */
+    padding: 6px 12px !important;
 }

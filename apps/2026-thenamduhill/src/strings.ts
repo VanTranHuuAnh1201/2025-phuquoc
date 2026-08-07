@@ -762,7 +762,12 @@ export const S = {
 
 export const STATUS_LABEL: Record<BookingStatus, I18nText> = {
     pending_payment: t('Chờ thanh toán', 'Awaiting payment'),
-    confirmed: t('Đã cọc — chờ nhận', 'Deposit paid — awaiting arrival'),
+    // Round 1 đổi thành "Đã cọc — chờ nhận" nhưng dài hơn width cố định của
+    // `DotBadge` (120px trong bảng dashboard) → bị cắt chữ, vi phạm D4 (badge
+    // PHẢI đọc được đủ chữ, không chỉ chấm màu). Rút gọn còn "Đã cọc" — vẫn
+    // đúng nghĩa nghiệp vụ (khách đã đặt cọc, đang chờ tới ngày nhận phòng),
+    // ngắn hơn "Chờ thanh toán"/"Hết hạn giữ chỗ" nên chắc chắn vừa badge.
+    confirmed: t('Đã cọc', 'Deposit paid'),
     checked_in: t('Đang lưu trú', 'Checked in'),
     checked_out: t('Đã trả phòng', 'Checked out'),
     cancelled: t('Đã huỷ', 'Cancelled'),
