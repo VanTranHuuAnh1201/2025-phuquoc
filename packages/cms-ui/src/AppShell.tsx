@@ -109,7 +109,10 @@ export function AppShell({ zones, currentPath, brand, headerRight, children }: A
                                 }`}
                             >
                                 {zone.icon}
-                                <span className="w-full truncate px-0.5 text-[9px] font-semibold leading-tight">
+                                {/* Dùng đúng bậc --cms-text-meta (11px) của thang D1 thay vì
+                                    tự chế 9px — nhãn ngắn (VẬN HÀNH/NỘI DUNG/HỆ THỐNG) vẫn vừa
+                                    56px nếu để 2 dòng thay vì ép 1 dòng nhỏ hơn thang. */}
+                                <span className="w-full text-center text-[length:var(--cms-text-meta)] font-semibold leading-tight break-words">
                                     {zone.label}
                                 </span>
                             </a>
