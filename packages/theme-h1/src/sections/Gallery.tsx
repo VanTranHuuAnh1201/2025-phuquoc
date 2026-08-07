@@ -27,10 +27,13 @@ export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }
         seen.add(src)
         shots.push({
             src,
-            alt:
-                locale === 'vi'
-                    ? `Ảnh thật — ${pick(room.name, locale)}`
-                    : `Real photo — ${pick(room.name, locale)}`,
+            alt: pick(
+                {
+                    vi: `Ảnh thật — ${pick(room.name, locale)}`,
+                    en: `Real photo — ${pick(room.name, locale)}`,
+                },
+                locale,
+            ),
         })
         if (shots.length === 8) break
     }

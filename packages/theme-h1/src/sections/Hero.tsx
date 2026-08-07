@@ -80,9 +80,13 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
                 <img
                     src={heroImage}
                     alt={
-                        locale === 'vi'
-                            ? 'Toàn cảnh The Nam Du Hill Resort trên đồi hướng biển'
-                            : 'The Nam Du Hill Resort on the hillside facing the sea'
+                        pick(
+                            {
+                                vi: 'Toàn cảnh The Nam Du Hill Resort trên đồi hướng biển',
+                                en: 'The Nam Du Hill Resort on the hillside facing the sea',
+                            },
+                            locale,
+                        )
                     }
                     fetchPriority="high"
                     className="absolute inset-0 h-full w-full object-cover"

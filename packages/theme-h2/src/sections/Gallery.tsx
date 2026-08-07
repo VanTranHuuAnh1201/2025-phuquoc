@@ -1,4 +1,4 @@
-import type { Locale, PropertyData } from '@repo/core'
+import { pick, type Locale, type PropertyData } from '@repo/core'
 import { ImageSlot } from '@repo/ui'
 import { SECTION_HEADING } from './headings'
 
@@ -21,8 +21,9 @@ const TILES = [
 ] as const
 
 export function Gallery({ data, locale }: { data: PropertyData; locale: Locale }) {
-    const sectionTitle = locale === 'vi' ? 'Ảnh thật tại resort' : 'Real photos at the resort'
-    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
+    const sectionTitle = pick({ vi: 'Ảnh thật tại resort', en: 'Real photos at the resort' }, locale)
+    const linkLabel = pick({ vi: 'Xem tất cả', en: 'View all' }, locale)
+
 
     // Gom ảnh sẵn có từ các hạng phòng — nguồn duy nhất là `core` (luật R8).
     const images = data.rooms.flatMap((room) => room.images ?? [])

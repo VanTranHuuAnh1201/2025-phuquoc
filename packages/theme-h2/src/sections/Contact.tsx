@@ -96,8 +96,9 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                         © {new Date().getFullYear()} {brand.name} {brand.suffix}
                     </span>
                     <a href="/" className="text-text-secondary no-underline">
-                        ← {locale === 'vi' ? 'Về trang tổng' : 'Back to showcase'}
+                        ← {pick({ vi: 'Về trang tổng', en: 'Back to showcase' }, locale)}
                     </a>
+
                 </div>
             </div>
         </footer>

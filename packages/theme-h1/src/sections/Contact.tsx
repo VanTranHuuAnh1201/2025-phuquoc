@@ -48,9 +48,13 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                         <a
                             href={telHref(brand.phone)}
                             aria-label={
-                                locale === 'vi'
-                                    ? `Gọi hotline ${brand.phone}`
-                                    : `Call hotline ${brand.phone}`
+                                pick(
+                                    {
+                                        vi: `Gọi hotline ${brand.phone}`,
+                                        en: `Call hotline ${brand.phone}`,
+                                    },
+                                    locale,
+                                )
                             }
                             className="inline-flex min-h-[32px] items-center gap-[10px] text-lg font-bold text-text-inverse no-underline"
                         >
@@ -61,9 +65,13 @@ export function Contact({ data, locale }: { data: PropertyData; locale: Locale }
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={
-                                locale === 'vi'
-                                    ? 'Nhắn Zalo cho resort (mở tab mới)'
-                                    : 'Message the resort on Zalo (new tab)'
+                                pick(
+                                    {
+                                        vi: 'Nhắn Zalo cho resort (mở tab mới)',
+                                        en: 'Message the resort on Zalo (new tab)',
+                                    },
+                                    locale,
+                                )
                             }
                             className="inline-flex min-h-[32px] items-center gap-[10px] text-text-inverse underline [text-underline-offset:4px]"
                         >

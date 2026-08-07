@@ -18,18 +18,21 @@ export function Places({ data, locale }: { data: PropertyData; locale: Locale })
             <div className="h6-container">
                 <p className="h6-kicker mt-0 mb-2">{t.placesKicker}</p>
                 <h2 className="h6-display mt-0 mb-5 text-3xl">
-                    {locale === 'vi' ? 'Nam Du nên đi đâu' : 'Where to go on Nam Du'}
+                    {pick({ vi: 'Nam Du nên đi đâu', en: 'Where to go on Nam Du' }, locale)}
                 </h2>
 
                 <div className="aspect-[21/9] overflow-hidden rounded-xl bg-[var(--color-surface-sand)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={data.hero.images?.[1] ?? '/hero-2.jpg'}
-                        alt={
-                            locale === 'vi'
-                                ? 'Bãi biển Nam Du nhìn từ trên cao'
-                                : 'A Nam Du beach seen from above'
-                        }
+                        alt={pick(
+                            {
+                                vi: 'Bãi biển Nam Du nhìn từ trên cao',
+                                en: 'A Nam Du beach seen from above',
+                            },
+                            locale,
+                        )}
+
                         loading="lazy"
                         className="h-full w-full object-cover"
                     />

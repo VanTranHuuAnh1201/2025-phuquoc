@@ -30,8 +30,9 @@ export function DiningSection({
     slug,
     headingClass = DEFAULT_SECTION_HEADINGS,
 }: DiningSectionProps) {
-    const sectionTitle = locale === 'vi' ? 'Ẩm thực' : 'Dining'
-    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
+    const sectionTitle = pick({ vi: 'Ẩm thực', en: 'Dining' }, locale)
+    const linkLabel = pick({ vi: 'Xem tất cả', en: 'View all' }, locale)
+
 
     return (
         <section

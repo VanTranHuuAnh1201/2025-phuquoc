@@ -30,8 +30,9 @@ export function PlacesSection({
     slug,
     headingClass = DEFAULT_SECTION_HEADINGS,
 }: PlacesSectionProps) {
-    const sectionTitle = locale === 'vi' ? 'Khám phá Nam Du' : 'Explore Nam Du'
-    const linkLabel = locale === 'vi' ? 'Xem tất cả' : 'View all'
+    const sectionTitle = pick({ vi: 'Khám phá Nam Du', en: 'Explore Nam Du' }, locale)
+    const linkLabel = pick({ vi: 'Xem tất cả', en: 'View all' }, locale)
+
 
     const places = data.places.slice(0, 3)
     const tours = data.tours.slice(0, 2)

@@ -18,7 +18,7 @@ const SLUG = meta.slug
 export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui(locale)
     const rooms = data.rooms.slice(0, 4)
-    const roomsHref = `${themePath(SLUG, 'rooms')}${locale === 'vi' ? '' : '?lang=en'}`
+    const roomsHref = `${themePath(SLUG, 'rooms')}${pick({ vi: '', en: '?lang=en' }, locale)}`
 
     return (
         <section id="rooms" className="pt-7">
@@ -41,7 +41,7 @@ export function Rooms({ data, locale }: { data: PropertyData; locale: Locale }) 
                                 // `group` để hover trên cả dòng đổi màu tiêu đề và
                                 // nền nút phụ (trước đây là selector con trong <style>).
                                 className="group grid items-center gap-4 border-b border-border-muted py-4 text-inherit no-underline min-[900px]:grid-cols-[280px_minmax(0,1fr)_220px]"
-                                href={`${themePath(SLUG, 'rooms')}/${room.id}${locale === 'vi' ? '' : '?lang=en'}`}
+                                href={`${themePath(SLUG, 'rooms')}/${room.id}${pick({ vi: '', en: '?lang=en' }, locale)}`}
                             >
                                 <div className="aspect-[3/2] overflow-hidden rounded-md bg-[var(--color-surface-sand)]">
                                     {room.images?.[0] && (

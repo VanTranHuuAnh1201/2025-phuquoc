@@ -272,6 +272,17 @@
     --accent-dark: var(--brand-dark);
 }
 
+[data-theme='h3'] button:hover:not(:disabled) {
+    background-color: var(--accent-dark) !important;
+    filter: brightness(0.92);
+}
+
+[data-theme='h3'] button:active:not(:disabled) {
+    background-color: var(--brand-darker) !important;
+    transform: translateY(1px);
+}
+
+
 /* ---------------------------------------------------------------------------
    Cột đánh giá cuộn vô hạn — dùng ở section `about` (HostService).
 

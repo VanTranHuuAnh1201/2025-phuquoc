@@ -27,9 +27,13 @@ export function Dining({ data, locale }: { data: PropertyData; locale: Locale })
                     <div>
                         <p className="h6-kicker mt-0 mb-2">{t.diningKicker}</p>
                         <h2 className="h6-display m-0 max-w-[14ch] text-3xl">
-                            {locale === 'vi'
-                                ? 'Ăn ngay tại resort, không phải xuống núi'
-                                : 'Eat well without leaving the hill'}
+                            {pick(
+                                {
+                                    vi: 'Ăn ngay tại resort, không phải xuống núi',
+                                    en: 'Eat well without leaving the hill',
+                                },
+                                locale,
+                            )}
                         </h2>
                     </div>
 

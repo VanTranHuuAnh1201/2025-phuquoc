@@ -686,9 +686,10 @@ export function CheckoutPage({
                                         <StepperButton
                                             label="−"
                                             onClick={() => setNights((n) => Math.max(1, n - 1))}
-                                            aria-label={
-                                                locale === 'vi' ? 'Giảm số đêm' : 'Decrease nights'
-                                            }
+                                            aria-label={pick(
+                                                { vi: 'Giảm số đêm', en: 'Decrease nights' },
+                                                locale,
+                                            )}
                                         />
                                         <span
                                             aria-live="polite"
@@ -703,9 +704,10 @@ export function CheckoutPage({
                                         <StepperButton
                                             label="+"
                                             onClick={() => setNights((n) => Math.min(30, n + 1))}
-                                            aria-label={
-                                                locale === 'vi' ? 'Tăng số đêm' : 'Increase nights'
-                                            }
+                                            aria-label={pick(
+                                                { vi: 'Tăng số đêm', en: 'Increase nights' },
+                                                locale,
+                                            )}
                                         />
                                     </div>
                                 </div>

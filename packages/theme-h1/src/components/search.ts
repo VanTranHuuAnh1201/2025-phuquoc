@@ -1,7 +1,7 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useState } from 'react'
-import { addDays, toDateKey, type GuestCount, type Locale } from '@repo/core'
+import { addDays, pick, toDateKey, type GuestCount, type Locale } from '@repo/core'
 
 /**
  * Trạng thái tìm phòng dùng chung cho Hero → Rooms → RoomDetail.
@@ -104,8 +104,12 @@ export function useStaySearch(): [StaySearch, (next: StaySearch) => void] {
 export function shortDate(date: string, locale: Locale): string {
     const [, month, day] = date.split('-')
     if (!month || !day) return date
-    return locale === 'vi'
-        ? `${Number(day)}/${Number(month)}`
-        : `${Number(day)}/${Number(month)}`
+    return pick(
+        {
+            vi: `${Number(day)}/${Number(month)}`,
+            en: `${Number(day)}/${Number(month)}`,
+        },
+        locale,
+    )
 }
 

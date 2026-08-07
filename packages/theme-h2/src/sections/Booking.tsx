@@ -32,20 +32,49 @@ export function Booking({ data, locale }: { data: PropertyData; locale: Locale }
     const reviews = data.reviews && data.reviews.length > 0 ? data.reviews : []
     const firstReview = reviews[0]
 
-    const reviewsTitle = locale === 'vi' ? 'Khách hàng nói gì về chúng tôi' : 'What our guests say'
-    const reviewsCount =
-        locale === 'vi' ? `${reviews.length || 9}+ đánh giá` : `${reviews.length || 9}+ reviews`
-    const ratingLabel = locale === 'vi' ? '5 trên 5 sao' : '5 out of 5 stars'
+    const reviewsTitle = pick(
+        {
+            vi: 'Khách hàng nói gì về chúng tôi',
+            en: 'What our guests say',
+        },
+        locale,
+    )
+    const reviewsCount = pick(
+        {
+            vi: `${reviews.length || 9}+ đánh giá`,
+            en: `${reviews.length || 9}+ reviews`,
+        },
+        locale,
+    )
+    const ratingLabel = pick(
+        {
+            vi: '5 trên 5 sao',
+            en: '5 out of 5 stars',
+        },
+        locale,
+    )
 
-    const ctaTitle =
-        locale === 'vi'
-            ? 'Đặt trực tiếp — đưa đón bến tàu miễn phí, giá không qua trung gian'
-            : 'Book direct — free pier transfer, no middleman markup'
-    const ctaBtn = locale === 'vi' ? 'Chọn ngày & xem phòng' : 'Choose dates & view rooms'
-    const ctaNote =
-        locale === 'vi'
-            ? 'Tàu hoãn do thời tiết: dời ngày miễn phí'
-            : 'Weather delays: free date change'
+    const ctaTitle = pick(
+        {
+            vi: 'Đặt trực tiếp — đưa đón bến tàu miễn phí, giá không qua trung gian',
+            en: 'Book direct — free pier transfer, no middleman markup',
+        },
+        locale,
+    )
+    const ctaBtn = pick(
+        {
+            vi: 'Chọn ngày & xem phòng',
+            en: 'Choose dates & view rooms',
+        },
+        locale,
+    )
+    const ctaNote = pick(
+        {
+            vi: 'Tàu hoãn do thời tiết: dời ngày miễn phí',
+            en: 'Weather delays: free date change',
+        },
+        locale,
+    )
 
     return (
         <section

@@ -76,22 +76,17 @@ export function RoomsSection({
     headingClass = DEFAULT_SECTION_HEADINGS,
 }: RoomsSectionProps) {
     const t = ui[locale]
-    const sectionTitle = locale === 'vi' ? 'Hạng phòng nổi bật' : 'Featured rooms'
-    const detailLabel = locale === 'vi' ? 'Xem chi tiết' : 'View details'
-    const fromLabel = locale === 'vi' ? 'từ' : 'from'
+    const sectionTitle = pick({ vi: 'Hạng phòng nổi bật', en: 'Featured rooms' }, locale)
+    const detailLabel = pick({ vi: 'Xem chi tiết', en: 'View details' }, locale)
+    const fromLabel = pick({ vi: 'từ', en: 'from' }, locale)
 
-    const railLabels =
-        locale === 'vi'
-            ? {
-                  prev: 'Xem các hạng phòng trước đó',
-                  next: 'Xem các hạng phòng tiếp theo',
-                  group: 'Danh sách hạng phòng nổi bật',
-              }
-            : {
-                  prev: 'Previous room types',
-                  next: 'Next room types',
-                  group: 'Featured room types',
-              }
+    const railLabels = {
+        prev: pick({ vi: 'Xem các hạng phòng trước đó', en: 'Previous room types' }, locale),
+        next: pick({ vi: 'Xem các hạng phòng tiếp theo', en: 'Next room types' }, locale),
+        group: pick({ vi: 'Danh sách hạng phòng nổi bật', en: 'Featured room types' }, locale),
+    }
+
+
 
     return (
         <section

@@ -1,3 +1,4 @@
+import { pick } from '@repo/core'
 import type { Brand, Locale } from '@repo/core'
 
 import { IconZalo } from './icons'
@@ -20,10 +21,13 @@ export function ZaloFab({
     context?: string
 }) {
     const phone = brand.phone.replace(/\s/g, '')
-    const label =
-        locale === 'vi'
-            ? `Nhắn Zalo cho resort${context ? ` về ${context}` : ''}`
-            : `Message the resort on Zalo${context ? ` about ${context}` : ''}`
+    const label = pick(
+        {
+            vi: `Nhắn Zalo cho resort${context ? ` về ${context}` : ''}`,
+            en: `Message the resort on Zalo${context ? ` about ${context}` : ''}`,
+        },
+        locale,
+    )
 
     return (
         <a

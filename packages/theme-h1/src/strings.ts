@@ -1,4 +1,4 @@
-﻿import type { Locale, Room } from '@repo/core'
+import { pick, type Locale, type Room } from '@repo/core'
 
 /**
  * Nhãn giao diện của mẫu 06 — thông điệp chuẩn theo spec v3 §4.
@@ -224,15 +224,12 @@ export function fill(template: string, params: Record<string, string | number>):
  */
 export function fitFor(room: Room, locale: Locale): string {
     const n = room.guests
-    if (locale === 'vi') {
-        if (n <= 2) return 'cặp đôi · 2 khách'
-        if (n === 3) return 'nhóm 3 bạn'
-        if (n === 4) return 'gia đình 2+2 / nhóm 4 bạn'
-        return `nhóm ${n} khách / đại gia đình`
-    }
-    if (n <= 2) return 'couples · 2 guests'
-    if (n === 3) return 'a trio'
-    if (n === 4) return 'family of 4 / group of 4'
-    return `groups of ${n}`
+    return pick(
+        {
+            vi: n <= 2 ? 'cặp đôi · 2 khách' : n === 3 ? 'nhóm 3 bạn' : n === 4 ? 'gia đình 2+2 / nhóm 4 bạn' : `nhóm ${n} khách / đại gia đình`,
+            en: n <= 2 ? 'couples · 2 guests' : n === 3 ? 'a trio' : n === 4 ? 'family of 4 / group of 4' : `groups of ${n}`,
+        },
+        locale,
+    )
 }
 

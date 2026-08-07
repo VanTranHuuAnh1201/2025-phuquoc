@@ -61,10 +61,12 @@ function IconUser() {
 
 /** Ba cam kết dưới form — icon + chữ, dùng chung cho desktop và mobile. */
 function Assurances({ locale }: { locale: Locale }) {
-    const items =
-        locale === 'vi'
-            ? ['Xe resort đón tại cầu cảng', 'Cọc 50% để giữ phòng', 'Tàu hoãn do thời tiết: đổi ngày miễn phí']
-            : ['Resort pickup at the pier', '50% deposit to hold your room', 'Weather delays: free date change']
+    const items = [
+        pick({ vi: 'Xe resort đón tại cầu cảng', en: 'Resort pickup at the pier' }, locale),
+        pick({ vi: 'Cọc 50% để giữ phòng', en: '50% deposit to hold your room' }, locale),
+        pick({ vi: 'Tàu hoãn do thời tiết: đổi ngày miễn phí', en: 'Weather delays: free date change' }, locale),
+    ]
+
 
     return (
         <div className="grid gap-[10px] px-[6px] pt-3 pb-[2px] min-[960px]:grid-cols-3 min-[960px]:gap-0 min-[960px]:border-t min-[960px]:border-border-default min-[960px]:p-0">
@@ -101,9 +103,9 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
         return () => clearInterval(timer)
     }, [heroImages.length])
 
-    const adultsLabel = locale === 'vi' ? 'Người lớn' : 'Adults'
-    const childrenLabel = locale === 'vi' ? 'Trẻ em' : 'Children'
-    const ctaLabel = locale === 'vi' ? 'Chọn ngày & xem phòng' : 'Choose dates & view rooms'
+    const adultsLabel = pick({ vi: 'Người lớn', en: 'Adults' }, locale)
+    const childrenLabel = pick({ vi: 'Trẻ em', en: 'Children' }, locale)
+    const ctaLabel = pick({ vi: 'Chọn ngày & xem phòng', en: 'Choose dates & view rooms' }, locale)
 
     const formatDisplayDate = (iso: string) => {
         if (!iso) return ''
@@ -112,8 +114,9 @@ export function Hero({ data, locale }: { data: PropertyData; locale: Locale }) {
     }
 
     const totalGuests = cart.guests.adults + (cart.guests.children?.length || 0)
-    const guestsDisplay = locale === 'vi' ? `${totalGuests} khách` : `${totalGuests} guests`
-    const roomTypeDisplay = locale === 'vi' ? 'Tất cả 20 hạng phòng' : 'All 20 rooms'
+    const guestsDisplay = pick({ vi: `${totalGuests} khách`, en: `${totalGuests} guests` }, locale)
+    const roomTypeDisplay = pick({ vi: 'Tất cả 20 hạng phòng', en: 'All 20 rooms' }, locale)
+
 
     const handleSave = (checkIn: string, checkOut: string, guestsStr: string) => {
         cart.setDates(checkIn, checkOut)

@@ -16,7 +16,7 @@ const SLUG = meta.slug
 
 export function Booking({ data, locale }: { data: PropertyData; locale: Locale }) {
     const t = ui(locale)
-    const roomsHref = `${themePath(SLUG, 'rooms')}${locale === 'vi' ? '' : '?lang=en'}`
+    const roomsHref = `${themePath(SLUG, 'rooms')}${pick({ vi: '', en: '?lang=en' }, locale)}`
     const faq = data.faq.slice(0, 4)
 
     return (

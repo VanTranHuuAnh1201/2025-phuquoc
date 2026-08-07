@@ -87,8 +87,8 @@ export function AboutSection({ data, locale }: AboutSectionProps) {
     const { facts, about } = data
     const [showVideo, setShowVideo] = useState(false)
 
-    const videoLabel = locale === 'vi' ? 'Xem video giới thiệu' : 'Watch video'
-    const moreLabel = locale === 'vi' ? 'Khám phá thêm về resort' : 'Learn more'
+    const videoLabel = pick({ vi: 'Xem video giới thiệu', en: 'Watch video' }, locale)
+    const moreLabel = pick({ vi: 'Khám phá thêm về resort', en: 'Learn more' }, locale)
 
     return (
         <>
@@ -140,11 +140,12 @@ export function AboutSection({ data, locale }: AboutSectionProps) {
                         ) : (
                             <>
                                 <ImageSlot
-                                    placeholder={locale === 'vi' ? 'Toàn cảnh resort' : 'Resort overview'}
+                                    placeholder={pick({ vi: 'Toàn cảnh resort', en: 'Resort overview' }, locale)}
                                     src="/uploads/hero-1.jpg"
                                     height="100%"
                                     style={{ borderRadius: 'var(--radius)' }}
                                 />
+
                                 <button
                                     type="button"
                                     className={[

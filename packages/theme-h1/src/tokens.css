@@ -110,6 +110,15 @@
     --surface-tint: var(--color-info-bg);
     --surface-inverse: #21323c;
 
+    /* --- Vỏ CMS (sidebar quản trị) ---
+       CMS cố định `data-theme="h1"` (công cụ nội bộ, không đổi theo mẫu khách
+       xem — app-flows §F5). Ba màu navy dưới đây trước nằm hard-code trong
+       `admin/layout.tsx` dạng `bg-[#0b192c]`, vi phạm D0/FE2. Khai thành token
+       để CMS đọc `var(--)` như mọi nơi khác, và để đổi vỏ CMS ở đúng một chỗ. */
+    --admin-shell: #0b192c; /* nền sidebar */
+    --admin-shell-active: #163b6c; /* mục điều hướng đang chọn */
+    --admin-shell-deep: #091322; /* chân sidebar, tối hơn nền một bậc */
+
     --overlay-soft: rgba(253, 252, 248, 0.16);
     --overlay-line: rgba(253, 252, 248, 0.28);
     --overlay-scrim: rgba(20, 34, 44, 0.52);

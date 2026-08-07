@@ -55,11 +55,14 @@ function TestimonialCard({
             <div
                 className="mb-2 flex gap-0.5"
                 role="img"
-                aria-label={
-                    locale === 'vi'
-                        ? `${item.rating} trên 5 sao`
-                        : `${item.rating} out of 5 stars`
-                }
+                aria-label={pick(
+                    {
+                        vi: `${item.rating} trên 5 sao`,
+                        en: `${item.rating} out of 5 stars`,
+                    },
+                    locale,
+                )}
+
             >
                 {Array.from({ length: 5 }, (_, i) => (
                     <Star
