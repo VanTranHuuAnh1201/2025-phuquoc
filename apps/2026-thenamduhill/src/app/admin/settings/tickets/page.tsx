@@ -1,21 +1,28 @@
 'use client'
 
 /**
- * Ticket sự cố & bảo trì (ticket `100-05` màn 2).
+ * Ticket sự cố & bảo trì (ticket `100-05` màn 2), màn 6/7 nhóm Hệ thống.
  *
  * Dữ liệu ở `ticket.store` (persist) — F5 còn nguyên (AC-4).
  * Trạng thái đi MỘT CHIỀU theo `canTransitionTicket()`, không nhảy tự do (AC-5).
+ *
+ * Áp design system `@repo/cms-ui` — cùng bố cục 2 hàng + MetricStrip +
+ * DataGrid như `/admin` (dashboard) và `/admin/customers` (màn danh sách gần
+ * nhất). Nền TRẮNG, phân tách bằng đường kẻ 1px, không còn `bg-slate-100`/card
+ * lồng card/shadow trang trí của bản cũ.
+ *
+ * Đặc thù riêng của màn này so với `customers.tsx`:
+ * 1. Có 2 bộ lọc rời (ưu tiên + trạng thái) — cả hai đưa vào CÙNG MỘT
+ *    `FilterBar`, mỗi bộ một `fieldset` riêng (đúng cách `FilterBar` đã hỗ
+ *    trợ nhiều `groups`), không viết 2 `<select>` tự do như bản cũ.
+ * 2. Trạng thái đơn không phải badge tĩnh — vẫn là `<select>` để lễ tân
+ *    chuyển bước ngay trong bảng. Giữ hành vi cũ, chỉ đổi token màu.
+ * 3. Modal tạo ticket giữ nguyên `Modal`/`Field`/`SelectField`/`TextAreaField`
+ *    của `@repo/ui` — các field này đọc token qua `[data-cms]` nên tự đổi
+ *    diện mạo, không cần viết lại.
  */
 
-import {
-    AlertTriangleIcon,
-    ClockIcon,
-    PlusIcon,
-    SearchIcon,
-    TicketIcon,
-    TrashIcon,
-    WrenchIcon,
-} from '@/components/icons'
+import { PlusIcon, TicketIcon, TrashIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
 import { useAuthStore } from '@/stores/auth.store'
@@ -30,14 +37,16 @@ import { S, tr } from '@/strings'
 import type { I18nText } from '@repo/core'
 import { formatDate, pick } from '@repo/core'
 import {
-    DataTable,
-    Field,
-    Modal,
-    SelectField,
-    TextAreaField,
-    useDataTable,
-    type Column,
-} from '@repo/ui'
+    DataGrid,
+    DotBadge,
+    FilterBar,
+    InlineAlert,
+    KpiCard,
+    MetricStrip,
+    PageHeaderBar,
+    type CmsTone,
+} from '@repo/cms-ui'
+import { Field, Modal, SelectField, TextAreaField, type Column } from '@repo/ui'
 import { useMemo, useState } from 'react'
 
 const PRIORITY_LABEL: Record<TicketPriority, I18nText> = {
@@ -47,10 +56,28 @@ const PRIORITY_LABEL: Record<TicketPriority, I18nText> = {
     urgent: S.priorityUrgent,
 }
 
+// Tone của `@repo/cms-ui` — khai TƯỜNG MINH từng key, không nội suy chuỗi
+// (Tailwind quét bằng regex tĩnh, class ghép động lúc chạy không được sinh ra).
+const PRIORITY_TONE: Record<TicketPriority, CmsTone> = {
+    urgent: 'rose',
+    high: 'amber',
+    medium: 'blue',
+    low: 'slate',
+}
+
 const STATUS_LABEL: Record<TicketStatus, I18nText> = {
     pending: S.ticketPending,
     in_progress: S.ticketInProgress,
     resolved: S.ticketResolved,
+}
+
+// Class Tailwind cho `<select>` chuyển trạng thái — khai TƯỜNG MINH từng
+// tone thay vì nội suy chuỗi `text-[var(--cms-tone-${tone})]`. Tailwind quét
+// source bằng regex TĨNH, class ghép động lúc chạy KHÔNG được sinh ra (R14).
+const STATUS_SELECT_CLASS: Record<TicketStatus, string> = {
+    pending: 'text-[var(--cms-tone-amber)] bg-[var(--cms-tone-amber-bg)] border-[var(--cms-tone-amber-dot)]',
+    in_progress: 'text-[var(--cms-tone-blue)] bg-[var(--cms-tone-blue-bg)] border-[var(--cms-tone-blue-dot)]',
+    resolved: 'text-[var(--cms-tone-emerald)] bg-[var(--cms-tone-emerald-bg)] border-[var(--cms-tone-emerald-dot)]',
 }
 
 const ROOM_UNITS = [
@@ -122,12 +149,16 @@ function MaintenanceTicketsScreen() {
         {
             key: 'code',
             header: tr(S.colTicketCode, locale),
-            width: '130px',
-            sortable: true,
+            width: '120px',
             cell: (row) => (
-                <div>
-                    <div className="font-mono text-xs font-bold text-slate-800">{row.code}</div>
-                    <div className="text-[10px] text-slate-400 tabular-nums">
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-mono font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.code}
+                    >
+                        {row.code}
+                    </div>
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] tabular-nums">
                         {formatDate(new Date(row.createdAt), locale)}
                     </div>
                 </div>
@@ -136,9 +167,9 @@ function MaintenanceTicketsScreen() {
         {
             key: 'roomUnit',
             header: tr(S.colRoomUnit, locale),
-            width: '170px',
+            width: '160px',
             cell: (row) => (
-                <span className="inline-flex items-center gap-1 font-semibold text-xs text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200">
+                <span className="inline-flex items-center gap-1 text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-tone-blue)] bg-[var(--cms-tone-blue-bg)] border border-[var(--cms-tone-blue-dot)] rounded-[var(--cms-radius-sm)] px-2 py-1">
                     <TicketIcon size={12} />
                     {row.roomUnit}
                 </span>
@@ -148,48 +179,47 @@ function MaintenanceTicketsScreen() {
             key: 'title',
             header: tr(S.colIncident, locale),
             cell: (row) => (
-                <div>
-                    <div className="font-bold text-xs text-slate-900">{row.title}</div>
-                    <div className="text-[11px] text-slate-500 line-clamp-1">{row.description}</div>
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.title}
+                    >
+                        {row.title}
+                    </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]"
+                        title={row.description}
+                    >
+                        {row.description}
+                    </div>
                 </div>
             ),
         },
         {
             key: 'priority',
             header: tr(S.colPriority, locale),
-            width: '140px',
-            cell: (row) => {
-                const toneMap: Record<TicketPriority, string> = {
-                    urgent: 'bg-rose-50 text-rose-700 border-rose-200',
-                    high: 'bg-amber-50 text-amber-700 border-amber-200',
-                    medium: 'bg-blue-50 text-blue-700 border-blue-200',
-                    low: 'bg-slate-100 text-slate-700 border-slate-200',
-                }
-                const dotMap: Record<TicketPriority, string> = {
-                    urgent: 'bg-rose-500',
-                    high: 'bg-amber-500',
-                    medium: 'bg-blue-500',
-                    low: 'bg-slate-400',
-                }
-                return (
-                    // Badge có CHẤM MÀU + CHỮ, không truyền tin chỉ bằng màu (luật D4).
-                    <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[120px] ${toneMap[row.priority]}`}
-                    >
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotMap[row.priority]}`} />
-                        <span className="truncate">{tr(PRIORITY_LABEL[row.priority], locale)}</span>
-                    </span>
-                )
-            },
+            width: '130px',
+            cell: (row) => (
+                // Badge có CHẤM MÀU + CHỮ, không truyền tin chỉ bằng màu (D4).
+                <DotBadge tone={PRIORITY_TONE[row.priority]} label={tr(PRIORITY_LABEL[row.priority], locale)} width={112} />
+            ),
         },
         {
             key: 'assignedTo',
             header: tr(S.colAssignee, locale),
-            width: '180px',
+            width: '170px',
             cell: (row) => (
-                <div className="text-xs text-slate-700">
-                    <div className="font-semibold text-slate-900">{row.assignedTo}</div>
-                    <div className="text-[10px] text-slate-400">
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={row.assignedTo}
+                    >
+                        {row.assignedTo}
+                    </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]"
+                        title={row.reportedBy}
+                    >
                         {tr(S.reportedBy, locale)}: {row.reportedBy}
                     </div>
                 </div>
@@ -198,44 +228,37 @@ function MaintenanceTicketsScreen() {
         {
             key: 'status',
             header: tr(S.colTicketStatus, locale),
-            width: '170px',
+            width: '180px',
             align: 'right',
-            cell: (row) => {
-                const statusStyles: Record<TicketStatus, string> = {
-                    pending: 'bg-amber-50 text-amber-800 border-amber-300',
-                    in_progress: 'bg-blue-50 text-blue-800 border-blue-300',
-                    resolved: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-                }
-                return (
-                    <select
-                        value={row.status}
-                        aria-label={`${tr(S.colTicketStatus, locale)} ${row.code}`}
-                        onChange={(e) => {
-                            const result = changeStatus(row.id, e.target.value as TicketStatus)
-                            if (result === 'invalid-transition') setNotice(S.errInvalidTransition)
-                            else if (result) setNotice(S.saveFailed)
-                            else setNotice(null)
-                        }}
-                        // KHÔNG `focus:outline-none` trần — luôn phải có viền focus
-                        // nhìn thấy được (luật FE1/D3).
-                        className={`text-xs font-bold px-2.5 py-1 rounded border cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 ${statusStyles[row.status]}`}
-                    >
-                        {nextTicketStatuses(row.status).map((status) => (
-                            <option key={status} value={status}>
-                                {tr(STATUS_LABEL[status], locale)}
-                            </option>
-                        ))}
-                    </select>
-                )
-            },
+            cell: (row) => (
+                // Vẫn là `<select>` — lễ tân chuyển bước ngay trong bảng, không
+                // phải badge tĩnh. Đổi màu qua token thay vì hex/class cứng.
+                <select
+                    value={row.status}
+                    aria-label={`${tr(S.colTicketStatus, locale)} ${row.code}`}
+                    onChange={(e) => {
+                        const result = changeStatus(row.id, e.target.value as TicketStatus)
+                        if (result === 'invalid-transition') setNotice(S.errInvalidTransition)
+                        else if (result) setNotice(S.saveFailed)
+                        else setNotice(null)
+                    }}
+                    className={`w-full text-[length:var(--cms-text-meta)] font-semibold px-2 py-1 rounded-[var(--cms-radius-sm)] border cursor-pointer transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${STATUS_SELECT_CLASS[row.status]}`}
+                >
+                    {nextTicketStatuses(row.status).map((status) => (
+                        <option key={status} value={status}>
+                            {tr(STATUS_LABEL[status], locale)}
+                        </option>
+                    ))}
+                </select>
+            ),
         },
         {
             key: 'action',
             header: tr(S.colActions, locale),
             align: 'right',
-            width: '90px',
+            width: '70px',
             cell: (row) => (
-                <div className="flex items-center justify-end gap-1 text-slate-500">
+                <div className="flex items-center justify-end">
                     <button
                         type="button"
                         aria-label={`${tr(S.delete, locale)} ${row.code}`}
@@ -244,7 +267,7 @@ function MaintenanceTicketsScreen() {
                             const result = removeTicket(row.id)
                             if (result) setNotice(S.saveFailed)
                         }}
-                        className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:text-rose-600 hover:bg-slate-100 rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+                        className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center text-[var(--cms-text-muted)] hover:text-[var(--cms-tone-rose)] hover:bg-[var(--cms-bg-subtle)] rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
                         <TrashIcon size={16} />
                     </button>
@@ -252,14 +275,6 @@ function MaintenanceTicketsScreen() {
             ),
         },
     ]
-
-    const { tableProps } = useDataTable<MaintenanceTicket>({
-        data: filtered,
-        columns,
-        rowKey: (row) => row.id,
-        selectable: true,
-        pageSize: 10,
-    })
 
     function handleReset() {
         setSearch('')
@@ -308,72 +323,40 @@ function MaintenanceTicketsScreen() {
         urgent: filtered.filter((i) => i.priority === 'urgent' || i.priority === 'high').length,
     }
 
+    const filterGroups = [
+        {
+            legend: tr(S.colPriority, locale),
+            value: priorityFilter,
+            onChange: setPriorityFilter,
+            options: [
+                { value: 'all', label: tr(S.allPriorities, locale) },
+                ...(['urgent', 'high', 'medium', 'low'] as const).map((p) => ({
+                    value: p,
+                    label: tr(PRIORITY_LABEL[p], locale),
+                })),
+            ],
+        },
+        {
+            legend: tr(S.colTicketStatus, locale),
+            value: statusFilter,
+            onChange: setStatusFilter,
+            options: [
+                { value: 'all', label: tr(S.allStatuses, locale) },
+                ...(['pending', 'in_progress', 'resolved'] as const).map((st) => ({
+                    value: st,
+                    label: tr(STATUS_LABEL[st], locale),
+                })),
+            ],
+        },
+    ]
+
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2 overflow-hidden">
-            {/* Thanh trên: tiêu đề + đếm + tìm kiếm + bộ lọc + Đặt lại (§F6) */}
-            <div className="w-full bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2 shrink-0">
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.ticketsTitle, locale)}
-                    </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 tabular-nums">
-                        {stats.total} {tr(S.ticketsCount, locale)}
-                    </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="search"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder={tr(S.searchTicket, locale)}
-                            aria-label={tr(S.searchTicket, locale)}
-                            className="w-full pl-7 pr-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                        />
-                        <div className="absolute left-2 top-2 text-slate-400 pointer-events-none">
-                            <SearchIcon size={13} />
-                        </div>
-                    </div>
-
-                    <select
-                        value={priorityFilter}
-                        onChange={(e) => setPriorityFilter(e.target.value)}
-                        aria-label={tr(S.colPriority, locale)}
-                        className="px-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                    >
-                        <option value="all">{tr(S.allPriorities, locale)}</option>
-                        {(['urgent', 'high', 'medium', 'low'] as const).map((p) => (
-                            <option key={p} value={p}>
-                                {tr(PRIORITY_LABEL[p], locale)}
-                            </option>
-                        ))}
-                    </select>
-
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        aria-label={tr(S.colTicketStatus, locale)}
-                        className="px-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
-                    >
-                        <option value="all">{tr(S.allStatuses, locale)}</option>
-                        {(['pending', 'in_progress', 'resolved'] as const).map((s) => (
-                            <option key={s} value={s}>
-                                {tr(STATUS_LABEL[s], locale)}
-                            </option>
-                        ))}
-                    </select>
-
-                    {/* "Đặt lại" luôn có mặt (§F6), `disabled` khi chưa lọc gì. */}
-                    <button
-                        type="button"
-                        onClick={handleReset}
-                        disabled={!isFiltered}
-                        className="px-2 py-1 min-h-[32px] text-xs font-medium rounded transition-colors text-amber-700 hover:text-amber-900 disabled:text-slate-400 disabled:cursor-not-allowed disabled:hover:text-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
-                    >
-                        {tr(S.reset, locale)}
-                    </button>
-
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: title + đếm ở trái · nút "Báo sự cố mới" ở phải. */}
+            <PageHeaderBar
+                title={tr(S.ticketsTitle, locale)}
+                count={{ value: stats.total, suffix: tr(S.ticketsCount, locale) }}
+                actions={
                     <button
                         type="button"
                         onClick={() => {
@@ -381,71 +364,78 @@ function MaintenanceTicketsScreen() {
                             setNotice(null)
                             setModalOpen(true)
                         }}
-                        className="inline-flex items-center gap-1 px-3 py-1 min-h-[32px] bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-colors shadow-sm active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
                         <PlusIcon size={14} />
-                        <span>{tr(S.newTicket, locale)}</span>
+                        {tr(S.newTicket, locale)}
                     </button>
-                </div>
+                }
+            />
+
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (ưu tiên + trạng thái) + kết
+                quả + Đặt lại — `FilterBar` không có ô tìm tự do (chỉ nhận pill
+                giá trị rời rạc), nên ô tìm là input tự viết, dùng token. */}
+            <div className="cms-row-filters border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <input
+                    type="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={tr(S.searchTicket, locale)}
+                    aria-label={tr(S.searchTicket, locale)}
+                    className="w-44 sm:w-56 px-3 py-1.5 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                />
+
+                <FilterBar
+                    groups={filterGroups}
+                    resultText={`${filtered.length} ${tr(S.ticketsCount, locale)}`}
+                    onReset={isFiltered ? handleReset : undefined}
+                />
             </div>
 
             {notice && (
-                <div
-                    role="alert"
-                    aria-live="polite"
-                    className="shrink-0 p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium"
-                >
-                    {tr(notice, locale)}
+                <div className="px-[var(--cms-pad)] pt-3">
+                    <InlineAlert tone="rose">{tr(notice, locale)}</InlineAlert>
                 </div>
             )}
 
-            {/* KPI */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
-                <TicketKpi
-                    label={tr(S.totalTickets, locale)}
-                    value={`${stats.total} ${tr(S.ticketsCount, locale)}`}
-                    icon={<TicketIcon size={14} />}
-                    border="border-amber-200"
-                />
-                <TicketKpi
-                    label={tr(S.urgentTickets, locale)}
-                    value={`${stats.urgent} ${tr(S.ticketsCount, locale)}`}
-                    note={tr(S.needsActionNow, locale)}
-                    icon={<AlertTriangleIcon size={14} />}
-                    border="border-rose-200"
-                    tone="text-rose-700"
-                />
-                <TicketKpi
-                    label={tr(S.ticketPending, locale)}
-                    value={`${stats.pending} ${tr(S.ticketsCount, locale)}`}
-                    note={tr(S.awaitingAssignment, locale)}
-                    icon={<ClockIcon size={14} />}
-                    border="border-amber-200"
-                    tone="text-amber-700"
-                />
-                <TicketKpi
-                    label={tr(S.ticketInProgress, locale)}
-                    value={`${stats.inProgress} ${tr(S.ticketsCount, locale)}`}
-                    note={tr(S.inProgressNow, locale)}
-                    icon={<WrenchIcon size={14} />}
-                    border="border-blue-200"
-                    tone="text-blue-700"
-                />
+            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời tự vẽ (P11 Calm). */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard label={tr(S.totalTickets, locale)} value={`${stats.total}`} tone="slate" />
+                    <KpiCard
+                        label={tr(S.urgentTickets, locale)}
+                        value={`${stats.urgent}`}
+                        note={tr(S.needsActionNow, locale)}
+                        tone="rose"
+                    />
+                    <KpiCard
+                        label={tr(S.ticketPending, locale)}
+                        value={`${stats.pending}`}
+                        note={tr(S.awaitingAssignment, locale)}
+                        tone="amber"
+                    />
+                    <KpiCard
+                        label={tr(S.ticketInProgress, locale)}
+                        value={`${stats.inProgress}`}
+                        note={tr(S.inProgressNow, locale)}
+                        tone="blue"
+                    />
+                </MetricStrip>
             </div>
 
-            <div className="flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <DataTable<MaintenanceTicket>
-                    {...tableProps}
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều cao
+                là ưu tiên số 1 cho màn lễ tân/kỹ thuật dùng hằng ngày. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <DataGrid<MaintenanceTicket>
                     caption={tr(S.ticketsTitle, locale)}
-                    pagination={{
-                        ...tableProps.pagination,
-                        prevLabel: tr(S.paginationPrev, locale),
-                        nextLabel: tr(S.paginationNext, locale),
-                        pageSizeLabel: tr(S.paginationPageSize, locale),
-                        summaryText: (a, b, c) =>
-                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.ticketsCount, locale)}`,
-                    }}
-                    empty={tr(S.emptyTickets, locale)}
+                    columns={columns}
+                    rows={filtered}
+                    rowKey={(row) => row.id}
+                    empty={
+                        <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                            {tr(S.emptyTickets, locale)}
+                        </div>
+                    }
                 />
             </div>
 
@@ -459,7 +449,7 @@ function MaintenanceTicketsScreen() {
                             <button
                                 type="button"
                                 onClick={() => setModalOpen(false)}
-                                className="px-3 py-1.5 min-h-[32px] text-xs text-slate-600 hover:bg-slate-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+                                className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
                                 {tr(S.cancel, locale)}
                             </button>
@@ -467,14 +457,14 @@ function MaintenanceTicketsScreen() {
                                 type="button"
                                 onClick={handleCreate}
                                 disabled={saving}
-                                className="px-3 py-1.5 min-h-[32px] text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
+                                className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold text-white bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 rounded-[var(--cms-radius)] transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
                                 {tr(saving ? S.saving : S.createTicket, locale)}
                             </button>
                         </>
                     }
                 >
-                    <div className="space-y-3 text-xs">
+                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <SelectField
                                 label={tr(S.ticketRoomLabel, locale)}
@@ -533,7 +523,6 @@ function MaintenanceTicketsScreen() {
                             )}
                         />
 
-
                         <SelectField
                             label={tr(S.ticketAssigneeLabel, locale)}
                             value={assignedTo}
@@ -548,39 +537,6 @@ function MaintenanceTicketsScreen() {
                     </div>
                 </Modal>
             )}
-        </div>
-    )
-}
-
-function TicketKpi({
-    label,
-    value,
-    note,
-    icon,
-    border,
-    tone = 'text-slate-700',
-}: {
-    label: string
-    value: string
-    note?: string
-    icon: React.ReactNode
-    border: string
-    tone?: string
-}) {
-    return (
-        <div className={`bg-white p-2 rounded-sm border shadow-sm flex flex-col justify-between ${border}`}>
-            <div className="flex items-center justify-between gap-1">
-                <span
-                    className={`text-[11px] font-semibold uppercase tracking-wider truncate ${tone}`}
-                >
-                    {label}
-                </span>
-                <span className={`shrink-0 ${tone}`}>{icon}</span>
-            </div>
-            <div className="flex items-baseline justify-between mt-1 gap-2">
-                <span className="text-base font-bold text-slate-900 tabular-nums truncate">{value}</span>
-                {note && <span className={`text-[11px] font-semibold truncate ${tone}`}>{note}</span>}
-            </div>
         </div>
     )
 }
