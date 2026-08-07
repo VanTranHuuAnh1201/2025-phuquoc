@@ -65,25 +65,28 @@ export function Toolbar({
 
             {children}
 
-            {isFiltered && (
-                <button
-                    type="button"
-                    onClick={onReset}
-                    style={{
-                        padding: 'var(--space-2) var(--space-4)',
-                        fontSize: 'var(--text-sm)',
-                        fontFamily: 'var(--font-body)',
-                        color: 'var(--brand)',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                        minHeight: 24,
-                    }}
-                >
-                    {resetLabel}
-                </button>
-            )}
+            {/* "Đặt lại" LUÔN có mặt (format bảng §F6) nhưng `disabled` khi chưa
+                lọc gì — người dùng vẫn thấy lối thoát, đồng thời biết mình đang
+                lọc hay không qua trạng thái nút. Ẩn hẳn thì nút nhấp nháy ra/vào
+                và bộ lọc bị coi là thiếu khi nghiệm thu. */}
+            <button
+                type="button"
+                onClick={onReset}
+                disabled={!isFiltered}
+                style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    fontSize: 'var(--text-sm)',
+                    fontFamily: 'var(--font-body)',
+                    color: isFiltered ? 'var(--brand)' : 'var(--text-muted)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: isFiltered ? 'pointer' : 'not-allowed',
+                    textDecoration: isFiltered ? 'underline' : 'none',
+                    minHeight: 24,
+                }}
+            >
+                {resetLabel}
+            </button>
 
             {actions && <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)' }}>{actions}</div>}
         </div>

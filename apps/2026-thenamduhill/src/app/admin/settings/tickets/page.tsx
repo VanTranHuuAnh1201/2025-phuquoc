@@ -1,138 +1,152 @@
 'use client'
 
+/**
+ * Ticket sự cố & bảo trì (ticket `100-05` màn 2).
+ *
+ * Dữ liệu ở `ticket.store` (persist) — F5 còn nguyên (AC-4).
+ * Trạng thái đi MỘT CHIỀU theo `canTransitionTicket()`, không nhảy tự do (AC-5).
+ */
+
 import {
+    AlertTriangleIcon,
+    ClockIcon,
     PlusIcon,
-    PencilIcon,
-    TrashIcon,
+    SearchIcon,
     TicketIcon,
-    EyeIcon,
+    TrashIcon,
+    WrenchIcon,
 } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
-import { DataTable, useDataTable, type Column, Modal, Field, SelectField, TextAreaField } from '@repo/ui'
-import { useState } from 'react'
+import { RequirePermission } from '@/components/RequirePermission'
+import { useAuthStore } from '@/stores/auth.store'
+import {
+    nextTicketStatuses,
+    useTicketStore,
+    type MaintenanceTicket,
+    type TicketPriority,
+    type TicketStatus,
+} from '@/stores/ticket.store'
+import { S, tr } from '@/strings'
+import type { I18nText } from '@repo/core'
+import { formatDate, pick } from '@repo/core'
+import {
+    DataTable,
+    Field,
+    Modal,
+    SelectField,
+    TextAreaField,
+    useDataTable,
+    type Column,
+} from '@repo/ui'
+import { useMemo, useState } from 'react'
 
-export interface MaintenanceTicket {
-    id: string
-    code: string
-    roomUnit: string
-    category: 'electrical' | 'plumbing' | 'appliance' | 'internet' | 'other'
-    categoryLabel: string
-    title: string
-    description: string
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    priorityLabel: string
-    status: 'pending' | 'in_progress' | 'resolved'
-    statusLabel: string
-    reportedBy: string
-    assignedTo: string
-    createdAt: string
+const PRIORITY_LABEL: Record<TicketPriority, I18nText> = {
+    low: S.priorityLow,
+    medium: S.priorityMedium,
+    high: S.priorityHigh,
+    urgent: S.priorityUrgent,
 }
 
-const RESORT_TICKETS: MaintenanceTicket[] = [
-    {
-        id: 'tck-001',
-        code: 'TCK-2026-001',
-        roomUnit: '102 (Bungalow Hill)',
-        category: 'appliance',
-        categoryLabel: 'Thiết bị điện lạnh',
-        title: 'Máy lạnh không lạnh, rò rỉ nước',
-        description: 'Khách phản ánh máy lạnh kêu to và rò rỉ nước ở cục lạnh.',
-        priority: 'urgent',
-        priorityLabel: 'Khẩn cấp 🚨',
-        status: 'in_progress',
-        statusLabel: 'Đang sửa chữa',
-        reportedBy: 'Lê Văn Tùng (Lễ tân)',
-        assignedTo: 'Nguyễn Văn Minh (Kỹ thuật)',
-        createdAt: '06/08/2026 14:30',
-    },
-    {
-        id: 'tck-002',
-        code: 'TCK-2026-002',
-        roomUnit: '201 (Deluxe Ocean)',
-        category: 'plumbing',
-        categoryLabel: 'Điện nước & Bồn tắm',
-        title: 'Vòi sen bồn tắm bị nghẹt',
-        description: 'Nước chảy rất yếu ở vòi sen bồn tắm.',
-        priority: 'high',
-        priorityLabel: 'Ưu tiên Cao',
-        status: 'pending',
-        statusLabel: 'Chờ tiếp nhận',
-        reportedBy: 'Phạm Thu Hương (Buồng phòng)',
-        assignedTo: 'Trần Văn Hoàng (Bảo trì)',
-        createdAt: '06/08/2026 16:15',
-    },
-    {
-        id: 'tck-003',
-        code: 'TCK-2026-003',
-        roomUnit: '305 (Villa Front Sea)',
-        category: 'internet',
-        categoryLabel: 'Mạng Wifi & TV',
-        title: 'Mất kết nối Wifi phòng 305',
-        description: 'Tín hiệu wifi chập chờn khi kết nối từ phòng ngủ.',
-        priority: 'medium',
-        priorityLabel: 'Trung bình',
-        status: 'resolved',
-        statusLabel: 'Đã hoàn thành',
-        reportedBy: 'Hoàng Mai Chi (Lễ tân)',
-        assignedTo: 'Đội IT Nam Du',
-        createdAt: '05/08/2026 09:10',
-    },
-    {
-        id: 'tck-004',
-        code: 'TCK-2026-004',
-        roomUnit: '104 (Bungalow Hill)',
-        category: 'electrical',
-        categoryLabel: 'Hệ thống điện',
-        title: 'Hỏng ổ cắm điện đầu giường',
-        description: 'Ổ cắm điện không có nguồn cấp.',
-        priority: 'low',
-        priorityLabel: 'Bình thường',
-        status: 'pending',
-        statusLabel: 'Chờ tiếp nhận',
-        reportedBy: 'Nguyễn Văn Hải (Khách ở)',
-        assignedTo: 'Chờ phân công',
-        createdAt: '06/08/2026 18:00',
-    },
+const STATUS_LABEL: Record<TicketStatus, I18nText> = {
+    pending: S.ticketPending,
+    in_progress: S.ticketInProgress,
+    resolved: S.ticketResolved,
+}
+
+const ROOM_UNITS = [
+    '101 (Bungalow Hill)',
+    '102 (Bungalow Hill)',
+    '201 (Deluxe Ocean)',
+    '202 (Deluxe Ocean)',
+    '305 (Villa Front Sea)',
+]
+
+const ASSIGNEES = [
+    'Nguyễn Văn Minh (Kỹ thuật)',
+    'Trần Văn Hoàng (Bảo trì)',
+    'Đội IT Nam Du',
 ]
 
 export default function MaintenanceTicketsPage() {
+    return (
+        // Lễ tân KHÔNG vào được màn cấu hình hệ thống (`100-05` AC-6).
+        // Ẩn menu không phải phân quyền — gõ URL vẫn phải bị chặn.
+        <RequirePermission anyOf={['content.edit', 'account.manage']}>
+            <MaintenanceTicketsScreen />
+        </RequirePermission>
+    )
+}
+
+function MaintenanceTicketsScreen() {
     const { locale } = useLocale()
-    const [tickets, setTickets] = useState<MaintenanceTicket[]>(RESORT_TICKETS)
+    const user = useAuthStore((s) => s.user)
+
+    const tickets = useTicketStore((s) => s.tickets)
+    const createTicket = useTicketStore((s) => s.createTicket)
+    const changeStatus = useTicketStore((s) => s.changeStatus)
+    const removeTicket = useTicketStore((s) => s.removeTicket)
+
     const [search, setSearch] = useState('')
     const [priorityFilter, setPriorityFilter] = useState('all')
     const [statusFilter, setStatusFilter] = useState('all')
 
-    // Modal Create State
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [roomUnit, setRoomUnit] = useState('101 (Bungalow Hill)')
+    const [modalOpen, setModalOpen] = useState(false)
+    const [roomUnit, setRoomUnit] = useState(ROOM_UNITS[0] ?? '')
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-    const [priority, setPriority] = useState<MaintenanceTicket['priority']>('medium')
-    const [assignedTo, setAssignedTo] = useState('Nguyễn Văn Minh (Kỹ thuật)')
+    const [priority, setPriority] = useState<TicketPriority>('medium')
+    const [assignedTo, setAssignedTo] = useState(ASSIGNEES[0] ?? '')
+    const [titleError, setTitleError] = useState<I18nText | null>(null)
+    const [notice, setNotice] = useState<I18nText | null>(null)
+    const [saving, setSaving] = useState(false)
+
+    const isFiltered = search !== '' || priorityFilter !== 'all' || statusFilter !== 'all'
+
+    const filtered = useMemo(() => {
+        const query = search.trim().toLowerCase()
+        return tickets.filter((item) => {
+            if (query) {
+                const hit =
+                    item.code.toLowerCase().includes(query) ||
+                    item.roomUnit.toLowerCase().includes(query) ||
+                    item.title.toLowerCase().includes(query)
+                if (!hit) return false
+            }
+            if (priorityFilter !== 'all' && item.priority !== priorityFilter) return false
+            if (statusFilter !== 'all' && item.status !== statusFilter) return false
+            return true
+        })
+    }, [tickets, search, priorityFilter, statusFilter])
 
     const columns: Column<MaintenanceTicket>[] = [
         {
             key: 'code',
-            header: 'MÃ TICKET',
+            header: tr(S.colTicketCode, locale),
             width: '130px',
             sortable: true,
             cell: (row) => (
-                <span className="font-mono text-xs font-bold text-slate-800">{row.code}</span>
+                <div>
+                    <div className="font-mono text-xs font-bold text-slate-800">{row.code}</div>
+                    <div className="text-[10px] text-slate-400 tabular-nums">
+                        {formatDate(new Date(row.createdAt), locale)}
+                    </div>
+                </div>
             ),
         },
         {
             key: 'roomUnit',
-            header: 'PHÒNG VẬT LÝ',
-            width: '180px',
+            header: tr(S.colRoomUnit, locale),
+            width: '170px',
             cell: (row) => (
                 <span className="inline-flex items-center gap-1 font-semibold text-xs text-blue-800 bg-blue-50 px-2 py-1 rounded border border-blue-200">
-                    🛏️ {row.roomUnit}
+                    <TicketIcon size={12} />
+                    {row.roomUnit}
                 </span>
             ),
         },
         {
             key: 'title',
-            header: 'NỘI DUNG SỰ CỐ & MÔ TẢ',
+            header: tr(S.colIncident, locale),
             cell: (row) => (
                 <div>
                     <div className="font-bold text-xs text-slate-900">{row.title}</div>
@@ -142,90 +156,95 @@ export default function MaintenanceTicketsPage() {
         },
         {
             key: 'priority',
-            header: 'MỨC ĐỘ ƯU TIÊN',
+            header: tr(S.colPriority, locale),
             width: '140px',
             cell: (row) => {
-                const toneMap: Record<string, string> = {
+                const toneMap: Record<TicketPriority, string> = {
                     urgent: 'bg-rose-50 text-rose-700 border-rose-200',
                     high: 'bg-amber-50 text-amber-700 border-amber-200',
                     medium: 'bg-blue-50 text-blue-700 border-blue-200',
                     low: 'bg-slate-100 text-slate-700 border-slate-200',
                 }
-                const dotMap: Record<string, string> = {
-                    urgent: 'bg-rose-500 animate-pulse',
+                const dotMap: Record<TicketPriority, string> = {
+                    urgent: 'bg-rose-500',
                     high: 'bg-amber-500',
                     medium: 'bg-blue-500',
                     low: 'bg-slate-400',
                 }
                 return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[120px] text-left shrink-0 ${toneMap[row.priority] || 'bg-slate-100'}`}>
+                    // Badge có CHẤM MÀU + CHỮ, không truyền tin chỉ bằng màu (luật D4).
+                    <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[120px] ${toneMap[row.priority]}`}
+                    >
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotMap[row.priority]}`} />
-                        <span className="truncate">{row.priorityLabel}</span>
+                        <span className="truncate">{tr(PRIORITY_LABEL[row.priority], locale)}</span>
                     </span>
                 )
             },
         },
         {
             key: 'assignedTo',
-            header: 'NGƯỜI XỬ LÝ',
+            header: tr(S.colAssignee, locale),
             width: '180px',
             cell: (row) => (
                 <div className="text-xs text-slate-700">
                     <div className="font-semibold text-slate-900">{row.assignedTo}</div>
-                    <div className="text-[10px] text-slate-400">Báo bởi: {row.reportedBy}</div>
+                    <div className="text-[10px] text-slate-400">
+                        {tr(S.reportedBy, locale)}: {row.reportedBy}
+                    </div>
                 </div>
             ),
         },
         {
             key: 'status',
-            header: 'TRẠNG THÁI & CHUYỂN BƯỚC',
-            width: '160px',
+            header: tr(S.colTicketStatus, locale),
+            width: '170px',
             align: 'right',
             cell: (row) => {
-                const statusStyles: Record<string, string> = {
-                    pending: 'bg-amber-50 text-amber-800 border-amber-300 font-bold',
-                    in_progress: 'bg-blue-50 text-blue-800 border-blue-300 font-bold',
-                    resolved: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold',
+                const statusStyles: Record<TicketStatus, string> = {
+                    pending: 'bg-amber-50 text-amber-800 border-amber-300',
+                    in_progress: 'bg-blue-50 text-blue-800 border-blue-300',
+                    resolved: 'bg-emerald-50 text-emerald-800 border-emerald-300',
                 }
                 return (
                     <select
                         value={row.status}
+                        aria-label={`${tr(S.colTicketStatus, locale)} ${row.code}`}
                         onChange={(e) => {
-                            const newStatus = e.target.value as MaintenanceTicket['status']
-                            const labelMap = {
-                                pending: 'Chờ tiếp nhận',
-                                in_progress: 'Đang sửa chữa',
-                                resolved: 'Đã hoàn thành',
-                            }
-                            setTickets((prev) =>
-                                prev.map((t) => (t.id === row.id ? { ...t, status: newStatus, statusLabel: labelMap[newStatus] } : t))
-                            )
+                            const result = changeStatus(row.id, e.target.value as TicketStatus)
+                            if (result === 'invalid-transition') setNotice(S.errInvalidTransition)
+                            else if (result) setNotice(S.saveFailed)
+                            else setNotice(null)
                         }}
-                        className={`text-xs px-2.5 py-1 rounded border focus:outline-none cursor-pointer ${statusStyles[row.status]}`}
+                        // KHÔNG `focus:outline-none` trần — luôn phải có viền focus
+                        // nhìn thấy được (luật FE1/D3).
+                        className={`text-xs font-bold px-2.5 py-1 rounded border cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 ${statusStyles[row.status]}`}
                     >
-                        <option value="pending">⏳ Chờ tiếp nhận</option>
-                        <option value="in_progress">🛠️ Đang sửa chữa</option>
-                        <option value="resolved">✅ Đã hoàn thành</option>
+                        {nextTicketStatuses(row.status).map((status) => (
+                            <option key={status} value={status}>
+                                {tr(STATUS_LABEL[status], locale)}
+                            </option>
+                        ))}
                     </select>
                 )
             },
         },
         {
             key: 'action',
-            header: 'THAO TÁC',
+            header: tr(S.colActions, locale),
             align: 'right',
             width: '90px',
             cell: (row) => (
                 <div className="flex items-center justify-end gap-1 text-slate-500">
                     <button
                         type="button"
+                        aria-label={`${tr(S.delete, locale)} ${row.code}`}
                         onClick={() => {
-                            if (confirm('Xác nhận xóa ticket này?')) {
-                                setTickets((prev) => prev.filter((t) => t.id !== row.id))
-                            }
+                            if (!window.confirm(`${tr(S.deleteTicketConfirm, locale)} ${row.code}`)) return
+                            const result = removeTicket(row.id)
+                            if (result) setNotice(S.saveFailed)
                         }}
-                        className="p-1 hover:text-rose-600 hover:bg-slate-100 rounded transition-colors"
-                        title="Xóa ticket"
+                        className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:text-rose-600 hover:bg-slate-100 rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                     >
                         <TrashIcon size={16} />
                     </button>
@@ -234,280 +253,334 @@ export default function MaintenanceTicketsPage() {
         },
     ]
 
-    const filteredData = tickets.filter((item) => {
-        if (search) {
-            const q = search.toLowerCase()
-            const matchCode = item.code.toLowerCase().includes(q)
-            const matchRoom = item.roomUnit.toLowerCase().includes(q)
-            const matchTitle = item.title.toLowerCase().includes(q)
-            if (!matchCode && !matchRoom && !matchTitle) return false
-        }
-        if (priorityFilter !== 'all' && item.priority !== priorityFilter) return false
-        if (statusFilter !== 'all' && item.status !== statusFilter) return false
-        return true
-    })
-
     const { tableProps } = useDataTable<MaintenanceTicket>({
-        data: filteredData,
+        data: filtered,
         columns,
         rowKey: (row) => row.id,
         selectable: true,
         pageSize: 10,
     })
 
-    const handleReset = () => {
+    function handleReset() {
         setSearch('')
         setPriorityFilter('all')
         setStatusFilter('all')
     }
 
-    const handleCreateTicket = () => {
-        if (!title.trim()) return
-        const newTicket: MaintenanceTicket = {
-            id: `tck-00${tickets.length + 1}`,
-            code: `TCK-2026-00${tickets.length + 1}`,
+    function handleCreate() {
+        setNotice(null)
+
+        // Nuốt lỗi im lặng là vi phạm C3 + FE1 `error`: người dùng bấm nút mà
+        // không có gì xảy ra thì không biết mình sai ở đâu (AC-4).
+        if (!title.trim()) {
+            setTitleError(S.ticketTitleRequired)
+            document.getElementById('ticket-field-title')?.focus()
+            return
+        }
+        setTitleError(null)
+        setSaving(true)
+
+        const result = createTicket({
             roomUnit,
             category: 'appliance',
-            categoryLabel: 'Thiết bị',
             title,
             description,
             priority,
-            priorityLabel: priority === 'urgent' ? 'Khẩn cấp 🚨' : priority === 'high' ? 'Ưu tiên Cao' : 'Trung bình',
-            status: 'pending',
-            statusLabel: 'Chờ tiếp nhận',
-            reportedBy: 'SuperAdmin (Owner)',
             assignedTo,
-            createdAt: new Date().toLocaleDateString('vi-VN'),
+            reportedBy: user ? `${user.fullName || user.id}` : 'System',
+        })
+
+        setSaving(false)
+        if (result) {
+            setNotice(S.saveFailed)
+            return
         }
-        setTickets([newTicket, ...tickets])
-        setIsModalOpen(false)
+
+        setModalOpen(false)
         setTitle('')
         setDescription('')
     }
 
     const stats = {
-        total: filteredData.length,
-        pending: filteredData.filter((i) => i.status === 'pending').length,
-        inProgress: filteredData.filter((i) => i.status === 'in_progress').length,
-        urgent: filteredData.filter((i) => i.priority === 'urgent' || i.priority === 'high').length,
-        resolved: filteredData.filter((i) => i.status === 'resolved').length,
+        total: filtered.length,
+        pending: filtered.filter((i) => i.status === 'pending').length,
+        inProgress: filtered.filter((i) => i.status === 'in_progress').length,
+        urgent: filtered.filter((i) => i.priority === 'urgent' || i.priority === 'high').length,
     }
 
     return (
         <div className="w-full flex-1 flex flex-col min-h-0 space-y-2 overflow-hidden">
-            {/* Top Bar: Title + All Filters & Actions in Header (Today Format) */}
+            {/* Thanh trên: tiêu đề + đếm + tìm kiếm + bộ lọc + Đặt lại (§F6) */}
             <div className="w-full bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2 shrink-0">
-                {/* Left: Title & Count */}
                 <div className="flex items-center gap-2 shrink-0">
                     <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        Ticket Sự cố & Bảo trì
+                        {tr(S.ticketsTitle, locale)}
                     </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {stats.total} ticket
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 tabular-nums">
+                        {stats.total} {tr(S.ticketsCount, locale)}
                     </span>
                 </div>
 
-                {/* Right: All Filters & Actions in Header */}
                 <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
                     <div className="relative w-44 sm:w-56">
                         <input
-                            type="text"
+                            type="search"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Tìm mã ticket, số phòng, nội dung…"
-                            className="w-full pl-7 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
+                            placeholder={tr(S.searchTicket, locale)}
+                            aria-label={tr(S.searchTicket, locale)}
+                            className="w-full pl-7 pr-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
                         />
-                        <div className="absolute left-2 top-1.5 text-slate-400">
-                            <EyeIcon size={13} />
+                        <div className="absolute left-2 top-2 text-slate-400 pointer-events-none">
+                            <SearchIcon size={13} />
                         </div>
                     </div>
 
-                    {/* Priority Select */}
                     <select
                         value={priorityFilter}
                         onChange={(e) => setPriorityFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                        aria-label={tr(S.colPriority, locale)}
+                        className="px-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
                     >
-                        <option value="all">Tất cả mức ưu tiên</option>
-                        <option value="urgent">🚨 Khẩn cấp</option>
-                        <option value="high">Ưu tiên Cao</option>
-                        <option value="medium">Trung bình</option>
-                        <option value="low">Bình thường</option>
+                        <option value="all">{tr(S.allPriorities, locale)}</option>
+                        {(['urgent', 'high', 'medium', 'low'] as const).map((p) => (
+                            <option key={p} value={p}>
+                                {tr(PRIORITY_LABEL[p], locale)}
+                            </option>
+                        ))}
                     </select>
 
-                    {/* Status Select */}
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                        aria-label={tr(S.colTicketStatus, locale)}
+                        className="px-2 py-1 min-h-[32px] text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
                     >
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="pending">⏳ Chờ tiếp nhận</option>
-                        <option value="in_progress">🛠️ Đang sửa chữa</option>
-                        <option value="resolved">✅ Đã hoàn thành</option>
+                        <option value="all">{tr(S.allStatuses, locale)}</option>
+                        {(['pending', 'in_progress', 'resolved'] as const).map((s) => (
+                            <option key={s} value={s}>
+                                {tr(STATUS_LABEL[s], locale)}
+                            </option>
+                        ))}
                     </select>
 
-                    {/* Reset Button */}
+                    {/* "Đặt lại" luôn có mặt (§F6), `disabled` khi chưa lọc gì. */}
                     <button
                         type="button"
                         onClick={handleReset}
-                        className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
+                        disabled={!isFiltered}
+                        className="px-2 py-1 min-h-[32px] text-xs font-medium rounded transition-colors text-amber-700 hover:text-amber-900 disabled:text-slate-400 disabled:cursor-not-allowed disabled:hover:text-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                     >
-                        Đặt lại
+                        {tr(S.reset, locale)}
                     </button>
 
-                    {/* Primary Action Button */}
                     <button
                         type="button"
-                        onClick={() => setIsModalOpen(true)}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 min-h-[32px]"
+                        onClick={() => {
+                            setTitleError(null)
+                            setNotice(null)
+                            setModalOpen(true)
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1 min-h-[32px] bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-colors shadow-sm active:scale-[0.98] shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
                     >
                         <PlusIcon size={14} />
-                        <span>+ Báo Sự Cố Mới</span>
+                        <span>{tr(S.newTicket, locale)}</span>
                     </button>
                 </div>
             </div>
 
-            {/* KPI Statistics Summary Cards (Today Format) */}
+            {notice && (
+                <div
+                    role="alert"
+                    aria-live="polite"
+                    className="shrink-0 p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium"
+                >
+                    {tr(notice, locale)}
+                </div>
+            )}
+
+            {/* KPI */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
-                {/* Total Stats */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        TỔNG TICKET SỰ CỐ
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.total} ticket</span>
-                        <span className="text-[11px] font-semibold text-amber-700">Hệ thống</span>
-                    </div>
-                </div>
-
-                {/* Urgent Stats */}
-                <div className="bg-white p-2 rounded-sm border border-rose-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-rose-700 uppercase tracking-wider">
-                            KHẨN CẤP / BÁO GẤP 🚨
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.urgent} sự cố</span>
-                        <span className="text-[11px] font-semibold text-rose-600">Cần xử lý ngay</span>
-                    </div>
-                </div>
-
-                {/* Pending Stats */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">
-                            CHỜ TIẾP NHẬN ⏳
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.pending} ticket</span>
-                        <span className="text-[11px] font-semibold text-amber-700">Chờ phân công</span>
-                    </div>
-                </div>
-
-                {/* In Progress Stats */}
-                <div className="bg-white p-2 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            ĐANG SỬA CHỮA 🛠️
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.inProgress} ticket</span>
-                        <span className="text-[11px] font-semibold text-blue-700">Đang thực hiện</span>
-                    </div>
-                </div>
+                <TicketKpi
+                    label={tr(S.totalTickets, locale)}
+                    value={`${stats.total} ${tr(S.ticketsCount, locale)}`}
+                    icon={<TicketIcon size={14} />}
+                    border="border-amber-200"
+                />
+                <TicketKpi
+                    label={tr(S.urgentTickets, locale)}
+                    value={`${stats.urgent} ${tr(S.ticketsCount, locale)}`}
+                    note={tr(S.needsActionNow, locale)}
+                    icon={<AlertTriangleIcon size={14} />}
+                    border="border-rose-200"
+                    tone="text-rose-700"
+                />
+                <TicketKpi
+                    label={tr(S.ticketPending, locale)}
+                    value={`${stats.pending} ${tr(S.ticketsCount, locale)}`}
+                    note={tr(S.awaitingAssignment, locale)}
+                    icon={<ClockIcon size={14} />}
+                    border="border-amber-200"
+                    tone="text-amber-700"
+                />
+                <TicketKpi
+                    label={tr(S.ticketInProgress, locale)}
+                    value={`${stats.inProgress} ${tr(S.ticketsCount, locale)}`}
+                    note={tr(S.inProgressNow, locale)}
+                    icon={<WrenchIcon size={14} />}
+                    border="border-blue-200"
+                    tone="text-blue-700"
+                />
             </div>
 
-            {/* Table Container (Today Format) */}
             <div className="flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <DataTable<MaintenanceTicket> {...tableProps} />
+                <DataTable<MaintenanceTicket>
+                    {...tableProps}
+                    caption={tr(S.ticketsTitle, locale)}
+                    pagination={{
+                        ...tableProps.pagination,
+                        prevLabel: tr(S.paginationPrev, locale),
+                        nextLabel: tr(S.paginationNext, locale),
+                        pageSizeLabel: tr(S.paginationPageSize, locale),
+                        summaryText: (a, b, c) =>
+                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.ticketsCount, locale)}`,
+                    }}
+                    empty={tr(S.emptyTickets, locale)}
+                />
             </div>
 
-            {/* Modal Create Ticket */}
-            {isModalOpen && (
+            {modalOpen && (
                 <Modal
-                    open={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    title="Tạo Ticket Sự Cố & Bảo Trì Mới"
+                    open
+                    onClose={() => setModalOpen(false)}
+                    title={tr(S.newTicket, locale)}
                     footer={
                         <>
                             <button
                                 type="button"
-                                onClick={() => setIsModalOpen(false)}
-                                className="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded"
+                                onClick={() => setModalOpen(false)}
+                                className="px-3 py-1.5 min-h-[32px] text-xs text-slate-600 hover:bg-slate-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                             >
-                                Hủy
+                                {tr(S.cancel, locale)}
                             </button>
                             <button
                                 type="button"
-                                onClick={handleCreateTicket}
-                                className="px-3 py-1.5 text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded"
+                                onClick={handleCreate}
+                                disabled={saving}
+                                className="px-3 py-1.5 min-h-[32px] text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
                             >
-                                Tạo Ticket
+                                {tr(saving ? S.saving : S.createTicket, locale)}
                             </button>
                         </>
                     }
                 >
                     <div className="space-y-3 text-xs">
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <SelectField
-                                label="Phòng vật lý bị ảnh hưởng"
+                                label={tr(S.ticketRoomLabel, locale)}
                                 value={roomUnit}
                                 onChange={(e) => setRoomUnit(e.target.value)}
                             >
-                                <option value="101 (Bungalow Hill)">Phòng 101 (Bungalow Hill)</option>
-                                <option value="102 (Bungalow Hill)">Phòng 102 (Bungalow Hill)</option>
-                                <option value="201 (Deluxe Ocean)">Phòng 201 (Deluxe Ocean)</option>
-                                <option value="202 (Deluxe Ocean)">Phòng 202 (Deluxe Ocean)</option>
-                                <option value="305 (Villa Front Sea)">Phòng 305 (Villa Front Sea)</option>
+                                {ROOM_UNITS.map((unit) => (
+                                    <option key={unit} value={unit}>
+                                        {unit}
+                                    </option>
+                                ))}
                             </SelectField>
 
                             <SelectField
-                                label="Mức độ ưu tiên"
+                                label={tr(S.colPriority, locale)}
                                 value={priority}
-                                onChange={(e) => setPriority(e.target.value as MaintenanceTicket['priority'])}
+                                onChange={(e) => setPriority(e.target.value as TicketPriority)}
                             >
-                                <option value="low">Bình thường (Low)</option>
-                                <option value="medium">Trung bình (Medium)</option>
-                                <option value="high">Ưu tiên Cao (High)</option>
-                                <option value="urgent">🚨 Khẩn cấp (Urgent)</option>
+                                {(['low', 'medium', 'high', 'urgent'] as const).map((p) => (
+                                    <option key={p} value={p}>
+                                        {tr(PRIORITY_LABEL[p], locale)}
+                                    </option>
+                                ))}
                             </SelectField>
                         </div>
 
                         <Field
-                            label="Tiêu đề sự cố"
+                            fieldId="ticket-field-title"
+                            label={tr(S.ticketTitleLabel, locale)}
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Ví dụ: Máy lạnh hỏng, rò rỉ nước..."
+                            onChange={(e) => {
+                                setTitle(e.target.value)
+                                if (titleError) setTitleError(null)
+                            }}
+                            placeholder={pick(
+                                {
+                                    vi: 'Máy lạnh hỏng, rò rỉ nước…',
+                                    en: 'Air conditioner broken, water leak…',
+                                },
+                                locale,
+                            )}
                             required
+                            error={titleError ? tr(titleError, locale) : undefined}
                         />
 
                         <TextAreaField
-                            label="Mô tả chi tiết sự cố"
+                            label={tr(S.ticketDescLabel, locale)}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Ghi chú vị trí hoặc mô tả kỹ lưỡng hư hỏng..."
+                            placeholder={pick(
+                                {
+                                    vi: 'Ghi rõ vị trí và mức độ hư hỏng…',
+                                    en: 'Describe the location and extent of the damage…',
+                                },
+                                locale,
+                            )}
                         />
 
+
                         <SelectField
-                            label="Phân công người xử lý"
+                            label={tr(S.ticketAssigneeLabel, locale)}
                             value={assignedTo}
                             onChange={(e) => setAssignedTo(e.target.value)}
                         >
-                            <option value="Nguyễn Văn Minh (Kỹ thuật)">Nguyễn Văn Minh (Kỹ thuật)</option>
-                            <option value="Trần Văn Hoàng (Bảo trì)">Trần Văn Hoàng (Bảo trì)</option>
-                            <option value="Đội IT Nam Du">Đội IT Nam Du</option>
+                            {ASSIGNEES.map((person) => (
+                                <option key={person} value={person}>
+                                    {person}
+                                </option>
+                            ))}
                         </SelectField>
                     </div>
                 </Modal>
             )}
+        </div>
+    )
+}
+
+function TicketKpi({
+    label,
+    value,
+    note,
+    icon,
+    border,
+    tone = 'text-slate-700',
+}: {
+    label: string
+    value: string
+    note?: string
+    icon: React.ReactNode
+    border: string
+    tone?: string
+}) {
+    return (
+        <div className={`bg-white p-2 rounded-sm border shadow-sm flex flex-col justify-between ${border}`}>
+            <div className="flex items-center justify-between gap-1">
+                <span
+                    className={`text-[11px] font-semibold uppercase tracking-wider truncate ${tone}`}
+                >
+                    {label}
+                </span>
+                <span className={`shrink-0 ${tone}`}>{icon}</span>
+            </div>
+            <div className="flex items-baseline justify-between mt-1 gap-2">
+                <span className="text-base font-bold text-slate-900 tabular-nums truncate">{value}</span>
+                {note && <span className={`text-[11px] font-semibold truncate ${tone}`}>{note}</span>}
+            </div>
         </div>
     )
 }

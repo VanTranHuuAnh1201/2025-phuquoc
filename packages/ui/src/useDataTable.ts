@@ -216,8 +216,10 @@ export function useDataTable<T, F extends Record<string, any> = Record<string, a
     if (sortKey) {
       const dir = sortDir === 'asc' ? 1 : -1
       result.sort((a, b) => {
-        const valA = (a as any)[sortKey]
-        const valB = (b as any)[sortKey]
+        // Sắp xếp theo khoá động: thu hẹp qua `unknown` thay vì `any` (luật C1).
+        // Hàng của DataTable luôn là object, nên đọc theo chỉ mục chuỗi là an toàn.
+        const valA = (a as Record<string, unknown>)[sortKey]
+        const valB = (b as Record<string, unknown>)[sortKey]
         if (typeof valA === 'number' && typeof valB === 'number') {
           return (valA - valB) * dir
         }

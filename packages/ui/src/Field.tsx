@@ -91,10 +91,19 @@ export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     label: ReactNode
     hint?: ReactNode
     error?: ReactNode
+    /**
+     * `id` cố định thay cho `useId()` tự sinh.
+     *
+     * Dùng khi form cần **nhảy focus vào ô lỗi đầu tiên** sau khi kiểm dữ liệu
+     * (luật FE1 trạng thái `error`) — `useId()` sinh chuỗi ngẫu nhiên nên bên
+     * ngoài không trỏ tới được. Không truyền thì hành vi giữ nguyên như cũ.
+     */
+    fieldId?: string
 }
 
-export function Field({ label, hint, error, required, ...rest }: FieldProps) {
-    const id = useId()
+export function Field({ label, hint, error, required, fieldId, ...rest }: FieldProps) {
+    const generated = useId()
+    const id = fieldId ?? generated
     return (
         <FieldShell id={id} label={label} hint={hint} error={error} required={required}>
             <input

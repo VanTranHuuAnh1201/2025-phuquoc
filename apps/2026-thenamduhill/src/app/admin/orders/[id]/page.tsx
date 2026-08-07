@@ -93,7 +93,7 @@ export default function AdminBookingDetail({
     if (!booking || !user) {
         return (
             <p style={{ color: 'var(--text-muted)' }}>
-                {locale === 'vi' ? 'Không tìm thấy đơn.' : 'Booking not found.'}
+                {pick({ vi: 'Không tìm thấy đơn.', en: 'Booking not found.' }, locale)}
             </p>
         )
     }
@@ -212,7 +212,7 @@ export default function AdminBookingDetail({
 
                 {next.length === 0 && (
                     <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', alignSelf: 'center' }}>
-                        {locale === 'vi' ? 'Đơn đã đóng, không sửa được nữa.' : 'This booking is closed.'}
+                        {pick({ vi: 'Đơn đã đóng, không sửa được nữa.', en: 'This booking is closed.' }, locale)}
                     </span>
                 )}
             </div>
@@ -261,7 +261,7 @@ export default function AdminBookingDetail({
                         <hr style={{ border: 0, borderTop: '1px solid var(--border)' }} />
                         <Row label={tr(S.totalAmount, locale)} value={formatPrice(booking.totalAmount, locale)} strong />
                         <Row
-                            label={locale === 'vi' ? 'Đã thu' : 'Paid'}
+                            label={pick({ vi: 'Đã thu', en: 'Paid' }, locale)}
                             value={formatPrice(booking.paidAmount, locale)}
                             tone="info"
                         />
@@ -298,15 +298,16 @@ export default function AdminBookingDetail({
                                         setError(
                                             addNote(
                                                 booking.id,
-                                                locale === 'vi'
-                                                    ? `Duyệt hoàn ${booking.cancellation!.refundAmount.toLocaleString('vi-VN')}đ`
-                                                    : `Refund approved: ${booking.cancellation!.refundAmount}`,
+                                                pick({
+                                                    vi: `Duyệt hoàn ${booking.cancellation!.refundAmount.toLocaleString('vi-VN')}đ`,
+                                                    en: `Refund approved: ${booking.cancellation!.refundAmount}`,
+                                                }, locale),
                                                 actor,
                                             ),
                                         )
                                     }
                                 >
-                                    {locale === 'vi' ? 'Duyệt hoàn tiền' : 'Approve refund'}
+                                    {pick({ vi: 'Duyệt hoàn tiền', en: 'Approve refund' }, locale)}
                                 </Button>
                             </div>
                         )}
@@ -361,16 +362,16 @@ export default function AdminBookingDetail({
                             />
                             <Row label={tr(S.idNumber, locale)} value={booking.checkInRecord.idNumber} />
                             <Row
-                                label={locale === 'vi' ? 'Giờ nhận' : 'Checked in at'}
+                                label={pick({ vi: 'Giờ nhận', en: 'Checked in at' }, locale)}
                                 value={new Date(booking.checkInRecord.at).toLocaleString(
-                                    locale === 'vi' ? 'vi-VN' : 'en-US',
+                                    tr(S.localeCode, locale),
                                 )}
                             />
                             {booking.checkInRecord.vehiclePlate && (
                                 <Row label={tr(S.vehiclePlate, locale)} value={booking.checkInRecord.vehiclePlate} />
                             )}
                             <Row
-                                label={locale === 'vi' ? 'Lễ tân' : 'Staff'}
+                                label={pick({ vi: 'Lễ tân', en: 'Staff' }, locale)}
                                 value={booking.checkInRecord.staffName}
                             />
                         </div>
@@ -381,9 +382,9 @@ export default function AdminBookingDetail({
                     <Card title={tr(S.doCheckOut, locale)}>
                         <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
                             <Row
-                                label={locale === 'vi' ? 'Giờ trả' : 'Checked out at'}
+                                label={pick({ vi: 'Giờ trả', en: 'Checked out at' }, locale)}
                                 value={new Date(booking.checkOutRecord.at).toLocaleString(
-                                    locale === 'vi' ? 'vi-VN' : 'en-US',
+                                    tr(S.localeCode, locale),
                                 )}
                             />
                             {booking.checkOutRecord.incidentals.map((item) => (
@@ -432,7 +433,7 @@ export default function AdminBookingDetail({
                                         </div>
                                     )}
                                     <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-                                        {new Date(log.at).toLocaleString(locale === 'vi' ? 'vi-VN' : 'en-US')} ·{' '}
+                                        {new Date(log.at).toLocaleString(tr(S.localeCode, locale))} ·{' '}
                                         {log.actorName} ({log.actorRole})
                                     </div>
                                 </div>
@@ -552,16 +553,15 @@ function CheckInDialog({
         const missingId = !idNumber.trim()
         setUnitError(
             missingUnit
-                ? locale === 'vi'
-                    ? 'Chọn phòng vật lý trước khi lưu.'
-                    : 'Select a physical room before saving.'
+                ? pick({ vi: 'Chọn phòng vật lý trước khi lưu.', en: 'Select a physical room before saving.' }, locale)
                 : null,
         )
         setIdError(
             missingId
-                ? locale === 'vi'
-                    ? 'Nhập số CCCD / hộ chiếu — bắt buộc theo quy định khai báo lưu trú.'
-                    : 'Enter the ID / passport number — required by guest registration rules.'
+                ? pick({
+                    vi: 'Nhập số CCCD / hộ chiếu — bắt buộc theo quy định khai báo lưu trú.',
+                    en: 'Enter the ID / passport number — required by guest registration rules.',
+                  }, locale)
                 : null,
         )
         if (missingUnit || missingId) return
@@ -587,9 +587,10 @@ function CheckInDialog({
             onClose={onClose}
             title={tr(S.doCheckIn, locale)}
             description={
-                locale === 'vi'
-                    ? 'Gán phòng và ghi thông tin lưu trú.'
-                    : 'Assign a room and record stay details.'
+                pick({
+                    vi: 'Gán phòng và ghi thông tin lưu trú.',
+                    en: 'Assign a room and record stay details.',
+                }, locale)
             }
             footer={
                 <>
@@ -613,15 +614,16 @@ function CheckInDialog({
                     disabled={noUnits}
                     error={
                         noUnits
-                            ? locale === 'vi'
-                                ? 'Không còn phòng trống của hạng này. Đổi phòng ở màn Buồng phòng rồi quay lại.'
-                                : 'No available rooms of this type. Free one up in Housekeeping, then come back.'
+                            ? pick({
+                                vi: 'Không còn phòng trống của hạng này. Đổi phòng ở màn Buồng phòng rồi quay lại.',
+                                en: 'No available rooms of this type. Free one up in Housekeeping, then come back.',
+                              }, locale)
                             : unitError
                     }
                     required
                 >
                     <option value="">
-                        {locale === 'vi' ? '— Chọn phòng —' : '— Select a room —'}
+                        {pick({ vi: '— Chọn phòng —', en: '— Select a room —' }, locale)}
                     </option>
                     {units.map((unit) => (
                         <option key={unit.id} value={unit.id}>
@@ -638,9 +640,10 @@ function CheckInDialog({
                         setIdError(null)
                     }}
                     hint={
-                        locale === 'vi'
-                            ? 'Bắt buộc theo quy định khai báo lưu trú.'
-                            : 'Required for mandatory guest registration.'
+                        pick({
+                            vi: 'Bắt buộc theo quy định khai báo lưu trú.',
+                            en: 'Required for mandatory guest registration.',
+                        }, locale)
                     }
                     error={idError}
                     required
@@ -667,7 +670,7 @@ function CheckInDialog({
                     label={tr(S.earlyCheckIn, locale)}
                     checked={early}
                     onChange={(e) => setEarly(e.target.checked)}
-                    hint={locale === 'vi' ? 'Có phụ phí theo chính sách.' : 'Surcharge applies per policy.'}
+                    hint={pick({ vi: 'Có phụ phí theo chính sách.', en: 'Surcharge applies per policy.' }, locale)}
                 />
 
                 <Field
@@ -724,9 +727,10 @@ function CheckOutDialog({
             onClose={onClose}
             title={tr(S.doCheckOut, locale)}
             description={
-                locale === 'vi'
-                    ? 'Ghi phát sinh và nhận xét trước khi đóng đơn.'
-                    : 'Record charges and comments before closing the booking.'
+                pick({
+                    vi: 'Ghi phát sinh và nhận xét trước khi đóng đơn.',
+                    en: 'Record charges and comments before closing the booking.',
+                }, locale)
             }
             footer={
                 <>
@@ -768,8 +772,8 @@ function CheckOutDialog({
                         <div key={item.id} style={{ display: 'flex', gap: 'var(--space-2)' }}>
                             <input
                                 value={item.description}
-                                placeholder={locale === 'vi' ? 'Minibar, giặt ủi…' : 'Minibar, laundry…'}
-                                aria-label={locale === 'vi' ? 'Mô tả khoản phát sinh' : 'Charge description'}
+                                placeholder={pick({ vi: 'Minibar, giặt ủi…', en: 'Minibar, laundry…' }, locale)}
+                                aria-label={pick({ vi: 'Mô tả khoản phát sinh', en: 'Charge description' }, locale)}
                                 onChange={(e) => {
                                     const next = [...items]
                                     next[index] = { ...item, description: e.target.value }
@@ -782,7 +786,7 @@ function CheckOutDialog({
                                 min={0}
                                 step={10000}
                                 value={item.amount}
-                                aria-label={locale === 'vi' ? 'Số tiền' : 'Amount'}
+                                aria-label={pick({ vi: 'Số tiền', en: 'Amount' }, locale)}
                                 onChange={(e) => {
                                     const next = [...items]
                                     next[index] = { ...item, amount: Number(e.target.value) || 0 }
@@ -853,9 +857,10 @@ function CheckOutDialog({
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     hint={
-                        locale === 'vi'
-                            ? 'Ghi lại tình trạng phòng, thái độ khách, việc cần lưu ý lần sau.'
-                            : 'Note room condition, guest behaviour, anything worth remembering.'
+                        pick({
+                            vi: 'Ghi lại tình trạng phòng, thái độ khách, việc cần lưu ý lần sau.',
+                            en: 'Note room condition, guest behaviour, anything worth remembering.',
+                        }, locale)
                     }
                     rows={4}
                 />
@@ -865,9 +870,10 @@ function CheckOutDialog({
                     value={String(rating)}
                     onChange={(e) => setRating(Number(e.target.value))}
                     hint={
-                        locale === 'vi'
-                            ? 'Chỉ nhân viên thấy, khách không biết.'
-                            : 'Internal only — never shown to the guest.'
+                        pick({
+                            vi: 'Chỉ nhân viên thấy, khách không biết.',
+                            en: 'Internal only — never shown to the guest.',
+                        }, locale)
                     }
                 >
                     {[5, 4, 3, 2, 1].map((n) => (
@@ -925,13 +931,14 @@ function CancelDialog({
                         {tr(S.refundAmount, locale)}: {formatPrice(refund.amount, locale)} ({refund.percent}%)
                     </strong>
                     <div style={{ marginTop: 4, fontSize: 'var(--text-xs)' }}>
-                        {locale === 'vi'
-                            ? `Còn ${refund.daysUntilCheckIn} ngày tới ngày nhận phòng.`
-                            : `${refund.daysUntilCheckIn} days until check-in.`}
+                        {pick({
+                            vi: `Còn ${refund.daysUntilCheckIn} ngày tới ngày nhận phòng.`,
+                            en: `${refund.daysUntilCheckIn} days until check-in.`,
+                        }, locale)}
                     </div>
                 </div>
                 <TextAreaField
-                    label={locale === 'vi' ? 'Lý do huỷ' : 'Cancellation reason'}
+                    label={pick({ vi: 'Lý do huỷ', en: 'Cancellation reason' }, locale)}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                 />
@@ -979,9 +986,10 @@ function NoteDialog({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 hint={
-                    locale === 'vi'
-                        ? 'Ghi chú vào nhật ký đơn — không sửa hay xoá được sau khi lưu.'
-                        : 'Appended to the activity log — cannot be edited or deleted afterwards.'
+                    pick({
+                        vi: 'Ghi chú vào nhật ký đơn — không sửa hay xoá được sau khi lưu.',
+                        en: 'Appended to the activity log — cannot be edited or deleted afterwards.',
+                    }, locale)
                 }
                 rows={4}
                 autoFocus

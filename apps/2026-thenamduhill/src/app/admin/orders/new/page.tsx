@@ -83,21 +83,29 @@ export default function NewBookingPage() {
     if (user && !canCreate) {
         return (
             <p role="alert" style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
-                {locale === 'vi'
-                    ? 'Tài khoản của bạn không có quyền tạo đơn.'
-                    : 'Your account cannot create bookings.'}
+                {pick(
+                    {
+                        vi: 'Tài khoản của bạn không có quyền tạo đơn.',
+                        en: 'Your account cannot create bookings.',
+                    },
+                    locale,
+                )}
             </p>
         )
     }
 
     const validate = (): string | null => {
         if (checkOut <= checkIn) {
-            return locale === 'vi'
-                ? 'Ngày trả phòng phải sau ngày nhận phòng.'
-                : 'Check-out must be after check-in.'
+            return pick(
+                {
+                    vi: 'Ngày trả phòng phải sau ngày nhận phòng.',
+                    en: 'Check-out must be after check-in.',
+                },
+                locale,
+            )
         }
         if (!roomTypeId) {
-            return locale === 'vi' ? 'Chọn một hạng phòng.' : 'Pick a room type.'
+            return pick({ vi: 'Chọn một hạng phòng.', en: 'Pick a room type.' }, locale)
         }
         if (!fullName.trim()) return tr(S.errNameRequired, locale)
         if (!/^0\d{8,10}$/.test(phone.trim())) return tr(S.errPhoneRequired, locale)
@@ -147,9 +155,13 @@ export default function NewBookingPage() {
         } catch (error) {
             // Không nuốt lỗi (luật C3): hiện bằng chữ và mở khoá lại nút.
             setFormError(
-                locale === 'vi'
-                    ? `Không tạo được đơn: ${String(error)}`
-                    : `Could not create the booking: ${String(error)}`,
+                pick(
+                    {
+                        vi: `Không tạo được đơn: ${String(error)}`,
+                        en: `Could not create the booking: ${String(error)}`,
+                    },
+                    locale,
+                ),
             )
             setSubmitting(false)
         }
@@ -243,9 +255,13 @@ export default function NewBookingPage() {
                                 max={8}
                                 value={childAges.length}
                                 hint={
-                                    locale === 'vi'
-                                        ? 'Nhập tuổi từng trẻ bên dưới — giá trẻ em tính theo tuổi.'
-                                        : 'Enter each child’s age below — child pricing depends on age.'
+                                    pick(
+                                        {
+                                            vi: 'Nhập tuổi từng trẻ bên dưới — giá trẻ em tính theo tuổi.',
+                                            en: 'Enter each child’s age below — child pricing depends on age.',
+                                        },
+                                        locale,
+                                    )
                                 }
                                 onChange={(e) => {
                                     const count = Math.max(0, Math.min(8, Number(e.target.value) || 0))
@@ -297,7 +313,7 @@ export default function NewBookingPage() {
                                 required
                             >
                                 <option value="">
-                                    {locale === 'vi' ? '— Chọn hạng phòng —' : '— Select a room type —'}
+                                    {pick({ vi: '— Chọn hạng phòng —', en: '— Select a room type —' }, locale)}
                                 </option>
                                 {property.rooms.map((room) => (
                                     <option key={room.id} value={room.id}>
@@ -473,7 +489,7 @@ export default function NewBookingPage() {
                                 }}
                             >
                                 <Badge tone="danger">
-                                    {locale === 'vi' ? 'Không đặt được' : 'Not bookable'}
+                                    {pick({ vi: 'Không đặt được', en: 'Not bookable' }, locale)}
                                 </Badge>
                                 <span>
                                     {blockReason
@@ -510,7 +526,7 @@ export default function NewBookingPage() {
                                         color: 'var(--text-muted)',
                                     }}
                                 >
-                                    {locale === 'vi' ? 'Còn trống' : 'Available'}:{' '}
+                                    {pick({ vi: 'Còn trống', en: 'Available' }, locale)}:{' '}
                                     <strong style={{ fontVariantNumeric: 'tabular-nums' }}>
                                         {availability.availableUnits}
                                     </strong>

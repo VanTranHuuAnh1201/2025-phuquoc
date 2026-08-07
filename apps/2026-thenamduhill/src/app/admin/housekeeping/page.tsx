@@ -145,7 +145,7 @@ export default function HousekeepingPage() {
                         {tr(S.housekeeping, locale)}
                     </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {filteredUnits.length} {locale === 'vi' ? 'phòng' : 'rooms'}
+                        {filteredUnits.length} {pick({ vi: 'phòng', en: 'rooms' }, locale)}
                     </span>
                 </div>
 
@@ -157,7 +157,7 @@ export default function HousekeepingPage() {
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder={locale === 'vi' ? 'Tìm mã phòng (P-101)…' : 'Search room code…'}
+                            placeholder={pick({ vi: 'Tìm mã phòng (P-101)…', en: 'Search room code…' }, locale)}
                             className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
                         />
                     </div>
@@ -168,7 +168,7 @@ export default function HousekeepingPage() {
                         onChange={(e) => setRoomTypeFilter(e.target.value)}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">{locale === 'vi' ? 'Tất cả hạng phòng' : 'All room types'}</option>
+                        <option value="all">{pick({ vi: 'Tất cả hạng phòng', en: 'All room types' }, locale)}</option>
                         {property.rooms.map((r) => (
                             <option key={r.id} value={r.id}>
                                 {pick(r.name, locale)}
@@ -182,7 +182,7 @@ export default function HousekeepingPage() {
                         onChange={(e) => setStatusFilter(e.target.value as RoomUnitStatus | 'all')}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">{locale === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
+                        <option value="all">{pick({ vi: 'Tất cả trạng thái', en: 'All statuses' }, locale)}</option>
                         {ALL_STATUSES.map((s) => (
                             <option key={s} value={s}>
                                 {tr(UNIT_STATUS_LABEL[s], locale)}
@@ -197,7 +197,7 @@ export default function HousekeepingPage() {
                             onClick={handleReset}
                             className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
                         >
-                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                            {tr(S.reset, locale)}
                         </button>
                     )}
                 </div>
@@ -216,7 +216,7 @@ export default function HousekeepingPage() {
                     }`}
                 >
                     <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {locale === 'vi' ? 'TẤT CẢ PHÒNG' : 'ALL ROOMS'}
+                        {pick({ vi: 'TẤT CẢ PHÒNG', en: 'ALL ROOMS' }, locale)}
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
                         <span className="text-base font-bold text-slate-900">{counts.total} phòng</span>
@@ -400,9 +400,13 @@ export default function HousekeepingPage() {
 
                 {byRoomType.length === 0 && (
                     <div className="p-12 text-center bg-white rounded-lg border border-slate-200 text-slate-500 text-xs font-medium">
-                        {locale === 'vi'
-                            ? 'Không có phòng nào ở tình trạng này. Bấm lại ô đã chọn để bỏ lọc.'
-                            : 'No rooms in this status. Click the selected card again to clear the filter.'}
+                        {pick(
+                            {
+                                vi: 'Không có phòng nào ở tình trạng này. Bấm lại ô đã chọn để bỏ lọc.',
+                                en: 'No rooms in this status. Click the selected card again to clear the filter.',
+                            },
+                            locale,
+                        )}
                     </div>
                 )}
             </div>

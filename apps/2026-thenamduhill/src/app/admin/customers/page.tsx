@@ -8,7 +8,7 @@
  */
 
 import { useMemo, useState } from 'react'
-import { formatPrice } from '@repo/core'
+import { formatPrice, pick } from '@repo/core'
 import type { Customer } from '@repo/core'
 import { DataTable, StatCard, Toolbar } from '@repo/ui'
 import type { Column } from '@repo/ui'
@@ -86,7 +86,7 @@ export default function CustomersPage() {
     const columns: Column<Customer>[] = [
         {
             key: 'name',
-            header: locale === 'vi' ? 'KHÁCH HÀNG & SĐT' : 'GUEST & PHONE',
+            header: pick({ vi: 'KHÁCH HÀNG & SĐT', en: 'GUEST & PHONE' }, locale),
             cell: (c) => (
                 <div>
                     <div className="font-semibold text-slate-900">{c.fullName}</div>
@@ -101,7 +101,7 @@ export default function CustomersPage() {
         },
         {
             key: 'tier',
-            header: locale === 'vi' ? 'PHÂN HẠNG' : 'TIER',
+            header: pick({ vi: 'PHÂN HẠNG', en: 'TIER' }, locale),
             width: '130px',
             cell: (c) => {
                 if (c.totalSpent >= 10000000) {
@@ -130,21 +130,21 @@ export default function CustomersPage() {
         },
         {
             key: 'bookings',
-            header: locale === 'vi' ? 'SỐ ĐƠN' : 'BOOKINGS',
+            header: pick({ vi: 'SỐ ĐƠN', en: 'BOOKINGS' }, locale),
             align: 'right',
             width: '90px',
             cell: (c) => <span className="text-xs font-semibold text-slate-800">{bookingCount(c.id)}</span>,
         },
         {
             key: 'stays',
-            header: locale === 'vi' ? 'ĐÃ Ở' : 'STAYS',
+            header: pick({ vi: 'ĐÃ Ở', en: 'STAYS' }, locale),
             align: 'right',
             width: '90px',
             cell: (c) => <span className="text-xs font-semibold text-slate-800">{c.stayCount} đêm</span>,
         },
         {
             key: 'spent',
-            header: locale === 'vi' ? 'TỔNG CHI TIÊU' : 'TOTAL SPENT',
+            header: pick({ vi: 'TỔNG CHI TIÊU', en: 'TOTAL SPENT' }, locale),
             align: 'right',
             width: '140px',
             cell: (c) => (
@@ -165,7 +165,7 @@ export default function CustomersPage() {
                         {tr(S.customers, locale)}
                     </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {rows.length} {locale === 'vi' ? 'khách' : 'guests'}
+                        {rows.length} {pick({ vi: 'khách', en: 'guests' }, locale)}
                     </span>
                 </div>
 
@@ -180,7 +180,7 @@ export default function CustomersPage() {
                                 setSearch(e.target.value)
                                 setPage(1)
                             }}
-                            placeholder={locale === 'vi' ? 'Tìm tên, SĐT, email…' : 'Search name, phone, email…'}
+                            placeholder={pick({ vi: 'Tìm tên, SĐT, email…', en: 'Search name, phone, email…' }, locale)}
                             className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
                         />
                     </div>
@@ -194,10 +194,10 @@ export default function CustomersPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">{locale === 'vi' ? 'Tất cả phân hạng' : 'All tiers'}</option>
-                        <option value="vip">{locale === 'vi' ? 'Khách VIP (>10 triệu)' : 'VIP (>10m VND)'}</option>
-                        <option value="returning">{locale === 'vi' ? 'Khách quay lại (>1 lần)' : 'Returning (>1 stay)'}</option>
-                        <option value="new">{locale === 'vi' ? 'Khách mới (1 lần)' : 'New guests (1 stay)'}</option>
+                        <option value="all">{pick({ vi: 'Tất cả phân hạng', en: 'All tiers' }, locale)}</option>
+                        <option value="vip">{pick({ vi: 'Khách VIP (>10 triệu)', en: 'VIP (>10m VND)' }, locale)}</option>
+                        <option value="returning">{pick({ vi: 'Khách quay lại (>1 lần)', en: 'Returning (>1 stay)' }, locale)}</option>
+                        <option value="new">{pick({ vi: 'Khách mới (1 lần)', en: 'New guests (1 stay)' }, locale)}</option>
                     </select>
 
                     {/* Reset Button */}
@@ -207,7 +207,7 @@ export default function CustomersPage() {
                             onClick={resetFilters}
                             className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
                         >
-                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                            {tr(S.reset, locale)}
                         </button>
                     )}
 
@@ -227,7 +227,7 @@ export default function CustomersPage() {
                 {/* Total Customers */}
                 <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
                     <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {locale === 'vi' ? 'TẤT CẢ KHÁCH' : 'TOTAL GUESTS'}
+                        {pick({ vi: 'TẤT CẢ KHÁCH', en: 'TOTAL GUESTS' }, locale)}
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
                         <span className="text-base font-bold text-slate-900">{customers.length} khách</span>
@@ -299,25 +299,21 @@ export default function CustomersPage() {
                     rowKey={(c) => c.id}
                     empty={
                         search
-                            ? locale === 'vi'
-                                ? 'Không tìm thấy khách nào.'
-                                : 'No guests found.'
-                            : locale === 'vi'
-                              ? 'Chưa có khách hàng nào.'
-                              : 'No guests yet.'
+                            ? pick({ vi: 'Không tìm thấy khách nào.', en: 'No guests found.' }, locale)
+                            : pick({ vi: 'Chưa có khách hàng nào.', en: 'No guests yet.' }, locale)
                     }
                 />
 
                 {rows.length > 0 && (
                     <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
                         <span>
-                            {locale === 'vi' ? 'Hiển thị' : 'Showing'}{' '}
+                            {tr(S.showing, locale)}{' '}
                             <strong className="text-slate-900 font-semibold">
                                 {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, rows.length)}
                             </strong>{' '}
-                            {locale === 'vi' ? 'trong' : 'of'}{' '}
+                            {tr(S.of, locale)}{' '}
                             <strong className="text-slate-900 font-semibold">{rows.length}</strong>{' '}
-                            {locale === 'vi' ? 'khách' : 'guests'}
+                            {pick({ vi: 'khách', en: 'guests' }, locale)}
                         </span>
 
                         <div className="flex items-center gap-1.5">
@@ -327,7 +323,7 @@ export default function CustomersPage() {
                                 onClick={() => setPage(safePage - 1)}
                                 className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
-                                ← {locale === 'vi' ? 'Trước' : 'Prev'}
+                                ← {tr(S.paginationPrev, locale)}
                             </button>
                             <span className="px-2 font-semibold text-slate-700">
                                 {safePage} / {totalPages}
@@ -338,7 +334,7 @@ export default function CustomersPage() {
                                 onClick={() => setPage(safePage + 1)}
                                 className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
-                                {locale === 'vi' ? 'Sau' : 'Next'} →
+                                {tr(S.paginationNext, locale)} →
                             </button>
                         </div>
                     </div>

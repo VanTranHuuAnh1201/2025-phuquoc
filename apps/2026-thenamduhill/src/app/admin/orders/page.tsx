@@ -155,9 +155,13 @@ export default function AdminOrdersPage() {
     if (user && !canViewAll) {
         return (
             <p role="alert" style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
-                {locale === 'vi'
-                    ? 'Tài khoản của bạn không có quyền xem đơn hàng.'
-                    : 'Your account cannot view bookings.'}
+                {pick(
+                    {
+                        vi: 'Tài khoản của bạn không có quyền xem đơn hàng.',
+                        en: 'Your account cannot view bookings.',
+                    },
+                    locale,
+                )}
             </p>
         )
     }
@@ -165,7 +169,7 @@ export default function AdminOrdersPage() {
     const columns: Column<Booking>[] = [
         {
             key: 'channel',
-            header: locale === 'vi' ? 'KÊNH ĐẶT' : 'CHANNEL',
+            header: pick({ vi: 'KÊNH ĐẶT', en: 'CHANNEL' }, locale),
             width: '160px',
             cell: (b) => {
                 const toneMap: Record<string, string> = {
@@ -190,7 +194,7 @@ export default function AdminOrdersPage() {
         },
         {
             key: 'code',
-            header: locale === 'vi' ? 'KHÁCH HÀNG & MÃ ĐƠN' : 'GUEST & CODE',
+            header: pick({ vi: 'KHÁCH HÀNG & MÃ ĐƠN', en: 'GUEST & CODE' }, locale),
             cell: (b) => (
                 <div>
                     <div className="font-semibold text-slate-900 hover:text-blue-600 transition-colors">
@@ -204,25 +208,25 @@ export default function AdminOrdersPage() {
         },
         {
             key: 'room',
-            header: locale === 'vi' ? 'HẠNG PHÒNG' : 'ROOM TYPE',
+            header: pick({ vi: 'HẠNG PHÒNG', en: 'ROOM TYPE' }, locale),
             cell: (b) => <span className="text-slate-700 font-medium text-xs">{roomName(b.roomTypeId)}</span>,
         },
         {
             key: 'nights',
-            header: locale === 'vi' ? 'SỐ ĐÊM' : 'NIGHTS',
+            header: pick({ vi: 'SỐ ĐÊM', en: 'NIGHTS' }, locale),
             width: '90px',
             align: 'center',
             cell: (b) => <span className="text-slate-700 font-semibold text-xs">{b.nights} {tr(S.nights, locale)}</span>,
         },
         {
             key: 'dates',
-            header: locale === 'vi' ? 'CHECK-IN / CHECK-OUT' : 'DATES',
+            header: pick({ vi: 'CHECK-IN / CHECK-OUT', en: 'DATES' }, locale),
             width: '160px',
             cell: (b) => <span className="text-slate-600 text-xs">{b.checkIn} → {b.checkOut}</span>,
         },
         {
             key: 'status',
-            header: locale === 'vi' ? 'TRẠNG THÁI' : 'STATUS',
+            header: pick({ vi: 'TRẠNG THÁI', en: 'STATUS' }, locale),
             width: '130px',
             cell: (b) => {
                 const statusStyles: Record<string, string> = {
@@ -251,7 +255,7 @@ export default function AdminOrdersPage() {
         },
         {
             key: 'total',
-            header: locale === 'vi' ? 'TỔNG TIỀN' : 'TOTAL',
+            header: pick({ vi: 'TỔNG TIỀN', en: 'TOTAL' }, locale),
             align: 'right',
             width: '130px',
             cell: (b) => (
@@ -262,7 +266,7 @@ export default function AdminOrdersPage() {
         },
         {
             key: 'actions',
-            header: locale === 'vi' ? 'THAO TÁC' : 'ACTION',
+            header: pick({ vi: 'THAO TÁC', en: 'ACTION' }, locale),
             align: 'right',
             width: '100px',
             inCard: false,
@@ -272,6 +276,7 @@ export default function AdminOrdersPage() {
                         href={`/admin/orders/${b.id}`}
                         className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors"
                         title={tr(S.view, locale)}
+                        aria-label={`${tr(S.viewBookingAria, locale)} ${b.code}`}
                     >
                         <EyeIcon size={16} />
                     </Link>
@@ -287,10 +292,10 @@ export default function AdminOrdersPage() {
                 {/* Left: Title & Count */}
                 <div className="flex items-center gap-2 shrink-0">
                     <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {locale === 'vi' ? 'Danh sách đặt phòng' : 'Bookings'}
+                        {tr(S.orders, locale)}
                     </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {filtered.length} {locale === 'vi' ? 'đơn' : 'bookings'}
+                        {filtered.length} {tr(S.bookingsCountSuffix, locale)}
                     </span>
                 </div>
 
@@ -299,19 +304,21 @@ export default function AdminOrdersPage() {
                     {/* Search Field */}
                     <div className="relative w-44 sm:w-56">
                         <input
-                            type="text"
+                            type="search"
+                            aria-label={tr(S.searchBookingsAria, locale)}
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value)
                                 setPage(1)
                             }}
-                            placeholder={locale === 'vi' ? 'Tìm mã đơn, tên, sđt…' : 'Search code, guest, phone…'}
+                            placeholder={tr(S.search, locale)}
                             className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
                         />
                     </div>
 
                     {/* Channel Select */}
                     <select
+                        aria-label={tr(S.filterChannelAria, locale)}
                         value={channel}
                         onChange={(e) => {
                             setChannel(e.target.value)
@@ -319,7 +326,7 @@ export default function AdminOrdersPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="">{locale === 'vi' ? 'Tất cả kênh' : 'All channels'}</option>
+                        <option value="">{pick({ vi: 'Tất cả kênh', en: 'All channels' }, locale)}</option>
                         <option value="web">Website Trực Tuyến</option>
                         <option value="walk-in">Khách Vãng Lai</option>
                         <option value="ota">Agoda / Booking.com</option>
@@ -328,6 +335,7 @@ export default function AdminOrdersPage() {
 
                     {/* Status Select */}
                     <select
+                        aria-label={tr(S.filterStatusAria, locale)}
                         value={status}
                         onChange={(e) => {
                             setStatus(e.target.value)
@@ -335,7 +343,7 @@ export default function AdminOrdersPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="">{locale === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
+                        <option value="">{pick({ vi: 'Tất cả trạng thái', en: 'All statuses' }, locale)}</option>
                         {STATUSES.map((s) => (
                             <option key={s} value={s}>
                                 {tr(STATUS_LABEL[s], locale)}
@@ -345,6 +353,7 @@ export default function AdminOrdersPage() {
 
                     {/* Room Type Select */}
                     <select
+                        aria-label={tr(S.filterRoomTypeAria, locale)}
                         value={roomType}
                         onChange={(e) => {
                             setRoomType(e.target.value)
@@ -352,7 +361,7 @@ export default function AdminOrdersPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="">{locale === 'vi' ? 'Tất cả hạng phòng' : 'All room types'}</option>
+                        <option value="">{pick({ vi: 'Tất cả hạng phòng', en: 'All room types' }, locale)}</option>
                         {property.rooms.map((r) => (
                             <option key={r.id} value={r.id}>
                                 {pick(r.name, locale)}
@@ -367,7 +376,7 @@ export default function AdminOrdersPage() {
                             onClick={resetFilters}
                             className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
                         >
-                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                            {tr(S.reset, locale)}
                         </button>
                     )}
 
@@ -389,7 +398,7 @@ export default function AdminOrdersPage() {
                             className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 border border-amber-400/50"
                         >
                             <PlusIcon size={14} />
-                            <span>+ Đặt phòng mới</span>
+                            <span>+ {tr(S.newBooking, locale)}</span>
                         </button>
                     )}
                 </div>
@@ -400,10 +409,10 @@ export default function AdminOrdersPage() {
                 {/* Total Stats */}
                 <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
                     <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {locale === 'vi' ? 'TẤT CẢ KÊNH' : 'ALL CHANNELS'}
+                        {pick({ vi: 'TẤT CẢ KÊNH', en: 'ALL CHANNELS' }, locale)}
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.total} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-base font-bold text-slate-900">{stats.total} {tr(S.bookingsCountSuffix, locale)}</span>
                         <span className="text-[11px] font-semibold text-amber-700">
                             {formatPrice(stats.totalRevenue, locale)}
                         </span>
@@ -419,7 +428,7 @@ export default function AdminOrdersPage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.website} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-base font-bold text-slate-900">{stats.website} {tr(S.bookingsCountSuffix, locale)}</span>
                         <span className="text-[11px] font-semibold text-emerald-700">
                             {formatPrice(stats.websiteRev, locale)}
                         </span>
@@ -435,7 +444,7 @@ export default function AdminOrdersPage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.walkIn} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-base font-bold text-slate-900">{stats.walkIn} {tr(S.bookingsCountSuffix, locale)}</span>
                         <span className="text-[11px] font-semibold text-blue-700">
                             {formatPrice(stats.walkInRev, locale)}
                         </span>
@@ -451,7 +460,7 @@ export default function AdminOrdersPage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.ota} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-base font-bold text-slate-900">{stats.ota} {tr(S.bookingsCountSuffix, locale)}</span>
                         <span className="text-[11px] font-semibold text-purple-700">
                             {formatPrice(stats.otaRev, locale)}
                         </span>
@@ -467,7 +476,7 @@ export default function AdminOrdersPage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     </div>
                     <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.phone} {locale === 'vi' ? 'đơn' : 'bookings'}</span>
+                        <span className="text-base font-bold text-slate-900">{stats.phone} {tr(S.bookingsCountSuffix, locale)}</span>
                         <span className="text-[11px] font-semibold text-amber-700">
                             {formatPrice(stats.phoneRev, locale)}
                         </span>
@@ -501,19 +510,35 @@ export default function AdminOrdersPage() {
                     selectedKeys={selected}
                     onSelectionChange={setSelected}
                     selectAllLabel={tr(S.selectAllRows, locale)}
-                    rowLabel={(b) => `${locale === 'vi' ? 'Chọn đơn' : 'Select booking'} ${b.code}`}
+                    rowLabel={(b) => `${pick({ vi: 'Chọn đơn', en: 'Select booking' }, locale)} ${b.code}`}
+                    empty={
+                        <div className="py-6 text-center space-y-2">
+                            <p className="text-sm text-slate-600">
+                                {tr(isFiltered ? S.emptyFilterBookings : S.noBookings, locale)}
+                            </p>
+                            {isFiltered && (
+                                <button
+                                    type="button"
+                                    onClick={resetFilters}
+                                    className="px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-md transition-colors"
+                                >
+                                    {tr(S.resetFilters, locale)}
+                                </button>
+                            )}
+                        </div>
+                    }
                 />
 
                 {filtered.length > 0 && (
                     <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
                         <span>
-                            {locale === 'vi' ? 'Hiển thị' : 'Showing'}{' '}
+                            {tr(S.showing, locale)}{' '}
                             <strong className="text-slate-900 font-semibold">
                                 {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}
                             </strong>{' '}
-                            {locale === 'vi' ? 'trong' : 'of'}{' '}
+                            {tr(S.of, locale)}{' '}
                             <strong className="text-slate-900 font-semibold">{filtered.length}</strong>{' '}
-                            {locale === 'vi' ? 'đơn' : 'bookings'}
+                            {tr(S.bookingsCountSuffix, locale)}
                         </span>
 
                         <div className="flex items-center gap-1.5">
@@ -523,7 +548,7 @@ export default function AdminOrdersPage() {
                                 onClick={() => setPage(safePage - 1)}
                                 className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
-                                ← {locale === 'vi' ? 'Trước' : 'Prev'}
+                                ← {tr(S.paginationPrev, locale)}
                             </button>
                             <span className="px-2 font-semibold text-slate-700">
                                 {safePage} / {totalPages}
@@ -534,7 +559,7 @@ export default function AdminOrdersPage() {
                                 onClick={() => setPage(safePage + 1)}
                                 className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
-                                {locale === 'vi' ? 'Sau' : 'Next'} →
+                                {tr(S.paginationNext, locale)} →
                             </button>
                         </div>
                     </div>

@@ -12,6 +12,14 @@ export interface PaginationProps {
   className?: string
   /** Text template or renderer for summary counter. */
   summaryText?: (start: number, end: number, total: number) => ReactNode
+  /**
+   * Nhãn điều hướng. `ui` là tầng nền, KHÔNG được mang chuỗi của một ngôn ngữ
+   * cụ thể (luật R3/R15) — nơi gọi truyền vào chuỗi đã dịch. Mặc định để tiếng
+   * Anh trung tính để component vẫn dùng được khi chưa nối i18n.
+   */
+  prevLabel?: string
+  nextLabel?: string
+  pageSizeLabel?: string
 }
 
 export function Pagination({
@@ -23,6 +31,9 @@ export function Pagination({
   pageSizeOptions = [10, 20, 50, 100],
   className = '',
   summaryText,
+  prevLabel = 'Previous',
+  nextLabel = 'Next',
+  pageSizeLabel = 'Rows per page:',
 }: PaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const startItem = total === 0 ? 0 : (page - 1) * pageSize + 1
@@ -58,11 +69,11 @@ export function Pagination({
         <span>
           {summaryText
             ? summaryText(startItem, endItem, total)
-            : `Hiển thị ${startItem}–${endItem} trong ${total} đơn`}
+            : `${startItem}–${endItem} / ${total}`}
         </span>
         {onPageSizeChange && (
           <div className="flex items-center gap-1.5 ml-2">
-            <span>Dòng/trang:</span>
+            <span>{pageSizeLabel}</span>
             <select
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -85,7 +96,7 @@ export function Pagination({
           onClick={() => onPageChange(page - 1)}
           className="px-2.5 py-1 border border-slate-200 rounded bg-white font-medium hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          ← Trước
+          ← {prevLabel}
         </button>
 
         {getPageNumbers().map((p, idx) =>
@@ -115,7 +126,7 @@ export function Pagination({
           onClick={() => onPageChange(page + 1)}
           className="px-2.5 py-1 border border-slate-200 rounded bg-white font-medium hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          Sau →
+          {nextLabel} →
         </button>
       </div>
     </div>

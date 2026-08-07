@@ -16,7 +16,7 @@ import {
     availableUnits,
     calculateNightlyPrice,
     formatPrice,
-    getPropertySync,
+
     inventoryKey,
     isWeekend,
     pick,
@@ -25,27 +25,43 @@ import {
 import type { Inventory } from '@repo/core'
 import { Button, CheckField, Field, Modal } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
+import { RequirePermission, useCan } from '@/components/RequirePermission'
 import { useBookingStore } from '@/stores/booking.store'
+import { useRoomTypes } from '@/stores/useCatalog'
 import { todayKey } from '@/stores/demo-data'
 import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
 import { S, tr } from '@/strings'
 
-const DAYS_VISIBLE = 14
+/** Khoảng ngày hiển thị — bộ chọn, KHÔNG hard-code (§6.8 mục 1, AC-13). */
+type RangeLength = 14 | 30
 
 export default function InventoryPage() {
+    return (
+        // Lễ tân VÀO ĐƯỢC lịch tồn kho (AC-8) — khác với bốn màn dữ liệu nền.
+        <RequirePermission anyOf={['inventory.view']}>
+            <InventoryScreen />
+        </RequirePermission>
+    )
+}
+
+function InventoryScreen() {
     const { locale } = useLocale()
     const inventory = useBookingStore((s) => s.inventory)
     const updateInventory = useBookingStore((s) => s.updateInventory)
-    const property = getPropertySync()
+    // Đọc qua lớp merge để giá gốc admin vừa sửa hiện đúng ngay trên lịch.
+    const rooms = useRoomTypes()
+    // Lễ tân sửa được số phòng và đóng bán, nhưng KHÔNG sửa được giá (AC-8).
+    const canEditPrice = useCan('price.edit')
 
     const [offset, setOffset] = useState(0)
+    const [rangeLength, setRangeLength] = useState<RangeLength>(14)
     const [editing, setEditing] = useState<{ roomTypeId: string; date: string } | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     const startDate = addDays(todayKey(), offset)
     const dates = useMemo(
-        () => Array.from({ length: DAYS_VISIBLE }, (_, i) => addDays(startDate, i)),
-        [startDate],
+        () => Array.from({ length: rangeLength }, (_, i) => addDays(startDate, i)),
+        [startDate, rangeLength],
     )
 
     const current = editing ? inventory[inventoryKey(editing.roomTypeId, editing.date)] : undefined
@@ -59,30 +75,45 @@ export default function InventoryPage() {
                         {tr(S.inventoryCalendar, locale)}
                     </h1>
                     <span className="text-xs text-slate-500 hidden sm:inline">
-                        {locale === 'vi'
-                            ? 'Bấm ô để sửa giá, đóng bán hoặc đêm tối thiểu.'
-                            : 'Click cell to adjust price or restrictions.'}
+                        {pick(
+                            {
+                                vi: 'Bấm ô để sửa giá, đóng bán hoặc đêm tối thiểu.',
+                                en: 'Click cell to adjust price or restrictions.',
+                            },
+                            locale,
+                        )}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    {/* Bộ chọn 14 / 30 ngày — AC-13 */}
+                    <select
+                        value={rangeLength}
+                        onChange={(e) => setRangeLength(Number(e.target.value) as RangeLength)}
+                        aria-label={tr(S.dateRangeLabel, locale)}
+                        className="h-8 px-2 text-xs font-medium bg-slate-100 border border-slate-300 rounded-md text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
+                    >
+                        <option value={14}>{tr(S.days14, locale)}</option>
+                        <option value={30}>{tr(S.days30, locale)}</option>
+                    </select>
+
                     <div className="flex items-center bg-slate-100 border border-slate-300 rounded-md p-0.5">
                         <button
                             type="button"
-                            onClick={() => setOffset(offset - DAYS_VISIBLE)}
-                            className="p-1 hover:bg-white rounded transition-colors"
-                            aria-label={locale === 'vi' ? 'Hai tuần trước' : 'Previous two weeks'}
+                            onClick={() => setOffset(offset - rangeLength)}
+                            className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:bg-white rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
+                            aria-label={tr(S.previousRange, locale)}
                         >
                             <ChevronLeftIcon size={16} />
                         </button>
-                        <span className="text-xs font-semibold px-2 text-slate-800">
+                        <span className="text-xs font-semibold px-2 text-slate-800 tabular-nums">
                             {dates[0]} → {dates[dates.length - 1]}
                         </span>
                         <button
                             type="button"
-                            onClick={() => setOffset(offset + DAYS_VISIBLE)}
-                            className="p-1 hover:bg-white rounded transition-colors"
-                            aria-label={locale === 'vi' ? 'Hai tuần sau' : 'Next two weeks'}
+                            onClick={() => setOffset(offset + rangeLength)}
+                            className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center hover:bg-white rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
+                            aria-label={tr(S.nextRange, locale)}
                         >
                             <ChevronRightIcon size={16} />
                         </button>
@@ -92,9 +123,9 @@ export default function InventoryPage() {
                         <button
                             type="button"
                             onClick={() => setOffset(0)}
-                            className="h-8 px-2.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
+                            className="h-8 px-2.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                         >
-                            {locale === 'vi' ? 'Hôm nay' : 'Today'}
+                            {tr(S.todayLabel, locale)}
                         </button>
                     )}
                 </div>
@@ -138,7 +169,7 @@ export default function InventoryPage() {
                                     textAlign: 'left',
                                 }}
                             >
-                                {locale === 'vi' ? 'Hạng phòng' : 'Room type'}
+                                {tr(S.roomType, locale)}
                             </th>
                             {dates.map((date) => (
                                 <th
@@ -155,7 +186,7 @@ export default function InventoryPage() {
                                     <div>{date.slice(8)}/{date.slice(5, 7)}</div>
                                     <div style={{ fontWeight: 400, opacity: 0.7 }}>
                                         {new Date(`${date}T00:00:00Z`).toLocaleDateString(
-                                            locale === 'vi' ? 'vi-VN' : 'en-US',
+                                            tr(S.localeCode, locale),
                                             { weekday: 'short', timeZone: 'UTC' },
                                         )}
                                     </div>
@@ -164,7 +195,7 @@ export default function InventoryPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {property.rooms.map((room) => (
+                        {rooms.map((room) => (
                             <tr key={room.id}>
                                 <th
                                     scope="row"
@@ -244,6 +275,30 @@ export default function InventoryPage() {
                                                 >
                                                     {free}/{inv?.totalUnits ?? 0}
                                                 </span>
+                                                {/* Màu KÈM CHỮ — bật grayscale(1) vẫn phân
+                                                    biệt được ô hết phòng (luật D4, AC-14). */}
+                                                {free === 0 && (
+                                                    <span
+                                                        style={{
+                                                            fontSize: 9,
+                                                            fontWeight: 700,
+                                                            color: 'var(--danger)',
+                                                        }}
+                                                    >
+                                                        {tr(S.soldOutShort, locale)}
+                                                    </span>
+                                                )}
+                                                {free > 0 && free <= 2 && (
+                                                    <span
+                                                        style={{
+                                                            fontSize: 9,
+                                                            fontWeight: 700,
+                                                            color: 'var(--warning)',
+                                                        }}
+                                                    >
+                                                        {tr(S.lowStockShort, locale)}
+                                                    </span>
+                                                )}
                                                 <span
                                                     style={{
                                                         fontSize: 10,
@@ -278,8 +333,9 @@ export default function InventoryPage() {
             {editing && current && (
                 <EditCellDialog
                     inv={current}
+                    canEditPrice={canEditPrice}
                     roomName={pick(
-                        property.rooms.find((r) => r.id === editing.roomTypeId)?.name ?? {
+                        rooms.find((r) => r.id === editing.roomTypeId)?.name ?? {
                             vi: '',
                             en: '',
                         },
@@ -305,12 +361,12 @@ export default function InventoryPage() {
 function Legend() {
     const { locale } = useLocale()
     const items = [
-        { color: 'var(--danger-bg)', label: locale === 'vi' ? 'Hết phòng' : 'Sold out' },
-        { color: 'var(--warning-bg)', label: locale === 'vi' ? 'Sắp hết (≤2)' : 'Low (≤2)' },
+        { color: 'var(--danger-bg)', label: tr(S.soldOutShort, locale) },
+        { color: 'var(--warning-bg)', label: pick({ vi: 'Sắp hết (≤2)', en: 'Low (≤2)' }, locale) },
         {
             color: 'transparent',
             border: 'var(--brand)',
-            label: locale === 'vi' ? 'Đã đè giá' : 'Price overridden',
+            label: pick({ vi: 'Đã đè giá', en: 'Price overridden' }, locale),
         },
     ]
     return (
@@ -338,8 +394,8 @@ function Legend() {
                     {item.label}
                 </span>
             ))}
-            <span>CTA = {locale === 'vi' ? 'cấm nhận phòng' : 'closed to arrival'}</span>
-            <span>≥N = {locale === 'vi' ? 'số đêm tối thiểu' : 'minimum nights'}</span>
+            <span>CTA = {pick({ vi: 'cấm nhận phòng', en: 'closed to arrival' }, locale)}</span>
+            <span>≥N = {pick({ vi: 'số đêm tối thiểu', en: 'minimum nights' }, locale)}</span>
         </div>
     )
 }
@@ -347,11 +403,15 @@ function Legend() {
 function EditCellDialog({
     inv,
     roomName,
+    canEditPrice,
     onClose,
     onSave,
 }: {
     inv: Inventory
     roomName: string
+    /** Lễ tân chỉ ĐỌC giá (AC-8) — ô giá render thành `<span>`, không phải
+     *  `<button disabled>`: target chết vẫn nằm trong luồng Tab (§6.11). */
+    canEditPrice: boolean
     onClose: () => void
     onSave: (patch: Partial<Omit<Inventory, 'date' | 'roomTypeId' | 'version'>>) => void
 }) {
@@ -382,7 +442,11 @@ function EditCellDialog({
                     <Button
                         onClick={() =>
                             onSave({
-                                priceOverride: override ? Number(override) : undefined,
+                                // Lễ tân không gửi giá lên — không sửa được thì
+                                // cũng không được vô tình xoá giá đè đang có.
+                                ...(canEditPrice
+                                    ? { priceOverride: override ? Number(override) : undefined }
+                                    : {}),
                                 blockedUnits: Math.min(Math.max(0, blocked), maxBlocked),
                                 minNights: minNights ? Number(minNights) : undefined,
                                 closedToArrival: cta || undefined,
@@ -405,23 +469,53 @@ function EditCellDialog({
                     }}
                 >
                     <Stat label={tr(S.totalUnits, locale)} value={inv.totalUnits} />
-                    <Stat label={locale === 'vi' ? 'Đã bán' : 'Booked'} value={inv.bookedUnits} />
+                    <Stat label={tr(S.bookedLabel, locale)} value={inv.bookedUnits} />
                     <Stat
                         label={tr(S.availableUnits, locale)}
                         value={inv.totalUnits - inv.bookedUnits - inv.blockedUnits}
                     />
                 </div>
 
-                <Field
-                    label={tr(S.priceOverride, locale)}
-                    type="number"
-                    min={0}
-                    step={50000}
-                    value={override}
-                    onChange={(e) => setOverride(e.target.value)}
-                    hint={tr(S.priceOverrideHint, locale)}
-                    placeholder={locale === 'vi' ? 'Để trống = dùng giá theo mùa' : 'Blank = use seasonal price'}
-                />
+                {canEditPrice ? (
+                    <Field
+                        label={tr(S.priceOverride, locale)}
+                        type="number"
+                        min={0}
+                        step={50000}
+                        value={override}
+                        onChange={(e) => setOverride(e.target.value)}
+                        hint={tr(S.priceOverrideHint, locale)}
+                        placeholder={
+                            pick(
+                                {
+                                    vi: 'Để trống = dùng giá theo mùa',
+                                    en: 'Blank = use seasonal price',
+                                },
+                                locale,
+                            )
+                        }
+                    />
+                ) : (
+                    <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                        <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>
+                            {tr(S.priceOverride, locale)}
+                        </span>
+                        <span
+                            style={{
+                                fontSize: 'var(--text-sm)',
+                                fontVariantNumeric: 'tabular-nums',
+                                color: 'var(--text)',
+                            }}
+                        >
+                            {override
+                                ? formatPrice(Number(override), locale)
+                                : pick({ vi: 'Dùng giá theo mùa', en: 'Seasonal price' }, locale)}
+                        </span>
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                            {tr(S.priceReadOnly, locale)}
+                        </span>
+                    </div>
+                )}
 
                 <Field
                     label={tr(S.blockedUnits, locale)}
@@ -430,11 +524,13 @@ function EditCellDialog({
                     max={maxBlocked}
                     value={blocked}
                     onChange={(e) => setBlocked(Number(e.target.value) || 0)}
-                    hint={
-                        locale === 'vi'
-                            ? `Phòng đóng để bảo trì hoặc giữ riêng. Tối đa ${maxBlocked} (số phòng chưa bán).`
-                            : `Rooms held back for maintenance. Maximum ${maxBlocked} (unsold rooms).`
-                    }
+                    hint={pick(
+                        {
+                            vi: `Phòng đóng để bảo trì hoặc giữ riêng. Tối đa ${maxBlocked} (số phòng chưa bán).`,
+                            en: `Rooms held back for maintenance. Maximum ${maxBlocked} (unsold rooms).`,
+                        },
+                        locale,
+                    )}
                 />
 
                 <Field
@@ -443,33 +539,39 @@ function EditCellDialog({
                     min={1}
                     value={minNights}
                     onChange={(e) => setMinNights(e.target.value)}
-                    hint={
-                        locale === 'vi'
-                            ? 'Khách nhận phòng ngày này phải ở ít nhất bấy nhiêu đêm. Hay dùng dịp lễ.'
-                            : 'Guests arriving on this date must stay at least this many nights. Common on holidays.'
-                    }
+                    hint={pick(
+                        {
+                            vi: 'Khách nhận phòng ngày này phải ở ít nhất bấy nhiêu đêm. Hay dùng dịp lễ.',
+                            en: 'Guests arriving on this date must stay at least this many nights. Common on holidays.',
+                        },
+                        locale,
+                    )}
                 />
 
                 <CheckField
                     label={tr(S.closedToArrival, locale)}
                     checked={cta}
                     onChange={(e) => setCta(e.target.checked)}
-                    hint={
-                        locale === 'vi'
-                            ? 'Không cho nhận phòng ngày này. Khách đang ở vẫn ở tiếp bình thường.'
-                            : 'No new arrivals on this date. Guests already staying are unaffected.'
-                    }
+                    hint={pick(
+                        {
+                            vi: 'Không cho nhận phòng ngày này. Khách đang ở vẫn ở tiếp bình thường.',
+                            en: 'No new arrivals on this date. Guests already staying are unaffected.',
+                        },
+                        locale,
+                    )}
                 />
 
                 <CheckField
                     label={tr(S.closedToDeparture, locale)}
                     checked={ctd}
                     onChange={(e) => setCtd(e.target.checked)}
-                    hint={
-                        locale === 'vi'
-                            ? 'Không cho trả phòng ngày này.'
-                            : 'No departures allowed on this date.'
-                    }
+                    hint={pick(
+                        {
+                            vi: 'Không cho trả phòng ngày này.',
+                            en: 'No departures allowed on this date.',
+                        },
+                        locale,
+                    )}
                 />
             </div>
         </Modal>

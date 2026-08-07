@@ -204,3 +204,74 @@ export function TicketIcon({ size = 20 }: IconProps) {
         </svg>
     )
 }
+
+export function BuildingIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+            <path d="M16 9h2a2 2 0 0 1 2 2v10" />
+            <path d="M2 21h20M8 7h.01M12 7h.01M8 11h.01M12 11h.01M8 15h.01M12 15h.01" />
+        </svg>
+    )
+}
+
+export function CheckCircleIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+        </svg>
+    )
+}
+
+export function AlertTriangleIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+            <path d="M12 9v4M12 17h.01" />
+        </svg>
+    )
+}
+
+export function WrenchIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="M14.7 6.3a4 4 0 0 0 5.1 5.1l-8.4 8.4a2.8 2.8 0 0 1-4-4l8.4-8.4a4 4 0 0 0-1.1-1.1Z" />
+        </svg>
+    )
+}
+
+export function ClockIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+        </svg>
+    )
+}
+
+export function StarIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.4l6.1-.9Z" />
+        </svg>
+    )
+}
+
+export function SearchIcon({ size = 18 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+        </svg>
+    )
+}
+
+export function CoinsIcon({ size = 20 }: IconProps) {
+    return (
+        <svg {...svgProps(size)}>
+            <circle cx="9" cy="8" r="5" />
+            <path d="M15.5 4.2a5 5 0 0 1 0 15.6M6 15.5v.5a5 5 0 0 0 10 0" />
+        </svg>
+    )
+}

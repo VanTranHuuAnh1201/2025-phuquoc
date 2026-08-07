@@ -109,7 +109,7 @@ export default function PromotionsPage() {
     const columns: Column<Promotion>[] = [
         {
             key: 'name',
-            header: locale === 'vi' ? 'TÊN CHƯƠNG TRÌNH & MÃ CODE' : 'PROMO NAME & CODE',
+            header: tr(S.promoNameAndCode, locale),
             cell: (p) => (
                 <div>
                     <div className="font-semibold text-slate-900">{pick(p.name, locale)}</div>
@@ -120,7 +120,7 @@ export default function PromotionsPage() {
                             </span>
                         ) : (
                             <span className="text-slate-400 italic">
-                                {locale === 'vi' ? 'Tự động áp dụng' : 'Automatic'}
+                                {tr(S.autoApplied, locale)}
                             </span>
                         )}
                     </div>
@@ -129,7 +129,7 @@ export default function PromotionsPage() {
         },
         {
             key: 'type',
-            header: locale === 'vi' ? 'LOẠI KHUYẾN MÃI' : 'TYPE',
+            header: tr(S.promoType, locale),
             cell: (p) => (
                 <div>
                     <div className="font-medium text-slate-800 text-xs">{tr(PROMO_TYPE_LABEL[p.type], locale)}</div>
@@ -139,7 +139,7 @@ export default function PromotionsPage() {
         },
         {
             key: 'window',
-            header: locale === 'vi' ? 'THỜI GIAN ÁP DỤNG' : 'STAY WINDOW',
+            header: tr(S.stayWindow, locale),
             cell: (p) =>
                 p.conditions.stayFrom || p.conditions.stayTo ? (
                     <span className="text-xs text-slate-600 font-mono whitespace-nowrap">
@@ -147,24 +147,24 @@ export default function PromotionsPage() {
                     </span>
                 ) : (
                     <span className="text-xs text-slate-400">
-                        {locale === 'vi' ? 'Tất cả các ngày' : 'All dates'}
+                        {tr(S.allDates, locale)}
                     </span>
                 ),
         },
         {
             key: 'stacking',
-            header: locale === 'vi' ? 'QUY TẮC CỘNG DỒN' : 'STACKING',
+            header: tr(S.stacking, locale),
             width: '130px',
             cell: (p) => (
                 <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 ${p.stackable ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
                     <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${p.stackable ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                    <span className="truncate">{p.stackable ? (locale === 'vi' ? 'Cộng dồn' : 'Stackable') : (locale === 'vi' ? 'Độc quyền' : 'Exclusive')}</span>
+                    <span className="truncate">{p.stackable ? tr(S.stackableShort, locale) : tr(S.exclusiveShort, locale)}</span>
                 </span>
             ),
         },
         {
             key: 'usage',
-            header: locale === 'vi' ? 'ĐÃ DÙNG' : 'USAGE',
+            header: tr(S.usage, locale),
             align: 'right',
             width: '100px',
             cell: (p) => (
@@ -176,7 +176,7 @@ export default function PromotionsPage() {
         },
         {
             key: 'active',
-            header: locale === 'vi' ? 'TRẠNG THÁI' : 'STATUS',
+            header: tr(S.promoStatus, locale),
             width: '130px',
             cell: (p) => (
                 <button
@@ -186,18 +186,18 @@ export default function PromotionsPage() {
                         toggle(p.id)
                     }}
                     title={p.active ? 'Bấm để tắt' : 'Bấm để bật'}
-                    className="focus:outline-none"
+                    className="rounded-[4px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
                 >
                     <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 cursor-pointer transition-colors ${p.active ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'}`}>
                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${p.active ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                        <span className="truncate">{p.active ? (locale === 'vi' ? 'Đang chạy' : 'Active') : (locale === 'vi' ? 'Đã tắt' : 'Disabled')}</span>
+                        <span className="truncate">{p.active ? tr(S.statusActive, locale) : tr(S.statusDisabled, locale)}</span>
                     </span>
                 </button>
             ),
         },
         {
             key: 'actions',
-            header: locale === 'vi' ? 'THAO TÁC' : 'ACTION',
+            header: tr(S.promoAction, locale),
             align: 'right',
             width: '100px',
             inCard: false,
@@ -210,7 +210,7 @@ export default function PromotionsPage() {
                             setInfoPromo(p)
                         }}
                         className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                        title={locale === 'vi' ? 'Xem công thức & cách tính toán' : 'View calculation formula'}
+                        title={tr(S.viewCalcFormula, locale)}
                     >
                         <span className="w-4 h-4 rounded-full border border-blue-500 flex items-center justify-center text-[10px] font-bold">i</span>
                     </button>
@@ -240,7 +240,7 @@ export default function PromotionsPage() {
                         {tr(S.promotions, locale)}
                     </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {activeCount} {locale === 'vi' ? 'đang chạy' : 'active'} / {promotions.length}
+                        {activeCount} {tr(S.statusActive, locale).toLowerCase()} / {promotions.length}
                     </span>
 
                     {/* View Switcher Tabs */}
@@ -254,7 +254,7 @@ export default function PromotionsPage() {
                                     : 'text-slate-600 hover:text-slate-900'
                             }`}
                         >
-                            📋 {locale === 'vi' ? 'Danh sách mã' : 'List View'}
+                            📋 {tr(S.listView, locale)}
                         </button>
                         <button
                             type="button"
@@ -265,7 +265,7 @@ export default function PromotionsPage() {
                                     : 'text-slate-600 hover:text-slate-900'
                             }`}
                         >
-                            🧮 {locale === 'vi' ? 'Công thức & Tính toán' : 'Formulas & Calc'}
+                            🧮 {tr(S.formulasAndCalc, locale)}
                         </button>
                     </div>
                 </div>
@@ -281,7 +281,7 @@ export default function PromotionsPage() {
                                 setSearch(e.target.value)
                                 setPage(1)
                             }}
-                            placeholder={locale === 'vi' ? 'Tìm tên mã, code…' : 'Search code or name…'}
+                            placeholder={tr(S.search, locale)}
                             className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
                         />
                     </div>
@@ -295,7 +295,7 @@ export default function PromotionsPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">{locale === 'vi' ? 'Tất cả loại' : 'All types'}</option>
+                        <option value="all">{tr(S.allTypes, locale)}</option>
                         {TYPES.map((tKey) => (
                             <option key={tKey} value={tKey}>
                                 {tr(PROMO_TYPE_LABEL[tKey], locale)}
@@ -312,9 +312,9 @@ export default function PromotionsPage() {
                         }}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">{locale === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
-                        <option value="active">{locale === 'vi' ? 'Đang chạy' : 'Active'}</option>
-                        <option value="inactive">{locale === 'vi' ? 'Đã tắt' : 'Disabled'}</option>
+                        <option value="all">{tr(S.allStatuses, locale)}</option>
+                        <option value="active">{tr(S.statusActive, locale)}</option>
+                        <option value="inactive">{tr(S.statusDisabled, locale)}</option>
                     </select>
 
                     {/* Reset Button */}
@@ -324,9 +324,10 @@ export default function PromotionsPage() {
                             onClick={resetFilters}
                             className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
                         >
-                            {locale === 'vi' ? 'Đặt lại' : 'Reset'}
+                            {tr(S.reset, locale)}
                         </button>
                     )}
+
 
                     {/* Primary Action Button */}
                     <button
@@ -344,7 +345,7 @@ export default function PromotionsPage() {
                 {/* Total Promotions */}
                 <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
                     <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {locale === 'vi' ? 'TẤT CẢ CHƯƠNG TRÌNH' : 'TOTAL PROMOS'}
+                        {tr(S.totalPromos, locale)}
                     </div>
                     <div className="text-base font-bold text-slate-900 mt-1">{promotions.length} mã</div>
                 </div>
@@ -408,13 +409,13 @@ export default function PromotionsPage() {
                     {filtered.length > 0 && (
                         <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0">
                             <span>
-                                {locale === 'vi' ? 'Hiển thị' : 'Showing'}{' '}
+                                {tr(S.showing, locale)}{' '}
                                 <strong className="text-slate-900 font-semibold">
                                     {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}
                                 </strong>{' '}
-                                {locale === 'vi' ? 'trong' : 'of'}{' '}
+                                {tr(S.of, locale)}{' '}
                                 <strong className="text-slate-900 font-semibold">{filtered.length}</strong>{' '}
-                                {locale === 'vi' ? 'mã' : 'promotions'}
+                                {tr(S.promotions, locale)}
                             </span>
 
                             <div className="flex items-center gap-1.5">
@@ -424,7 +425,7 @@ export default function PromotionsPage() {
                                     onClick={() => setPage(safePage - 1)}
                                     className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    ← {locale === 'vi' ? 'Trước' : 'Prev'}
+                                    ← {tr(S.paginationPrev, locale)}
                                 </button>
                                 <span className="px-2 font-semibold text-slate-700">
                                     {safePage} / {totalPages}
@@ -435,7 +436,7 @@ export default function PromotionsPage() {
                                     onClick={() => setPage(safePage + 1)}
                                     className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    {locale === 'vi' ? 'Sau' : 'Next'} →
+                                    {tr(S.paginationNext, locale)} →
                                 </button>
                             </div>
                         </div>
@@ -499,7 +500,7 @@ function CalculationInfoModal({
     return (
         <Modal
             open={true}
-            title={`ℹ️ ${locale === 'vi' ? 'Công thức & Chi tiết tính toán' : 'Formula & Calculation Details'}: ${pick(promotion.name, locale)}`}
+            title={`ℹ️ ${tr(S.formulaAndCalcDetails, locale)}: ${pick(promotion.name, locale)}`}
             onClose={onClose}
         >
             <div className="space-y-4 text-xs text-slate-700">
@@ -507,11 +508,11 @@ function CalculationInfoModal({
                     <div>
                         <div className="font-bold text-amber-900 text-sm">{pick(promotion.name, locale)}</div>
                         <div className="font-mono text-amber-800 font-semibold mt-0.5">
-                            Mã Code: {promotion.code || (locale === 'vi' ? 'Tự động áp dụng' : 'Automatic')}
+                            {tr(S.codeLabel, locale)}: {promotion.code || tr(S.automatic, locale)}
                         </div>
                     </div>
                     <span className={`px-2.5 py-1 text-xs font-semibold rounded border ${promotion.active ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
-                        {promotion.active ? (locale === 'vi' ? 'Đang chạy' : 'Active') : (locale === 'vi' ? 'Đã tắt' : 'Disabled')}
+                        {promotion.active ? tr(S.active, locale) : tr(S.disabled, locale)}
                     </span>
                 </div>
 
@@ -541,7 +542,7 @@ function CalculationInfoModal({
                         <div className="p-2 bg-slate-50 rounded border border-slate-200">
                             <span className="text-slate-500 font-medium block">Chế độ cộng dồn:</span>
                             <span className={`font-bold ${promotion.stackable ? 'text-emerald-700' : 'text-amber-700'}`}>
-                                {promotion.stackable ? (locale === 'vi' ? 'Cho phép cộng dồn' : 'Stackable') : (locale === 'vi' ? 'Độc quyền (Không cộng dồn)' : 'Exclusive')}
+                                {promotion.stackable ? tr(S.stackable, locale) : tr(S.exclusive, locale)}
                             </span>
                         </div>
                     </div>
@@ -554,7 +555,7 @@ function CalculationInfoModal({
                     </h4>
                     <ul className="list-disc pl-4 space-y-1 text-slate-600">
                         <li>
-                            Khung ngày ở: {promotion.conditions.stayFrom || promotion.conditions.stayTo ? `${promotion.conditions.stayFrom ?? '…'} đến ${promotion.conditions.stayTo ?? '…'}` : (locale === 'vi' ? 'Áp dụng mọi ngày' : 'All dates')}
+                            Khung ngày ở: {promotion.conditions.stayFrom || promotion.conditions.stayTo ? `${promotion.conditions.stayFrom ?? '…'} ${tr(S.to, locale)} ${promotion.conditions.stayTo ?? '…'}` : tr(S.allDates, locale)}
                         </li>
                         {promotion.conditions.minNights && (
                             <li>Yêu cầu số đêm tối thiểu: <strong>{promotion.conditions.minNights} đêm</strong></li>
@@ -574,7 +575,7 @@ function CalculationInfoModal({
                         onClick={onClose}
                         className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-md shadow-sm transition-colors"
                     >
-                        Đóng
+                        {tr(S.close, locale)}
                     </button>
                 </div>
             </div>
@@ -588,22 +589,13 @@ function HowItWorks() {
     const { locale } = useLocale()
     const [open, setOpen] = useState(true)
 
-    const steps =
-        locale === 'vi'
-            ? [
-                  'Lọc các khuyến mãi đang kích hoạt & thoả điều kiện.',
-                  'Sắp xếp theo thứ tự ưu tiên (Priority số nhỏ áp trước).',
-                  'Nếu có KM độc quyền: giữ DUY NHẤT 1 mã ưu tiên cao nhất.',
-                  'Tính giảm giá trên SỐ TIỀN CÒN LẠI sau các lần áp trước.',
-                  'Áp dụng trần giảm tối đa (Max Discount) nếu có.',
-              ]
-            : [
-                  'Filter active promotions meeting conditions.',
-                  'Sort by priority (lower number applies first).',
-                  'Exclusive promo: keeps ONLY the top priority promo.',
-                  'Calculate discount on the REMAINING amount.',
-                  'Apply maximum discount cap if set.',
-              ]
+    const steps = [
+        pick({ vi: 'Lọc các khuyến mãi đang kích hoạt & thoả điều kiện.', en: 'Filter active promotions meeting conditions.' }, locale),
+        pick({ vi: 'Sắp xếp theo thứ tự ưu tiên (Priority số nhỏ áp trước).', en: 'Sort by priority (lower number applies first).' }, locale),
+        pick({ vi: 'Nếu có KM độc quyền: giữ DUY NHẤT 1 mã ưu tiên cao nhất.', en: 'Exclusive promo: keeps ONLY the top priority promo.' }, locale),
+        pick({ vi: 'Tính giảm giá trên SỐ TIỀN CÒN LẠI sau các lần áp trước.', en: 'Calculate discount on the REMAINING amount.' }, locale),
+        pick({ vi: 'Áp dụng trần giảm tối đa (Max Discount) nếu có.', en: 'Apply maximum discount cap if set.' }, locale),
+    ]
 
     return (
         <section className="bg-white rounded-lg border border-slate-200 shadow-sm p-3 space-y-2">
@@ -616,9 +608,13 @@ function HowItWorks() {
                 <span className="flex items-center gap-1.5">
                     <span>💡</span>
                     <span>
-                        {locale === 'vi'
-                            ? 'Quy tắc thuật toán tính khuyến mãi'
-                            : 'Promotion Calculation Rules'}
+                        {pick(
+                            {
+                                vi: 'Quy tắc thuật toán tính khuyến mãi',
+                                en: 'Promotion Calculation Rules',
+                            },
+                            locale,
+                        )}
                     </span>
                 </span>
                 <span className="text-slate-400 text-sm font-mono">{open ? '▾' : '▸'}</span>
@@ -634,9 +630,13 @@ function HowItWorks() {
 
                     <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-md text-[11px]">
                         <strong className="text-slate-900 block font-semibold">
-                            {locale === 'vi'
-                                ? 'Ví dụ tính phép nhân cộng dồn (1.000.000đ, 10% + 20%):'
-                                : 'Multiplicative compound example (1,000,000₫, 10% + 20%):'}
+                            {pick(
+                                {
+                                    vi: 'Ví dụ tính phép nhân cộng dồn (1.000.000đ, 10% + 20%):',
+                                    en: 'Multiplicative compound example (1,000,000₫, 10% + 20%):',
+                                },
+                                locale,
+                            )}
                         </strong>
                         <div className="mt-1 font-mono space-y-0.5">
                             <div className="text-rose-600">
@@ -703,9 +703,13 @@ function ConflictWarnings({
                                         {tr(S.winnerIs, locale)}: {nameOf(conflict.winnerId)}
                                     </strong>{' '}
                                     (
-                                    {locale === 'vi'
-                                        ? 'thứ tự áp dụng nhỏ hơn'
-                                        : 'lower priority number'}
+                                    {pick(
+                                        {
+                                            vi: 'thứ tự áp dụng nhỏ hơn',
+                                            en: 'lower priority number',
+                                        },
+                                        locale,
+                                    )}
                                     )
                                 </>
                             )}
@@ -765,7 +769,7 @@ function ApplyOrder({ promotions }: { promotions: Promotion[] }) {
                             {!promo.stackable && (
                                 <span style={{ color: 'var(--warning)' }}>
                                     {' '}
-                                    ({locale === 'vi' ? 'độc quyền' : 'exclusive'})
+                                    ({pick({ vi: 'độc quyền', en: 'exclusive' }, locale)})
                                 </span>
                             )}
                         </span>
@@ -831,7 +835,7 @@ function PreviewCalculator() {
                 {/* Inputs Form */}
                 <div className="md:col-span-5 bg-slate-50 p-2.5 rounded-lg border border-slate-200 space-y-2.5 shrink-0 self-start">
                     <SelectField
-                        label={locale === 'vi' ? 'Hạng phòng' : 'Room type'}
+                        label={tr(S.roomType, locale)}
                         value={roomTypeId}
                         onChange={(e) => setRoomTypeId(e.target.value)}
                     >
@@ -851,7 +855,7 @@ function PreviewCalculator() {
 
                     <div className="grid grid-cols-2 gap-2">
                         <Field
-                            label={locale === 'vi' ? 'Số đêm' : 'Nights'}
+                            label={tr(S.nights, locale)}
                             type="number"
                             min={1}
                             max={14}
@@ -871,7 +875,7 @@ function PreviewCalculator() {
                         label={tr(S.promoCode, locale)}
                         value={code}
                         onChange={(e) => setCode(e.target.value.toUpperCase())}
-                        hint={locale === 'vi' ? 'Thử NAMDU10 hoặc WELCOME' : 'Try NAMDU10 or WELCOME'}
+                        hint={pick({ vi: 'Thử NAMDU10 hoặc WELCOME', en: 'Try NAMDU10 or WELCOME' }, locale)}
                     />
                 </div>
 
@@ -884,9 +888,13 @@ function PreviewCalculator() {
                             {rejected.length > 0 && (
                                 <div className="pt-2.5 border-t border-slate-200">
                                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                                        {locale === 'vi'
-                                            ? 'Khuyến mãi không đủ điều kiện'
-                                            : 'Promotions not applied'}
+                                        {pick(
+                                            {
+                                                vi: 'Khuyến mãi không đủ điều kiện',
+                                                en: 'Promotions not applied',
+                                            },
+                                            locale,
+                                        )}
                                     </div>
                                     <ul className="space-y-1">
                                         {rejected.map((item) => (
@@ -908,7 +916,7 @@ function PreviewCalculator() {
                         </div>
                     ) : (
                         <p className="text-xs text-slate-500 italic">
-                            {locale === 'vi' ? 'Chọn hạng phòng để xem.' : 'Pick a room type to preview.'}
+                            {tr(S.selectRoomPreview, locale)}
                         </p>
                     )}
                 </div>
@@ -972,7 +980,7 @@ function PromotionForm({
         >
             <div style={{ display: 'grid', gap: 'var(--space-6)' }}>
                 {/* --- tên song ngữ: bắt buộc theo luật R6 --- */}
-                <FormGroup title={locale === 'vi' ? 'Nội dung' : 'Content'}>
+                <FormGroup title={tr(S.contentGroup, locale)}>
                     <Field
                         label={`${tr(S.promoName, locale)} (VI)`}
                         value={draft.name.vi}
@@ -984,9 +992,13 @@ function PromotionForm({
                         value={draft.name.en}
                         onChange={(e) => patch({ name: { ...draft.name, en: e.target.value } })}
                         hint={
-                            locale === 'vi'
-                                ? 'Bắt buộc — mọi chuỗi khách nhìn thấy phải có cả hai ngôn ngữ.'
-                                : 'Required — every guest-facing string needs both languages.'
+                            pick(
+                                {
+                                    vi: 'Bắt buộc — mọi chuỗi khách nhìn thấy phải có cả hai ngôn ngữ.',
+                                    en: 'Required — every guest-facing string needs both languages.',
+                                },
+                                locale,
+                            )
                         }
                         required
                     />
@@ -1007,7 +1019,7 @@ function PromotionForm({
                 </FormGroup>
 
                 {/* --- kiểu và giá trị --- */}
-                <FormGroup title={locale === 'vi' ? 'Cách giảm' : 'Discount mechanics'}>
+                <FormGroup title={tr(S.discountMechanicsGroup, locale)}>
                     <SelectField
                         label={tr(S.promoType, locale)}
                         value={draft.type}
@@ -1037,7 +1049,7 @@ function PromotionForm({
                         value={draft.code ?? ''}
                         onChange={(e) => patch({ code: e.target.value.toUpperCase() || undefined })}
                         hint={tr(S.promoCodeHint, locale)}
-                        placeholder={locale === 'vi' ? 'Để trống = tự động' : 'Blank = automatic'}
+                        placeholder={tr(S.blankEqualsAutomatic, locale)}
                     />
 
                     <Field
@@ -1054,7 +1066,7 @@ function PromotionForm({
                 </FormGroup>
 
                 {/* --- quy tắc kết hợp: phần dễ sai nhất --- */}
-                <FormGroup title={locale === 'vi' ? 'Quy tắc kết hợp' : 'Stacking rules'}>
+                <FormGroup title={tr(S.stackingRulesGroup, locale)}>
                     <CheckField
                         label={tr(S.stackable, locale)}
                         checked={draft.stackable}
@@ -1081,7 +1093,7 @@ function PromotionForm({
                             onChange={(e) => patchConditions({ stayFrom: e.target.value || undefined })}
                         />
                         <Field
-                            label={`${tr(S.stayWindow, locale)} — ${locale === 'vi' ? 'đến' : 'to'}`}
+                            label={`${tr(S.stayWindow, locale)} — ${tr(S.to, locale)}`}
                             type="date"
                             value={draft.conditions.stayTo ?? ''}
                             onChange={(e) => patchConditions({ stayTo: e.target.value || undefined })}
@@ -1129,12 +1141,20 @@ function PromotionForm({
                             }
                             hint={
                                 draft.type === 'early-bird'
-                                    ? locale === 'vi'
-                                        ? 'Khách phải đặt SỚM HƠN số ngày này.'
-                                        : 'Guest must book EARLIER than this many days.'
-                                    : locale === 'vi'
-                                      ? 'Khách phải đặt TRONG VÒNG số ngày này.'
-                                      : 'Guest must book WITHIN this many days.'
+                                    ? pick(
+                                          {
+                                              vi: 'Khách phải đặt SỚM HƠN số ngày này.',
+                                              en: 'Guest must book EARLIER than this many days.',
+                                          },
+                                          locale,
+                                      )
+                                    : pick(
+                                          {
+                                              vi: 'Khách phải đặt TRONG VÒNG số ngày này.',
+                                              en: 'Guest must book WITHIN this many days.',
+                                          },
+                                          locale,
+                                      )
                             }
                         />
                     )}
@@ -1182,7 +1202,7 @@ function PromotionForm({
                 </FormGroup>
 
                 {/* --- hạn mức --- */}
-                <FormGroup title={locale === 'vi' ? 'Giới hạn' : 'Limits'}>
+                <FormGroup title={tr(S.limitsGroup, locale)}>
                     <div style={{ display: 'grid', gap: 'var(--space-4)', gridTemplateColumns: '1fr 1fr' }}>
                         <Field
                             label={tr(S.usageLimit, locale)}
@@ -1208,13 +1228,17 @@ function PromotionForm({
                         />
                     </div>
                     <CheckField
-                        label={locale === 'vi' ? 'Bật chương trình' : 'Activate promotion'}
+                        label={tr(S.activatePromo, locale)}
                         checked={draft.active}
                         onChange={(e) => patch({ active: e.target.checked })}
                         hint={
-                            locale === 'vi'
-                                ? 'Chỉ khuyến mãi đang bật mới được áp vào giá khách thấy.'
-                                : 'Only active promotions affect the price guests see.'
+                            pick(
+                                {
+                                    vi: 'Chỉ khuyến mãi đang bật mới được áp vào giá khách thấy.',
+                                    en: 'Only active promotions affect the price guests see.',
+                                },
+                                locale,
+                            )
                         }
                     />
                 </FormGroup>
@@ -1255,7 +1279,7 @@ function describeValue(promo: Promotion, locale: 'vi' | 'en'): string {
         case 'free-addon':
             return `−${formatPrice(promo.value, locale)}`
         case 'nth-night-free':
-            return locale === 'vi' ? `Đêm thứ ${promo.value}` : `Night ${promo.value}`
+            return tr(S.nightNLabel, locale).replace('{value}', String(promo.value))
         case 'long-stay':
             return (promo.conditions.tiers ?? [])
                 .map((tier) => `≥${tier.minNights}đ: −${tier.percent}%`)
@@ -1268,12 +1292,12 @@ function valueHint(type: PromotionType, locale: 'vi' | 'en'): string {
         case 'percent':
         case 'early-bird':
         case 'last-minute':
-            return locale === 'vi' ? 'Nhập số phần trăm, ví dụ 15' : 'Enter a percentage, e.g. 15'
+            return tr(S.ruleValuePercentage, locale)
         case 'fixed':
         case 'free-addon':
-            return locale === 'vi' ? 'Nhập số tiền VNĐ' : 'Enter an amount in VND'
+            return tr(S.ruleValueVND, locale)
         case 'nth-night-free':
-            return locale === 'vi' ? 'Nhập N — đêm thứ N được tặng' : 'Enter N — the Nth night is free'
+            return tr(S.ruleValueN, locale)
         default:
             return ''
     }

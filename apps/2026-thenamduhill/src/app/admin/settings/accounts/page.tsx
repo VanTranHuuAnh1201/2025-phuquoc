@@ -1,13 +1,9 @@
 'use client'
 
-import {
-    PlusIcon,
-    PencilIcon,
-    TrashIcon,
-    EyeIcon,
-    UsersIcon,
-} from '@/components/icons'
+import { PlusIcon, SearchIcon, TrashIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
+import { RequirePermission } from '@/components/RequirePermission'
+import { S, tr } from '@/strings'
 import { DataTable, useDataTable, type Column, Modal, Field, SelectField } from '@repo/ui'
 import { useState } from 'react'
 
@@ -76,6 +72,16 @@ const RESORT_ACCOUNTS: AccountRowItem[] = [
 ]
 
 export default function AccountsSettingsPage() {
+    return (
+        // Quản trị tài khoản: chỉ `owner` (`account.manage`). Ẩn menu không phải
+        // phân quyền — gõ thẳng URL cũng phải bị chặn (`100-05` AC-6).
+        <RequirePermission anyOf={['account.manage']}>
+            <AccountsSettingsScreen />
+        </RequirePermission>
+    )
+}
+
+function AccountsSettingsScreen() {
     const { locale } = useLocale()
     const [accounts, setAccounts] = useState<AccountRowItem[]>(RESORT_ACCOUNTS)
     const [search, setSearch] = useState('')
@@ -93,7 +99,7 @@ export default function AccountsSettingsPage() {
     const columns: Column<AccountRowItem>[] = [
         {
             key: 'username',
-            header: 'TÊN ĐĂNG NHẬP & EMAIL',
+            header: tr(S.colUsername, locale),
             width: '220px',
             sortable: true,
             cell: (row) => (
@@ -105,17 +111,17 @@ export default function AccountsSettingsPage() {
         },
         {
             key: 'fullName',
-            header: 'HỌ VÀ TÊN NGUỜI DÙNG',
+            header: tr(S.colFullName, locale),
             cell: (row) => (
                 <div>
                     <div className="font-semibold text-xs text-slate-900">{row.fullName}</div>
-                    <div className="text-[10px] text-slate-400">SĐT: {row.phone}</div>
+                    <div className="text-[10px] text-slate-400">{tr(S.phoneShort, locale)}: {row.phone}</div>
                 </div>
             ),
         },
         {
             key: 'role',
-            header: 'VAI TRÒ & QUYỀN RBAC',
+            header: tr(S.colRole, locale),
             width: '200px',
             cell: (row) => {
                 const toneMap: Record<string, string> = {
@@ -142,13 +148,13 @@ export default function AccountsSettingsPage() {
         },
         {
             key: 'lastActive',
-            header: 'ĐĂNG NHẬP CUỐI',
+            header: tr(S.colLastActive, locale),
             width: '140px',
             cell: (row) => <span className="text-xs text-slate-600 font-mono">{row.lastActive}</span>,
         },
         {
             key: 'status',
-            header: 'TRẠNG THÁI',
+            header: tr(S.colStatus, locale),
             width: '130px',
             cell: (row) => {
                 const statusStyles: Record<string, string> = {
@@ -171,7 +177,7 @@ export default function AccountsSettingsPage() {
         },
         {
             key: 'action',
-            header: 'THAO TÁC',
+            header: tr(S.colActions, locale),
             align: 'right',
             width: '90px',
             cell: (row) => (
@@ -263,10 +269,10 @@ export default function AccountsSettingsPage() {
                 {/* Left: Title & Count */}
                 <div className="flex items-center gap-2 shrink-0">
                     <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        Tài khoản & Phân quyền RBAC
+                        {tr(S.accountsTitle, locale)}
                     </h1>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {stats.total} tài khoản
+                        {stats.total} {tr(S.accountsCount, locale)}
                     </span>
                 </div>
 
@@ -278,11 +284,12 @@ export default function AccountsSettingsPage() {
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Tìm tên đăng nhập, họ tên, email…"
+                            placeholder={tr(S.searchAccount, locale)}
+                            aria-label={tr(S.searchAccount, locale)}
                             className="w-full pl-7 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
                         />
                         <div className="absolute left-2 top-1.5 text-slate-400">
-                            <EyeIcon size={13} />
+                            <SearchIcon size={13} />
                         </div>
                     </div>
 
@@ -292,7 +299,7 @@ export default function AccountsSettingsPage() {
                         onChange={(e) => setRoleFilter(e.target.value)}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">Tất cả vai trò</option>
+                        <option value="all">{tr(S.allRoles, locale)}</option>
                         <option value="superadmin">Super Admin / Owner</option>
                         <option value="receptionist">Lễ tân</option>
                         <option value="housekeeping">Buồng phòng</option>
@@ -304,9 +311,9 @@ export default function AccountsSettingsPage() {
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                     >
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="active">Hoạt động</option>
-                        <option value="suspended">Tạm khóa</option>
+                        <option value="all">{tr(S.allStatuses, locale)}</option>
+                        <option value="active">{tr(S.accountActive, locale)}</option>
+                        <option value="suspended">{tr(S.accountSuspended, locale)}</option>
                     </select>
 
                     {/* Reset Button */}
@@ -315,7 +322,7 @@ export default function AccountsSettingsPage() {
                         onClick={handleReset}
                         className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
                     >
-                        Đặt lại
+                        {tr(S.reset, locale)}
                     </button>
 
                     {/* Primary Action Button */}
@@ -325,7 +332,7 @@ export default function AccountsSettingsPage() {
                         className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 min-h-[32px]"
                     >
                         <PlusIcon size={14} />
-                        <span>+ Thêm Tài Khoản</span>
+                        <span>{tr(S.addAccount, locale)}</span>
                     </button>
                 </div>
             </div>
@@ -388,7 +395,19 @@ export default function AccountsSettingsPage() {
 
             {/* Table Container (Today Format) */}
             <div className="flex-1 min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <DataTable<AccountRowItem> {...tableProps} />
+                <DataTable<AccountRowItem>
+                    {...tableProps}
+                    caption={tr(S.accountsTitle, locale)}
+                    pagination={{
+                        ...tableProps.pagination,
+                        prevLabel: tr(S.paginationPrev, locale),
+                        nextLabel: tr(S.paginationNext, locale),
+                        pageSizeLabel: tr(S.paginationPageSize, locale),
+                        summaryText: (a, b, c) =>
+                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.accountsCount, locale)}`,
+                    }}
+                    empty={tr(S.emptyAccounts, locale)}
+                />
             </div>
 
             {/* Modal Create Account */}

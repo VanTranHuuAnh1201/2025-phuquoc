@@ -3,6 +3,7 @@
 import {
     BedIcon,
     CalendarIcon,
+    CoinsIcon,
     ExternalIcon,
     FileTextIcon,
     GridIcon,
@@ -46,7 +47,7 @@ interface NavPrefixSection {
 const NAV_SECTIONS: NavPrefixSection[] = [
     {
         prefix: 'client',
-        prefixTitle: { vi: 'VẬN HÀNH & ĐƠN HÀNG (BOOKINGS & ROOMS)', en: 'BOOKINGS & ROOM OPERATIONS' },
+        prefixTitle: { vi: 'VẬN HÀNH & ĐƠN HÀNG', en: 'BOOKINGS & ROOM OPERATIONS' },
         badgeTone: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
         groups: [
             {
@@ -59,7 +60,7 @@ const NAV_SECTIONS: NavPrefixSection[] = [
                 title: { vi: 'Tác nghiệp hàng ngày', en: 'Daily Operations' },
                 items: [
                     { href: '/admin/orders', label: { vi: 'Quản lý Đơn hàng', en: 'Bookings' }, icon: <FileTextIcon size={18} />, permission: 'booking.view.all' },
-                    { href: '/admin/inventory', label: { vi: 'Lịch tồn kho & Giá', en: 'Rates & Availability' }, icon: <CalendarIcon size={18} />, permission: 'inventory.edit' },
+                    { href: '/admin/inventory', label: { vi: 'Lịch tồn kho & Giá', en: 'Rates & Availability' }, icon: <CalendarIcon size={18} />, permission: 'inventory.view' },
                     { href: '/admin/housekeeping', label: { vi: 'Quản lý Buồng phòng', en: 'Housekeeping' }, icon: <BedIcon size={18} /> },
                     { href: '/admin/customers', label: { vi: 'Danh sách Khách hàng', en: 'Customers' }, icon: <UsersIcon size={18} />, permission: 'booking.view.all' },
                 ],
@@ -68,7 +69,7 @@ const NAV_SECTIONS: NavPrefixSection[] = [
     },
     {
         prefix: 'system',
-        prefixTitle: { vi: 'SYSTEM ADMIN (CẤU HÌNH & KHUYẾN MÃI)', en: 'SYSTEM ADMIN & CONFIG' },
+        prefixTitle: { vi: 'CẤU HÌNH & KHUYẾN MÃI', en: 'SYSTEM ADMIN & CONFIG' },
         badgeTone: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
         groups: [
             {
@@ -81,13 +82,17 @@ const NAV_SECTIONS: NavPrefixSection[] = [
                 title: { vi: 'Cấu hình Cơ sở & Hạng phòng', en: 'Property & Room Setup' },
                 items: [
                     { href: '/admin/settings/rooms', label: { vi: 'Tạo & Quản lý Hạng phòng', en: 'Room Types & Units' }, icon: <BedIcon size={18} />, permission: 'content.edit', badge: 'Hot' },
-                    { href: '/admin/settings/rate-plans', label: { vi: 'Gói giá & Addons', en: 'Rate Plans & Addons' }, icon: <TagIcon size={18} />, permission: 'content.edit' },
+                    { href: '/admin/settings/rate-plans', label: { vi: 'Gói giá (Rate Plan)', en: 'Rate Plans' }, icon: <TagIcon size={18} />, permission: 'price.edit' },
+                    { href: '/admin/settings/addons', label: { vi: 'Phụ thu & Dịch vụ thêm', en: 'Add-ons & Extras' }, icon: <CoinsIcon size={18} />, permission: 'price.edit' },
                 ],
             },
             {
                 title: { vi: 'Hạ tầng & Bảo trì', en: 'System & Maintenance' },
                 items: [
-                    { href: '/admin/settings/tickets', label: { vi: 'Ticket Sự cố & Bảo trì', en: 'Incident Tickets' }, icon: <TicketIcon size={18} />, badge: 'New' },
+                    // `permission` là BẮT BUỘC với mọi mục trong nhóm SYSTEM ADMIN:
+                    // bộ lọc dưới là `!item.permission || can(...)`, nên mục nào
+                    // quên khai sẽ hiện cho MỌI vai trò, kể cả lễ tân (`100-05` AC-6).
+                    { href: '/admin/settings/tickets', label: { vi: 'Ticket Sự cố & Bảo trì', en: 'Incident Tickets' }, icon: <TicketIcon size={18} />, permission: 'content.edit', badge: 'New' },
                     { href: '/admin/settings/accounts', label: { vi: 'Tài khoản & Quyền RBAC', en: 'Accounts & RBAC' }, icon: <UsersIcon size={18} />, permission: 'account.manage' },
                     { href: '/admin/settings/general', label: { vi: 'Cài đặt Ngân hàng & ZNS', en: 'Bank & Notification' }, icon: <SettingsIcon size={18} />, permission: 'settings.bank' },
                 ],
@@ -114,7 +119,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 }
 
 function AdminShell({ children }: { children: React.ReactNode }) {
-    const { locale } = useLocale()
+    const { locale, setLocale } = useLocale()
     const pathname = usePathname()
     const router = useRouter()
     const user = useAuthStore((s) => s.user)
@@ -162,7 +167,11 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
             {/* Dark Navy Sidebar 100vh */}
             <aside
-                className={`admin-sidebar h-screen sticky top-0 z-50 w-64 shrink-0 bg-[#0b192c] text-slate-200 flex flex-col border-r border-slate-800 transition-transform duration-200 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                /* Dưới `lg` sidebar phải RỜI KHỎI DÒNG CHẢY (`fixed`), không chỉ
+                   `-translate-x-full`: transform chỉ dời phần nhìn thấy, ô 256px vẫn
+                   chiếm chỗ trong flex row nên `<main>` bị đẩy còn ~119px và thẻ mobile
+                   co lại 51px (đo được ở 375px). Từ `lg` trở lên mới trả về `sticky`. */
+                className={`admin-sidebar h-screen fixed lg:sticky top-0 left-0 z-50 w-64 shrink-0 bg-[var(--admin-shell)] text-slate-200 flex flex-col border-r border-slate-800 transition-transform duration-200 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
                     }`}
             >
                 {/* Header / Brand with 24x24px logo indicator */}
@@ -188,7 +197,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                         className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-[6px] shadow-sm transition-all active:scale-[0.98] min-h-[36px]"
                     >
                         <PlusIcon size={15} />
-                        <span>+ Đặt phòng mới</span>
+                        <span>{tr(S.newBooking, locale)}</span>
                     </button>
                 </div>
 
@@ -223,7 +232,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                                                         href={item.href}
                                                         onClick={() => setSidebarOpen(false)}
                                                         className={`flex items-center justify-between px-2.5 py-2 rounded-md text-xs font-medium transition-colors ${active
-                                                            ? 'bg-[#163b6c] text-white shadow-sm font-semibold'
+                                                            ? 'bg-[var(--admin-shell-active)] text-white shadow-sm font-semibold'
                                                             : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
                                                             }`}
                                                     >
@@ -259,7 +268,32 @@ function AdminShell({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 {/* Footer User Profile & System Actions */}
-                <div className="p-3 border-t border-slate-800/80 bg-[#091322] shrink-0 space-y-2">
+                <div className="p-3 border-t border-slate-800/80 bg-[var(--admin-shell-deep)] shrink-0 space-y-2">
+                    {/* Chuyển ngôn ngữ — CMS phải song ngữ như phần còn lại (luật FE6).
+                        Thiếu nút này thì mọi `tr()` trong CMS không bao giờ chạy nhánh EN
+                        và trang "song ngữ" trên giấy nhưng chỉ có tiếng Việt trên màn hình. */}
+                    <div
+                        role="group"
+                        aria-label={tr(S.language, locale)}
+                        className="flex items-center gap-1 px-2"
+                    >
+                        {(['vi', 'en'] as const).map((code) => (
+                            <button
+                                key={code}
+                                type="button"
+                                onClick={() => setLocale(code)}
+                                aria-pressed={locale === code}
+                                className={`min-w-[36px] min-h-[24px] px-2 py-0.5 text-[11px] font-bold uppercase rounded transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 ${
+                                    locale === code
+                                        ? 'bg-amber-500 text-slate-950'
+                                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                                }`}
+                            >
+                                {code}
+                            </button>
+                        ))}
+                    </div>
+
                     <div className="flex items-center justify-between text-xs text-slate-400 px-2 py-1">
                         <Link
                             href="/h1"

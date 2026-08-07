@@ -92,7 +92,7 @@ export function AccountBar() {
             {/* ---- chuyển ngôn ngữ ---- */}
             <div
                 role="group"
-                aria-label={locale === 'vi' ? 'Chọn ngôn ngữ' : 'Choose language'}
+                aria-label={pick({ vi: 'Chọn ngôn ngữ', en: 'Choose language' }, locale)}
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -411,13 +411,14 @@ function NotificationRow({ item }: { item: Notification }) {
                 </div>
             )}
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                {new Date(item.at).toLocaleString(locale === 'vi' ? 'vi-VN' : 'en-US', {
+                {new Date(item.at).toLocaleString(pick({ vi: 'vi-VN', en: 'en-US' }, locale), {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
                 })}
+
                 {item.bookingCode ? ` · ${item.bookingCode}` : ''}
             </div>
         </>
