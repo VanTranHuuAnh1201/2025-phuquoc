@@ -122,28 +122,36 @@ interface BookingRow {
 
 type TimeRange = 'day' | 'week' | 'month' | 'year'
 
-/** Số ngày lùi lại từ hôm nay cho từng phạm vi — "Tuần" tính cả hôm nay nên
- *  lùi 6 ngày (7 ngày liên tiếp), tương tự "Tháng" lùi 29 (30 ngày), "Năm"
- *  lùi 364 (365 ngày). "Ngày" lùi 0 = chỉ đúng hôm nay. */
-const RANGE_DAYS_BACK: Record<TimeRange, number> = {
+/**
+ * Bán kính mỗi phạm vi, tính bằng ngày về MỖI PHÍA quanh hôm nay.
+ *
+ * VÌ SAO ÔM CẢ HAI PHÍA CHỨ KHÔNG CHỈ LÙI VỀ QUÁ KHỨ: đây là màn vận hành,
+ * không phải báo cáo. Lễ tân cần thấy khách SẮP đến để chuẩn bị phòng, chứ
+ * không chỉ khách đã đến. "Tuần" = 7 ngày quanh hôm nay (−3..+3), hữu ích hơn
+ * nhiều so với 7 ngày đã qua.
+ */
+const RANGE_RADIUS: Record<TimeRange, number> = {
     day: 0,
-    week: 6,
-    month: 29,
-    year: 364,
+    week: 3,
+    month: 15,
+    year: 182,
 }
 
-/** Ngày bắt đầu của khoảng, dạng `YYYY-MM-DD` — so sánh CHUỖI trực tiếp với
- *  `checkInDate`/`checkOutDate` (đã là `YYYY-MM-DD`), đúng luật C6: không ép
- *  qua `Date` object để so ngày lịch. */
-function rangeStartDate(range: TimeRange, today: string): string {
-    const daysBack = RANGE_DAYS_BACK[range]
-    if (daysBack === 0) return today
-    // `today` luôn là `YYYY-MM-DD` (từ `todayKey()`), parse UTC theo đúng
-    // cách `packages/core/src/pricing.ts` đã làm cho ngày lịch không giờ —
-    // không tự "sửa" thành ép múi giờ địa phương (ghi trong `common.md` C6).
-    const d = new Date(`${today}T00:00:00Z`)
-    d.setUTCDate(d.getUTCDate() - daysBack)
+/** Cộng/trừ ngày trên chuỗi `YYYY-MM-DD`, giữ nguyên dạng chuỗi.
+ *  Parse UTC đúng cách `packages/core/src/pricing.ts` xử lý ngày lịch không
+ *  giờ — không tự "sửa" thành ép múi giờ địa phương (luật C6). */
+function shiftDate(date: string, days: number): string {
+    if (days === 0) return date
+    const d = new Date(`${date}T00:00:00Z`)
+    d.setUTCDate(d.getUTCDate() + days)
     return d.toISOString().slice(0, 10)
+}
+
+/** Hai đầu của khoảng đang xem, dạng `YYYY-MM-DD` — so sánh CHUỖI trực tiếp
+ *  với `checkInDate`/`checkOutDate` (cùng định dạng), đúng luật C6. */
+function rangeBounds(range: TimeRange, today: string): { start: string; end: string } {
+    const r = RANGE_RADIUS[range]
+    return { start: shiftDate(today, -r), end: shiftDate(today, r) }
 }
 
 const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
@@ -198,13 +206,19 @@ export default function AdminDashboard() {
     )
 
     // Bộ lọc phạm vi thời gian chi phối cả bảng lẫn KPI (`stats` bên dưới) —
-    // "hôm nay" chỉ là trường hợp `range='day'`. Lọc theo `checkInDate` nằm
-    // trong `[rangeStart, today]`: đơn nhận phòng trong khoảng đang xem.
+    // "hôm nay" chỉ là trường hợp `range='day'`.
+    //
+    // Khoảng xem là `[rangeStart, rangeEnd]` và ôm CẢ HAI PHÍA quanh hôm nay:
+    // lễ tân cần thấy khách sắp đến chứ không chỉ khách đã đến. Chọn "Tuần" là
+    // 7 ngày quanh hôm nay, không phải 7 ngày đã qua.
     const today = todayKey()
-    const rangeStart = rangeStartDate(timeRange, today)
+    const { start: rangeStart, end: rangeEnd } = rangeBounds(timeRange, today)
 
     const filteredData = bookings.filter((item) => {
-        if (item.checkInDate < rangeStart || item.checkInDate > today) return false
+        // GIAO NHAU với khoảng, KHÔNG phải `checkInDate` nằm trong khoảng:
+        // khách nhận phòng hôm qua và trả ngày mai thì HÔM NAY vẫn đang ở —
+        // lọc theo `checkInDate` sẽ đánh rơi đúng những đơn lễ tân cần nhất.
+        if (item.checkOutDate < rangeStart || item.checkInDate > rangeEnd) return false
         if (tab === 'pending' && item.status !== 'pending_payment') return false
         if (tab === 'arrivals' && item.status !== 'confirmed') return false
         if (segment !== 'all') {
@@ -354,15 +368,15 @@ export default function AdminDashboard() {
         // nhau: hai con số không cùng đang đo "hôm nay". Sửa: phải lọc thêm
         // `checkIn === today` để đúng nghĩa "hôm nay".
         //
-        // Việc ngoài 5 round (bộ lọc phạm vi thời gian): "khách nhận/trả
-        // phòng" giờ đếm trong CẢ KHOẢNG `[rangeStart, today]`, không chỉ
-        // đúng hôm nay — `range='day'` (mặc định) thu hẹp về đúng hành vi cũ
-        // (`rangeStart === today`), nên không đổi kết quả khi chưa đổi bộ lọc.
+        // Bộ lọc phạm vi thời gian: "khách nhận/trả phòng" đếm trong CẢ KHOẢNG
+        // `[rangeStart, rangeEnd]` — khoảng ôm hai phía quanh hôm nay nên
+        // `range='day'` vẫn thu về đúng một ngày (bán kính 0), còn "Tuần" cho
+        // thấy cả khách sắp đến, đúng thứ lễ tân cần để chuẩn bị phòng.
         const checkInRange = bookings.filter(
-            (b) => b.status === 'confirmed' && b.checkInDate >= rangeStart && b.checkInDate <= today,
+            (b) => b.status === 'confirmed' && b.checkInDate >= rangeStart && b.checkInDate <= rangeEnd,
         ).length
         const checkOutRange = bookings.filter(
-            (b) => b.status === 'checked_in' && b.checkOutDate >= rangeStart && b.checkOutDate <= today,
+            (b) => b.status === 'checked_in' && b.checkOutDate >= rangeStart && b.checkOutDate <= rangeEnd,
         ).length
         const pendingDeposit = bookings.filter((b) => b.status === 'pending_payment').length
         // Công suất phòng LUÔN là ảnh chụp HÔM NAY, không đổi theo phạm vi —
@@ -381,7 +395,7 @@ export default function AdminDashboard() {
         const occupancyRate =
             roomUnits.length > 0 ? Math.round((occupiedToday / roomUnits.length) * 100) : 0
         return { checkInToday: checkInRange, checkOutToday: checkOutRange, pendingDeposit, occupancyRate }
-    }, [bookings, roomUnits, rangeStart, today])
+    }, [bookings, roomUnits, rangeStart, rangeEnd, today])
 
     // Sự kiện thật trong `ActivityLog`, không phải dữ liệu bịa. Lấy 8 dòng gần
     // nhất trong ngày hôm nay, mới nhất trước.

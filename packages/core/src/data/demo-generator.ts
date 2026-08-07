@@ -180,8 +180,20 @@ export function generateDemoData(options: DemoDataOptions): DemoData {
         const phone = `09${pickInt(rng, 10_000_000, 99_999_999)}`
         const customerId = `cus-${phone}`
 
-        // ---- kỳ lưu trú: rải từ -45 đến +60 ngày ----
-        const offset = pickInt(rng, -45, 60)
+        // ---- kỳ lưu trú ----
+        //
+        // VÌ SAO KHÔNG RẢI ĐỀU -45..+60 NHƯ TRƯỚC: 105 ngày chia cho ~31 đơn ra
+        // chưa tới 1 đơn/ngày, nên "hôm nay" thường rơi vào ngày TRỐNG — mở CMS
+        // lên thấy dashboard 0% / 0 lượt / bảng rỗng, trông như hỏng. Một resort
+        // thật ngày nào cũng có vài lượt nhận/trả phòng.
+        //
+        // Phân bố mới: 45% số đơn dồn vào cửa sổ -3..+3 ngày (đủ dày để hôm nay
+        // luôn có việc), 55% còn lại vẫn rải rộng để các màn báo cáo/lịch có
+        // dữ liệu lịch sử lẫn đơn đặt trước.
+        const offset =
+            pickInt(rng, 1, 100) <= 45
+                ? pickInt(rng, -3, 3)
+                : pickInt(rng, -45, 60)
         const checkIn = addDays(today, offset)
         const nights = pickInt(rng, 1, 5)
         const checkOut = addDays(checkIn, nights)
