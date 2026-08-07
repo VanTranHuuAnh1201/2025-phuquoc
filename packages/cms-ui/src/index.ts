@@ -12,5 +12,11 @@
 export { DotBadge } from './DotBadge'
 export type { DotBadgeProps, CmsTone } from './DotBadge'
 
+export { KpiCard } from './KpiCard'
+export type { KpiCardProps } from './KpiCard'
+
+export { MetricStrip } from './MetricStrip'
+export type { MetricStripProps } from './MetricStrip'
+
 export { AppShell } from './AppShell'
 export type { AppShellProps, ShellNavItem, ShellZone } from './AppShell'

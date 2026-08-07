@@ -1,0 +1,84 @@
+'use client'
+
+/**
+ * Thẻ KPI — một ô chứa số, nhãn, ghi chú.
+ *
+ * VÌ SAO VALUE KHÔNG ĐẬM: `value` dùng font-weight 400, KHÔNG bold/semibold.
+ * Số lớn mà nhẹ = hierarchy do CỠ gánh, không do độ đậm. Đây là chi tiết CÓ
+ * ý của ảnh mẫu, tạo cảm giác clean (P11).
+ *
+ * VÌ SAO CÓ THẺ <button>: nếu có onClick, render <button type="button">
+ * để bàn phím dùng được (ArrowUp/ArrowDown, Space/Enter kích hoạt). Không
+ * được dùng <div onClick> vì vi phạm a11y — người dùng chỉ phím không tương
+ * tác được.
+ *
+ * VÌ SAO CÓ `cms-kpi` CLASS: vách ngăn dọc giữa các ô được set bằng CSS
+ * selector `.cms-kpi + .cms-kpi` tại tokens.css, ô đầu không có viền qua
+ * :first-child. Đây là cách sinh vách ngăn "liền mạch" trong dải grid.
+ */
+
+import { CmsTone } from './DotBadge'
+
+export interface KpiCardProps {
+    label: string
+    value: string
+    note?: string
+    tone?: CmsTone
+    selected?: boolean
+    onClick?: () => void
+}
+
+/**
+ * Tone → class Tailwind. Khai TƯỜNG MINH từng tone thay vì nội suy chuỗi
+ * (`border-[var(--cms-tone-${tone})]`) — Tailwind quét source bằng regex
+ * tĩnh, class ghép động lúc chạy KHÔNG được sinh ra. Bẫy "build xanh mà
+ * mất style" ở R14.
+ */
+const TONE_UNDERLINE: Record<CmsTone, string> = {
+    emerald: 'border-[var(--cms-tone-emerald)]',
+    blue: 'border-[var(--cms-tone-blue)]',
+    violet: 'border-[var(--cms-tone-violet)]',
+    amber: 'border-[var(--cms-tone-amber)]',
+    rose: 'border-[var(--cms-tone-rose)]',
+    slate: 'border-[var(--cms-tone-slate)]',
+}
+
+export function KpiCard({
+    label,
+    value,
+    note,
+    tone = 'slate',
+    selected = false,
+    onClick,
+}: KpiCardProps) {
+    const Element = onClick ? 'button' : 'div'
+    const accentClass = selected ? `border-b-2 ${TONE_UNDERLINE[tone]}` : ''
+
+    return (
+        <Element
+            type={onClick ? 'button' : undefined}
+            onClick={onClick}
+            className={`cms-kpi flex flex-col items-start justify-between p-4 text-left transition-colors [&:hover]:bg-[var(--cms-bg-subtle)] ${accentClass} ${onClick ? 'cursor-pointer' : ''}`}
+        >
+            {/* NHÃN */}
+            <span className="mb-3 block text-[length:var(--cms-text-label)] font-semibold uppercase tracking-wide text-[var(--cms-text-muted)]">
+                {label}
+            </span>
+
+            {/* SỐ KPI — weight 400, số canh trái, tabular-nums */}
+            <span
+                className="block text-[length:var(--cms-text-metric)] font-normal leading-none text-[var(--cms-text)] tabular-nums"
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+            >
+                {value}
+            </span>
+
+            {/* GHI CHÚ (tuỳ chọn) */}
+            {note && (
+                <span className="mt-2 block text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                    {note}
+                </span>
+            )}
+        </Element>
+    )
+}

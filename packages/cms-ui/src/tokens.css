@@ -78,12 +78,20 @@
     /* Shadow chỉ 2 bậc, chỉ cho lớp nổi thật. */
     --cms-shadow-pop: 0 4px 12px rgb(17 24 39 / 0.08);
     --cms-shadow-modal: 0 16px 40px rgb(17 24 39 / 0.16);
+}
 
-    /* --------------------------------------------------------------------
-     * ÁNH XẠ SANG TOKEN CỦA `@repo/ui`.
-     * Nhờ khối này, `DataTable`/`Button`/`Field` đổi diện mạo theo CMS mà
-     * không phải sửa `packages/ui`. Đổi giá trị ở trên là đổi cả hai nơi.
-     * ------------------------------------------------------------------ */
+/* --- vách ngăn dọc cho `MetricStrip` --------------------------------
+ * Sinh vách 1px dọc giữa các ô KpiCard, ô đầu bỏ viền. Chỗ này đặt ở
+ * tầng CSS chứ không ở component là vì vách chỉ có ý nghĩa khi KpiCard
+ * nằm bên trong MetricStrip. Nếu dùng KpiCard riêng lẻ, không có vách.
+ * ------------------------------------------------------------------ */
+[data-cms] .cms-kpi + .cms-kpi {
+    border-left: 1px solid var(--cms-border);
+}
+
+[data-cms] {
+    /* Bỏ border-b của KpiCard khi không selected, để vách dọc là điểm nhìn
+       chính. Và mapping token tiếp theo: */
     --surface: var(--cms-bg);
     --surface-alt: var(--cms-bg-subtle);
     --border: var(--cms-border);
