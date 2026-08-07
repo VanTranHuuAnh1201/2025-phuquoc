@@ -5,15 +5,25 @@
  *
  * Giá trị thật của màn này là cột "Đã ở" và "Tổng chi tiêu": lễ tân nhìn thấy
  * ngay ai là khách quen để đối xử khác đi.
+ *
+ * Áp design system `@repo/cms-ui` — cùng bố cục 2 hàng + MetricStrip +
+ * DataGrid như `/admin` (page.tsx dashboard). Nền TRẮNG, phân tách bằng
+ * đường kẻ 1px, không còn `bg-slate-100`/card lồng card của bản cũ.
+ *
+ * Hai đặc thù khiến không copy y nguyên bố cục dashboard:
+ * 1. Ô tìm kiếm tự do (tên/SĐT/email) — `FilterBar` chỉ nhận pill giá trị cố
+ *    định, không có input chữ tự do. Giữ input thô nhưng token hoá màu, đặt
+ *    cạnh `FilterBar` trong cùng khối hàng 2.
+ * 2. Phân trang (Trước/Sau) — `cms-ui` chưa có component Pagination. Giữ
+ *    thanh phân trang tự viết, chỉ đổi sang token `--cms-*`.
  */
 
 import { useMemo, useState } from 'react'
 import { formatPrice, pick } from '@repo/core'
 import type { Customer } from '@repo/core'
-import { DataTable, StatCard, Toolbar } from '@repo/ui'
 import type { Column } from '@repo/ui'
+import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
-import { useBookingStore } from '@/stores/booking.store'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { S, tr } from '@/strings'
 
@@ -74,7 +84,7 @@ export default function CustomersPage() {
         const csv = [header, ...body]
             .map((line) => line.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(','))
             .join('\r\n')
-        const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' })
+        const blob = new Blob([`﻿${csv}`], { type: 'text/csv;charset=utf-8' })
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
@@ -86,233 +96,202 @@ export default function CustomersPage() {
     const columns: Column<Customer>[] = [
         {
             key: 'name',
-            header: pick({ vi: 'KHÁCH HÀNG & SĐT', en: 'GUEST & PHONE' }, locale),
+            header: tr(S.customersColGuestPhone, locale),
             cell: (c) => (
-                <div>
-                    <div className="font-semibold text-slate-900">{c.fullName}</div>
-                    <div className="text-xs text-slate-500 font-mono">{c.phone}</div>
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={c.fullName}
+                    >
+                        {c.fullName}
+                    </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] font-mono"
+                        title={c.phone}
+                    >
+                        {c.phone}
+                    </div>
                 </div>
             ),
         },
         {
             key: 'email',
             header: tr(S.email, locale),
-            cell: (c) => <span className="text-xs text-slate-600">{c.email || '—'}</span>,
+            cell: (c) => (
+                <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                    {c.email || '—'}
+                </span>
+            ),
         },
         {
             key: 'tier',
-            header: pick({ vi: 'PHÂN HẠNG', en: 'TIER' }, locale),
+            header: tr(S.customersColTier, locale),
             width: '130px',
             cell: (c) => {
+                // Ngưỡng phân hạng đã chốt ở booking-domain §B0: VIP >= 10tr,
+                // Quay lại = đã ở > 1 lần, còn lại là Khách mới. Không đụng.
                 if (c.totalSpent >= 10000000) {
-                    return (
-                        <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-amber-50 text-amber-800 border-amber-300 shrink-0">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                            <span className="truncate">Khách VIP</span>
-                        </span>
-                    )
+                    return <DotBadge tone="amber" label={tr(S.customersBadgeVip, locale)} width={108} />
                 }
                 if (c.stayCount > 1) {
-                    return (
-                        <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-emerald-50 text-emerald-800 border-emerald-300 shrink-0">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                            <span className="truncate">Quay lại</span>
-                        </span>
-                    )
+                    return <DotBadge tone="emerald" label={tr(S.customersBadgeReturning, locale)} width={108} />
                 }
-                return (
-                    <span className="inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left bg-slate-50 text-slate-700 border-slate-200 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
-                        <span className="truncate">Khách mới</span>
-                    </span>
-                )
+                return <DotBadge tone="slate" label={tr(S.customersBadgeNew, locale)} width={108} />
             },
         },
         {
             key: 'bookings',
-            header: pick({ vi: 'SỐ ĐƠN', en: 'BOOKINGS' }, locale),
+            header: tr(S.customersColBookings, locale),
             align: 'right',
             width: '90px',
-            cell: (c) => <span className="text-xs font-semibold text-slate-800">{bookingCount(c.id)}</span>,
+            cell: (c) => (
+                <span className="text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)] tabular-nums">
+                    {bookingCount(c.id)}
+                </span>
+            ),
         },
         {
             key: 'stays',
-            header: pick({ vi: 'ĐÃ Ở', en: 'STAYS' }, locale),
+            header: tr(S.customersColStays, locale),
             align: 'right',
             width: '90px',
-            cell: (c) => <span className="text-xs font-semibold text-slate-800">{c.stayCount} đêm</span>,
+            cell: (c) => (
+                <span className="text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)] tabular-nums">
+                    {c.stayCount} {tr(S.customersNightsUnit, locale)}
+                </span>
+            ),
         },
         {
             key: 'spent',
-            header: pick({ vi: 'TỔNG CHI TIÊU', en: 'TOTAL SPENT' }, locale),
+            header: tr(S.customersColSpent, locale),
             align: 'right',
             width: '140px',
             cell: (c) => (
-                <span className="font-bold text-amber-700 text-xs">
+                // Không tô màu nhấn cho tiền — dashboard mẫu chỉ đậm chữ, giữ
+                // nhất quán cách trình bày tiền trong toàn CMS (P11 Calm).
+                <span className="font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)] tabular-nums">
                     {formatPrice(c.totalSpent, locale)}
                 </span>
             ),
         },
     ]
 
+    const tierGroups = [
+        {
+            legend: tr(S.customersColTier, locale),
+            value: tierFilter,
+            onChange: (v: string) => {
+                setTierFilter(v)
+                setPage(1)
+            },
+            options: [
+                { value: 'all', label: tr(S.all, locale) },
+                { value: 'vip', label: tr(S.customersTierVip, locale) },
+                { value: 'returning', label: tr(S.customersTierReturning, locale) },
+                { value: 'new', label: tr(S.customersTierNew, locale) },
+            ],
+        },
+    ]
+
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2.5 p-3 bg-slate-100 overflow-hidden">
-            {/* Top Bar: Title + All Filters & Actions in Header */}
-            <div className="w-full bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
-                {/* Left: Title & Count */}
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        {tr(S.customers, locale)}
-                    </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {rows.length} {pick({ vi: 'khách', en: 'guests' }, locale)}
-                    </span>
-                </div>
-
-                {/* Right: All Filters & Actions */}
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value)
-                                setPage(1)
-                            }}
-                            placeholder={pick({ vi: 'Tìm tên, SĐT, email…', en: 'Search name, phone, email…' }, locale)}
-                            className="w-full pl-3 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
-                        />
-                    </div>
-
-                    {/* Tier Select */}
-                    <select
-                        value={tierFilter}
-                        onChange={(e) => {
-                            setTierFilter(e.target.value)
-                            setPage(1)
-                        }}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">{pick({ vi: 'Tất cả phân hạng', en: 'All tiers' }, locale)}</option>
-                        <option value="vip">{pick({ vi: 'Khách VIP (>10 triệu)', en: 'VIP (>10m VND)' }, locale)}</option>
-                        <option value="returning">{pick({ vi: 'Khách quay lại (>1 lần)', en: 'Returning (>1 stay)' }, locale)}</option>
-                        <option value="new">{pick({ vi: 'Khách mới (1 lần)', en: 'New guests (1 stay)' }, locale)}</option>
-                    </select>
-
-                    {/* Reset Button */}
-                    {(search || tierFilter !== 'all') && (
-                        <button
-                            type="button"
-                            onClick={resetFilters}
-                            className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
-                        >
-                            {tr(S.reset, locale)}
-                        </button>
-                    )}
-
-                    {/* Export CSV */}
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái, nút Xuất Excel bên phải. */}
+            <PageHeaderBar
+                title={tr(S.customers, locale)}
+                count={{ value: rows.length, suffix: pick({ vi: 'khách', en: 'guests' }, locale) }}
+                actions={
                     <button
                         type="button"
                         onClick={exportCsv}
-                        className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-md transition-colors inline-flex items-center gap-1 shrink-0"
+                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                     >
-                        <span>{tr(S.exportExcel, locale)}</span>
+                        {tr(S.exportExcel, locale)}
                     </button>
-                </div>
-            </div>
+                }
+            />
 
-            {/* KPI Statistics Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
-                {/* Total Customers */}
-                <div className="bg-white p-2.5 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        {pick({ vi: 'TẤT CẢ KHÁCH', en: 'TOTAL GUESTS' }, locale)}
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{customers.length} khách</span>
-                        <span className="text-[11px] font-semibold text-amber-700">
-                            {formatPrice(totalRevenue, locale)}
-                        </span>
-                    </div>
-                </div>
-
-                {/* Returning Guests */}
-                <div className="bg-white p-2.5 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
-                            KHÁCH QUAY LẠI
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{returning} khách</span>
-                        <span className="text-[11px] font-semibold text-emerald-700">
-                            {customers.length > 0 ? `${Math.round((returning / customers.length) * 100)}%` : '0%'}
-                        </span>
-                    </div>
-                </div>
-
-                {/* VIP Guests */}
-                <div className="bg-white p-2.5 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
-                            KHÁCH VIP (&gt;10TR)
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{vipCount} khách</span>
-                    </div>
-                </div>
-
-                {/* New Guests */}
-                <div className="bg-white p-2.5 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            KHÁCH MỚI (1 LẦN)
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{customers.length - returning} khách</span>
-                    </div>
-                </div>
-
-                {/* Average Spent */}
-                <div className="bg-white p-2.5 rounded-sm border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        CHI TIÊU TB / KHÁCH
-                    </div>
-                    <div className="text-base font-bold text-slate-900 mt-1">
-                        {formatPrice(avgSpent, locale)}
-                    </div>
-                </div>
-            </div>
-
-            {/* DataTable Component - Maximized Full Height */}
-            <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                <DataTable
-                    caption={tr(S.customers, locale)}
-                    columns={columns}
-                    rows={pageRows}
-                    rowKey={(c) => c.id}
-                    empty={
-                        search
-                            ? pick({ vi: 'Không tìm thấy khách nào.', en: 'No guests found.' }, locale)
-                            : pick({ vi: 'Chưa có khách hàng nào.', en: 'No guests yet.' }, locale)
-                    }
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (phân hạng) + kết quả + Đặt
+                lại — border-t 1px phân tách khỏi hàng 1, không shadow (P7). */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value)
+                        setPage(1)
+                    }}
+                    placeholder={tr(S.customersSearchPlaceholder, locale)}
+                    aria-label={tr(S.customersSearchPlaceholder, locale)}
+                    className="w-44 sm:w-56 px-3 py-1 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 28 }}
                 />
 
+                <FilterBar
+                    groups={tierGroups}
+                    resultText={`${rows.length} ${pick({ vi: 'khách khớp bộ lọc', en: 'guests matched' }, locale)}`}
+                    onReset={resetFilters}
+                />
+            </div>
+
+            {/* MetricStrip — 5 KPI liền mạch thay 5 card rời (P11 Calm). */}
+            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                <MetricStrip>
+                    <KpiCard
+                        label={tr(S.customersKpiTotal, locale)}
+                        value={`${customers.length}`}
+                        note={formatPrice(totalRevenue, locale)}
+                        tone="slate"
+                    />
+                    <KpiCard
+                        label={tr(S.customersKpiReturning, locale)}
+                        value={`${returning}`}
+                        note={customers.length > 0 ? `${Math.round((returning / customers.length) * 100)}%` : '0%'}
+                        tone="emerald"
+                    />
+                    <KpiCard
+                        label={tr(S.customersKpiVip, locale)}
+                        value={`${vipCount}`}
+                        tone="violet"
+                    />
+                    <KpiCard
+                        label={tr(S.customersKpiNew, locale)}
+                        value={`${customers.length - returning}`}
+                        tone="blue"
+                    />
+                    <KpiCard
+                        label={tr(S.customersKpiAvgSpent, locale)}
+                        value={formatPrice(avgSpent, locale)}
+                        tone="slate"
+                    />
+                </MetricStrip>
+            </div>
+
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều
+                cao là ưu tiên số 1 cho màn lễ tân dùng hằng ngày. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <div className="flex-1 flex flex-col min-h-0">
+                    <DataGrid<Customer>
+                        caption={tr(S.customers, locale)}
+                        columns={columns}
+                        rows={pageRows}
+                        rowKey={(c) => c.id}
+                        empty={
+                            <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                {tr(search ? S.customersEmptySearch : S.customersEmptyAll, locale)}
+                            </div>
+                        }
+                    />
+                </div>
+
                 {rows.length > 0 && (
-                    <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4 flex-wrap text-xs text-slate-500 shrink-0 mt-auto">
+                    <div className="px-[var(--cms-pad)] py-2.5 border-t border-[var(--cms-border)] flex items-center justify-between gap-4 flex-wrap text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] shrink-0">
                         <span>
                             {tr(S.showing, locale)}{' '}
-                            <strong className="text-slate-900 font-semibold">
+                            <strong className="text-[var(--cms-text)] font-semibold">
                                 {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, rows.length)}
                             </strong>{' '}
                             {tr(S.of, locale)}{' '}
-                            <strong className="text-slate-900 font-semibold">{rows.length}</strong>{' '}
+                            <strong className="text-[var(--cms-text)] font-semibold">{rows.length}</strong>{' '}
                             {pick({ vi: 'khách', en: 'guests' }, locale)}
                         </span>
 
@@ -321,18 +300,18 @@ export default function CustomersPage() {
                                 type="button"
                                 disabled={safePage === 1}
                                 onClick={() => setPage(safePage - 1)}
-                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-medium text-[var(--cms-text)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius-sm)] hover:bg-[var(--cms-bg-subtle)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
                                 ← {tr(S.paginationPrev, locale)}
                             </button>
-                            <span className="px-2 font-semibold text-slate-700">
+                            <span className="px-2 font-semibold text-[var(--cms-text)] tabular-nums">
                                 {safePage} / {totalPages}
                             </span>
                             <button
                                 type="button"
                                 disabled={safePage === totalPages}
                                 onClick={() => setPage(safePage + 1)}
-                                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-medium text-[var(--cms-text)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius-sm)] hover:bg-[var(--cms-bg-subtle)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                             >
                                 {tr(S.paginationNext, locale)} →
                             </button>
@@ -343,5 +322,3 @@ export default function CustomersPage() {
         </div>
     )
 }
-
-
