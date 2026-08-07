@@ -126,14 +126,21 @@
     background: var(--cms-bg-subtle);
 }
 
-/* --- bảng RỖNG cũng phải giãn hết chiều cao còn lại (fix round 2 mục 3) ---
+/* --- bảng RỖNG cũng phải giãn hết chiều cao còn lại ---
  * `<table>` mặc định cao theo NỘI DUNG — khi rỗng chỉ có một `<tr><td>` chứa
- * thông báo, bảng co lại còn vài chục px và để lại khoảng trắng lớn phía
- * dưới (đúng như ảnh chủ dự án gửi). `.dt-table` cha đã có `flex-1 min-h-0`
- * nhưng con `<table>` không tự kế thừa chiều cao đó trừ khi được set tường
- * minh — `height: 100%` bắc cầu qua `tbody`/`tr`/`td` để `empty` render dài
- * hết khung, thay vì co theo nội dung của chính nó. */
-[data-cms] .dt-table table {
+ * thông báo, bảng co lại còn vài chục px và để lại khoảng trắng lớn phía dưới.
+ * `.dt-table` cha đã có `flex-1 min-h-0` nhưng con `<table>` không tự kế thừa
+ * chiều cao đó trừ khi được set tường minh.
+ *
+ * ⚠️ PHẠM VI PHẢI HẸP — `:has(td[colspan])` KHÔNG ĐƯỢC BỎ.
+ * Bản đầu đặt `height: 100%` cho MỌI `<table>`, và nó phá trạng thái ÍT HÀNG:
+ * `<table>` bị ép cao bằng khung (đo được 639px), nên khi bộ lọc chỉ còn 1 đơn
+ * thì `<tr>` duy nhất giãn ra lấp kín cả vùng bảng — một dòng dữ liệu cao gần
+ * 600px. Ở màn thấp (zoom 150%) nó nuốt trọn vùng bảng, không hàng nào đọc
+ * được. Chỉ bảng THẬT SỰ RỖNG (ô `colspan` của thông báo trống) mới cần giãn;
+ * bảng có dữ liệu để `<tbody>` cao theo nội dung và khoảng thừa rơi xuống
+ * dưới, đúng như mọi bảng bình thường. */
+[data-cms] .dt-table table:has(td[colspan]) {
     height: 100%;
 }
 [data-cms] .dt-table tbody tr:has(td[colspan]) {
@@ -226,4 +233,21 @@
 [data-cms] .cms-filterbar > span {
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* --- vùng bảng ở màn hình THẤP / HẸP ---
+ *
+ * Dưới 1024px lưới dashboard xếp 2 hàng dọc (bảng trên, "vừa diễn ra" dưới).
+ * Đo được ở zoom 150% (911×427): khối chứa bảng cao ĐÚNG 0px dù bảng có nội
+ * dung (`scrollHeight` 538px) — grid track `1fr` vẫn co về 0 khi khung cha
+ * không có chiều cao xác định để chia, và `min-h-0` (cần cho việc khác) càng
+ * cho phép nó co.
+ *
+ * `min-height` tính theo số hàng thật: 2 hàng × `--cms-row-h` + chiều cao
+ * `<thead>` (~33px). Đây là sàn cứng — dù màn thấp đến đâu, lễ tân vẫn đọc
+ * được ít nhất 2 đơn, phần còn lại cuộn trong bảng. */
+@media (max-width: 1023px) {
+    [data-cms] .cms-table-pane {
+        min-height: calc(var(--cms-row-h) * 2 + 33px);
+    }
 }

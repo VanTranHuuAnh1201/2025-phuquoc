@@ -614,7 +614,12 @@ export default function AdminDashboard() {
                 `lg:grid-rows-1` (một hàng, hai cột) — hành vi cũ giữ nguyên,
                 không hồi quy màn rộng. */}
             <div className="grid grid-cols-1 grid-rows-[1fr_auto] lg:grid-cols-4 lg:grid-rows-1 gap-0 min-h-0 flex-1 border-t border-[var(--cms-border)]">
-                <div className="lg:col-span-3 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
+                {/* `cms-table-pane`: ở màn THẤP (<1024px, grid xếp 2 hàng dọc)
+                    khối này đo được cao 0px dù bảng có nội dung — grid track
+                    `1fr` vẫn co về 0 khi không có chiều cao xác định để chia.
+                    `tokens.css` đặt `min-height` cho nó ở đúng breakpoint đó,
+                    đảm bảo luôn còn chỗ cho ít nhất 2 hàng bảng. */}
+                <div className="cms-table-pane lg:col-span-3 flex flex-col min-h-0 lg:border-r border-[var(--cms-border)]">
                     {viewMode === 'console' ? (
                         // `flex flex-col min-h-0` BẮT BUỘC ở wrapper này: `DataGrid`
                         // bên trong dùng `h-full` để cao hết khung cha — thiếu
