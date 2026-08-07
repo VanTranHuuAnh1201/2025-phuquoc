@@ -6,6 +6,7 @@ import { RequirePermission } from '@/components/RequirePermission'
 import { S, tr } from '@/strings'
 import { DataTable, useDataTable, type Column, Modal, Field, SelectField } from '@repo/ui'
 import { useState } from 'react'
+import { useAccountsData } from '@/hooks/useAdminData'
 
 export interface AccountRowItem {
     id: string
@@ -83,7 +84,7 @@ export default function AccountsSettingsPage() {
 
 function AccountsSettingsScreen() {
     const { locale } = useLocale()
-    const [accounts, setAccounts] = useState<AccountRowItem[]>(RESORT_ACCOUNTS)
+    const { accounts, setAccounts } = useAccountsData()
     const [search, setSearch] = useState('')
     const [roleFilter, setRoleFilter] = useState('all')
     const [statusFilter, setStatusFilter] = useState('all')

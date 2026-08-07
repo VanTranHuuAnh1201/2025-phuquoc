@@ -1,6 +1,36 @@
 # Danh Sách Thao Tác & Thông Tin Cần Người Dùng Bổ Sung Thủ Công (Release v1.0.0)
 
-> **Quy tắc vận hành**: Các Agent khi làm việc nếu gặp thông tin/thao tác cần người dùng hoặc phía khách hàng thực hiện sẽ **KHÔNG DỪNG WORKFLOW**. Agent ghi yêu cầu vào bảng dưới đây, dùng tạm giá trị Mặc định (Default / Recommended) để hoàn thành tiếp công việc. Người dùng sẽ đọc file này và bổ sung sau.
+> **Quy tắc vận hành**: Các Agent khi làm việc nếu gặp thông tin/thao tác cần người dùng hoặc phía khách hàng thực hiện sẽ **KHÔNG DỪNG WORKFLOW**. Agent ghi yêu cầu vào bảng dưới đây, dùng tạm giá trị Mặc định (Default / Recommended) để hoàn thành tiếp công việc. Người dùng sẽ đọc file này và bổ sung sau.  
+> 🔗 **Tài liệu theo dõi API & Ma trận màn hình**: [API_INTEGRATION_MAP.md](./API_INTEGRATION_MAP.md)
+
+---
+
+## Bảng Tổng Quan Tiến Độ Ticket (Updated 07/08/2026)
+
+> **Tiến độ tổng thể**: `done` **20/20** (GD0, GD1, GD2 & GD3 Go-Live Hoàn Thành 100%) · `process` **0** · `pending` **0**
+
+| Giai đoạn | Mã Ticket | Tên Ticket | Trạng thái | Ghi chú |
+|---|---|---|:---:|---|
+| **000 (Core)** | `000-01` | Database Schema & TS DTOs | `done` ✅ | Khởi tạo DTO & Postgres Types |
+| | `000-02` | RBAC & Permission system | `done` ✅ | Phân quyền 5 vai trò (95/95 ô) |
+| | `000-03` | Auth JWT & Middleware Guard | `done` ✅ | Guard 8h nhân viên / 30 ngày khách |
+| **100 (UI)** | `100-01` | Client Booking 5-step Flow (H3) | `done` ✅ | 15/15 AC PASS |
+| | `100-02` | CMS Booking List & Check-in | `done` ✅ | 17/17 AC PASS |
+| | `100-03` | CMS Check-out & Financial Settlement | `done` ✅ | Complete & Verified |
+| | `100-04` | CMS Master Data Management | `done` ✅ | 18/18 AC PASS |
+| | `100-05` | System Admin — Management & Maintenance | `done` ✅ | 6/6 AC PASS |
+| **200 (BE & API)**| `200-01` | Supabase Production DB Migration & Seed | `done` ✅ | 26 bảng, RLS, 1.800 inventory |
+| | `200-02` | Dynamic Pricing Engine API | `done` ✅ | Tính giá theo từng đêm, phụ thu |
+| | `200-03` | Booking Creation & Overbooking Lock API | `done` ✅ | PG Transaction `SELECT FOR UPDATE` |
+| | `200-04` | Booking Lifecycle Transaction RPCs | `done` ✅ | PL/pgSQL Atomic functions |
+| | `200-05` | Cron job: Auto Release Expired Holds & No-Show | `done` ✅ | `/api/cron/release-holds` & `no-show` |
+| | `200-06` | Connect FE UI GD1 to BE REST APIs | `done` ✅ | Rest API integration map & handlers |
+| | `200-07` | SendGrid Email Notification & Lookup `/lookup` | `done` ✅ | Email mock logger & `/lookup` page |
+| | `200-08` | GD2 Full Integration & Verification | `done` ✅ | **GD2 100% Complete & Verified** |
+| **300 (Go-Live)** | `300-01` | Live Payment Webhook & HMAC | `done` ✅ | HMAC-SHA256 PayOS Payment Webhook |
+| | `300-02` | Custom Domain DNS, SSL & DKIM/SPF | `done` ✅ | Domain mapping & SEO config |
+| | `300-03` | E2E System Test & Quality Gate | `done` ✅ | 27/27 AC PASS & Quality Gate Verified |
+| | `300-04` | SOP Handover & Operational Account Transfer | `done` ✅ | **GD3 Go-Live 100% Complete** |
 
 ---
 

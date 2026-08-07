@@ -120,40 +120,50 @@ export default function NewBookingPage() {
         return null
     }
 
-    const submit = () => {
+    const submit = async () => {
         const problem = validate()
         if (problem) {
             setFormError(problem)
             return
         }
-        if (!quote || !user) return
+        if (!quote) return
 
         setSubmitting(true)
         setFormError(null)
 
         try {
-            const booking = createBooking({
-                quote,
-                roomTypeId,
-                ratePlanId,
-                checkIn,
-                checkOut,
-                guests,
-                addons,
-                guest: {
-                    fullName: fullName.trim(),
-                    phone: phone.trim(),
-                    email: email.trim(),
-                    estimatedArrivalTime: arrivalTime || undefined,
-                    specialRequests: note.trim() || undefined,
-                },
-                channel,
-                // Nhật ký phải ghi nhân viên đã nhập, không phải khách (§6.4).
-                actor: { id: user.id, name: user.fullName, role: user.role },
+            const res = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    roomTypeId,
+                    ratePlanId,
+                    checkIn,
+                    checkOut,
+                    guests,
+                    addons,
+                    promoCode,
+                    channel,
+                    guest: {
+                        fullName: fullName.trim(),
+                        phone: phone.trim(),
+                        email: email.trim(),
+                        estimatedArrivalTime: arrivalTime || undefined,
+                        specialRequests: note.trim() || undefined,
+                    },
+                }),
             })
-            router.push(`/admin/orders/${booking.id}`)
+
+            const json = await res.json()
+            if (!res.ok) {
+                setFormError(json.error?.message?.vi || json.error?.message?.en || 'Tạo đơn thất bại.')
+                setSubmitting(false)
+                return
+            }
+
+            await useBookingStore.getState().fetchBookingsFromApi()
+            router.push(`/admin/orders/${json.data?.id || ''}`)
         } catch (error) {
-            // Không nuốt lỗi (luật C3): hiện bằng chữ và mở khoá lại nút.
             setFormError(
                 pick(
                     {
@@ -168,7 +178,7 @@ export default function NewBookingPage() {
     }
 
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-5)', maxWidth: 960 }}>
+        <div className="w-full flex-1 overflow-y-auto p-4 space-y-6 pb-20 max-w-6xl mx-auto">
             <Link
                 href="/admin/orders"
                 style={{

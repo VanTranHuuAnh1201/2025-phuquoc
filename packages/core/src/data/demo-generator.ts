@@ -284,18 +284,28 @@ export function generateDemoData(options: DemoDataOptions): DemoData {
 
         if (status === 'checked_out') {
             const hasIncidental = rng() < 0.35
+            const isLate = rng() < 0.2
+            const lateFee = isLate ? 200_000 : 0
+            const incidentals = hasIncidental
+                ? [
+                      {
+                          id: `inc-${bookingId}`,
+                          description: pick(rng, ['Minibar', 'Giặt ủi', 'Đồ uống nhà hàng']),
+                          amount: pickInt(rng, 1, 8) * 50_000,
+                      },
+                  ]
+                : []
+            const incidentalTotal = incidentals.reduce((sum, i) => sum + i.amount, 0)
+            const roomBalance = Math.max(0, quote.totalAmount - paidAmount)
+            const computedDue = roomBalance + incidentalTotal + lateFee
+
             booking.checkOutRecord = {
                 at: `${checkOut}T11:${String(pickInt(rng, 0, 59)).padStart(2, '0')}:00.000Z`,
-                lateCheckOut: rng() < 0.2,
-                incidentals: hasIncidental
-                    ? [
-                          {
-                              id: `inc-${bookingId}`,
-                              description: pick(rng, ['Minibar', 'Giặt ủi', 'Đồ uống nhà hàng']),
-                              amount: pickInt(rng, 1, 8) * 50_000,
-                          },
-                      ]
-                    : [],
+                lateCheckOut: isLate,
+                lateCheckOutFee: lateFee,
+                incidentals,
+                computedDue,
+                collectedAmount: computedDue,
                 settled: true,
                 comment: pick(rng, CHECKOUT_COMMENTS),
                 guestRating: pickInt(rng, 3, 5),

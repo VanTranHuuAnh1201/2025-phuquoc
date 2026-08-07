@@ -14,12 +14,12 @@ import { DataTable, StatCard, Toolbar } from '@repo/ui'
 import type { Column } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingStore } from '@/stores/booking.store'
+import { useBookingsData } from '@/hooks/useAdminData'
 import { S, tr } from '@/strings'
 
 export default function CustomersPage() {
     const { locale } = useLocale()
-    const customers = useBookingStore((s) => s.customers)
-    const bookings = useBookingStore((s) => s.bookings)
+    const { customers, bookings } = useBookingsData()
 
     const [search, setSearch] = useState('')
     const [tierFilter, setTierFilter] = useState('all')

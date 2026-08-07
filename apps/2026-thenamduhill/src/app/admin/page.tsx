@@ -1,15 +1,17 @@
 'use client'
 
 import {
-    DownloadIcon,
+    BedIcon,
+    CalendarIcon,
     EyeIcon,
-    PencilIcon,
+    GridIcon,
     PlusIcon,
-    TrashIcon,
 } from '@/components/icons'
 import { DataTable, useDataTable, type Column } from '@repo/ui'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useBookingsData } from '@/hooks/useAdminData'
+import { useBookingStore } from '@/stores/booking.store'
 
 export interface BookingRowItem {
     id: string
@@ -17,179 +19,147 @@ export interface BookingRowItem {
     guestName: string
     phone: string
     roomType: string
+    unitNumber: string
     channel: 'website' | 'walk_in' | 'ota' | 'phone'
     channelLabel: string
     nights: number
     checkInDate: string
+    checkOutDate: string
     totalAmount: number
+    paidAmount: number
     status: 'confirmed' | 'checked_in' | 'checked_out' | 'pending_payment' | 'cancelled'
     statusLabel: string
     creator: string
 }
 
-const RESORT_BOOKINGS: BookingRowItem[] = [
+const CHANNEL_LABELS: Record<string, string> = {
+    web: 'Website',
+    'walk-in': 'Walk-in',
+    ota: 'OTA',
+    phone: 'Hotline',
+}
+
+const CHANNEL_MAP: Record<string, 'website' | 'walk_in' | 'ota' | 'phone'> = {
+    web: 'website',
+    'walk-in': 'walk_in',
+    ota: 'ota',
+    phone: 'phone',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+    checked_in: 'Đang ở',
+    confirmed: 'Đã cọc',
+    pending_payment: 'Chờ cọc',
+    checked_out: 'Check-out',
+    cancelled: 'Đã hủy',
+    no_show: 'Vắng mặt',
+}
+
+const ROOM_TYPE_NAMES: Record<string, string> = {
+    'deluxe-ocean': 'Deluxe Ocean View',
+    'bungalow-hillside': 'Bungalow Hillside',
+    'villa-front-sea': 'Villa Front Sea',
+}
+
+interface ActivityLog {
+    id: string
+    time: string
+    title: string
+    subtitle: string
+}
+
+const ACTIVITY_FEEDS: ActivityLog[] = [
     {
-        id: 'bk-0039',
-        code: 'ĐH-2026-0039',
-        guestName: 'Nguyễn Văn Hải',
-        phone: '0912 345 678',
-        roomType: 'Deluxe Ocean View (Phòng Hướng Biển)',
-        channel: 'website',
-        channelLabel: 'Website Trực Tuyến',
-        nights: 2,
-        checkInDate: '23/07/2026 14:00',
-        totalAmount: 3400000,
-        status: 'checked_in',
-        statusLabel: 'Đang ở',
-        creator: 'Lễ tân (Tuấn)',
+        id: '1',
+        time: '09:40',
+        title: 'Lê Văn Tùng — Duyệt cọc VietQR',
+        subtitle: 'Chuyển khoản 1.200.000đ (#ND-39) · Villa Front Sea',
     },
     {
-        id: 'bk-0038',
-        code: 'ĐH-2026-0038',
-        guestName: 'Trần Thị Mai',
-        phone: '0988 765 432',
-        roomType: 'Bungalow Hillside (Bungalow Đồi Hill)',
-        channel: 'ota',
-        channelLabel: 'Agoda / Booking.com',
-        nights: 3,
-        checkInDate: '23/07/2026 14:00',
-        totalAmount: 5100000,
-        status: 'confirmed',
-        statusLabel: 'Đã xác nhận',
-        creator: 'Tự động (OTA)',
+        id: '2',
+        time: '11:05',
+        title: 'Bungalow 102 — Buồng phòng báo sạch',
+        subtitle: 'Đã dọn dẹp sẵn sàng bàn giao khách check-in',
     },
     {
-        id: 'bk-0037',
-        code: 'ĐH-2026-0037',
-        guestName: 'Lê Hoàng Nam',
-        phone: '0903 112 233',
-        roomType: 'Villa Front Sea (Biệt Thự Mặt Biển)',
-        channel: 'walk_in',
-        channelLabel: 'Khách Vãng Lai',
-        nights: 1,
-        checkInDate: '22/07/2026 15:30',
-        totalAmount: 4800000,
-        status: 'checked_out',
-        statusLabel: 'Hoàn tất',
-        creator: 'Lễ tân (Lan)',
+        id: '3',
+        time: '13:20',
+        title: 'Đoàn Thu Hà — Check-in nhận phòng',
+        subtitle: 'Đã giao chìa khóa Villa 01 · 2 đêm',
     },
     {
-        id: 'bk-0036',
-        code: 'ĐH-2026-0036',
-        guestName: 'Phạm Thu Hương',
-        phone: '0934 556 677',
-        roomType: 'Executive Suite Beachfront',
-        channel: 'phone',
-        channelLabel: 'Điện Thoại / Hotline',
-        nights: 2,
-        checkInDate: '21/07/2026 14:00',
-        totalAmount: 6200000,
-        status: 'checked_out',
-        statusLabel: 'Hoàn tất',
-        creator: 'Chủ sở hữu (Owner)',
-    },
-    {
-        id: 'bk-0035',
-        code: 'ĐH-2026-0035',
-        guestName: 'Vũ Đức Cường',
-        phone: '0977 889 900',
-        roomType: 'Deluxe Ocean View (Phòng Hướng Biển)',
-        channel: 'website',
-        channelLabel: 'Website Trực Tuyến',
-        nights: 2,
-        checkInDate: '20/07/2026 14:00',
-        totalAmount: 3400000,
-        status: 'pending_payment',
-        statusLabel: 'Chờ cọc',
-        creator: 'Khách tự đặt',
-    },
-    {
-        id: 'bk-0034',
-        code: 'ĐH-2026-0034',
-        guestName: 'Đặng Ngọc Ánh',
-        phone: '0918 223 344',
-        roomType: 'Bungalow Hillside (Bungalow Đồi Hill)',
-        channel: 'ota',
-        channelLabel: 'Agoda / Booking.com',
-        nights: 1,
-        checkInDate: '20/07/2026 14:00',
-        totalAmount: 1700000,
-        status: 'cancelled',
-        statusLabel: 'Đã hủy',
-        creator: 'Hệ thống OTA',
-    },
-    {
-        id: 'bk-0033',
-        code: 'ĐH-2026-0033',
-        guestName: 'Hoàng Văn Minh',
-        phone: '0945 667 788',
-        roomType: 'Villa Front Sea (Biệt Thự Mặt Biển)',
-        channel: 'phone',
-        channelLabel: 'Điện Thoại / Hotline',
-        nights: 3,
-        checkInDate: '19/07/2026 14:00',
-        totalAmount: 14400000,
-        status: 'checked_out',
-        statusLabel: 'Hoàn tất',
-        creator: 'Lễ tân (Tuấn)',
-    },
-    {
-        id: 'bk-0032',
-        code: 'ĐH-2026-0032',
-        guestName: 'Trịnh Thị Loan',
-        phone: '0962 114 455',
-        roomType: 'Deluxe Ocean View (Phòng Hướng Biển)',
-        channel: 'website',
-        channelLabel: 'Website Trực Tuyến',
-        nights: 2,
-        checkInDate: '18/07/2026 14:00',
-        totalAmount: 3400000,
-        status: 'checked_out',
-        statusLabel: 'Hoàn tất',
-        creator: 'Khách tự đặt',
+        id: '4',
+        time: '14:10',
+        title: 'Bảo trì máy lạnh P.201',
+        subtitle: 'Kỹ thuật đã hoàn tất sửa chữa bộ lọc',
     },
 ]
 
 export default function AdminDashboard() {
+    const { bookings: rawBookings } = useBookingsData()
+    const { changeStatus } = useBookingStore()
+
+    const [activeViewMode, setActiveViewMode] = useState<'console' | 'timeline'>('console')
+    const [ownerFilter, setOwnerFilter] = useState<'everyone' | 'mine' | 'team'>('everyone')
+    const [segmentFilter, setSegmentFilter] = useState<'all' | 'villa' | 'bungalow' | 'deluxe'>('all')
+    const [selectedTab, setSelectedTab] = useState<'all' | 'pending' | 'arrivals' | 'departures'>('all')
+
     const [search, setSearch] = useState('')
-    const [dateRange, setDateRange] = useState('30days')
-    const [channelFilter, setChannelFilter] = useState('all')
-    const [statusFilter, setStatusFilter] = useState('all')
+
+    const bookings: BookingRowItem[] = useMemo(() => {
+        return rawBookings.map((b, idx) => {
+            const ch = CHANNEL_MAP[b.channel] || 'website'
+            const units = ['P.101', 'P.102', 'Villa 01', 'Bungalow 03', 'P.201']
+            const unitNumber = units[idx % units.length] || 'P.101'
+            return {
+                id: b.id,
+                code: b.code,
+                guestName: b.guest?.fullName || 'Khách vãng lai',
+                phone: b.guest?.phone || 'N/A',
+                roomType: ROOM_TYPE_NAMES[b.roomTypeId] || b.roomTypeId,
+                unitNumber,
+                channel: ch,
+                channelLabel: CHANNEL_LABELS[b.channel] || 'Website',
+                nights: b.nights || 1,
+                checkInDate: b.checkIn || '2026-08-07',
+                checkOutDate: b.checkOut || '2026-08-08',
+                totalAmount: b.totalAmount || 0,
+                paidAmount: b.depositAmount || (b.status === 'confirmed' || b.status === 'checked_in' ? b.totalAmount * 0.5 : 0),
+                status: (b.status as any) || 'confirmed',
+                statusLabel: STATUS_LABELS[b.status] || b.status,
+                creator: b.channel === 'web' ? 'Khách tự đặt' : 'Lễ tân',
+            }
+        })
+    }, [rawBookings])
+
+    const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
 
     const columns: Column<BookingRowItem>[] = [
         {
-            key: 'channel',
-            header: 'KÊNH ĐẶT',
-            width: '160px',
-            cell: (row) => {
-                const toneMap: Record<string, string> = {
-                    website: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    walk_in: 'bg-blue-50 text-blue-700 border-blue-200',
-                    ota: 'bg-purple-50 text-purple-700 border-purple-200',
-                    phone: 'bg-amber-50 text-amber-700 border-amber-200',
-                }
-                return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[144px] text-left shrink-0 ${toneMap[row.channel] || 'bg-slate-100'}`}>
-                        {row.channel === 'website' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />}
-                        {row.channel === 'walk_in' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
-                        {row.channel === 'ota' && <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />}
-                        {row.channel === 'phone' && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />}
-                        <span className="truncate">{row.channelLabel}</span>
+            key: 'unitNumber',
+            header: 'MÃ PHÒNG & KÊNH',
+            width: '140px',
+            cell: (row) => (
+                <div>
+                    <span className="font-semibold text-xs text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                        {row.unitNumber}
                     </span>
-                )
-            },
-
+                    <div className="mt-1 text-[10px] text-slate-500">
+                        {row.channelLabel}
+                    </div>
+                </div>
+            ),
         },
         {
             key: 'guestName',
-            header: 'KHÁCH HÀNG & MÃ ĐƠN',
+            header: 'KHÁCH HÀNG & SĐT',
             sortable: true,
             cell: (row) => (
                 <div>
-                    <div className="font-semibold text-slate-900 hover:text-blue-600 transition-colors">
+                    <div className="font-semibold text-slate-900 text-xs">
                         {row.guestName}
                     </div>
-                    <div className="text-xs text-slate-500 font-mono">
+                    <div className="text-[11px] text-slate-500 font-mono">
                         {row.code} · {row.phone}
                     </div>
                 </div>
@@ -198,22 +168,12 @@ export default function AdminDashboard() {
         {
             key: 'roomType',
             header: 'HẠNG PHÒNG',
-            cell: (row) => <span className="text-slate-700 font-medium text-xs">{row.roomType}</span>,
-        },
-        {
-            key: 'nights',
-            header: 'SỐ ĐÊM',
-            sortable: true,
-            width: '90px',
-            align: 'center',
-            cell: (row) => <span className="text-slate-700 font-semibold text-xs">{row.nights} đêm</span>,
-        },
-        {
-            key: 'checkInDate',
-            header: 'NGÀY CHECK-IN',
-            sortable: true,
-            width: '160px',
-            cell: (row) => <span className="text-slate-600 text-xs">{row.checkInDate}</span>,
+            cell: (row) => (
+                <div>
+                    <div className="text-slate-800 text-xs">{row.roomType}</div>
+                    <div className="text-[10px] text-slate-500">{row.nights} đêm ({row.checkInDate})</div>
+                </div>
+            ),
         },
         {
             key: 'status',
@@ -221,79 +181,98 @@ export default function AdminDashboard() {
             width: '130px',
             cell: (row) => {
                 const statusStyles: Record<string, string> = {
-                    checked_in: 'bg-blue-50 text-blue-700 border-blue-200',
-                    confirmed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    pending_payment: 'bg-amber-50 text-amber-700 border-amber-200',
-                    checked_out: 'bg-slate-100 text-slate-700 border-slate-200',
+                    checked_in: 'bg-blue-50 text-blue-700 border-blue-200 font-medium',
+                    confirmed: 'bg-slate-100 text-slate-800 border-slate-300 font-medium',
+                    pending_payment: 'bg-amber-50 text-amber-800 border-amber-200 font-medium',
+                    checked_out: 'bg-slate-50 text-slate-600 border-slate-200',
                     cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
                 }
-                const dotStyles: Record<string, string> = {
-                    checked_in: 'bg-blue-500',
-                    confirmed: 'bg-emerald-500',
-                    pending_payment: 'bg-amber-500',
-                    checked_out: 'bg-slate-500',
-                    cancelled: 'bg-rose-500',
-                }
                 return (
-                    <span className={`inline-flex items-center justify-start gap-1.5 px-2.5 py-1 text-xs font-semibold border rounded-[4px] w-[108px] text-left shrink-0 ${statusStyles[row.status] || 'bg-slate-100'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotStyles[row.status] || 'bg-slate-400'}`} />
-                        <span className="truncate">{row.statusLabel}</span>
+                    <span className={`inline-flex items-center justify-center px-2 py-0.5 text-xs border rounded w-full text-center ${statusStyles[row.status] || 'bg-slate-100'}`}>
+                        {row.statusLabel}
                     </span>
                 )
             },
         },
-
-
         {
             key: 'totalAmount',
-            header: 'TỔNG TIỀN',
+            header: 'TỔNG TIỀN / CÒN THIẾU',
             sortable: true,
             align: 'right',
-            width: '130px',
-            cell: (row) => (
-                <span className="font-bold text-slate-900 text-xs">
-                    {row.totalAmount.toLocaleString('vi-VN')}đ
-                </span>
-            ),
+            width: '160px',
+            cell: (row) => {
+                const remaining = row.totalAmount - row.paidAmount
+                return (
+                    <div className="text-right">
+                        <div className="font-semibold text-slate-900 text-xs">
+                            {row.totalAmount.toLocaleString('vi-VN')}đ
+                        </div>
+                        <div className="text-[10px] text-slate-500">
+                            {remaining > 0 ? `Thiếu: ${remaining.toLocaleString('vi-VN')}đ` : 'Đã thu đủ'}
+                        </div>
+                    </div>
+                )
+            },
         },
         {
             key: 'action',
             header: 'THAO TÁC',
             align: 'right',
-            width: '120px',
+            width: '160px',
             cell: (row) => (
-                <div className="flex items-center justify-end gap-1 text-slate-500">
+                <div className="flex items-center justify-end gap-1">
+                    {row.status === 'pending_payment' && (
+                        <button
+                            type="button"
+                            onClick={() => changeStatus(row.id, 'confirmed', staffActor, 'Duyệt cọc tại bàn ca trực')}
+                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                        >
+                            Duyệt cọc
+                        </button>
+                    )}
+                    {row.status === 'confirmed' && (
+                        <button
+                            type="button"
+                            onClick={() => changeStatus(row.id, 'checked_in', staffActor, 'Check-in tại quầy')}
+                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                        >
+                            Check-in
+                        </button>
+                    )}
+                    {row.status === 'checked_in' && (
+                        <button
+                            type="button"
+                            onClick={() => changeStatus(row.id, 'checked_out', staffActor, 'Check-out đóng đơn')}
+                            className="px-2.5 py-0.5 text-[11px] font-semibold bg-slate-800 hover:bg-slate-900 text-white rounded transition-colors"
+                        >
+                            Check-out
+                        </button>
+                    )}
                     <Link
                         href={`/admin/orders/${row.id}`}
-                        className="p-1 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors"
+                        className="p-1 text-slate-400 hover:text-blue-600 rounded transition-colors ml-1"
                         title="Xem chi tiết"
                     >
-                        <EyeIcon size={16} />
+                        <EyeIcon size={15} />
                     </Link>
-                    <button type="button" className="p-1 hover:text-emerald-600 hover:bg-slate-100 rounded transition-colors" title="In hóa đơn">
-                        <DownloadIcon size={16} />
-                    </button>
-                    <button type="button" className="p-1 hover:text-amber-600 hover:bg-slate-100 rounded transition-colors" title="Chỉnh sửa">
-                        <PencilIcon size={16} />
-                    </button>
-                    <button type="button" className="p-1 hover:text-rose-600 hover:bg-slate-100 rounded transition-colors" title="Hủy đơn">
-                        <TrashIcon size={16} />
-                    </button>
                 </div>
             ),
         },
     ]
 
-    const filteredData = RESORT_BOOKINGS.filter((item) => {
+    const filteredData = bookings.filter((item) => {
+        if (selectedTab === 'pending' && item.status !== 'pending_payment') return false
+        if (selectedTab === 'arrivals' && item.status !== 'confirmed') return false
+        if (selectedTab === 'departures' && item.status !== 'checked_in') return false
+
         if (search) {
             const q = search.toLowerCase()
             const matchName = item.guestName.toLowerCase().includes(q)
             const matchCode = item.code.toLowerCase().includes(q)
             const matchPhone = item.phone.includes(q)
-            if (!matchName && !matchCode && !matchPhone) return false
+            const matchUnit = item.unitNumber.toLowerCase().includes(q)
+            if (!matchName && !matchCode && !matchPhone && !matchUnit) return false
         }
-        if (channelFilter !== 'all' && item.channel !== channelFilter) return false
-        if (statusFilter !== 'all' && item.status !== statusFilter) return false
         return true
     })
 
@@ -305,203 +284,291 @@ export default function AdminDashboard() {
         pageSize: 10,
     })
 
-    const handleReset = () => {
-        setSearch('')
-        setDateRange('30days')
-        setChannelFilter('all')
-        setStatusFilter('all')
-    }
+    const stats = useMemo(() => {
+        const totalRooms = 15
+        const occupied = bookings.filter((b) => b.status === 'checked_in').length
+        const confirmed = bookings.filter((b) => b.status === 'confirmed').length
+        const pending = bookings.filter((b) => b.status === 'pending_payment').length
+        const occupancyRate = Math.round(((occupied + confirmed) / totalRooms) * 100)
+        const pendingCollect = bookings
+            .filter((b) => b.status === 'confirmed' || b.status === 'checked_in')
+            .reduce((acc, b) => acc + (b.totalAmount - b.paidAmount), 0)
 
-    const stats = {
-        total: filteredData.length,
-        totalRevenue: filteredData.reduce((acc, curr) => acc + curr.totalAmount, 0),
-        website: filteredData.filter((i) => i.channel === 'website').length,
-        websiteRev: filteredData.filter((i) => i.channel === 'website').reduce((acc, curr) => acc + curr.totalAmount, 0),
-        walkIn: filteredData.filter((i) => i.channel === 'walk_in').length,
-        walkInRev: filteredData.filter((i) => i.channel === 'walk_in').reduce((acc, curr) => acc + curr.totalAmount, 0),
-        ota: filteredData.filter((i) => i.channel === 'ota').length,
-        otaRev: filteredData.filter((i) => i.channel === 'ota').reduce((acc, curr) => acc + curr.totalAmount, 0),
-        phone: filteredData.filter((i) => i.channel === 'phone').length,
-        phoneRev: filteredData.filter((i) => i.channel === 'phone').reduce((acc, curr) => acc + curr.totalAmount, 0),
-    }
-
+        return { totalRooms, occupied, confirmed, pending, occupancyRate, pendingCollect }
+    }, [bookings])
 
     return (
-        <div className="w-full flex-1 flex flex-col min-h-0 space-y-2 overflow-hidden">
-            {/* Top Bar: Title + All Filters & Actions in Header */}
-            <div className="w-full bg-white p-2 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2 shrink-0">
-                {/* Left: Title & Count */}
-                <div className="flex items-center gap-2 shrink-0">
-                    <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                        Đặt phòng
+        <div className="w-full flex-1 flex flex-col min-h-0 space-y-4 overflow-y-auto custom-scrollbar bg-slate-50/50 p-1">
+            {/* Top Page Header (Sales Console Exact Title Bar) */}
+            <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div>
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest">
+                        OPERATIONS CONSOLE — TODAY OVERVIEW
+                    </div>
+                    <h1 className="text-2xl font-normal text-slate-900 tracking-tight mt-0.5">
+                        Occupancy overview
                     </h1>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        {stats.total} đơn
-                    </span>
                 </div>
 
-                {/* Right: All Filters & Actions in Header */}
-                <div className="flex flex-wrap items-center gap-2 min-w-0">
-                    {/* Search Field */}
-                    <div className="relative w-44 sm:w-56">
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Tìm mã đơn, tên, sđt…"
-                            className="w-full pl-7 pr-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-slate-800"
-                        />
-                        <div className="absolute left-2 top-1.5 text-slate-400">
-                            <EyeIcon size={13} />
-                        </div>
-                    </div>
-
-                    {/* Date Range Select */}
-                    <select
-                        value={dateRange}
-                        onChange={(e) => setDateRange(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="30days">30 ngày qua</option>
-                        <option value="7days">7 ngày qua</option>
-                        <option value="today">Hôm nay</option>
-                    </select>
-
-                    {/* Channel Select */}
-                    <select
-                        value={channelFilter}
-                        onChange={(e) => setChannelFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">Tất cả kênh</option>
-                        <option value="website">Website Trực Tuyến</option>
-                        <option value="walk_in">Khách Vãng Lai</option>
-                        <option value="ota">Agoda / Booking.com</option>
-                        <option value="phone">Hotline / Điện thoại</option>
-                    </select>
-
-                    {/* Status Select */}
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-2 py-1 text-xs bg-slate-50 border border-slate-300 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                    >
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="checked_in">Đang ở</option>
-                        <option value="confirmed">Đã xác nhận</option>
-                        <option value="pending_payment">Chờ cọc</option>
-                        <option value="checked_out">Hoàn tất</option>
-                        <option value="cancelled">Đã hủy</option>
-                    </select>
-
-                    {/* Reset Button */}
+                <div className="flex items-center gap-2">
                     <button
                         type="button"
-                        onClick={handleReset}
-                        className="px-2 py-1 text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors"
+                        onClick={() => setActiveViewMode(activeViewMode === 'console' ? 'timeline' : 'console')}
+                        className="px-3 py-1.5 text-xs font-medium bg-white border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
                     >
-                        Đặt lại
+                        {activeViewMode === 'console' ? 'Sơ đồ Tape Chart ▾' : 'Bảng ca trực ▾'}
                     </button>
-
-                    {/* Primary Action Button */}
                     <Link
-                        href="/admin/orders"
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 text-xs font-bold rounded-md transition-all shadow-sm active:scale-[0.98] shrink-0 min-h-[32px]"
+                        href="/admin/orders/new"
+                        className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-2xs"
                     >
-                        <PlusIcon size={14} />
-                        <span>+ Đặt phòng mới</span>
+                        + Đặt phòng mới
                     </Link>
                 </div>
             </div>
 
-            {/* Channel KPI Statistics Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
-                {/* Total Stats */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                        TẤT CẢ KÊNH
+            {/* Horizontal Pill Filters Bar (Exact Salesforce Filter Bar) */}
+            <div className="bg-white p-2.5 rounded-lg border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+                <div className="flex flex-wrap items-center gap-3">
+                    {/* Owner Filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-slate-400 text-[11px] uppercase">CA TRỰC:</span>
+                        <div className="flex bg-slate-100 p-0.5 rounded-full border border-slate-200">
+                            <button
+                                type="button"
+                                onClick={() => setOwnerFilter('everyone')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    ownerFilter === 'everyone' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Tất cả
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setOwnerFilter('mine')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    ownerFilter === 'mine' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Ca sáng
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setOwnerFilter('team')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    ownerFilter === 'team' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Ca chiều
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.total} đơn</span>
-                        <span className="text-[11px] font-semibold text-amber-700">
-                            {stats.totalRevenue.toLocaleString('vi-VN')}đ
-                        </span>
+
+                    {/* Segment Filter */}
+                    <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-slate-400 text-[11px] uppercase">HẠNG PHÒNG:</span>
+                        <div className="flex bg-slate-100 p-0.5 rounded-full border border-slate-200">
+                            <button
+                                type="button"
+                                onClick={() => setSegmentFilter('all')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    segmentFilter === 'all' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Tất cả
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSegmentFilter('villa')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    segmentFilter === 'villa' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Villa
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSegmentFilter('bungalow')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    segmentFilter === 'bungalow' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Bungalow
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSegmentFilter('deluxe')}
+                                className={`px-3 py-0.5 rounded-full text-xs transition-colors ${
+                                    segmentFilter === 'deluxe' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Deluxe
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Website Stats */}
-                <div className="bg-white p-2 rounded-sm border border-emerald-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
-                            WEBSITE TRỰC TUYẾN
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <div className="text-slate-500 text-xs">
+                    {filteredData.length} phòng/đơn khớp điều kiện
+                </div>
+            </div>
+
+            {/* 5 KPI Metric Strip Cards (Exact Salesforce Style: Unbolded Large Numbers font-normal) */}
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 shrink-0">
+                {/* KPI 1 */}
+                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        OCCUPANCY RATE
                     </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.website} đơn</span>
-                        <span className="text-[11px] font-semibold text-emerald-700">
-                            {stats.websiteRev.toLocaleString('vi-VN')}đ
-                        </span>
+                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
+                        {stats.occupancyRate}%
+                    </div>
+                    <div className="mt-1.5 text-xs text-blue-600 font-medium">
+                        ▲ 12% vs tuần trước
                     </div>
                 </div>
 
-                {/* Walk-in Stats */}
-                <div className="bg-white p-2 rounded-sm border border-blue-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
-                            KHÁCH VÃNG LAI
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                {/* KPI 2 */}
+                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        CHECK-IN HÔM NAY
                     </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.walkIn} đơn</span>
-                        <span className="text-[11px] font-semibold text-blue-700">
-                            {stats.walkInRev.toLocaleString('vi-VN')}đ
-                        </span>
+                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
+                        {stats.confirmed} <span className="text-base text-slate-500 font-normal">lượt</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-blue-600 font-medium">
+                        ▲ 2 lượt chuẩn bị nhận
                     </div>
                 </div>
 
-                {/* OTA Stats */}
-                <div className="bg-white p-2 rounded-sm border border-purple-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-purple-700 uppercase tracking-wider">
-                            AGODA / BOOKING (OTA)
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                {/* KPI 3 */}
+                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        CHECK-OUT HÔM NAY
                     </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.ota} đơn</span>
-                        <span className="text-[11px] font-semibold text-purple-700">
-                            {stats.otaRev.toLocaleString('vi-VN')}đ
-                        </span>
+                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
+                        {stats.occupied} <span className="text-base text-slate-500 font-normal">lượt</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-slate-500 font-medium">
+                        Dự kiến trước 12:00
                     </div>
                 </div>
 
-                {/* Hotline Stats */}
-                <div className="bg-white p-2 rounded-sm border border-amber-200 shadow-sm flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">
-                            HOTLINE / ĐIỆN THOẠI
-                        </span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                {/* KPI 4 */}
+                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        CHỜ DUYỆT CỌC
                     </div>
-                    <div className="flex items-baseline justify-between mt-1">
-                        <span className="text-base font-bold text-slate-900">{stats.phone} đơn</span>
-                        <span className="text-[11px] font-semibold text-amber-700">
-                            {stats.phoneRev.toLocaleString('vi-VN')}đ
-                        </span>
+                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
+                        {stats.pending} <span className="text-base text-slate-500 font-normal">đơn</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-amber-600 font-medium">
+                        Cần kiểm tra VietQR
+                    </div>
+                </div>
+
+                {/* KPI 5 */}
+                <div className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between">
+                    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        BUỒNG PHÒNG SẠCH
+                    </div>
+                    <div className="mt-2 text-3xl font-normal text-slate-900 tracking-tight">
+                        10/15 <span className="text-base text-slate-500 font-normal">phòng</span>
+                    </div>
+                    <div className="mt-1.5 text-xs text-slate-500 font-medium">
+                        3 bẩn · 2 bảo trì
                     </div>
                 </div>
             </div>
 
-            {/* DataTable Component - Maximized Full Height */}
-            <div className="w-full flex-1 flex flex-col min-h-0 bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
-                <DataTable {...tableProps} />
+            {/* Rhythm Operational Activity Section Header */}
+            <div className="bg-white p-3 rounded-lg border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
+                <div className="text-xs text-slate-600 font-medium">
+                    <span className="font-semibold text-slate-900">Rhythm today</span>, Thứ Sáu 7 Tháng 8 · Lễ tân Ca Sáng
+                </div>
+                <div className="flex bg-slate-100 p-0.5 rounded-md border border-slate-200 text-xs">
+                    <button
+                        type="button"
+                        onClick={() => setSelectedTab('all')}
+                        className={`px-3 py-0.5 rounded transition-colors ${
+                            selectedTab === 'all' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Tất cả phòng
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setSelectedTab('arrivals')}
+                        className={`px-3 py-0.5 rounded transition-colors ${
+                            selectedTab === 'arrivals' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Check-in hôm nay
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setSelectedTab('pending')}
+                        className={`px-3 py-0.5 rounded transition-colors ${
+                            selectedTab === 'pending' ? 'bg-blue-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        Chờ cọc
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content 2-Column Split: Left Table/Timeline (65%) + Right What Moved For Me (35%) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-0 flex-1">
+                {/* Left 2 Columns: Data Table or Timeline */}
+                <div className="lg:col-span-2 flex flex-col bg-white rounded-lg border border-slate-200 shadow-2xs overflow-hidden min-h-0">
+                    {activeViewMode === 'console' ? (
+                        <div className="flex-1 overflow-y-auto p-1 custom-scrollbar">
+                            <DataTable {...tableProps} />
+                        </div>
+                    ) : (
+                        <div className="p-6 flex-1 flex flex-col justify-center items-center text-center text-slate-500">
+                            <span className="text-slate-400 mb-2"><CalendarIcon size={36} /></span>
+                            <div className="font-bold text-sm text-slate-800">Sơ Đồ Tồn Kho Lưới (Tape Chart Grid)</div>
+                            <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                                Lịch mở/khóa 15 phòng master theo từng mốc giờ và ngày. Hỗ trợ kéo thả đổi phòng trực tiếp.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Right 1 Column: WHAT MOVED FOR ME Event Stream */}
+                <div className="flex flex-col bg-white rounded-lg border border-slate-200 shadow-2xs p-3.5 min-h-0">
+                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                            WHAT MOVED FOR ME
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                            today
+                        </span>
+                    </div>
+
+                    <div className="mt-3 flex-1 overflow-y-auto space-y-3 custom-scrollbar">
+                        {ACTIVITY_FEEDS.map((feed) => (
+                            <div
+                                key={feed.id}
+                                className="flex gap-2.5 p-2 rounded-md hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-xs"
+                            >
+                                <div className="text-[10px] font-mono text-slate-400 pt-0.5">
+                                    {feed.time}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="font-semibold text-slate-800">
+                                        {feed.title}
+                                    </div>
+                                    <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                        {feed.subtitle}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     )
 }
-
-
-
-

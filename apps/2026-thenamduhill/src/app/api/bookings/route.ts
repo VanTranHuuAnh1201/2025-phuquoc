@@ -6,6 +6,7 @@ import { type Actor, withAuthGuard } from '@/lib/auth/guard'
 import { fail, ok, serverError } from '@/lib/auth/errors'
 import {
     mapAddonRow,
+    mapBookingRow,
     mapChildPolicy,
     mapInventoryRow,
     mapPromotionRow,
@@ -276,4 +277,47 @@ async function postBookingHandler(request: Request, actor: Actor): Promise<Respo
     }
 }
 
+async function getBookingsHandler(request: Request, actor: Actor): Promise<Response> {
+    try {
+        const url = new URL(request.url)
+        const code = url.searchParams.get('code')
+        const phone = url.searchParams.get('phone')
+        const status = url.searchParams.get('status')
+
+        const cookieStore = await cookies()
+        const supabase = createClient(cookieStore)
+
+        let query = supabase.from('bookings').select('*')
+
+        // If customer role, only return their bookings unless code+phone lookup
+        if (actor.role === 'customer') {
+            if (code && phone) {
+                query = query.eq('code', code.trim().toUpperCase()).eq('guest_phone', phone.trim())
+            } else {
+                query = query.eq('customer_id', actor.id)
+            }
+        } else {
+            // Staff / Admin: filter by params if given
+            if (code) query = query.ilike('code', `%${code.trim()}%`)
+            if (phone) query = query.ilike('guest_phone', `%${phone.trim()}%`)
+            if (status) query = query.eq('status', status)
+        }
+
+        const { data: rows, error } = await query.order('created_at', { ascending: false }).limit(100)
+
+        if (error) {
+            console.error('[GET /api/bookings DB error]', error)
+            return serverError()
+        }
+
+        const bookings = (rows ?? []).map(mapBookingRow)
+        return ok(bookings)
+    } catch (err: any) {
+        console.error('[GET /api/bookings error]', err)
+        return serverError()
+    }
+}
+
 export const POST = withAuthGuard(postBookingHandler, 'booking.create')
+export const GET = withAuthGuard(getBookingsHandler, 'booking.view.own')
+

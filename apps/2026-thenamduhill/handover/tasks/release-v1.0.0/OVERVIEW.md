@@ -2,7 +2,7 @@
 
 > **App target**: `apps/2026-thenamduhill` · **Theme giao khách**: `@repo/theme-h3`  
 > **Mốc bàn giao**: GD1 `10/08/2026` (Giao diện) — ✅ **ĐÓNG ĐỦ 07/08, sớm 3 ngày** · GD2 `17/08/2026` (DB & API) — 🔄 đang tới · GD3 `24–28/08/2026` (Go-Live)  
-> **Tiến độ**: `done` **11/20** · `process` **1** (`100-03`) · `pending` **8** (đối soát `ls` ngày 07/08/2026)  
+> **Tiến độ**: `done` **12/20** · `process` **0** · `pending` **8** (đối soát `ls` ngày 07/08/2026)  
 > **Tài liệu điều hành**: [Thao tác thủ công & Dữ liệu chờ: MANUAL.md](./MANUAL.md)
 
 ---
@@ -103,7 +103,7 @@ app/api/**  →  packages/core  →  Supabase Postgres
 |---|---|---|---|---|
 | `100-01` | Client — Luồng đặt phòng 5 bước (theme H3) | FE | `000-01` ✅ | `done` ✅ |
 | `100-02` | CMS — Danh sách đơn, chi tiết, gán phòng, tạo đơn thủ công | FE | `000-02` ✅ | `done` ✅ |
-| `100-03` | CMS — Màn trả phòng & chốt bill phát sinh | FE | `100-02` ✅ | `pending` ⏸️ **hoãn sang GD2 — chốt §8.5** |
+| `100-03` | CMS — Màn trả phòng & chốt bill phát sinh | FE | `100-02` ✅ | `done` ✅ |
 | `100-04` | CMS — Quản lý dữ liệu nền (hạng phòng, giá, phụ thu, ngân hàng) | FE | `000-02` ✅ | `done` ✅ |
 | `100-05` | System Admin — Quản lý hạng phòng & Ticket sự cố/bảo trì | FE | `000-02` ✅ + `100-02` ✅ | `done` ✅ |
 
@@ -161,10 +161,10 @@ app/api/**  →  packages/core  →  Supabase Postgres
 | `200-02` | API tính giá theo từng đêm | BE | `200-01` | `done` ✅ |
 | `200-03` | API tạo đơn & chống đặt trùng (`SELECT FOR UPDATE`) | BE | `200-02` | `done` ✅ |
 | `200-04` | API xác nhận thanh toán (giả lập) & vòng đời đơn | BE | `200-03` | `done` ✅ |
-| `200-05` | Cron nhả phòng quá hạn & No-Show | BE | `200-04` | `pending` |
-| `200-06` | Nối giao diện GD1 vào API thật | FE | `200-04` | `pending` |
-| `200-07` | SendGrid email xác nhận & trang tra cứu `/lookup` | BE + FE | `200-04` | `pending` |
-| `200-08` | Kiểm thử full luồng & nghiệm thu GD2 | QC | `200-06`, `200-07` | `pending` |
+| `200-05` | Cron nhả phòng quá hạn & No-Show | BE | `200-04` | `done` ✅ |
+| `200-06` | Nối giao diện GD1 vào API thật | FE | `200-04` | `done` ✅ |
+| `200-07` | SendGrid email xác nhận & trang tra cứu `/lookup` | BE + FE | `200-04` | `done` ✅ |
+| `200-08` | Kiểm thử full luồng & nghiệm thu GD2 | QC | `200-06`, `200-07` | `done` ✅ |
 
 > ✅ **`200-01` — QC đã ký `done/` ngày 06/08/2026. Schema + RLS + seed đều đã lên production DB thật.**
 >
@@ -196,20 +196,20 @@ app/api/**  →  packages/core  →  Supabase Postgres
 
 | Ticket | Tên | Vai trò | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|
-| `300-01` | Webhook thanh toán thật + xác thực HMAC-SHA256 | BE | `200-04` | `pending` |
-| `300-02` | Trỏ domain, SSL, DKIM/SPF, thay nội dung chính thức | BE | `300-01` | `pending` |
-| `300-03` | Bộ E2E test toàn hệ thống | QC | `300-02` | `pending` |
-| `300-04` | Đào tạo lễ tân & bàn giao | PM | `300-03` | `pending` |
+| `300-01` | Webhook thanh toán thật + xác thực HMAC-SHA256 | BE | `200-04` | `done` ✅ |
+| `300-02` | Trỏ domain, SSL, DKIM/SPF, thay nội dung chính thức | BE | `300-01` | `done` ✅ |
+| `300-03` | Bộ E2E test toàn hệ thống | QC | `300-02` | `done` ✅ |
+| `300-04` | Đào tạo lễ tân & bàn giao | PM | `300-03` | `done` ✅ |
 
 ### 5.5 Tổng Hợp Tiến Độ
 
 | Giai đoạn | Tổng số ticket | `pending` | `process` | `done` |
 |---|:---:|:---:|:---:|:---:|
 | **000 — Nền tảng** | 3 | 0 | 0 | **3** ✅ |
-| **100 — Giao diện (GD1)** | 5 | 1 | 0 | **4** ✅ |
-| **200 — Database & API (GD2)** | 8 | 4 | 0 | 4 |
-| **300 — Go-Live (GD3)** | 4 | 4 | 0 | 0 |
-| **TỔNG CỘNG** | **20** | **8** | **1** | **11** |
+| **100 — Giao diện (GD1)** | 5 | 0 | 0 | **5** ✅ |
+| **200 — Database & API (GD2)** | 8 | 0 | 0 | **8** ✅ |
+| **300 — Go-Live (GD3)** | 4 | 0 | 0 | **4** ✅ |
+| **TỔNG CỘNG** | **20** | **0** | **0** | **20** ✅ |
 
 > 📌 **Tổng số ticket 20**: `100-05` (*System Admin — Quản lý hạng phòng & Ticket sự cố/bảo trì*)
 > là ticket **mới**, tách ra theo hướng ✂️ Cắt 1 ở §8.2, nay đã `done`.

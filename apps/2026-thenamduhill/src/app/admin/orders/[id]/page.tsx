@@ -10,10 +10,12 @@
  * Form nhận phòng và trả phòng theo đúng `.claude/rules/app-flows.md` §F5.
  */
 
-import { use, useMemo, useState } from 'react'
+import { use, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
+    DEFAULT_LATE_CHECKOUT_FEE,
     can,
+    computeSettlement,
     formatPrice,
     getPropertySync,
     nextStatuses,
@@ -21,7 +23,7 @@ import {
     quoteRefund,
     ratePlans,
 } from '@repo/core'
-import type { BookingStatus, IncidentalCharge } from '@repo/core'
+import type { Booking, BookingStatus, IncidentalCharge } from '@repo/core'
 import {
     Badge,
     Button,
@@ -49,10 +51,15 @@ export default function AdminBookingDetail({
     const { id } = use(params)
     const { locale } = useLocale()
     const user = useAuthStore((s) => s.user)
+    const fetchBookingsFromApi = useBookingStore((s) => s.fetchBookingsFromApi)
 
-    const booking = useBookingStore((s) => s.bookings.find((b) => b.id === id))
+    const booking = useBookingStore((s) => s.bookings.find((b) => b.id === id || b.code === id))
     const logs = useBookingStore((s) => s.logs)
     const roomUnits = useBookingStore((s) => s.roomUnits)
+
+    useEffect(() => {
+        fetchBookingsFromApi()
+    }, [fetchBookingsFromApi])
     const changeStatus = useBookingStore((s) => s.changeStatus)
     const doCheckIn = useBookingStore((s) => s.checkIn)
     const doCheckOut = useBookingStore((s) => s.checkOut)
@@ -458,6 +465,7 @@ export default function AdminBookingDetail({
             <CheckOutDialog
                 open={dialog === 'check-out'}
                 onClose={() => setDialog('none')}
+                booking={booking}
                 onSubmit={(record) => {
                     const result = doCheckOut(booking.id, record, actor)
                     setError(result)
@@ -696,13 +704,18 @@ function CheckInDialog({
 function CheckOutDialog({
     open,
     onClose,
+    booking,
     onSubmit,
 }: {
     open: boolean
     onClose: () => void
+    booking: Booking
     onSubmit: (record: {
         lateCheckOut: boolean
+        lateCheckOutFee: number
         incidentals: IncidentalCharge[]
+        computedDue: number
+        collectedAmount: number
         settled: boolean
         comment?: string
         guestRating?: number
@@ -713,59 +726,120 @@ function CheckOutDialog({
     const { locale } = useLocale()
     const user = useAuthStore((s) => s.user)
 
+    const nowTime = useMemo(() => {
+        const d = new Date()
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+    }, [open])
+
+    const [actualTime, setActualTime] = useState(nowTime)
     const [late, setLate] = useState(false)
     const [items, setItems] = useState<IncidentalCharge[]>([])
     const [settled, setSettled] = useState(false)
     const [comment, setComment] = useState('')
     const [rating, setRating] = useState(5)
 
-    const total = items.reduce((sum, i) => sum + i.amount, 0)
+    const [customCollected, setCustomCollected] = useState<string>('')
+    const [touchedCollected, setTouchedCollected] = useState(false)
+
+    const validIncidentals = useMemo(
+        () => items.filter((i) => i.description.trim() && i.amount > 0),
+        [items],
+    )
+
+    const lateCheckOutFee = late ? DEFAULT_LATE_CHECKOUT_FEE : 0
+
+    const settlement = useMemo(
+        () =>
+            computeSettlement({
+                booking,
+                incidentals: validIncidentals,
+                lateCheckOutFee,
+            }),
+        [booking, validIncidentals, lateCheckOutFee],
+    )
+
+    const computedDue = settlement.totalDue
+    const collectedAmount = touchedCollected ? Number(customCollected) || 0 : computedDue
+
+    const dueFormatted = formatPrice(computedDue, locale)
 
     return (
         <Modal
             open={open}
             onClose={onClose}
             title={tr(S.doCheckOut, locale)}
-            description={
-                pick({
-                    vi: 'Ghi phát sinh và nhận xét trước khi đóng đơn.',
-                    en: 'Record charges and comments before closing the booking.',
-                }, locale)
-            }
+            description={pick(
+                {
+                    vi: 'Ghi phát sinh và chốt bill tiền phòng trước khi đóng đơn.',
+                    en: 'Record charges and settle room bill before closing the booking.',
+                },
+                locale,
+            )}
             footer={
-                <>
-                    <Button variant="ghost" onClick={onClose}>
-                        {tr(S.cancel, locale)}
-                    </Button>
-                    <Button
-                        disabled={!settled}
-                        onClick={() =>
-                            onSubmit({
-                                lateCheckOut: late,
-                                incidentals: items.filter((i) => i.description && i.amount > 0),
-                                settled,
-                                comment: comment || undefined,
-                                guestRating: rating,
-                                staffId: user?.id ?? '',
-                                staffName: user?.fullName ?? '',
-                            })
-                        }
-                    >
-                        {tr(S.doCheckOut, locale)}
-                    </Button>
-                </>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', width: '100%' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)' }}>
+                        <Button variant="ghost" onClick={onClose}>
+                            {tr(S.cancel, locale)}
+                        </Button>
+                        <Button
+                            disabled={!settled}
+                            onClick={() =>
+                                onSubmit({
+                                    lateCheckOut: late,
+                                    lateCheckOutFee,
+                                    incidentals: validIncidentals,
+                                    computedDue,
+                                    collectedAmount,
+                                    settled,
+                                    comment: comment.trim() || undefined,
+                                    guestRating: rating,
+                                    staffId: user?.id ?? '',
+                                    staffName: user?.fullName ?? '',
+                                })
+                            }
+                        >
+                            {tr(S.doCheckOut, locale)}
+                        </Button>
+                    </div>
+                    {!settled && (
+                        <div
+                            aria-live="polite"
+                            style={{
+                                fontSize: 'var(--text-xs)',
+                                color: 'var(--warning)',
+                                background: 'var(--warning-bg)',
+                                padding: 'var(--space-2) var(--space-3)',
+                                borderRadius: 'var(--radius)',
+                                textAlign: 'right',
+                            }}
+                        >
+                            {tr(S.unsettledWarningText, locale).replace('{amount}', dueFormatted)}
+                        </div>
+                    )}
+                </div>
             }
         >
             <div style={{ display: 'grid', gap: 'var(--space-5)' }}>
+                {/* 1. Giờ trả thực tế */}
+                <Field
+                    label={pick({ vi: 'Giờ trả thực tế', en: 'Actual check-out time' }, locale)}
+                    type="time"
+                    value={actualTime}
+                    onChange={(e) => setActualTime(e.target.value)}
+                    required
+                />
+
+                {/* 2. Trả phòng muộn */}
                 <CheckField
-                    label={tr(S.lateCheckOut, locale)}
+                    label={`${tr(S.lateCheckOut, locale)} (${formatPrice(DEFAULT_LATE_CHECKOUT_FEE, locale)})`}
                     checked={late}
                     onChange={(e) => setLate(e.target.checked)}
                 />
 
+                {/* 3. Phát sinh tại phòng */}
                 <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
                     <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>
-                        {tr(S.incidentals, locale)}
+                        {tr(S.incidentalChargesTotal, locale)}
                     </div>
 
                     {items.map((item, index) => (
@@ -785,14 +859,14 @@ function CheckOutDialog({
                                 type="number"
                                 min={0}
                                 step={10000}
-                                value={item.amount}
+                                value={item.amount || ''}
                                 aria-label={pick({ vi: 'Số tiền', en: 'Amount' }, locale)}
                                 onChange={(e) => {
                                     const next = [...items]
-                                    next[index] = { ...item, amount: Number(e.target.value) || 0 }
+                                    next[index] = { ...item, amount: Math.max(0, Number(e.target.value) || 0) }
                                     setItems(next)
                                 }}
-                                style={{ ...inlineInput, width: 120, textAlign: 'right' }}
+                                style={{ ...inlineInput, width: 130, textAlign: 'right' }}
                             />
                             <button
                                 type="button"
@@ -827,24 +901,86 @@ function CheckOutDialog({
                     >
                         + {tr(S.addIncidental, locale)}
                     </Button>
-
-                    {total > 0 && (
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                fontSize: 'var(--text-sm)',
-                                fontWeight: 600,
-                                paddingTop: 'var(--space-2)',
-                                borderTop: '1px solid var(--border)',
-                            }}
-                        >
-                            <span>{tr(S.totalAmount, locale)}</span>
-                            <span>{formatPrice(total, locale)}</span>
-                        </div>
-                    )}
                 </div>
 
+                {/* Khối tiền hiển thị (§3 / §6.2) */}
+                <div
+                    style={{
+                        padding: 'var(--space-4)',
+                        background: 'var(--surface-sunken, var(--neutral-100, #f8fafc))',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-lg)',
+                        display: 'grid',
+                        gap: 'var(--space-2)',
+                        position: 'sticky',
+                        bottom: 0,
+                        zIndex: 2,
+                    }}
+                >
+                    <Row
+                        label={tr(S.totalAmount, locale)}
+                        value={formatPrice(booking.totalAmount, locale)}
+                    />
+                    <Row
+                        label={pick({ vi: 'Đã thu cọc / thanh toán', en: 'Paid amount' }, locale)}
+                        value={formatPrice(booking.paidAmount, locale)}
+                    />
+                    <div style={{ borderTop: '1px dashed var(--border)', margin: 'var(--space-1) 0' }} />
+                    <Row
+                        label={tr(S.roomBalanceDue, locale)}
+                        value={formatPrice(settlement.roomBalance, locale)}
+                    />
+                    {settlement.incidentalTotal > 0 && (
+                        <Row
+                            label={tr(S.incidentalChargesTotal, locale)}
+                            value={formatPrice(settlement.incidentalTotal, locale)}
+                        />
+                    )}
+                    {settlement.lateCheckOutFee > 0 && (
+                        <Row
+                            label={tr(S.lateCheckOutSurcharge, locale)}
+                            value={formatPrice(settlement.lateCheckOutFee, locale)}
+                        />
+                    )}
+                    <div style={{ borderTop: '1px solid var(--border)', margin: 'var(--space-1) 0' }} />
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'baseline',
+                            gap: 'var(--space-4)',
+                        }}
+                    >
+                        <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>
+                            {tr(S.totalDueNow, locale)}
+                        </span>
+                        <span
+                            style={{
+                                fontSize: 'var(--text-2xl)',
+                                fontWeight: 700,
+                                fontVariantNumeric: 'tabular-nums',
+                                color: 'var(--text)',
+                            }}
+                        >
+                            {formatPrice(computedDue, locale)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* 4. Số tiền thu thêm thực tế (sửa được) */}
+                <Field
+                    label={tr(S.collectedAmountLabel, locale)}
+                    type="number"
+                    min={0}
+                    value={touchedCollected ? customCollected : computedDue}
+                    onChange={(e) => {
+                        setTouchedCollected(true)
+                        setCustomCollected(e.target.value)
+                    }}
+                    hint={tr(S.collectedAmountHint, locale)}
+                />
+
+                {/* 5. Đã thanh toán đủ */}
                 <CheckField
                     label={tr(S.settled, locale)}
                     checked={settled}
@@ -852,36 +988,69 @@ function CheckOutDialog({
                     hint={tr(S.settledHint, locale)}
                 />
 
+                {/* 6. Nhận xét kết thúc */}
                 <TextAreaField
                     label={tr(S.closingComment, locale)}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    hint={
-                        pick({
+                    hint={pick(
+                        {
                             vi: 'Ghi lại tình trạng phòng, thái độ khách, việc cần lưu ý lần sau.',
                             en: 'Note room condition, guest behaviour, anything worth remembering.',
-                        }, locale)
-                    }
-                    rows={4}
+                        },
+                        locale,
+                    )}
+                    rows={3}
                 />
 
-                <SelectField
-                    label={tr(S.guestRating, locale)}
-                    value={String(rating)}
-                    onChange={(e) => setRating(Number(e.target.value))}
-                    hint={
-                        pick({
-                            vi: 'Chỉ nhân viên thấy, khách không biết.',
-                            en: 'Internal only — never shown to the guest.',
-                        }, locale)
-                    }
-                >
-                    {[5, 4, 3, 2, 1].map((n) => (
-                        <option key={n} value={n}>
-                            {'★'.repeat(n)}
-                        </option>
-                    ))}
-                </SelectField>
+                {/* 7. Đánh giá khách (nội bộ, 1-5 sao) */}
+                <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                    <label style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text)' }}>
+                        {tr(S.guestRating, locale)}
+                    </label>
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                        {tr(S.internalRatingHint, locale)}
+                    </div>
+                    <fieldset
+                        style={{
+                            border: 'none',
+                            padding: 0,
+                            margin: 0,
+                            display: 'flex',
+                            gap: 'var(--space-2)',
+                        }}
+                    >
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <label
+                                key={star}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 4,
+                                    cursor: 'pointer',
+                                    padding: 'var(--space-2) var(--space-3)',
+                                    borderRadius: 'var(--radius)',
+                                    border: star <= rating ? '1px solid var(--brand)' : '1px solid var(--border)',
+                                    background: star <= rating ? 'var(--brand-subtle, rgba(0,0,0,0.03))' : 'transparent',
+                                    fontSize: 'var(--text-sm)',
+                                }}
+                            >
+                                <input
+                                    type="radio"
+                                    name="guest-rating"
+                                    value={star}
+                                    checked={rating === star}
+                                    onChange={() => setRating(star)}
+                                    aria-label={pick(
+                                        { vi: `${star} sao — đánh giá nội bộ`, en: `${star} stars — internal rating` },
+                                        locale,
+                                    )}
+                                />
+                                {'★'.repeat(star)}
+                            </label>
+                        ))}
+                    </fieldset>
+                </div>
             </div>
         </Modal>
     )

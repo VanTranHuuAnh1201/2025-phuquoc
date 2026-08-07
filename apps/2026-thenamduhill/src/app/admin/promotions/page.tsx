@@ -12,7 +12,7 @@
  *   5. bảng thứ tự áp dụng trực quan
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     addDays,
     buildQuote,
@@ -40,6 +40,7 @@ import type { Column } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingStore } from '@/stores/booking.store'
 import { usePromotionStore } from '@/stores/promotion.store'
+import { usePromotionsData } from '@/hooks/useAdminData'
 import { todayKey } from '@/stores/demo-data'
 import { PriceBreakdown } from '@/components/PriceBreakdown'
 import {
@@ -63,9 +64,7 @@ const TYPES: PromotionType[] = [
 
 export default function PromotionsPage() {
     const { locale } = useLocale()
-    const promotions = usePromotionStore((s) => s.items)
-    const toggle = usePromotionStore((s) => s.toggle)
-    const upsert = usePromotionStore((s) => s.upsert)
+    const { promotions, toggle, upsert } = usePromotionsData()
 
     const [editing, setEditing] = useState<Promotion | null>(null)
     const [infoPromo, setInfoPromo] = useState<Promotion | null>(null)

@@ -360,7 +360,10 @@ export interface CheckInRecord {
 export interface CheckOutRecord {
     at: string
     lateCheckOut: boolean
+    lateCheckOutFee: number
     incidentals: IncidentalCharge[]
+    computedDue: number
+    collectedAmount: number
     /** Đã thu đủ chưa. Chưa đủ thì không cho đóng đơn. */
     settled: boolean
     /** Nhận xét kết thúc lượt lưu trú. */

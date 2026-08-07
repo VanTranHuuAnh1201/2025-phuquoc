@@ -4,5 +4,9 @@
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "ignoreCommand": "cd ../.. && npx turbo-ignore @repo/2026-thenamduhill"
+  "ignoreCommand": "cd ../.. && npx turbo-ignore @repo/2026-thenamduhill",
+  "crons": [
+    { "path": "/api/cron/release-holds", "schedule": "*/5 * * * *" },
+    { "path": "/api/cron/no-show", "schedule": "5 1 * * *" }
+  ]
 }

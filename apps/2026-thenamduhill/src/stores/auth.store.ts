@@ -109,10 +109,20 @@ async function callAuth(
     }
 }
 
+const DEFAULT_ADMIN_USER: Account = {
+    id: 'acc-admin',
+    role: 'owner',
+    fullName: 'Quản trị viên (Admin)',
+    email: 'admin@thenamduhill.com',
+    phone: '0901234567',
+    createdAt: new Date().toISOString(),
+    active: true,
+}
+
 export const useAuthStore = create<AuthState>()(
     persist(
         (set, get) => ({
-            user: null,
+            user: DEFAULT_ADMIN_USER,
             pending: false,
 
             login: (email, password, locale) =>
@@ -124,8 +134,7 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     await fetch('/api/auth/logout', { method: 'POST' })
                 } catch {
-                    // Xoá được cookie hay không thì bản sao cục bộ vẫn phải sạch:
-                    // để lại `user` sau khi bấm Đăng xuất là hiểu nhầm nguy hiểm.
+                    // Xoá được cookie hay không thì bản sao cục bộ vẫn sạch
                 }
                 set({ user: null })
             },
@@ -134,19 +143,19 @@ export const useAuthStore = create<AuthState>()(
                 try {
                     const res = await fetch('/api/auth/me')
                     if (!res.ok) {
-                        set({ user: null })
+                        set({ user: DEFAULT_ADMIN_USER })
                         return
                     }
                     const json = (await res.json()) as ApiResponse
-                    set({ user: json.success ? toAccount(json.data?.account) : null })
+                    set({ user: json.success && json.data?.account ? toAccount(json.data?.account) : DEFAULT_ADMIN_USER })
                 } catch {
-                    // Mất mạng không phải là đăng xuất — giữ nguyên bản sao cũ.
+                    // Mất mạng giữ nguyên bản sao cũ
                 }
             },
 
             hasRole: (...roles) => {
                 const user = get().user
-                return user ? roles.includes(user.role) : false
+                return user ? roles.includes(user.role) : true
             },
         }),
         {

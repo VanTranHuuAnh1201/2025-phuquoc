@@ -11,7 +11,7 @@
  * bảng ở đây, đó chính là thứ AC-7 cấm.
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { can, formatPrice, getPropertySync, pick } from '@repo/core'
@@ -21,6 +21,7 @@ import type { Column } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useAuthStore } from '@/stores/auth.store'
 import { useBookingStore } from '@/stores/booking.store'
+import { useBookingsData } from '@/hooks/useAdminData'
 import { CHANNEL_LABEL, S, STATUS_LABEL, STATUS_TONE, tr } from '@/strings'
 import { DownloadIcon, EyeIcon, PlusIcon } from '@/components/icons'
 
@@ -40,7 +41,7 @@ const CHANNELS: Channel[] = ['web', 'phone', 'walk-in', 'ota']
 export default function AdminOrdersPage() {
     const { locale } = useLocale()
     const router = useRouter()
-    const bookings = useBookingStore((s) => s.bookings)
+    const { bookings, loading } = useBookingsData()
     const user = useAuthStore((s) => s.user)
     const property = getPropertySync()
 

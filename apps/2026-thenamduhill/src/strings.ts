@@ -263,6 +263,17 @@ export const S = {
     ),
     closingComment: t('Nhận xét kết thúc', 'Closing comment'),
     guestRating: t('Đánh giá khách (nội bộ)', 'Guest rating (internal)'),
+    roomBalanceDue: t('Còn nợ tiền phòng', 'Room balance due'),
+    incidentalChargesTotal: t('Phát sinh tại phòng', 'Incidental charges'),
+    lateCheckOutSurcharge: t('Phụ phí trả phòng muộn', 'Late check-out surcharge'),
+    totalDueNow: t('TỔNG PHẢI THU BÂY GIỜ', 'TOTAL DUE NOW'),
+    collectedAmountLabel: t('Số tiền thu thêm thực tế', 'Actual collected amount'),
+    collectedAmountHint: t('Tự tính từ phát sinh + trả muộn. Sửa được nếu miễn giảm cho khách.', 'Calculated from incidentals + late fee. Editable for discounts.'),
+    unsettledWarningText: t(
+        'Chưa thu đủ {amount}đ. Tick "Đã thanh toán đủ" sau khi nhận tiền, hoặc ghi phần còn nợ vào Nhận xét kết thúc.',
+        'Outstanding balance of {amount} VND. Check "Fully settled" after receiving payment, or note balance in Closing comment.',
+    ),
+    internalRatingHint: t('Chỉ hiển thị nội bộ, khách không nhìn thấy.', 'Internal view only, guests cannot see this.'),
 
     // ------------------------------------------------- tạo đơn thủ công (CMS)
     newBooking: t('Tạo đơn thủ công', 'New booking'),

@@ -10,7 +10,7 @@
  * từ chối chứ không âm thầm đè lên (xem `.claude/rules/booking-domain.md` §B7).
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     addDays,
     availableUnits,
@@ -27,6 +27,7 @@ import { Button, CheckField, Field, Modal } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission, useCan } from '@/components/RequirePermission'
 import { useBookingStore } from '@/stores/booking.store'
+import { useBookingsData } from '@/hooks/useAdminData'
 import { useRoomTypes } from '@/stores/useCatalog'
 import { todayKey } from '@/stores/demo-data'
 import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
@@ -46,11 +47,10 @@ export default function InventoryPage() {
 
 function InventoryScreen() {
     const { locale } = useLocale()
-    const inventory = useBookingStore((s) => s.inventory)
+    const { inventory } = useBookingsData()
     const updateInventory = useBookingStore((s) => s.updateInventory)
-    // Đọc qua lớp merge để giá gốc admin vừa sửa hiện đúng ngay trên lịch.
+
     const rooms = useRoomTypes()
-    // Lễ tân sửa được số phòng và đóng bán, nhưng KHÔNG sửa được giá (AC-8).
     const canEditPrice = useCan('price.edit')
 
     const [offset, setOffset] = useState(0)

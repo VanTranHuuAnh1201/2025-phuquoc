@@ -12,6 +12,7 @@ import type {
     Booking,
     BookingStatus,
     CancellationRule,
+    IncidentalCharge,
     LogAction,
     Role,
 } from './booking-types'
@@ -46,6 +47,41 @@ export function isTerminal(status: BookingStatus): boolean {
 /** Đơn có đang chiếm phòng trong tồn kho không. */
 export function holdsInventory(status: BookingStatus): boolean {
     return status === 'pending_payment' || status === 'confirmed' || status === 'checked_in'
+}
+
+// ================================================================ tính toán chốt bill trả phòng
+
+export const DEFAULT_LATE_CHECKOUT_FEE = 200000
+
+export interface SettlementInput {
+    booking: Booking
+    incidentals: IncidentalCharge[]
+    lateCheckOutFee: number
+}
+
+export interface Settlement {
+    /** Tiền phòng còn nợ: totalAmount - paidAmount */
+    roomBalance: number
+    /** Tổng phát sinh dịch vụ/minibar */
+    incidentalTotal: number
+    /** Phụ phí trả phòng muộn */
+    lateCheckOutFee: number
+    /** Tổng phải thu hiện tại */
+    totalDue: number
+}
+
+export function computeSettlement(input: SettlementInput): Settlement {
+    const roomBalance = Math.max(0, input.booking.totalAmount - input.booking.paidAmount)
+    const incidentalTotal = input.incidentals.reduce((sum, item) => sum + Math.max(0, item.amount || 0), 0)
+    const lateCheckOutFee = Math.max(0, input.lateCheckOutFee || 0)
+    const totalDue = Math.max(0, roomBalance + incidentalTotal + lateCheckOutFee)
+
+    return {
+        roomBalance,
+        incidentalTotal,
+        lateCheckOutFee,
+        totalDue,
+    }
 }
 
 // ================================================================ chính sách huỷ

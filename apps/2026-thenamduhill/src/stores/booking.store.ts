@@ -67,6 +67,9 @@ interface BookingState {
     bookingsOf: (customerId: string) => Booking[]
     availableUnitsOf: (roomTypeId: string) => RoomUnit[]
 
+    // ---- đồng bộ API ----
+    fetchBookingsFromApi: () => Promise<void>
+
     // ---- khách đặt ----
     createBooking: (input: CreateBookingInput) => Booking
 
@@ -142,6 +145,8 @@ function shiftInventory(
     return next
 }
 
+let bookingsInFlightPromise: Promise<void> | null = null
+
 export const useBookingStore = create<BookingState>()(
     persist(
         (set, get) => ({
@@ -164,6 +169,29 @@ export const useBookingStore = create<BookingState>()(
                 get().roomUnits.filter(
                     (u) => u.roomTypeId === roomTypeId && u.status === 'available',
                 ),
+
+            // --------------------------------------------------- đồng bộ API
+
+            fetchBookingsFromApi: async () => {
+                if (bookingsInFlightPromise) return bookingsInFlightPromise
+
+                bookingsInFlightPromise = (async () => {
+                    try {
+                        const res = await fetch('/api/bookings', { credentials: 'include' })
+                        if (!res.ok) return
+                        const json = await res.json()
+                        if (json && Array.isArray(json.data)) {
+                            set({ bookings: json.data })
+                        }
+                    } catch {
+                        // Fallback silently
+                    } finally {
+                        bookingsInFlightPromise = null
+                    }
+                })()
+
+                return bookingsInFlightPromise
+            },
 
             // ------------------------------------------------------- khách đặt
 
@@ -323,7 +351,44 @@ export const useBookingStore = create<BookingState>()(
                 const now = new Date().toISOString()
                 const full: CheckOutRecord = { ...record, at: now }
                 const incidentalTotal = record.incidentals.reduce((sum, i) => sum + i.amount, 0)
+                const lateCheckOutFee = record.lateCheckOutFee || 0
+                const computedDue = record.computedDue
+                const collectedAmount = record.collectedAmount
+
                 const unitId = booking.checkInRecord?.roomUnitId
+
+                const newTotalAmount = booking.totalAmount + incidentalTotal + lateCheckOutFee
+                const previousPaidAmount = booking.paidAmount
+                const newPaidAmount = previousPaidAmount + collectedAmount
+                const paidDelta = newPaidAmount - previousPaidAmount
+
+                const logs: ActivityLog[] = [
+                    makeLog({
+                        bookingId: id,
+                        at: now,
+                        actor,
+                        action: 'checked-out',
+                        field: 'status',
+                        from: booking.status,
+                        to: 'checked_out',
+                        note: record.comment,
+                    }),
+                ]
+
+                if (collectedAmount !== computedDue) {
+                    logs.push(
+                        makeLog({
+                            bookingId: id,
+                            at: now,
+                            actor,
+                            action: 'price-adjusted',
+                            field: 'collectedAmount',
+                            from: String(computedDue),
+                            to: String(collectedAmount),
+                            note: `Lễ tân điều chỉnh số thu thực tế từ ${computedDue.toLocaleString('vi-VN')}đ sang ${collectedAmount.toLocaleString('vi-VN')}đ`,
+                        })
+                    )
+                }
 
                 set({
                     inventory: shiftInventory(state.inventory, booking, -1),
@@ -333,8 +398,8 @@ export const useBookingStore = create<BookingState>()(
                                   ...b,
                                   status: 'checked_out',
                                   checkOutRecord: full,
-                                  totalAmount: b.totalAmount + incidentalTotal,
-                                  paidAmount: b.totalAmount + incidentalTotal,
+                                  totalAmount: newTotalAmount,
+                                  paidAmount: newPaidAmount,
                                   updatedAt: now,
                               }
                             : b,
@@ -346,27 +411,16 @@ export const useBookingStore = create<BookingState>()(
                         c.id === booking.customerId
                             ? {
                                   ...c,
-                                  totalSpent: c.totalSpent + booking.totalAmount + incidentalTotal,
+                                  totalSpent: c.totalSpent + paidDelta,
                                   stayCount: c.stayCount + 1,
                               }
                             : c,
                     ),
-                    logs: [
-                        ...state.logs,
-                        makeLog({
-                            bookingId: id,
-                            at: now,
-                            actor,
-                            action: 'checked-out',
-                            field: 'status',
-                            from: booking.status,
-                            to: 'checked_out',
-                            note: record.comment,
-                        }),
-                    ],
+                    logs: [...state.logs, ...logs],
                 })
                 return null
             },
+
 
             cancelBooking: (id, by, actor, reason) => {
                 const state = get()
@@ -466,6 +520,28 @@ export const useBookingStore = create<BookingState>()(
 
             resetDemo: () => set(initialState()),
         }),
-        { name: 'namduhill.bookings', version: 1 },
+        {
+            name: 'namduhill.bookings',
+            version: 2,
+            migrate: (persistedState: any, version: number) => {
+                if (version === 1 && persistedState && Array.isArray(persistedState.bookings)) {
+                    persistedState.bookings = persistedState.bookings.map((b: any) => {
+                        if (b.checkOutRecord) {
+                            return {
+                                ...b,
+                                checkOutRecord: {
+                                    ...b.checkOutRecord,
+                                    lateCheckOutFee: b.checkOutRecord.lateCheckOutFee ?? 0,
+                                    computedDue: b.checkOutRecord.computedDue ?? 0,
+                                    collectedAmount: b.checkOutRecord.collectedAmount ?? 0,
+                                },
+                            }
+                        }
+                        return b
+                    })
+                }
+                return persistedState
+            },
+        },
     ),
 )

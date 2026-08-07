@@ -41,8 +41,6 @@ const nextConfig: NextConfig = {
     images: {
         remotePatterns: [
             { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
-            // Ảnh của chính khách hàng, dùng cho bản POC dựng cho họ xem.
-            { protocol: 'https', hostname: 'thenamduhill.com', pathname: '/**' },
         ],
     },
 }

@@ -7,13 +7,13 @@
  * xong, và không gán được phòng lúc khách đến.
  */
 
-import { useMemo, useState } from 'react'
-import { getPropertySync, pick } from '@repo/core'
-import type { RoomUnitStatus } from '@repo/core'
-import { Badge, StatCard } from '@repo/ui'
 import { useLocale } from '@/components/LocaleProvider'
+import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
-import { S, tr, UNIT_STATUS_LABEL, UNIT_STATUS_TONE } from '@/strings'
+import { S, tr, UNIT_STATUS_LABEL } from '@/strings'
+import type { RoomUnitStatus } from '@repo/core'
+import { getPropertySync, pick } from '@repo/core'
+import { useMemo, useState } from 'react'
 
 /** Vòng chuyển tình trạng: bấm một phòng là sang bước tiếp theo. */
 const NEXT_STATUS: Record<RoomUnitStatus, RoomUnitStatus> = {
@@ -35,7 +35,7 @@ const ALL_STATUSES: RoomUnitStatus[] = [
 
 export default function HousekeepingPage() {
     const { locale } = useLocale()
-    const roomUnits = useBookingStore((s) => s.roomUnits)
+    const { roomUnits } = useBookingsData()
     const setUnitStatus = useBookingStore((s) => s.setUnitStatus)
     const property = getPropertySync()
 
@@ -209,11 +209,10 @@ export default function HousekeepingPage() {
                 <button
                     type="button"
                     onClick={() => setStatusFilter('all')}
-                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${
-                        statusFilter === 'all'
+                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${statusFilter === 'all'
                             ? 'bg-amber-50 border-amber-500 ring-1 ring-amber-500'
                             : 'bg-white border-amber-200 hover:border-amber-300'
-                    }`}
+                        }`}
                 >
                     <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                         {pick({ vi: 'TẤT CẢ PHÒNG', en: 'ALL ROOMS' }, locale)}
@@ -227,11 +226,10 @@ export default function HousekeepingPage() {
                 <button
                     type="button"
                     onClick={() => setStatusFilter('available')}
-                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${
-                        statusFilter === 'available'
+                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${statusFilter === 'available'
                             ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
                             : 'bg-white border-emerald-200 hover:border-emerald-300'
-                    }`}
+                        }`}
                 >
                     <div className="flex items-center justify-between">
                         <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">
@@ -248,11 +246,10 @@ export default function HousekeepingPage() {
                 <button
                     type="button"
                     onClick={() => setStatusFilter('occupied')}
-                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${
-                        statusFilter === 'occupied'
+                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${statusFilter === 'occupied'
                             ? 'bg-blue-50 border-blue-500 ring-1 ring-blue-500'
                             : 'bg-white border-blue-200 hover:border-blue-300'
-                    }`}
+                        }`}
                 >
                     <div className="flex items-center justify-between">
                         <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider">
@@ -269,11 +266,10 @@ export default function HousekeepingPage() {
                 <button
                     type="button"
                     onClick={() => setStatusFilter('dirty')}
-                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${
-                        statusFilter === 'dirty' || statusFilter === 'cleaning'
+                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${statusFilter === 'dirty' || statusFilter === 'cleaning'
                             ? 'bg-rose-50 border-rose-500 ring-1 ring-rose-500'
                             : 'bg-white border-rose-200 hover:border-rose-300'
-                    }`}
+                        }`}
                 >
                     <div className="flex items-center justify-between">
                         <span className="text-[11px] font-semibold text-rose-700 uppercase tracking-wider">
@@ -292,11 +288,10 @@ export default function HousekeepingPage() {
                 <button
                     type="button"
                     onClick={() => setStatusFilter('maintenance')}
-                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${
-                        statusFilter === 'maintenance'
+                    className={`p-2.5 rounded-sm border shadow-sm flex flex-col justify-between text-left transition-all ${statusFilter === 'maintenance'
                             ? 'bg-slate-100 border-slate-500 ring-1 ring-slate-500'
                             : 'bg-white border-slate-200 hover:border-slate-300'
-                    }`}
+                        }`}
                 >
                     <div className="flex items-center justify-between">
                         <span className="text-[11px] font-semibold text-slate-700 uppercase tracking-wider">
