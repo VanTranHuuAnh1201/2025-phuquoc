@@ -694,9 +694,12 @@ export const S = {
     adminZoneSystem: t('Hệ thống', 'System'),
 
     // ------------------------------------------------- CMS: dashboard /admin
+    //
+    // Round 5 mục 3: MẶC ĐỊNH TIẾNG VIỆT giữ nguyên — chỉ sửa lại các chuỗi
+    // `en` cho đúng thuật ngữ nghiệp vụ khách sạn (bảng chủ dự án đưa).
     dashboardKicker: t('VẬN HÀNH — HÔM NAY', 'OPERATIONS — TODAY'),
-    dashboardTitle: t('Tổng quan hôm nay', "Today's overview"),
-    matchingBookings: t('phòng/đơn khớp điều kiện', 'bookings match the filters'),
+    dashboardTitle: t('Tổng quan hôm nay', 'Today overview'),
+    matchingBookings: t('đơn khớp bộ lọc', 'bookings match the filters'),
     shiftFilterLabel: t('CA TRỰC', 'SHIFT'),
     shiftAll: t('Tất cả', 'All'),
     shiftMorning: t('Ca sáng', 'Morning'),
@@ -705,10 +708,10 @@ export const S = {
     segmentVilla: t('Villa', 'Villa'),
     segmentBungalow: t('Bungalow', 'Bungalow'),
     segmentDeluxe: t('Deluxe', 'Deluxe'),
-    kpiOccupancyRate: t('CÔNG SUẤT PHÒNG', 'OCCUPANCY RATE'),
-    kpiCheckInToday: t('KHÁCH NHẬN PHÒNG', 'GUESTS ARRIVING'),
-    kpiCheckOutToday: t('KHÁCH TRẢ PHÒNG', 'GUESTS DEPARTING'),
-    kpiPendingDeposit: t('CHỜ XÁC NHẬN CỌC', 'AWAITING DEPOSIT CONFIRMATION'),
+    kpiOccupancyRate: t('CÔNG SUẤT PHÒNG', 'OCCUPANCY'),
+    kpiCheckInToday: t('KHÁCH NHẬN PHÒNG', 'ARRIVALS'),
+    kpiCheckOutToday: t('KHÁCH TRẢ PHÒNG', 'DEPARTURES'),
+    kpiPendingDeposit: t('CHỜ XÁC NHẬN CỌC', 'AWAITING DEPOSIT'),
     kpiUnitSuffix: t('lượt', 'stays'),
     kpiOrderSuffix: t('đơn', 'bookings'),
     expectedBeforeNoon: t('trước 12:00', 'before 12:00'),
@@ -720,7 +723,7 @@ export const S = {
     showMetrics: t('Hiện số liệu', 'Show metrics'),
     recentActivity: t('VỪA DIỄN RA', 'RECENT ACTIVITY'),
     todayLabelShort: t('hôm nay', 'today'),
-    tapeChartView: t('Sơ đồ Tape Chart ▾', 'Tape Chart view ▾'),
+    tapeChartView: t('Sơ đồ Tape Chart ▾', 'Tape chart view ▾'),
     consoleView: t('Bảng ca trực ▾', 'Shift board view ▾'),
     tapeChartTitle: t('Sơ đồ tồn kho lưới (Tape Chart)', 'Grid inventory chart (Tape Chart)'),
     tapeChartDesc: t(
@@ -731,13 +734,19 @@ export const S = {
     tabArrivalsToday: t('Check-in hôm nay', 'Arrivals today'),
     tabPendingDeposit: t('Chờ cọc', 'Awaiting deposit'),
     newBookingCta: t('+ Đặt phòng mới', '+ New booking'),
+    // Round 5 mục 1: `F6` bắt buộc mọi bộ lọc phải có nút đặt lại — dashboard
+    // trước đó THIẾU nút này. Khoá riêng `clearFilters` (không tái dùng
+    // `S.reset`/`S.resetFilters` sẵn có) vì chủ dự án chốt đúng chữ "Clear"
+    // cho màn này, khác "Reset"/"Reset filters" đang dùng ở các bảng khác —
+    // giữ nguyên các bảng đó, không đổi lây.
+    clearFilters: t('Đặt lại', 'Clear'),
     colUnitChannel: t('MÃ PHÒNG & KÊNH', 'ROOM & CHANNEL'),
     colGuestPhone: t('KHÁCH HÀNG & SĐT', 'GUEST & PHONE'),
     colRoomTypeNights: t('HẠNG PHÒNG', 'ROOM TYPE'),
     colTotalBalance: t('TỔNG TIỀN / CÒN THIẾU', 'TOTAL / BALANCE DUE'),
     balanceShort: t('Thiếu', 'Due'),
     balanceSettled: t('Đã thu đủ', 'Fully paid'),
-    approveDeposit: t('Duyệt cọc', 'Approve deposit'),
+    approveDeposit: t('Duyệt cọc', 'Confirm deposit'),
     approveDepositNote: t('Duyệt cọc tại bàn ca trực', 'Deposit approved at reception'),
     checkInCta: t('Check-in', 'Check in'),
     checkInNote: t('Check-in tại quầy', 'Checked in at reception'),

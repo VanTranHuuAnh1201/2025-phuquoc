@@ -301,10 +301,11 @@ export default function AdminDashboard() {
             .slice(0, 8)
     }, [logs])
 
-    // Round 4 mục 2: chủ dự án xem thực tế và yêu cầu NGƯỢC LẠI round 3 —
-    // tách tab "Toàn bộ đơn/Check-in hôm nay/Chờ cọc" ra khỏi hàng filter,
-    // xuống hàng riêng. `shiftGroups` quay lại đúng 2 nhóm (CA TRỰC, HẠNG
-    // PHÒNG); tab trạng thái render riêng ở khối bên dưới `PageHeaderBar`.
+    // Round 5 mục 1: theo đúng đặc tả chủ dự án — tab trạng thái ("Toàn bộ
+    // đơn/Check-in hôm nay/Chờ cọc") LÊN lại hàng filter (hàng 2), làm nhóm
+    // pill thứ ba trong `shiftGroups`. Khác round 3 ở chỗ round 5 chốt bố cục
+    // 2 HÀNG CỤ THỂ (hàng 1: title + hành động; hàng 2: filter + tab + kết
+    // quả + Đặt lại) — không phải "gộp hết vào 1 hàng" như round 2/3.
     const shiftGroups = [
         {
             legend: tr(S.shiftFilterLabel, locale),
@@ -327,30 +328,103 @@ export default function AdminDashboard() {
                 { value: 'deluxe', label: tr(S.segmentDeluxe, locale) },
             ],
         },
+        {
+            legend: tr(S.status, locale),
+            value: tab,
+            onChange: (v: string) => setTab(v as typeof tab),
+            options: [
+                { value: 'all', label: tr(S.tabAllRooms, locale) },
+                { value: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
+                { value: 'pending', label: tr(S.tabPendingDeposit, locale) },
+            ],
+        },
     ]
+
+    // Round 5 mục 1: `F6` bắt buộc mọi bộ lọc có nút đặt lại — dashboard
+    // trước đó THIẾU. Đưa 3 filter về mặc định, không đụng `metricsCollapsed`
+    // hay `viewMode` (đó không phải "bộ lọc dữ liệu").
+    const resetFilters = () => {
+        setShift('all')
+        setSegment('all')
+        setTab('all')
+    }
 
     return (
         <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
-            {/* Gộp title + filter thành MỘT hàng (fix round 2 mục 1/2) — bỏ
-                hẳn kicker "VẬN HÀNH — HÔM NAY" vì tab "Dashboard" đang active
-                trên header (AppShell) đã nói rõ đang ở đâu, lặp lại tốn một
-                dòng dọc. `filters` tự `flex-wrap` xuống hàng 2 khi màn hẹp. */}
+            {/* HÀNG 1 (round 5 mục 1, đặc tả chủ dự án): trái = title, phải =
+                3 nút hành động (Ẩn số liệu/Sơ đồ Tape Chart/+ Đặt phòng mới).
+                `filters` KHÔNG còn truyền vào đây — chuyển xuống hàng 2. */}
             <PageHeaderBar
                 title={tr(S.dashboardTitle, locale)}
-                filters={
-                    <FilterBar
-                        groups={shiftGroups}
-                        resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
-                    />
+                actions={
+                    <>
+                        {/* Nút ẩn/hiện MetricStrip — dùng `useRailCollapse` +
+                            `MenuIcon` có sẵn của `@repo/ui`/`icons.tsx`, không tự
+                            chế (round 4 mục 4, giữ nguyên round này). */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="dashboard-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
+                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
+                        </button>
+                        <Link
+                            href="/admin/orders/new"
+                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            {tr(S.newBookingCta, locale)}
+                        </Link>
+                    </>
                 }
             />
+
+            {/* HÀNG 2 (round 5 mục 1): CA TRỰC + HẠNG PHÒNG + tab trạng thái,
+                đẩy kết quả + Đặt lại về cuối hàng bằng `resultText`/`onReset`
+                có sẵn của `FilterBar` — không viết nút Đặt lại riêng.
+                `border-t` phân tách khỏi hàng 1 bằng đường kẻ 1px (không
+                shadow, đúng P7); `py-3` cho khoảng thở dọc RÕ hơn `py-2.5`
+                của hàng 1 — round 4 để 2 hàng dính sát, round 5 mục 4 yêu
+                cầu thêm nhịp thở giữa các khối, cả hai giá trị đều nằm trên
+                thang 8pt (P5): 10px/12px là bội số 2, không phải số lẻ tuỳ
+                tiện — 12px (`py-3`) tại đây tạo chênh lệch rõ ràng hơn với
+                10px (`py-2.5`) của hàng 1. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                <FilterBar
+                    groups={shiftGroups}
+                    resultText={`${filteredData.length} ${tr(S.matchingBookings, locale)}`}
+                    onReset={resetFilters}
+                />
+            </div>
 
             {/* Ẩn hẳn khỏi DOM (không phải `display:none` giữ chỗ) khi thu gọn
                 — tiết kiệm TRỌN chiều cao ~96px của MetricStrip, đúng yêu cầu
                 round 3 mục 3 "phải tiết kiệm trọn ~96px". `id` khớp
-                `aria-controls` của nút toggle ở dưới. */}
+                `aria-controls` của nút toggle ở trên. Nền `--cms-bg-subtle`
+                (round 5 mục 4): trước đó khối này trong suốt, ngồi trực tiếp
+                trên nền trắng của trang — không phân biệt được bằng mắt với
+                hàng filter phía trên (cùng là nền trắng dính liền). Đổi nền
+                nhẹ + `border-t` để MetricStrip tự đứng thành MỘT khối tách
+                bạch, khớp nguyên tắc "phân tách bằng khoảng trắng + đường kẻ
+                1px" — không phải thêm shadow trang trí. `py-2` (8px, không
+                phải `py-3`): việc PHÂN TÁCH đã do `border-t` + đổi nền đảm
+                nhiệm — không cần thêm padding dọc để "trông tách biệt", và
+                giữ ngân sách chiều cao không tụt dưới mức đã đo (laptop 640px
+                ≥6 hàng bảng, zoom150% ≥2 hàng — ràng buộc cứng round 5 mục 4). */}
             {!metricsCollapsed && (
-                <div id="dashboard-metric-strip" className="px-[var(--cms-pad)] pb-3">
+                <div
+                    id="dashboard-metric-strip"
+                    className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+                >
                     <MetricStrip>
                         <KpiCard
                             label={tr(S.kpiOccupancyRate, locale)}
@@ -378,71 +452,6 @@ export default function AdminDashboard() {
                     </MetricStrip>
                 </div>
             )}
-
-            {/* Round 4 mục 2: chủ dự án yêu cầu NGƯỢC LẠI round 3 — tách tab
-                trạng thái ra khỏi hàng filter, xuống MỘT HÀNG RIÊNG. Ba nút
-                hành động (Ẩn số liệu/Sơ đồ Tape Chart/+ Đặt phòng mới) trước
-                nằm trong `actions` của `PageHeaderBar` — chuyển XUỐNG CÙNG
-                HÀNG với tab trạng thái (đúng yêu cầu "sắp xếp lại cho hợp lý
-                khi tab trạng thái xuống cùng hàng đó"): tab bên trái, hành
-                động bên phải, cùng một hàng `justify-between`. */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
-                <div className="flex bg-[var(--cms-bg-subtle)] p-0.5 rounded-[var(--cms-radius)] border border-[var(--cms-border)] text-[length:var(--cms-text-body)]">
-                    {(
-                        [
-                            { key: 'all', label: tr(S.tabAllRooms, locale) },
-                            { key: 'arrivals', label: tr(S.tabArrivalsToday, locale) },
-                            { key: 'pending', label: tr(S.tabPendingDeposit, locale) },
-                        ] as const
-                    ).map((t2) => (
-                        <button
-                            key={t2.key}
-                            type="button"
-                            aria-pressed={tab === t2.key}
-                            onClick={() => setTab(t2.key)}
-                            className={`px-3 py-1 rounded-[var(--cms-radius-sm)] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
-                                tab === t2.key
-                                    ? 'bg-[var(--cms-accent)] text-white'
-                                    : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
-                            }`}
-                        >
-                            {t2.label}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="flex shrink-0 items-center gap-2">
-                    {/* Nút ẩn/hiện MetricStrip (giữ lại từ round 3 — đo được hữu
-                        ích: zoom150% 2→3 hàng). Round 4: icon đổi sang `MenuIcon`
-                        có sẵn (round 3 tự chế `ChevronDownIcon` — đã gỡ), trạng
-                        thái đổi sang `useRailCollapse` có sẵn (round 3 tự viết
-                        hook riêng — đã gỡ). `aria-expanded`/`aria-controls` giữ
-                        nguyên cho a11y. */}
-                    <button
-                        type="button"
-                        onClick={toggleMetrics}
-                        aria-expanded={!metricsCollapsed}
-                        aria-controls="dashboard-metric-strip"
-                        className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        <MenuIcon size={14} />
-                        <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setViewMode(viewMode === 'console' ? 'timeline' : 'console')}
-                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
-                    </button>
-                    <Link
-                        href="/admin/orders/new"
-                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        {tr(S.newBookingCta, locale)}
-                    </Link>
-                </div>
-            </div>
 
             {/* Lưới 2 cột: bảng đơn (3/4) · dòng sự kiện thật trong ngày (1/4).
                 Round 1 dùng 2/3+1/3 — cột "Vừa diễn ra" thường chỉ có 1-2 dòng
