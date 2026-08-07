@@ -53,8 +53,8 @@ async function getBookingHandler(
         }
 
         return ok(booking)
-    } catch (err: any) {
-        console.error('[GET /api/bookings/[id] error]', err)
+    } catch (err: unknown) {
+        console.error('[GET /api/bookings/[id] error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

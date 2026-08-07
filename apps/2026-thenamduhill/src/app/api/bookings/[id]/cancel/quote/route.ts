@@ -1,5 +1,5 @@
 import { quoteRefund } from '@repo/core'
-import type { Booking, CancellationRule } from '@repo/core'
+import type { CancellationRule } from '@repo/core'
 import { type Actor, withAuthGuardParams } from '@/lib/auth/guard'
 import { fail, ok, serverError } from '@/lib/auth/errors'
 import { mapBookingRow, mapRatePlanRow } from '@/lib/db/mappers'
@@ -44,7 +44,7 @@ async function getCancelQuoteHandler(
             })
         }
 
-        const booking: Booking = mapBookingRow(bookingRow)
+        const booking = mapBookingRow(bookingRow)
 
         let rules: CancellationRule[] = [
             { daysBeforeCheckIn: 7, refundPercent: 100 },
@@ -67,7 +67,9 @@ async function getCancelQuoteHandler(
         }
 
         const today = new Date().toISOString().slice(0, 10)
-        const quote = quoteRefund(booking, rules, today)
+        // `quoteRefund()` chỉ đọc `checkIn` và `paidAmount` (xem booking-lifecycle.ts) —
+        // MappedBookingRow đã đủ hai trường này nên không cần ép về Booking đầy đủ.
+        const quote = quoteRefund(booking as unknown as Parameters<typeof quoteRefund>[0], rules, today)
 
         return ok({
             bookingId: booking.id,
@@ -78,8 +80,8 @@ async function getCancelQuoteHandler(
             refundAmount: quote.amount,
             daysUntilCheckIn: quote.daysUntilCheckIn,
         })
-    } catch (err: any) {
-        console.error('[GET /api/bookings/[id]/cancel/quote error]', err)
+    } catch (err: unknown) {
+        console.error('[GET /api/bookings/[id]/cancel/quote error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

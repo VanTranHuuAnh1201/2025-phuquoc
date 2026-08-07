@@ -19,9 +19,31 @@ import { createClient } from '@/utils/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
+/** Payload gõ tay của khách/lễ tân — chưa qua validate, mọi field đều `unknown`. */
+interface CreateBookingBody {
+    roomTypeId?: unknown
+    checkIn?: unknown
+    checkOut?: unknown
+    guests?: { adults?: unknown; children?: unknown }
+    ratePlanId?: unknown
+    addons?: unknown
+    promoCode?: unknown
+    channel?: unknown
+    guest?: {
+        fullName?: unknown
+        phone?: unknown
+        email?: unknown
+        idNumber?: unknown
+        estimatedArrivalTime?: unknown
+        specialRequests?: unknown
+        taxCode?: unknown
+        companyName?: unknown
+    }
+}
+
 async function postBookingHandler(request: Request, actor: Actor): Promise<Response> {
     try {
-        let body: any
+        let body: CreateBookingBody
         try {
             body = await request.json()
         } catch {
@@ -51,7 +73,12 @@ async function postBookingHandler(request: Request, actor: Actor): Promise<Respo
             })
         }
 
-        if (!guest || !guest.fullName || !guest.phone || !guest.email) {
+        if (
+            !guest
+            || typeof guest.fullName !== 'string' || !guest.fullName
+            || typeof guest.phone !== 'string' || !guest.phone
+            || typeof guest.email !== 'string' || !guest.email
+        ) {
             return fail(400, 'INVALID_INPUT', {
                 vi: 'Vui lòng điền đầy đủ thông tin khách hàng (họ tên, số điện thoại, email).',
                 en: 'Please provide required guest details (full name, phone, email).',
@@ -59,7 +86,10 @@ async function postBookingHandler(request: Request, actor: Actor): Promise<Respo
         }
 
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!checkIn || !dateRegex.test(checkIn) || !checkOut || !dateRegex.test(checkOut)) {
+        if (
+            typeof checkIn !== 'string' || !dateRegex.test(checkIn)
+            || typeof checkOut !== 'string' || !dateRegex.test(checkOut)
+        ) {
             return fail(400, 'INVALID_INPUT', {
                 vi: 'Ngày nhận/trả phòng không đúng định dạng YYYY-MM-DD.',
                 en: 'Check-in and check-out dates must be in YYYY-MM-DD format.',
@@ -174,8 +204,10 @@ async function postBookingHandler(request: Request, actor: Actor): Promise<Respo
         const childPolicy = mapChildPolicy(settingRow?.value ?? settingRow)
 
         const adults = Number(guests?.adults ?? 1)
-        const children = Array.isArray(guests?.children) ? guests.children.map((c: any) => Number(c)) : []
-        const addonsInput: Record<string, number> = typeof rawAddons === 'object' && rawAddons !== null ? rawAddons : {}
+        const children = Array.isArray(guests?.children) ? guests.children.map((c: unknown) => Number(c)) : []
+        const addonsInput: Record<string, number> = typeof rawAddons === 'object' && rawAddons !== null
+            ? (rawAddons as Record<string, number>)
+            : {}
         const today = new Date().toISOString().slice(0, 10)
 
         // Build pure quote in server
@@ -271,8 +303,8 @@ async function postBookingHandler(request: Request, actor: Actor): Promise<Respo
         }
 
         return ok(createdBooking, 201)
-    } catch (err: any) {
-        console.error('[create booking API error]', err)
+    } catch (err: unknown) {
+        console.error('[create booking API error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }
@@ -312,8 +344,8 @@ async function getBookingsHandler(request: Request, actor: Actor): Promise<Respo
 
         const bookings = (rows ?? []).map(mapBookingRow)
         return ok(bookings)
-    } catch (err: any) {
-        console.error('[GET /api/bookings error]', err)
+    } catch (err: unknown) {
+        console.error('[GET /api/bookings error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

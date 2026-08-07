@@ -1,9 +1,25 @@
 import { type Actor, withAuthGuardParams } from '@/lib/auth/guard'
 import { fail, ok, serverError } from '@/lib/auth/errors'
-import { recordPayment } from '@/lib/payment'
+import { recordPayment, type RecordPaymentInput } from '@/lib/payment'
 import { createAdminClient } from '@/utils/supabase/admin'
 
 export const dynamic = 'force-dynamic'
+
+const PAYMENT_METHODS = ['bank_transfer', 'cash', 'card', 'momo', 'vnpay'] as const
+const PAYMENT_KINDS = ['deposit', 'full', 'surcharge', 'refund'] as const
+
+/** Thu hẹp `unknown` từ body về đúng union của `RecordPaymentInput`, giữ mặc định cũ nếu không khớp. */
+function toPaymentMethod(value: unknown): RecordPaymentInput['paymentMethod'] {
+    return (PAYMENT_METHODS as readonly unknown[]).includes(value)
+        ? (value as RecordPaymentInput['paymentMethod'])
+        : 'bank_transfer'
+}
+
+function toPaymentKind(value: unknown): RecordPaymentInput['kind'] {
+    return (PAYMENT_KINDS as readonly unknown[]).includes(value)
+        ? (value as RecordPaymentInput['kind'])
+        : 'deposit'
+}
 
 async function postPaymentHandler(
     request: Request,
@@ -26,7 +42,14 @@ async function postPaymentHandler(
             })
         }
 
-        let body: any = {}
+        interface PaymentBody {
+            amount?: unknown
+            paymentMethod?: unknown
+            kind?: unknown
+            channel?: unknown
+        }
+
+        let body: PaymentBody = {}
         try {
             body = await request.json()
         } catch {
@@ -57,19 +80,19 @@ async function postPaymentHandler(
         }
 
         const amount = Number(body.amount) > 0 ? Number(body.amount) : Number(booking.deposit_amount)
-        const paymentMethod = body.paymentMethod || 'bank_transfer'
+        const paymentMethod = toPaymentMethod(body.paymentMethod)
 
         const updatedBooking = await recordPayment({
             bookingId: booking.id,
             amount: amount,
             paymentMethod: paymentMethod,
-            kind: body.kind || 'deposit',
+            kind: toPaymentKind(body.kind),
             rawPayload: { mode: 'simulated', channel: body.channel || 'web' },
         }, actor)
 
         return ok(updatedBooking)
-    } catch (err: any) {
-        console.error('[POST /api/bookings/[id]/payments error]', err)
+    } catch (err: unknown) {
+        console.error('[POST /api/bookings/[id]/payments error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

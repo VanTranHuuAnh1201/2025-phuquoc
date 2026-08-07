@@ -18,7 +18,17 @@ async function postCheckInHandler(
             })
         }
 
-        let body: any
+        interface CheckInBody {
+            roomUnitId?: unknown
+            idNumber?: unknown
+            actualGuests?: { adults?: unknown; children?: unknown }
+            actualTime?: unknown
+            earlyCheckIn?: unknown
+            vehiclePlate?: unknown
+            note?: unknown
+        }
+
+        let body: CheckInBody
         try {
             body = await request.json()
         } catch {
@@ -114,8 +124,8 @@ async function postCheckInHandler(
         }
 
         return ok(updatedBooking)
-    } catch (err: any) {
-        console.error('[POST /api/bookings/[id]/check-in error]', err)
+    } catch (err: unknown) {
+        console.error('[POST /api/bookings/[id]/check-in error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

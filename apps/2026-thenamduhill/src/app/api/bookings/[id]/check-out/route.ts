@@ -18,7 +18,13 @@ async function postCheckOutHandler(
             })
         }
 
-        let body: any = {}
+        interface CheckOutBody {
+            incidentals?: unknown
+            note?: unknown
+            settled?: unknown
+        }
+
+        let body: CheckOutBody = {}
         try {
             body = await request.json()
         } catch {
@@ -80,8 +86,8 @@ async function postCheckOutHandler(
         }
 
         return ok(updatedBooking)
-    } catch (err: any) {
-        console.error('[POST /api/bookings/[id]/check-out error]', err)
+    } catch (err: unknown) {
+        console.error('[POST /api/bookings/[id]/check-out error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

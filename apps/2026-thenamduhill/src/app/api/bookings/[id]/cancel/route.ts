@@ -18,7 +18,7 @@ async function postCancelHandler(
             })
         }
 
-        let body: any = {}
+        let body: { reason?: unknown } = {}
         try {
             body = await request.json()
         } catch {
@@ -71,8 +71,8 @@ async function postCancelHandler(
         }
 
         return ok(updatedBooking)
-    } catch (err: any) {
-        console.error('[POST /api/bookings/[id]/cancel error]', err)
+    } catch (err: unknown) {
+        console.error('[POST /api/bookings/[id]/cancel error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }

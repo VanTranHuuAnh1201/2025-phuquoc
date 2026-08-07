@@ -18,7 +18,13 @@ async function postRefundHandler(
             })
         }
 
-        let body: any
+        interface RefundBody {
+            amount?: unknown
+            paymentMethod?: unknown
+            reference?: unknown
+        }
+
+        let body: RefundBody
         try {
             body = await request.json()
         } catch {
@@ -78,8 +84,8 @@ async function postRefundHandler(
         }
 
         return ok(updatedBooking)
-    } catch (err: any) {
-        console.error('[POST /api/bookings/[id]/refund error]', err)
+    } catch (err: unknown) {
+        console.error('[POST /api/bookings/[id]/refund error]', err instanceof Error ? err.message : err)
         return serverError()
     }
 }
