@@ -495,6 +495,25 @@ export interface Customer extends Account {
     internalNote?: string
 }
 
+// ============================================================== cấu hình thanh toán
+
+/**
+ * Tài khoản ngân hàng nhận cọc của cơ sở (ticket `100-04` §6.3).
+ *
+ * Map vào `property_settings.bank` (jsonb) theo `ndh-schema-mapping.md §9.10`
+ * — cùng chỗ với `child_policy` và `brand`, KHÔNG tạo bảng riêng.
+ *
+ * Đặt ở `core` vì đây là nguồn sự thật để SQL bám theo (luật BE8): API `200-05`
+ * và RLS sẽ đọc đúng bộ trường này, không được khai lại ở tầng app.
+ */
+export interface BankConfig {
+    bankName: string
+    accountNumber: string
+    accountHolder: string
+    /** % cọc mặc định khi `RatePlan` không khai riêng. */
+    defaultDepositPercent: number
+}
+
 // ============================================================== thông báo
 
 export type NotificationKind =

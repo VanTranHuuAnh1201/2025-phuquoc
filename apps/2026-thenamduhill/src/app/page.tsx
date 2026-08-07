@@ -27,8 +27,7 @@ export default async function HubPage({
     const { lang } = await searchParams
     const locale = lang && isLocale(lang) ? lang : DEFAULT_LOCALE
     const data = await getProperty()
-    const vi = locale === 'vi'
-
+ 
     return (
         <main
             style={{
@@ -60,7 +59,7 @@ export default async function HubPage({
                             lineHeight: 1.2,
                         }}
                     >
-                        {vi ? 'Chọn giao diện cho website của bạn' : 'Choose your interface'}
+                        {pick({ vi: 'Chọn giao diện cho website của bạn', en: 'Choose your interface' }, locale)}
                     </h1>
                     <p
                         style={{
@@ -70,9 +69,13 @@ export default async function HubPage({
                             lineHeight: 1.7,
                         }}
                     >
-                        {vi
-                            ? 'Tất cả các mẫu dùng chung một nguồn nội dung — phòng, giá và đơn đặt phía sau đều là một. Sau này đổi mẫu không phải làm lại website.'
-                            : 'Every design shares one content source — the rooms, prices and bookings behind them are identical. Switching later costs a configuration change, not a rebuild.'}
+                        {pick(
+                            {
+                                vi: 'Tất cả các mẫu dùng chung một nguồn nội dung — phòng, giá và đơn đặt phía sau đều là một. Sau này đổi mẫu không phải làm lại website.',
+                                en: 'Every design shares one content source — the rooms, prices and bookings behind them are identical. Switching later costs a configuration change, not a rebuild.',
+                            },
+                            locale,
+                        )}
                     </p>
                 </header>
 

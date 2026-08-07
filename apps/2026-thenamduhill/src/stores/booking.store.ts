@@ -17,7 +17,6 @@ import {
     listStayDates,
     makeLog,
     quoteRefund,
-    ratePlans,
 } from '@repo/core'
 import type {
     ActivityLog,
@@ -33,6 +32,9 @@ import type {
     RoomUnitStatus,
 } from '@repo/core'
 import { getDemoData, todayKey } from './demo-data'
+// `catalog.store` chỉ import KIỂU `Actor` từ file này (import type, bị xoá lúc
+// biên dịch) nên chiều ngược lại không tạo vòng lặp lúc chạy.
+import { mergeRatePlans, useCatalogStore } from './catalog.store'
 
 export interface Actor {
     id: string
@@ -373,7 +375,16 @@ export const useBookingStore = create<BookingState>()(
                 if (!canTransition(booking.status, 'cancelled')) return 'invalid-transition'
 
                 const now = new Date().toISOString()
-                const plan = ratePlans.find((p) => p.id === booking.ratePlanId)
+                // Đọc qua lớp merge của `catalog.store`: admin sửa bậc hoàn tiền
+                // của một gói giá thì lần huỷ SAU phải theo bậc mới (`100-04` §6.2).
+                //
+                // ⚠️ Đây KHÔNG mâu thuẫn với §4.2 "đơn đã đặt không đổi giá":
+                // `booking.totalAmount` vẫn là số đã chốt lúc đặt và không hề bị
+                // tính lại — thứ đổi ở đây là CHÍNH SÁCH huỷ đang hiệu lực, vốn
+                // luôn được tra tại thời điểm khách bấm huỷ.
+                const plan = mergeRatePlans(useCatalogStore.getState()).find(
+                    (p) => p.id === booking.ratePlanId,
+                )
                 const refund = quoteRefund(booking, plan?.cancellationRules ?? [], todayKey())
 
                 set({

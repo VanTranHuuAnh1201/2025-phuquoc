@@ -130,7 +130,7 @@ function MyOrdersScreen() {
                     {tr(S.myOrders, locale)}
                 </h1>
                 <p style={{ margin: '0 0 var(--space-6)', color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
-                    {mine.length} {locale === 'vi' ? 'đơn' : 'bookings'}
+                    {mine.length} {tr(S.bookingsCountSuffix, locale)}
                 </p>
 
                 <div
@@ -199,7 +199,7 @@ function BookingTable({
                     <div style={{ fontWeight: 600 }}>{b.code}</div>
                     <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
                         {new Date(b.createdAt).toLocaleDateString(
-                            locale === 'vi' ? 'vi-VN' : 'en-US',
+                            tr(S.localeCode, locale),
                         )}
                     </div>
                 </div>
@@ -207,7 +207,7 @@ function BookingTable({
         },
         {
             key: 'room',
-            header: locale === 'vi' ? 'Hạng phòng' : 'Room type',
+            header: tr(S.roomType, locale),
             cell: (b) => (
                 <div>
                     <div>{roomName(b.roomTypeId)}</div>
@@ -236,7 +236,7 @@ function BookingTable({
                     <div style={{ fontWeight: 600 }}>{formatPrice(b.totalAmount, locale)}</div>
                     {b.paidAmount < b.totalAmount && (
                         <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                            {locale === 'vi' ? 'còn' : 'due'}{' '}
+                            {tr(S.due, locale)}{' '}
                             {formatPrice(b.totalAmount - b.paidAmount, locale)}
                         </div>
                     )}
@@ -245,7 +245,7 @@ function BookingTable({
         },
         {
             key: 'status',
-            header: locale === 'vi' ? 'Trạng thái' : 'Status',
+            header: tr(S.status, locale),
             cell: (b) => (
                 <Badge tone={STATUS_TONE[b.status]}>{tr(STATUS_LABEL[b.status], locale)}</Badge>
             ),

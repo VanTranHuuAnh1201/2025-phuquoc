@@ -195,6 +195,29 @@ const DICTIONARY: Record<string, string> = {
 
     // điều kiện phòng
     'không hút thuốc': 'No smoking',
+
+    // tên hạng phòng (room type names)
+    'phòng gia đình nhìn ra biển': 'Family Room with Sea View',
+    'phòng gia đình view biển (08)': 'Family Room with Sea View (08)',
+    'phòng giường đôi có ban công nhìn ra biển': 'Double Room with Balcony and Sea View',
+    'phòng tiêu chuẩn giường đôi (lục giác)': 'Standard Double Room (Hexagonal)',
+    'phòng deluxe': 'Deluxe Room',
+    'phòng superior có giường cỡ king': 'Superior King Room',
+    'phòng giường đôi nhìn ra vườn': 'Double Room with Garden View',
+    'phòng gia đình view biển (09)': 'Family Room with Sea View (09)',
+    'phòng giường đôi có san trong': 'Double Room with Patio',
+    'phòng giường đôi có sân trong': 'Double Room with Patio',
+    'phòng gia đình view biển': 'Family Room with Sea View',
+    'phòng giường đôi có ban công': 'Double Room with Balcony',
+    'second floor family with sea view': 'Second Floor Family with Sea View',
+    'rock deluxe room': 'Rock Deluxe Room',
+    'phòng giường đôi': 'Double Room',
+    'first floor family with sea view': 'First Floor Family with Sea View',
+    'phòng 03 người - hướng thung lũng/ biển': 'Triple Room - Valley / Sea View',
+    'phòng 03 người - hướng thung lũng / biển': 'Triple Room - Valley / Sea View',
+    'phòng 03 người - có ban công': 'Triple Room - with Balcony',
+    'suite 02 phòng ngủ (08 khách)': '2-Bedroom Suite (8 Guests)',
+    'suite 02 phòng ngủ (06 khách)': '2-Bedroom Suite (6 Guests)',
 }
 
 /** Chuẩn hoá khoá tra từ điển: bỏ khoảng trắng thừa, thường hoá. */
@@ -267,7 +290,7 @@ function buildTags(raw: SeedRoomType): I18nText[] {
 export function mapSeedToRoom(raw: SeedRoomType): Room {
     return {
         id: raw.id,
-        name: viOnly(raw.name), // TODO: dịch tên phòng
+        name: translate(raw.name), // dịch tên phòng
         desc: viOnly(raw.summary.trim()), // TODO: dịch tóm tắt
         area: pickArea(raw),
         guests: pickStandardGuests(raw),

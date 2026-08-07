@@ -9,18 +9,12 @@
  */
 
 import { useMemo } from 'react'
-import {
-    buildQuote,
-    checkAvailability,
-    childPolicy,
-    getPropertySync,
-    ratePlans,
-    seasons,
-} from '@repo/core'
+import { buildQuote, checkAvailability, childPolicy, seasons } from '@repo/core'
 import type { AvailabilityResult, Channel, GuestCount, Quote } from '@repo/core'
 import { useBookingStore } from './booking.store'
 import { useCartStore } from './cart.store'
 import { usePromotionStore } from './promotion.store'
+import { useAddons, useRatePlans, useRoomExtras, useRoomTypes } from './useCatalog'
 import { todayKey } from './demo-data'
 
 /**
@@ -54,19 +48,26 @@ export function useQuoteOf(req: QuoteRequest | null): Quote | null {
     const inventory = useBookingStore((s) => s.inventory)
     const promotions = usePromotionStore((s) => s.items)
 
+    // Đọc qua lớp merge của `catalog.store`, KHÔNG đọc thẳng hằng số seed —
+    // nếu không thì admin sửa giá gốc ở CMS mà khách vẫn thấy giá cũ
+    // (`100-04` §6.2, AC-5/AC-6).
+    const rooms = useRoomTypes()
+    const roomExtras = useRoomExtras()
+    const ratePlans = useRatePlans()
+    const addonCatalog = useAddons()
+
     const { roomTypeId, checkIn, checkOut, guests, ratePlanId, addons, promoCode, channel } =
         req ?? {}
 
     return useMemo(() => {
         if (!roomTypeId || !checkIn || !checkOut || !guests || !ratePlanId || !channel) return null
 
-        const property = getPropertySync()
-        const room = property.rooms.find((r) => r.id === roomTypeId)
+        const room = rooms.find((r) => r.id === roomTypeId)
         if (!room) return null
 
         return buildQuote({
             room,
-            roomExtra: property.roomExtras[room.id],
+            roomExtra: roomExtras[room.id],
             checkIn,
             checkOut,
             guests,
@@ -74,7 +75,7 @@ export function useQuoteOf(req: QuoteRequest | null): Quote | null {
             inventory,
             ratePlan: ratePlans.find((p) => p.id === ratePlanId),
             addons: addons ?? {},
-            addonCatalog: property.addons,
+            addonCatalog,
             childPolicy,
             promotions: promotions.filter((p) => p.active),
             channel,
@@ -92,6 +93,10 @@ export function useQuoteOf(req: QuoteRequest | null): Quote | null {
         channel,
         inventory,
         promotions,
+        rooms,
+        roomExtras,
+        ratePlans,
+        addonCatalog,
     ])
 }
 
@@ -139,16 +144,18 @@ export function useAvailability(
 ): RoomAvailability[] {
     const inventory = useBookingStore((s) => s.inventory)
     const ratePlanId = useCartStore((s) => s.ratePlanId)
+    const rooms = useRoomTypes()
+    const roomExtras = useRoomExtras()
+    const ratePlans = useRatePlans()
 
     return useMemo(() => {
-        const property = getPropertySync()
         const ratePlan = ratePlans.find((p) => p.id === ratePlanId)
 
-        return property.rooms.map((room) => ({
+        return rooms.map((room) => ({
             roomTypeId: room.id,
             result: checkAvailability({
                 room,
-                roomExtra: property.roomExtras[room.id],
+                roomExtra: roomExtras[room.id],
                 checkIn,
                 checkOut,
                 guests,
@@ -157,5 +164,5 @@ export function useAvailability(
                 ratePlan,
             }),
         }))
-    }, [checkIn, checkOut, guests, inventory, ratePlanId])
+    }, [checkIn, checkOut, guests, inventory, ratePlanId, rooms, roomExtras, ratePlans])
 }

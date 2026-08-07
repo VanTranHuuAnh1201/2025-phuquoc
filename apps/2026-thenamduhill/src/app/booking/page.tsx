@@ -31,6 +31,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useBookingStore } from '@/stores/booking.store'
 import { useCartStore } from '@/stores/cart.store'
 import { useNotifyStore } from '@/stores/notify.store'
+import { useBankConfig } from '@/stores/useCatalog'
 import { useAvailability, useCurrentQuote } from '@/stores/useQuote'
 import { todayKey } from '@/stores/demo-data'
 import { BLOCK_REASON_LABEL, S, tr } from '@/strings'
@@ -746,7 +747,7 @@ function SearchStep({
                         min={0}
                         max={6}
                         value={cart.guests.children.length}
-                        hint={locale === 'vi' ? 'Mặc định 8 tuổi' : 'Defaults to age 8'}
+                        hint={tr(S.defaultAgeHint, locale)}
                         onChange={(e) => {
                             const count = Math.max(0, Number(e.target.value) || 0)
                             cart.setGuests({
@@ -914,9 +915,10 @@ function SelectStep({
                                         )}
                                         {result.available ? (
                                             <Badge tone={result.availableUnits <= 2 ? 'warning' : 'success'}>
-                                                {locale === 'vi'
-                                                    ? `Còn ${result.availableUnits} phòng`
-                                                    : `${result.availableUnits} left`}
+                                                {tr(S.roomsLeft, locale).replace(
+                                                    '{count}',
+                                                    String(result.availableUnits),
+                                                )}
                                             </Badge>
                                         ) : (
                                             <Badge tone="danger">
@@ -1268,6 +1270,8 @@ function PaymentStep({ onBack }: { onBack: () => void }) {
     const pushNotification = useNotifyStore((s) => s.push)
     const property = getPropertySync()
 
+    const bank = useBankConfig()
+
     const [method, setMethod] = useState<PaymentMethod>('bank-transfer')
     const [submitting, setSubmitting] = useState(false)
 
@@ -1346,6 +1350,27 @@ function PaymentStep({ onBack }: { onBack: () => void }) {
                     ))}
                 </div>
 
+                {/* Số tài khoản nhận cọc do admin khai ở `/admin/settings/general`
+                    (ticket `100-04` AC-16). Một nguồn dữ liệu, hai nơi hiển thị. */}
+                {method === 'bank-transfer' && (
+                    <dl
+                        style={{
+                            margin: 'var(--space-5) 0 0',
+                            padding: 'var(--space-4)',
+                            background: 'var(--surface-alt)',
+                            border: '1px solid var(--border)',
+                            borderRadius: 'var(--radius)',
+                            fontSize: 'var(--text-sm)',
+                            display: 'grid',
+                            gap: 'var(--space-2)',
+                        }}
+                    >
+                        <BankLine label={tr(S.bankName, locale)} value={bank.bankName} />
+                        <BankLine label={tr(S.accountNumber, locale)} value={bank.accountNumber} mono />
+                        <BankLine label={tr(S.accountHolder, locale)} value={bank.accountHolder} />
+                    </dl>
+                )}
+
                 <p
                     style={{
                         margin: 'var(--space-5) 0 0',
@@ -1371,6 +1396,26 @@ function PaymentStep({ onBack }: { onBack: () => void }) {
                 nextDisabled={submitting}
             />
         </>
+    )
+}
+
+/** Một dòng thông tin chuyển khoản. Số tài khoản dùng font đều để dễ đọc/copy. */
+function BankLine({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-4)' }}>
+            <dt style={{ color: 'var(--text-muted)' }}>{label}</dt>
+            <dd
+                style={{
+                    margin: 0,
+                    fontWeight: 700,
+                    textAlign: 'right',
+                    fontFamily: mono ? 'var(--font-mono, monospace)' : undefined,
+                    fontVariantNumeric: 'tabular-nums',
+                }}
+            >
+                {value}
+            </dd>
+        </div>
     )
 }
 

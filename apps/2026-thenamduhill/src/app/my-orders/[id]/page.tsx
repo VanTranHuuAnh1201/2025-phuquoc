@@ -74,7 +74,7 @@ function DetailScreen({ bookingId }: { bookingId: string }) {
         return (
             <Shell>
                 <p style={{ color: 'var(--text-muted)' }}>
-                    {locale === 'vi' ? 'Không tìm thấy đơn.' : 'Booking not found.'}
+                    {tr(S.bookingNotFound, locale)}
                 </p>
                 <Link href="/my-orders" style={{ color: 'var(--brand)' }}>
                     ← {tr(S.myOrders, locale)}
@@ -189,7 +189,7 @@ function DetailScreen({ bookingId }: { bookingId: string }) {
                             strong
                         />
                         <Row
-                            label={locale === 'vi' ? 'Đã thanh toán' : 'Paid'}
+                            label={tr(S.paidStatus, locale)}
                             value={formatPrice(booking.paidAmount, locale)}
                             tone="info"
                         />
@@ -233,14 +233,14 @@ function DetailScreen({ bookingId }: { bookingId: string }) {
                     <Card title={tr(S.tabCancelled, locale)}>
                         <dl style={{ display: 'grid', gap: 'var(--space-3)', margin: 0 }}>
                             <Row
-                                label={locale === 'vi' ? 'Huỷ lúc' : 'Cancelled at'}
+                                label={tr(S.cancelledAtLabel, locale)}
                                 value={new Date(booking.cancellation.at).toLocaleString(
-                                    locale === 'vi' ? 'vi-VN' : 'en-US',
+                                    tr(S.localeCode, locale),
                                 )}
                             />
                             {booking.cancellation.reason && (
                                 <Row
-                                    label={locale === 'vi' ? 'Lý do' : 'Reason'}
+                                    label={tr(S.reasonLabel, locale)}
                                     value={booking.cancellation.reason}
                                 />
                             )}
@@ -303,14 +303,18 @@ function DetailScreen({ bookingId }: { bookingId: string }) {
                                 {refund.percent}%)
                             </strong>
                             <div style={{ marginTop: 4, fontSize: 'var(--text-xs)' }}>
-                                {locale === 'vi'
-                                    ? `Còn ${refund.daysUntilCheckIn} ngày tới ngày nhận phòng.`
-                                    : `${refund.daysUntilCheckIn} days until check-in.`}
+                                {pick(
+                                    {
+                                        vi: `Còn ${refund.daysUntilCheckIn} ngày tới ngày nhận phòng.`,
+                                        en: `${refund.daysUntilCheckIn} days until check-in.`,
+                                    },
+                                    locale,
+                                )}
                             </div>
                         </div>
                     )}
                     <TextAreaField
-                        label={locale === 'vi' ? 'Lý do huỷ' : 'Reason for cancelling'}
+                        label={tr(S.cancelReasonLabel, locale)}
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
                         hint={tr(S.optional, locale)}
@@ -452,7 +456,7 @@ function Timeline({ logs }: { logs: ActivityLog[] }) {
     if (logs.length === 0) {
         return (
             <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-                {locale === 'vi' ? 'Chưa có diễn biến.' : 'No activity yet.'}
+                {tr(S.noActivityYet, locale)}
             </p>
         )
     }
@@ -484,7 +488,7 @@ function Timeline({ logs }: { logs: ActivityLog[] }) {
                             </div>
                         )}
                         <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-                            {new Date(log.at).toLocaleString(locale === 'vi' ? 'vi-VN' : 'en-US')} ·{' '}
+                            {new Date(log.at).toLocaleString(tr(S.localeCode, locale))} ·{' '}
                             {log.actorName}
                         </div>
                     </div>

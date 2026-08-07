@@ -47,6 +47,7 @@ export * from './pricing'
 export * from './promotion'
 export * from './availability'
 export * from './booking-lifecycle'
+export * from './validation'
 
 // -------------------------------------------------------------------- dữ liệu demo
 export { seasons, ratePlans, promotions, childPolicy, buildRoomUnits } from './data/operations.seed'
