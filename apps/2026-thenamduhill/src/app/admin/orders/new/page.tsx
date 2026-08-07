@@ -35,7 +35,6 @@ export default function NewBookingPage() {
     const { locale } = useLocale()
     const router = useRouter()
     const user = useAuthStore((s) => s.user)
-    const createBooking = useBookingStore((s) => s.createBooking)
     const property = getPropertySync()
 
     const today = todayKey()

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import type { Booking } from '@repo/core'
 function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
     return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
 }
@@ -26,7 +27,7 @@ export default function LookupPage() {
     const [phone, setPhone] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
-    const [result, setResult] = useState<any>(null)
+    const [result, setResult] = useState<Booking | null>(null)
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -41,11 +42,12 @@ export default function LookupPage() {
         setLoading(true)
         try {
             const res = await fetch(`/api/bookings?code=${encodeURIComponent(bookingCode.trim())}&phone=${encodeURIComponent(phone.trim())}`)
-            const data = await res.json()
+            // Hợp đồng API (luật BE1): { success, data, error }. `data` là Booking[] khi tra bằng mã + SĐT.
+            const data: { success: boolean; data: Booking[] | Booking | null } = await res.json()
 
-            if (res.ok && data.data && data.data.length > 0) {
-                setResult(data.data[0])
-            } else if (res.ok && data.data) {
+            if (res.ok && Array.isArray(data.data) && data.data.length > 0) {
+                setResult(data.data[0] ?? null)
+            } else if (res.ok && data.data && !Array.isArray(data.data)) {
                 setResult(data.data)
             } else {
                 setError('Không tìm thấy đơn hàng phù hợp với thông tin đã nhập.')
@@ -124,19 +126,19 @@ export default function LookupPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div className="flex items-center gap-2 text-slate-300">
                                 <UserIcon className="w-4 h-4 text-slate-400" />
-                                <span>Khách: <strong>{result.guest_name || result.guestName || 'Khách đặt'}</strong></span>
+                                <span>Khách: <strong>{result.guest?.fullName || 'Khách đặt'}</strong></span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-300">
                                 <BuildingIcon className="w-4 h-4 text-slate-400" />
-                                <span>Hạng phòng ID: <strong>{result.room_type_id || 'Tiêu chuẩn'}</strong></span>
+                                <span>Hạng phòng ID: <strong>{result.roomTypeId || 'Tiêu chuẩn'}</strong></span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-300">
                                 <CalendarIcon className="w-4 h-4 text-slate-400" />
-                                <span>Check-in: <strong>{result.check_in_date || result.checkInDate}</strong></span>
+                                <span>Check-in: <strong>{result.checkIn}</strong></span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-300">
                                 <CreditCardIcon className="w-4 h-4 text-slate-400" />
-                                <span>Tổng tiền: <strong className="text-amber-400">{new Intl.NumberFormat('vi-VN').format(result.total_amount || result.totalAmount || 0)}đ</strong></span>
+                                <span>Tổng tiền: <strong className="text-amber-400">{new Intl.NumberFormat('vi-VN').format(result.totalAmount || 0)}đ</strong></span>
                             </div>
                         </div>
                     </div>
