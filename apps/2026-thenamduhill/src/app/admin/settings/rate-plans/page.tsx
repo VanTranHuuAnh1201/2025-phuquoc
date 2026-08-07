@@ -9,9 +9,16 @@
  *
  * Kiểm dữ liệu vào bằng `validateRatePlan()` của `core`: `adjustPercent` phải
  * trong −100…+200 (AC-11) và bậc hoàn tiền phải giảm dần nghiêm ngặt (AC-12).
+ *
+ * Áp design system `@repo/cms-ui` (màn 5/7 nhóm Hệ thống) — đi theo đúng khuôn
+ * `settings/addons/page.tsx` đã áp: cùng là màn CRUD danh mục giá (id/tên
+ * i18n/số tiền/modal), gần với rate-plans nhất trong nhóm đã xong. Bố cục:
+ * hàng 1 tiêu đề+đếm+nút thêm (`PageHeaderBar`), hàng 2 tìm kiếm+`FilterBar`
+ * (trạng thái)+Đặt lại, bảng (`DataGrid`) chiếm hết chỗ còn lại. Không có
+ * KPI vì màn cấu hình danh mục không có số liệu vận hành đáng theo dõi.
  */
 
-import { CheckCircleIcon, PencilIcon, PlusIcon, TagIcon, TrashIcon } from '@/components/icons'
+import { CheckCircleIcon, PencilIcon, PlusIcon, TrashIcon } from '@/components/icons'
 import { I18nField } from '@/components/I18nField'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
@@ -22,17 +29,9 @@ import { useRatePlans } from '@/stores/useCatalog'
 import { S, tr } from '@/strings'
 import { errorOf, validateRatePlan } from '@repo/core'
 import type { CancellationRule, FieldError, I18nText, RatePlan } from '@repo/core'
-import {
-    Badge,
-    Button,
-    CheckField,
-    DataTable,
-    Field,
-    FilterSelect,
-    Modal,
-    Toolbar,
-    useDataTable,
-} from '@repo/ui'
+import { DataGrid, DotBadge, FilterBar, InlineAlert, PageHeaderBar } from '@repo/cms-ui'
+import { Button, CheckField, Field, Modal } from '@repo/ui'
+import type { Column } from '@repo/ui'
 import { useMemo, useState } from 'react'
 
 const STATUS_FILTERS = [
@@ -81,8 +80,6 @@ function RatePlansScreen() {
     const [notice, setNotice] = useState<I18nText | null>(null)
     const [saving, setSaving] = useState(false)
 
-    const isFiltered = search !== '' || statusFilter !== 'all'
-
     const filtered = useMemo(() => {
         const query = search.trim().toLowerCase()
         return ratePlans.filter((plan) => {
@@ -98,112 +95,6 @@ function RatePlansScreen() {
             return true
         })
     }, [ratePlans, search, statusFilter])
-
-    const { tableProps } = useDataTable<RatePlan>({
-        data: filtered,
-        rowKey: (plan) => plan.id,
-        pageSize: 10,
-        columns: [
-            {
-                key: 'id',
-                header: tr(S.colRoomCode, locale),
-                width: '150px',
-                sortable: true,
-                cell: (plan) => (
-                    <span className="font-mono text-xs font-bold text-slate-800">{plan.id}</span>
-                ),
-            },
-            {
-                key: 'name',
-                header: tr(S.colRoomName, locale),
-                cell: (plan) => (
-                    <div>
-                        <div className="font-bold text-xs text-slate-900">{tr(plan.name, locale)}</div>
-                        <div className="text-[11px] text-slate-500 line-clamp-1">
-                            {tr(plan.description, locale)}
-                        </div>
-                    </div>
-                ),
-            },
-            {
-                key: 'adjustPercent',
-                header: tr(S.adjustPercentLabel, locale),
-                align: 'right',
-                width: '130px',
-                sortable: true,
-                cell: (plan) => (
-                    <span
-                        className={`font-bold text-xs tabular-nums ${
-                            plan.adjustPercent < 0 ? 'text-emerald-700' : 'text-slate-900'
-                        }`}
-                    >
-                        {plan.adjustPercent > 0 ? '+' : ''}
-                        {plan.adjustPercent}%
-                    </span>
-                ),
-            },
-            {
-                key: 'depositPercent',
-                header: tr(S.depositPercentLabel, locale),
-                align: 'right',
-                width: '120px',
-                cell: (plan) => (
-                    <span className="text-xs tabular-nums text-slate-800">{plan.depositPercent}%</span>
-                ),
-            },
-            {
-                key: 'perks',
-                header: tr(S.perksLabel, locale),
-                width: '190px',
-                cell: (plan) => (
-                    <div className="flex flex-wrap gap-1">
-                        {plan.includesBreakfast && (
-                            <Badge tone="info">{tr(S.includesBreakfast, locale)}</Badge>
-                        )}
-                        <Badge tone={plan.refundable ? 'success' : 'warning'}>
-                            {tr(plan.refundable ? S.refundable : S.nonRefundable, locale)}
-                        </Badge>
-                    </div>
-                ),
-            },
-            {
-                key: 'status',
-                header: tr(S.colStatus, locale),
-                width: '130px',
-                cell: (plan) => (
-                    <Badge tone={plan.active ? 'success' : 'neutral'}>
-                        {tr(plan.active ? S.onSale : S.stoppedSelling, locale)}
-                    </Badge>
-                ),
-            },
-            {
-                key: 'actions',
-                header: tr(S.colActions, locale),
-                align: 'right',
-                width: '100px',
-                cell: (plan) => (
-                    <div className="flex items-center justify-end gap-1">
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openModal(plan)}
-                            aria-label={`${tr(S.edit, locale)} ${tr(plan.name, locale)}`}
-                        >
-                            <PencilIcon size={14} />
-                        </Button>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(plan)}
-                            aria-label={`${tr(S.delete, locale)} ${tr(plan.name, locale)}`}
-                        >
-                            <TrashIcon size={14} />
-                        </Button>
-                    </div>
-                ),
-            },
-        ],
-    })
 
     function openModal(plan?: RatePlan) {
         setErrors([])
@@ -330,68 +221,193 @@ function RatePlansScreen() {
         })
     }
 
-    return (
-        <div className="h-full flex flex-col min-h-0 bg-slate-100 p-2 gap-2 overflow-hidden">
-            {notice && (
-                <div
-                    role="alert"
-                    aria-live="polite"
-                    className="shrink-0 p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-md text-xs font-medium"
-                >
-                    {tr(notice, locale)}
-                </div>
-            )}
+    const resetFilters = () => {
+        setSearch('')
+        setStatusFilter('all')
+    }
 
-            <div className="flex-1 min-h-0 bg-white rounded border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                <div className="flex flex-wrap items-center justify-between gap-2 px-3 pt-3 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <span className="text-slate-500">
-                            <TagIcon size={16} />
-                        </span>
-                        <h1 className="text-base font-bold text-slate-900 tracking-tight">
-                            {tr(S.ratePlansTitle, locale)}
-                        </h1>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 tabular-nums">
-                            {filtered.length} {tr(S.ratePlansCount, locale)}
-                        </span>
+    const columns: Column<RatePlan>[] = [
+        {
+            key: 'id',
+            header: tr(S.colRoomCode, locale),
+            width: '150px',
+            cell: (plan) => (
+                <span className="font-mono text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)]">
+                    {plan.id}
+                </span>
+            ),
+        },
+        {
+            key: 'name',
+            header: tr(S.colRoomName, locale),
+            cell: (plan) => (
+                <div className="min-w-0">
+                    <div
+                        className="truncate font-semibold text-[var(--cms-text)] text-[length:var(--cms-text-body)]"
+                        title={tr(plan.name, locale)}
+                    >
+                        {tr(plan.name, locale)}
                     </div>
+                    <div
+                        className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]"
+                        title={tr(plan.description, locale)}
+                    >
+                        {tr(plan.description, locale)}
+                    </div>
+                </div>
+            ),
+        },
+        {
+            key: 'adjustPercent',
+            header: tr(S.adjustPercentLabel, locale),
+            align: 'right',
+            width: '130px',
+            cell: (plan) => (
+                // Giảm giá (âm) là tin tốt cho khách — dùng tone emerald để
+                // lễ tân nhận ra ngay không cần đọc dấu, cùng nguyên tắc D4
+                // (chấm+chữ ở badge) áp cho số liệu: màu chỉ là gợi ý, con số
+                // có dấu +/− đã tự nói rõ nghĩa.
+                <span
+                    className={`font-semibold text-[length:var(--cms-text-body)] tabular-nums ${
+                        plan.adjustPercent < 0 ? 'text-[var(--cms-tone-emerald)]' : 'text-[var(--cms-text)]'
+                    }`}
+                >
+                    {plan.adjustPercent > 0 ? '+' : ''}
+                    {plan.adjustPercent}%
+                </span>
+            ),
+        },
+        {
+            key: 'depositPercent',
+            header: tr(S.depositPercentLabel, locale),
+            align: 'right',
+            width: '120px',
+            cell: (plan) => (
+                <span className="text-[length:var(--cms-text-body)] text-[var(--cms-text)] tabular-nums">
+                    {plan.depositPercent}%
+                </span>
+            ),
+        },
+        {
+            key: 'perks',
+            header: tr(S.perksLabel, locale),
+            width: '210px',
+            cell: (plan) => (
+                <div className="flex flex-wrap gap-1">
+                    {plan.includesBreakfast && (
+                        <DotBadge tone="blue" label={tr(S.includesBreakfast, locale)} />
+                    )}
+                    <DotBadge
+                        tone={plan.refundable ? 'emerald' : 'amber'}
+                        label={tr(plan.refundable ? S.refundable : S.nonRefundable, locale)}
+                    />
+                </div>
+            ),
+        },
+        {
+            key: 'status',
+            header: tr(S.colStatus, locale),
+            width: '140px',
+            cell: (plan) =>
+                plan.active ? (
+                    <DotBadge tone="emerald" label={tr(S.onSale, locale)} width={108} />
+                ) : (
+                    <DotBadge tone="slate" label={tr(S.stoppedSelling, locale)} width={108} />
+                ),
+        },
+        {
+            key: 'actions',
+            header: tr(S.colActions, locale),
+            align: 'right',
+            width: '90px',
+            cell: (plan) => (
+                <div className="flex items-center justify-end gap-1">
+                    <button
+                        type="button"
+                        onClick={() => openModal(plan)}
+                        aria-label={`${tr(S.edit, locale)} ${tr(plan.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <PencilIcon size={14} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => handleDelete(plan)}
+                        aria-label={`${tr(S.delete, locale)} ${tr(plan.name, locale)}`}
+                        style={{ minWidth: 28, minHeight: 28 }}
+                        className="inline-flex items-center justify-center rounded-[var(--cms-radius-sm)] text-[var(--cms-text-muted)] hover:bg-[var(--cms-bg-subtle)] hover:text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    >
+                        <TrashIcon size={14} />
+                    </button>
+                </div>
+            ),
+        },
+    ]
+
+    const statusGroups = [
+        {
+            legend: tr(S.colStatus, locale),
+            value: statusFilter,
+            onChange: setStatusFilter,
+            options: STATUS_FILTERS.map((f) => ({ value: f.value, label: f[locale] })),
+        },
+    ]
+
+    return (
+        <div className="flex w-full flex-1 flex-col min-h-0 bg-[var(--cms-bg)]">
+            {/* HÀNG 1: tiêu đề + đếm bên trái, nút thêm gói giá bên phải. */}
+            <PageHeaderBar
+                title={tr(S.ratePlansTitle, locale)}
+                count={{ value: filtered.length, suffix: tr(S.ratePlansCount, locale) }}
+                actions={
                     <Button onClick={() => openModal()}>
                         <PlusIcon size={16} />
                         <span>{tr(S.addRatePlan, locale)}</span>
                     </Button>
+                }
+            />
+
+            {/* HÀNG 2: ô tìm kiếm tự do + FilterBar (trạng thái) — cùng khuôn
+                addons.tsx: input thô token hoá vì `FilterBar` không nhận chữ
+                tự do, đặt cạnh pill lọc trong cùng khối, Đặt lại ở cuối. */}
+            <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={tr(S.searchRatePlan, locale)}
+                    aria-label={tr(S.searchRatePlan, locale)}
+                    className="w-44 sm:w-64 px-3 py-1 text-[length:var(--cms-text-body)] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                    style={{ minHeight: 28 }}
+                />
+
+                <FilterBar
+                    groups={statusGroups}
+                    resultText={`${filtered.length} ${tr(S.ratePlansCount, locale)}`}
+                    onReset={resetFilters}
+                />
+            </div>
+
+            {notice && (
+                <div className="px-[var(--cms-pad)] pt-3">
+                    <InlineAlert tone="rose">{tr(notice, locale)}</InlineAlert>
                 </div>
+            )}
 
-                <Toolbar
-                    searchValue={search}
-                    onSearchChange={setSearch}
-                    searchPlaceholder={tr(S.searchRatePlan, locale)}
-                    isFiltered={isFiltered}
-                    onReset={() => {
-                        setSearch('')
-                        setStatusFilter('all')
-                    }}
-                    resetLabel={tr(S.reset, locale)}
-                >
-                    <FilterSelect
-                        label={tr(S.colStatus, locale)}
-                        value={statusFilter}
-                        onChange={setStatusFilter}
-                        options={STATUS_FILTERS.map((f) => ({ value: f.value, label: f[locale] }))}
-                    />
-                </Toolbar>
-
-                <DataTable<RatePlan>
-                    {...tableProps}
+            {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều
+                cao là ưu tiên số 1 cho màn lễ tân/quản lý dùng hằng ngày. */}
+            <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">
+                <DataGrid<RatePlan>
                     caption={tr(S.ratePlansTitle, locale)}
-                    pagination={{
-                        ...tableProps.pagination,
-                        prevLabel: tr(S.paginationPrev, locale),
-                        nextLabel: tr(S.paginationNext, locale),
-                        pageSizeLabel: tr(S.paginationPageSize, locale),
-                        summaryText: (a, b, c) =>
-                            `${tr(S.paginationSummary, locale)} ${a}–${b} / ${c} ${tr(S.ratePlansCount, locale)}`,
-                    }}
-                    empty={tr(S.emptyRatePlans, locale)}
+                    columns={columns}
+                    rows={filtered}
+                    rowKey={(plan) => plan.id}
+                    empty={
+                        <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                            {tr(S.emptyRatePlans, locale)}
+                        </div>
+                    }
                 />
             </div>
 
@@ -411,7 +427,7 @@ function RatePlansScreen() {
                         </>
                     }
                 >
-                    <div className="space-y-3 text-xs">
+                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
                         {!editing && (
                             <Field
                                 fieldId="plan-field-id"
@@ -488,11 +504,11 @@ function RatePlansScreen() {
                         />
 
                         {draft.refundable && (
-                            <fieldset className="border border-slate-200 rounded p-2.5 space-y-2">
-                                <legend className="px-1 text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                            <fieldset className="border border-[var(--cms-border)] rounded-[var(--cms-radius)] p-2.5 space-y-2">
+                                <legend className="px-1 text-[length:var(--cms-text-meta)] font-semibold text-[var(--cms-text-muted)] uppercase tracking-wider">
                                     {tr(S.refundTiers, locale)}
                                 </legend>
-                                <p className="text-[11px] text-slate-500 m-0 leading-relaxed">
+                                <p className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] m-0 leading-relaxed">
                                     {tr(S.refundTiersHint, locale)}
                                 </p>
 
@@ -529,7 +545,7 @@ function RatePlansScreen() {
                                     <p
                                         role="alert"
                                         aria-live="polite"
-                                        className="text-[11px] text-rose-600 font-medium m-0"
+                                        className="text-[length:var(--cms-text-meta)] text-[var(--cms-tone-rose)] font-medium m-0"
                                     >
                                         {maybe(errorOf(errors, 'cancellationRules'), locale)}
                                     </p>
@@ -543,7 +559,7 @@ function RatePlansScreen() {
                             onChange={(e) => setDraft({ ...draft, active: e.target.checked })}
                         />
 
-                        <div className="flex items-center gap-2 p-2 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-600">
+                        <div className="flex items-center gap-2 p-2 bg-[var(--cms-bg-subtle)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                             <CheckCircleIcon size={14} />
                             <span>{tr(S.ratePlanEngineNote, locale)}</span>
                         </div>
