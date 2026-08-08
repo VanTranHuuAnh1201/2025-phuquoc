@@ -31,7 +31,7 @@ import { useBookingStore } from '@/stores/booking.store'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useRoomTypes } from '@/stores/useCatalog'
 import { todayKey } from '@/stores/demo-data'
-import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
+import { AlertTriangleIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from '@/components/icons'
 import { S, tr } from '@/strings'
 
 /** Khoảng ngày hiển thị — bộ chọn, KHÔNG hard-code (§6.8 mục 1, AC-13). */
@@ -67,6 +67,28 @@ function InventoryScreen() {
 
     const current = editing ? inventory[inventoryKey(editing.roomTypeId, editing.date)] : undefined
 
+    // Hàng TỔNG mỗi ngày (yêu cầu chủ dự án): cộng dồn `free` của MỌI hạng
+    // phòng cho từng ngày — lễ tân nhìn một dòng là biết ngày nào toàn khu
+    // đang căng, không phải dò từng ô trong 20 hạng phòng. Cùng ngưỡng tone
+    // với ô thường (0 = hết, ≤2 = sắp hết) nhưng tính trên TỔNG, không phải
+    // trên một hạng — vì "còn 2 phòng loại A" không đáng lo bằng "cả khu chỉ
+    // còn 2 phòng bất kỳ loại nào".
+    const dailyTotals = useMemo(
+        () =>
+            dates.map((date) => {
+                const free = rooms.reduce((sum, room) => {
+                    const inv = inventory[inventoryKey(room.id, date)]
+                    return sum + (inv ? availableUnits(inv) : 0)
+                }, 0)
+                const total = rooms.reduce((sum, room) => {
+                    const inv = inventory[inventoryKey(room.id, date)]
+                    return sum + (inv?.totalUnits ?? 0)
+                }, 0)
+                return { date, free, total }
+            }),
+        [dates, rooms, inventory],
+    )
+
     return (
         <div className="flex-1 flex flex-col min-h-0 bg-[var(--cms-bg)]">
             {/* Hàng 1: tiêu đề trái + cụm điều hướng khoảng ngày phải — đúng bố
@@ -101,7 +123,7 @@ function InventoryScreen() {
                             <button
                                 type="button"
                                 onClick={() => setOffset(offset + rangeLength)}
-                                className="flex min-w-[24px] min-h-[24px] items-center justify-center rounded-[var(--cms-radius-sm)] p-1 transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--cms-accent)]"
+                                className="flex min-w-[24px] min-h-[24px] items-center justify-center rounded-[var(--cms-radius-sm)] p-1 transition-colors hover:bg-[var(--cms-bg-subtle)] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[var(--cms-accent)]"
                                 aria-label={tr(S.nextRange, locale)}
                             >
                                 <ChevronRightIcon size={16} />
@@ -120,6 +142,26 @@ function InventoryScreen() {
                     </>
                 }
             />
+
+            {/* Hàng 2: CHÚ GIẢI đưa lên đầu, cạnh bộ lọc — không còn nằm cuối
+                trang ngoài vùng đọc. Cùng hàng cũng nói rõ luật tương tác
+                ("bấm ô để sửa") để người xem lần đầu không phải đoán. */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                <DotBadge tone="rose" label={tr(S.soldOutShort, locale)} />
+                <DotBadge tone="amber" label={pick({ vi: 'Sắp hết (≤2)', en: 'Low (≤2)' }, locale)} />
+                <DotBadge tone="emerald" label={tr(S.inventoryLegendPlenty, locale)} />
+                <span className="flex items-center gap-1.5">
+                    <span
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 rounded-[3px] border-2 border-[var(--cms-accent)]"
+                    />
+                    {tr(S.inventoryPriceOverriddenTag, locale)}
+                </span>
+                <span className="flex items-center gap-1 text-[var(--cms-text-muted)]">
+                    <InfoIcon size={13} />
+                    {tr(S.inventoryClickToEditHint, locale)}
+                </span>
+            </div>
 
             {error && (
                 <div className="border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2">
@@ -193,6 +235,78 @@ function InventoryScreen() {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* HÀNG TỔNG — cố định ngay dưới header, TÁCH khỏi các
+                            hàng hạng phòng bằng viền đậm hơn + nền nhấn nhẹ, để
+                            mắt nhận ra ngay đây là dòng đọc trước tiên, không
+                            phải một hạng phòng thứ 21. Lễ tân nhìn một dòng này
+                            là biết ngay ngày nào toàn khu căng, không phải dò
+                            280 ô bên dưới. */}
+                        <tr>
+                            <th
+                                scope="row"
+                                style={{
+                                    ...bodyCell,
+                                    position: 'sticky',
+                                    left: 0,
+                                    zIndex: 1,
+                                    textAlign: 'left',
+                                    fontWeight: 700,
+                                    fontSize: 'var(--cms-text-body)',
+                                    background: 'var(--cms-bg-subtle)',
+                                    borderBottom: '2px solid var(--cms-border)',
+                                }}
+                            >
+                                {tr(S.inventoryTotalRowLabel, locale)}
+                                <div
+                                    style={{
+                                        fontWeight: 400,
+                                        fontSize: 'var(--cms-text-meta)',
+                                        color: 'var(--cms-text-muted)',
+                                    }}
+                                >
+                                    {tr(S.inventoryTotalRowHint, locale)}
+                                </div>
+                            </th>
+                            {dailyTotals.map(({ date, free, total }) => {
+                                const tone =
+                                    free === 0
+                                        ? 'var(--cms-tone-rose)'
+                                        : free <= 2
+                                          ? 'var(--cms-tone-amber)'
+                                          : 'var(--cms-tone-emerald)'
+                                return (
+                                    <td
+                                        key={date}
+                                        style={{
+                                            ...bodyCell,
+                                            background: 'var(--cms-bg-subtle)',
+                                            borderBottom: '2px solid var(--cms-border)',
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                fontSize: 16,
+                                                fontWeight: 700,
+                                                fontVariantNumeric: 'tabular-nums',
+                                                color: tone,
+                                            }}
+                                        >
+                                            {free}
+                                        </div>
+                                        <div
+                                            style={{
+                                                fontSize: 'var(--cms-text-meta)',
+                                                color: 'var(--cms-text-muted)',
+                                                fontVariantNumeric: 'tabular-nums',
+                                            }}
+                                        >
+                                            / {total} {tr(S.inventoryFreeUnitLabel, locale)}
+                                        </div>
+                                    </td>
+                                )
+                            })}
+                        </tr>
+
                         {rooms.map((room) => (
                             <tr key={room.id}>
                                 <th
@@ -224,6 +338,7 @@ function InventoryScreen() {
                                 {dates.map((date) => {
                                     const inv = inventory[inventoryKey(room.id, date)]
                                     const free = inv ? availableUnits(inv) : 0
+                                    const total = inv?.totalUnits ?? 0
                                     const price = calculateNightlyPrice({
                                         date,
                                         basePrice: room.price,
@@ -234,12 +349,38 @@ function InventoryScreen() {
                                     // Tone đổi sang hệ --cms-tone-* (cùng bộ DotBadge
                                     // dùng ở dashboard) — ngưỡng nghiệp vụ free===0 /
                                     // free<=2 giữ nguyên, không đụng (booking-domain).
+                                    // Thêm nhánh "còn nhiều" (emerald) — trước đây ô
+                                    // an toàn không có tone nào, người xem không phân
+                                    // biệt được "đã kiểm tra, ổn" với "chưa có dữ liệu".
                                     const tone =
                                         free === 0
                                             ? { bg: 'var(--cms-tone-rose-bg)', fg: 'var(--cms-tone-rose)' }
                                             : free <= 2
                                               ? { bg: 'var(--cms-tone-amber-bg)', fg: 'var(--cms-tone-amber)' }
-                                              : { bg: 'transparent', fg: 'var(--cms-text)' }
+                                              : { bg: 'var(--cms-tone-emerald-bg)', fg: 'var(--cms-tone-emerald)' }
+
+                                    const statusLabel =
+                                        free === 0
+                                            ? tr(S.soldOutShort, locale)
+                                            : free <= 2
+                                              ? tr(S.lowStockShort, locale)
+                                              : tr(S.inventoryLegendPlenty, locale)
+
+                                    // Tooltip gộp mọi cờ phụ (CTA/min-nights) — dấu
+                                    // hiệu trong ô chỉ còn một ký hiệu nhỏ, chi tiết
+                                    // đầy đủ đọc được qua `title` khi rê chuột/focus.
+                                    const flagParts: string[] = []
+                                    if (inv?.closedToArrival) {
+                                        flagParts.push(tr(S.inventoryClosedArrivalTooltip, locale))
+                                    }
+                                    if (inv?.minNights) {
+                                        flagParts.push(
+                                            pick(S.inventoryMinNightsTooltip, locale).replace(
+                                                '{n}',
+                                                String(inv.minNights),
+                                            ),
+                                        )
+                                    }
 
                                     return (
                                         <td key={date} style={{ ...bodyCell, padding: 2 }}>
@@ -249,12 +390,13 @@ function InventoryScreen() {
                                                     setError(null)
                                                     setEditing({ roomTypeId: room.id, date })
                                                 }}
-                                                aria-label={`${pick(room.name, locale)} ${date}: ${free}/${inv?.totalUnits ?? 0}`}
+                                                aria-label={`${pick(room.name, locale)} ${date}: ${free}/${total} ${statusLabel}`}
+                                                title={flagParts.length ? flagParts.join(' · ') : undefined}
                                                 style={{
                                                     width: '100%',
                                                     padding: 6,
                                                     display: 'grid',
-                                                    gap: 2,
+                                                    gap: 1,
                                                     background: tone.bg,
                                                     border: `1px solid ${
                                                         inv?.priceOverride !== undefined
@@ -266,39 +408,40 @@ function InventoryScreen() {
                                                     color: tone.fg,
                                                 }}
                                             >
+                                                {/* SỐ PHÒNG TRỐNG là thông tin CHÍNH — to,
+                                                    đậm, kèm nhãn trạng thái bằng chữ (D4:
+                                                    không chỉ dựa vào màu). Giá chuyển xuống
+                                                    hàng phụ, nhỏ và nhạt hơn hẳn. */}
                                                 <span
                                                     style={{
-                                                        fontSize: 'var(--cms-text-meta)',
-                                                        fontWeight: 700,
-                                                        fontVariantNumeric: 'tabular-nums',
+                                                        display: 'flex',
+                                                        alignItems: 'baseline',
+                                                        justifyContent: 'center',
+                                                        gap: 3,
                                                     }}
                                                 >
-                                                    {free}/{inv?.totalUnits ?? 0}
+                                                    <span
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 700,
+                                                            fontVariantNumeric: 'tabular-nums',
+                                                        }}
+                                                    >
+                                                        {free}
+                                                    </span>
+                                                    <span
+                                                        style={{
+                                                            fontSize: 'var(--cms-text-meta)',
+                                                            fontWeight: 400,
+                                                            opacity: 0.75,
+                                                        }}
+                                                    >
+                                                        /{total}
+                                                    </span>
                                                 </span>
-                                                {/* Màu KÈM CHỮ — bật grayscale(1) vẫn phân
-                                                    biệt được ô hết phòng (luật D4, AC-14). */}
-                                                {free === 0 && (
-                                                    <span
-                                                        style={{
-                                                            fontSize: 9,
-                                                            fontWeight: 700,
-                                                            color: 'var(--cms-tone-rose)',
-                                                        }}
-                                                    >
-                                                        {tr(S.soldOutShort, locale)}
-                                                    </span>
-                                                )}
-                                                {free > 0 && free <= 2 && (
-                                                    <span
-                                                        style={{
-                                                            fontSize: 9,
-                                                            fontWeight: 700,
-                                                            color: 'var(--cms-tone-amber)',
-                                                        }}
-                                                    >
-                                                        {tr(S.lowStockShort, locale)}
-                                                    </span>
-                                                )}
+                                                <span style={{ fontSize: 9, fontWeight: 700 }}>
+                                                    {statusLabel}
+                                                </span>
                                                 <span
                                                     style={{
                                                         fontSize: 10,
@@ -308,14 +451,21 @@ function InventoryScreen() {
                                                 >
                                                     {Math.round(price / 1000)}k
                                                 </span>
-                                                {inv?.closedToArrival && (
-                                                    <span style={{ fontSize: 9, color: 'var(--cms-tone-rose)' }}>
-                                                        CTA
-                                                    </span>
-                                                )}
-                                                {inv?.minNights && (
-                                                    <span style={{ fontSize: 9, color: 'var(--cms-tone-blue)' }}>
-                                                        ≥{inv.minNights}
+                                                {/* Cờ phụ rút gọn thành 1 hàng ký hiệu nhỏ,
+                                                    chi tiết đầy đủ nằm trong `title` — không
+                                                    còn chiếm một dòng riêng "≥N" không nhãn
+                                                    như bản cũ. */}
+                                                {flagParts.length > 0 && (
+                                                    <span
+                                                        aria-hidden="true"
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            gap: 3,
+                                                            color: 'var(--cms-tone-blue)',
+                                                        }}
+                                                    >
+                                                        <AlertTriangleIcon size={11} />
                                                     </span>
                                                 )}
                                             </button>
@@ -327,8 +477,6 @@ function InventoryScreen() {
                     </tbody>
                 </table>
             </div>
-
-            <Legend />
 
             {editing && current && (
                 <EditCellDialog
@@ -354,28 +502,6 @@ function InventoryScreen() {
                     }}
                 />
             )}
-        </div>
-    )
-}
-
-function Legend() {
-    const { locale } = useLocale()
-    return (
-        <div className="flex flex-wrap items-center gap-4 border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-2 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
-            {/* Hai tone hết phòng/sắp hết tái dùng thẳng DotBadge — cùng
-                component dashboard đang dùng cho badge trạng thái đơn, thay vì
-                tự vẽ lại ô vuông màu. */}
-            <DotBadge tone="rose" label={tr(S.soldOutShort, locale)} />
-            <DotBadge tone="amber" label={pick({ vi: 'Sắp hết (≤2)', en: 'Low (≤2)' }, locale)} />
-            <span className="flex items-center gap-2">
-                <span
-                    aria-hidden="true"
-                    className="h-3.5 w-3.5 rounded-[3px] border-2 border-[var(--cms-accent)]"
-                />
-                {pick({ vi: 'Đã đè giá', en: 'Price overridden' }, locale)}
-            </span>
-            <span>CTA = {pick({ vi: 'cấm nhận phòng', en: 'closed to arrival' }, locale)}</span>
-            <span>≥N = {pick({ vi: 'số đêm tối thiểu', en: 'minimum nights' }, locale)}</span>
         </div>
     )
 }

@@ -740,6 +740,25 @@ export const S = {
         'Read-only — your account cannot edit prices.',
     ),
 
+    // lịch tồn kho — thiết kế lại (chú giải đầu trang, hàng tổng, ô tự giải thích)
+    inventoryLegendPlenty: t('Còn nhiều', 'Plenty'),
+    inventoryTotalRowLabel: t('Tổng còn trống', 'Total available'),
+    inventoryTotalRowHint: t(
+        'Tổng số phòng còn trống mỗi ngày, cộng tất cả hạng phòng',
+        'Total rooms available per day, summed across all room types',
+    ),
+    inventoryFreeUnitLabel: t('phòng trống', 'rooms free'),
+    inventoryPriceOverriddenTag: t('Đè giá', 'Overridden'),
+    inventoryMinNightsTooltip: t(
+        'Yêu cầu ở tối thiểu {n} đêm',
+        'Requires a minimum stay of {n} nights',
+    ),
+    inventoryClosedArrivalTooltip: t('Cấm nhận phòng ngày này', 'Closed to arrival this day'),
+    inventoryClickToEditHint: t(
+        'Bấm vào ô để sửa giá, khoá phòng hoặc số đêm tối thiểu',
+        'Click a cell to edit price, block rooms, or set minimum nights',
+    ),
+
     // ticket sự cố (100-05)
     ticketsTitle: t('Ticket Sự cố & Bảo trì', 'Incident & Maintenance Tickets'),
     ticketsCount: t('ticket', 'tickets'),
