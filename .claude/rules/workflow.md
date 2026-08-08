@@ -197,8 +197,14 @@ Một lượt yêu cầu coi là xong khi:
 - [ ] Chuỗi vai trò đã chạy đủ, không bỏ bước
 - [ ] `ndh-qc` đã ký hoặc đã ghi rõ FAIL kèm lý do
 - [ ] `OVERVIEW.md §7` khớp với thư mục thật
+- [ ] **`API_INTEGRATION_MAP.md` đã cập nhật** nếu lượt này chạm `app/api/**`,
+      `src/stores/**`, hay bất kỳ `fetch('/api/…')` nào
+      (luật [api-integration-map.md](./api-integration-map.md))
 - [ ] Báo cáo cuối theo mẫu W5
 - [ ] Nếu có FAIL sau 2 vòng sửa → đã phân tích nguyên nhân, không im lặng
+
+⚠️ **`ndh-qc` KHÔNG ký `done/`** cho ticket có nối API mà bản đồ chưa cập nhật —
+đây là tiêu chí DoD, không phải việc dọn dẹp làm sau.
 
 ---
 

@@ -5,6 +5,11 @@
 
 Luật chung: [common.md](./common.md) · Nghiệp vụ: [booking-domain.md](./booking-domain.md)
 
+> ⚠️ **Thêm/sửa/xoá bất kỳ Route Handler nào → cập nhật
+> [`API_INTEGRATION_MAP.md`](../../apps/2026-thenamduhill/handover/tasks/release-v1.0.0/API_INTEGRATION_MAP.md)
+> trong CÙNG thay đổi** (luật [api-integration-map.md](./api-integration-map.md)).
+> Ghi cột `BE` là `done` chỉ khi đã gọi thử thật — build xanh không phải bằng chứng.
+
 ---
 
 ## BE1 — Hợp đồng API cố định

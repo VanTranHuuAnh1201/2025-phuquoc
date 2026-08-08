@@ -20,6 +20,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | Luồng màn hình client & CMS | [`.claude/rules/app-flows.md`](.claude/rules/app-flows.md) |
 | Token thiết kế | [`.claude/rules/design-tokens.md`](.claude/rules/design-tokens.md) |
 | Cổng chất lượng thiết kế P0–P15 | [`.claude/rules/premium-quality-gate.md`](.claude/rules/premium-quality-gate.md) |
+| **Bản đồ API FE↔BE — bắt buộc cập nhật** | [`.claude/rules/api-integration-map.md`](.claude/rules/api-integration-map.md) |
+
+> ⚠️ **Chạm `app/api/**`, `src/stores/**`, hay bất kỳ `fetch('/api/…')` nào →
+> BẮT BUỘC cập nhật [`API_INTEGRATION_MAP.md`](apps/2026-thenamduhill/handover/tasks/release-v1.0.0/API_INTEGRATION_MAP.md)
+> trong CÙNG thay đổi.** Đây là cầu nối FE↔BE: mỗi API có hai cột trạng thái
+> riêng (Backend `done/process/error` · FE integration `done/process/error`),
+> nhìn là biết module nào còn lỗi. Luật đầy đủ ở `api-integration-map.md`.
 
 ### Agent theo vai trò — dự án Nam Du Hill
 

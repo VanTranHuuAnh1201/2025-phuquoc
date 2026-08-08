@@ -6,6 +6,12 @@
 Luật chung: [common.md](./common.md) · Token: [design-tokens.md](./design-tokens.md) ·
 Cổng chất lượng: [premium-quality-gate.md](./premium-quality-gate.md)
 
+> ⚠️ **Nối một màn vào API (hoặc gỡ ra) → cập nhật
+> [`API_INTEGRATION_MAP.md`](../../apps/2026-thenamduhill/handover/tasks/release-v1.0.0/API_INTEGRATION_MAP.md)
+> trong CÙNG thay đổi** (luật [api-integration-map.md](./api-integration-map.md)).
+> Màn còn đọc store cục bộ ghi cột `FE` là `error`, **không phải** `done` — chạy
+> được trên máy đang mở mà dữ liệu không lên server thì đó là lỗi.
+
 ---
 
 ## FE1 — Bảy trạng thái, không thiếu cái nào

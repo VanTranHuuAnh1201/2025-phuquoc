@@ -68,3 +68,12 @@ e2e-out/
 playwright-report/
 test-results/
 .gstack/
+
+# Ảnh do admin tải lên qua CMS (`POST /api/admin/upload`) — nội dung vận hành,
+# không phải mã nguồn. Chỉ loại file `.webp` vì route upload luôn xuất WebP;
+# 22 ảnh seed sẵn có (`.jpg`/`.png`) vẫn được commit như trước.
+#
+# ⚠️ NHẮC LẠI giới hạn đã ghi trong route: filesystem của Vercel là ephemeral,
+# ảnh tải lên MẤT sau mỗi lần deploy. Chỉ dùng cho dev/demo — lên production
+# phải đổi `persist()` sang Supabase Storage hoặc Vercel Blob.
+apps/*/public/uploads/*.webp
