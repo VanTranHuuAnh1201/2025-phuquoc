@@ -238,13 +238,50 @@ export function DataTable<T>({
                 return (
                   <tr
                     key={key}
-                    onClick={onRowClick ? () => onRowClick(row, index) : undefined}
+                    data-row-key={key}
+                    onClick={
+                      onRowClick
+                        ? (e) => {
+                            // Focus tường minh vào hàng vừa bấm — click chuột vào
+                            // `<tr>` không tự set `document.activeElement` như click
+                            // vào `<button>`. Modal đọc `document.activeElement` lúc
+                            // mở để biết trả focus về đâu khi đóng (a11y bắt buộc,
+                            // xem `Modal.tsx`); thiếu bước này thì focus rơi mất vào
+                            // `<body>` sau khi đóng modal.
+                            e.currentTarget.focus()
+                            onRowClick(row, index)
+                          }
+                        : undefined
+                    }
+                    // Hàng có `onRowClick` phải bấm được bằng bàn phím (Enter/Space),
+                    // không chỉ bằng chuột — nếu không thì hành động mở modal/điều
+                    // hướng chỉ tới được bằng chuột, vi phạm FE11 "điều hướng bàn
+                    // phím đầy đủ". `tabIndex=0` đưa hàng vào thứ tự Tab; `role="button"`
+                    // báo cho screen reader đây là phần tử tương tác, không phải hàng
+                    // dữ liệu thuần.
+                    tabIndex={onRowClick ? 0 : undefined}
+                    role={onRowClick ? 'button' : undefined}
+                    // `rowLabel` phục vụ hai vai trò tuỳ ngữ cảnh: aria-label của
+                    // checkbox khi `selectable`, aria-label của CHÍNH hàng khi hàng
+                    // tự nó là nút bấm (`onRowClick` không đi kèm `selectable`).
+                    // Không đọc chỉ số cột đầu tiên làm tên hàng — dữ liệu bảng nào
+                    // cũng khác nhau, phải để nơi gọi tự đặt câu.
+                    aria-label={onRowClick && !selectable ? rowLabel?.(row) : undefined}
+                    onKeyDown={
+                      onRowClick
+                        ? (e) => {
+                            if (e.key !== 'Enter' && e.key !== ' ') return
+                            e.preventDefault()
+                            onRowClick(row, index)
+                          }
+                        : undefined
+                    }
                     style={{
                       borderBottom: '1px solid var(--border, #E2E8F0)',
                       cursor: onRowClick ? 'pointer' : undefined,
                       background: isSelected ? 'var(--surface-selected, #F1F5F9)' : undefined,
                     }}
-                    className="dt-row hover:bg-slate-50/70 transition-colors"
+                    className={`dt-row hover:bg-slate-50/70 transition-colors${onRowClick ? ' focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--brand)]' : ''}`}
                   >
                     {selectable && (
                       <td
@@ -294,8 +331,28 @@ export function DataTable<T>({
             return (
               <div
                 key={key}
-                onClick={onRowClick ? () => onRowClick(row, index) : undefined}
-                className={`p-4 border-b border-slate-200 transition-colors ${
+                data-row-key={key}
+                onClick={
+                  onRowClick
+                    ? (e) => {
+                        e.currentTarget.focus()
+                        onRowClick(row, index)
+                      }
+                    : undefined
+                }
+                tabIndex={onRowClick ? 0 : undefined}
+                role={onRowClick ? 'button' : undefined}
+                aria-label={onRowClick && !selectable ? rowLabel?.(row) : undefined}
+                onKeyDown={
+                  onRowClick
+                    ? (e) => {
+                        if (e.key !== 'Enter' && e.key !== ' ') return
+                        e.preventDefault()
+                        onRowClick(row, index)
+                      }
+                    : undefined
+                }
+                className={`p-4 border-b border-slate-200 transition-colors${onRowClick ? ' cursor-pointer hover:bg-slate-50/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--brand)]' : ''} ${
                   isSelected ? 'bg-slate-50' : ''
                 }`}
               >

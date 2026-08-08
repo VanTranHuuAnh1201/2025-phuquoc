@@ -19,15 +19,17 @@
  */
 
 import { useMemo, useState } from 'react'
-import { formatPrice, pick } from '@repo/core'
-import type { Customer } from '@repo/core'
+import Link from 'next/link'
+import { formatPrice, getPropertySync, pick } from '@repo/core'
+import type { Booking, Customer } from '@repo/core'
 import type { Column } from '@repo/ui'
+import { Modal } from '@repo/ui'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
-import { MenuIcon } from '@/components/icons'
-import { S, tr } from '@/strings'
+import { EyeIcon, MenuIcon } from '@/components/icons'
+import { S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
 
 /** Khoá `localStorage` riêng cho màn khách hàng — mỗi màn CMS nhớ trạng thái
  *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
@@ -36,12 +38,23 @@ const METRICS_COLLAPSED_KEY = 'namduhill-cms-customers-metrics-collapsed'
 export default function CustomersPage() {
     const { locale } = useLocale()
     const { customers, bookings } = useBookingsData()
+    const property = getPropertySync()
 
     const [search, setSearch] = useState('')
     const [tierFilter, setTierFilter] = useState('all')
     const [page, setPage] = useState(1)
     const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
+    // Khách đang mở modal lịch sử — `null` = đóng. Giữ NGUYÊN đối tượng `Customer`
+    // (không chỉ id) để modal không phải tra lại `customers` mỗi lần render.
+    const [historyCustomer, setHistoryCustomer] = useState<Customer | null>(null)
     const PAGE_SIZE = 10
+
+    // Tra tên hạng phòng từ id — cùng khuôn `roomName()` đã dùng ở
+    // `orders/page.tsx`, không tạo cách tra thứ hai cho cùng một dữ liệu (R12).
+    const roomName = (id: string) => {
+        const room = property.rooms.find((r) => r.id === id)
+        return room ? pick(room.name, locale) : id
+    }
 
     const rows = useMemo(() => {
         const needle = search.trim().toLowerCase()
@@ -67,10 +80,42 @@ export default function CustomersPage() {
     const returning = customers.filter((c) => c.stayCount > 1).length
     const vipCount = customers.filter((c) => c.totalSpent >= 10000000).length
     const totalRevenue = customers.reduce((sum, c) => sum + c.totalSpent, 0)
-    const avgSpent = customers.length > 0 ? totalRevenue / customers.length : 0
+    // BUG ĐÃ SỬA: "2.480.600,967đ" — số ĐÚNG (74.418.029 / 30 = 2.480.600,97),
+    // chỉ SAI ĐỊNH DẠNG. `formatPrice()` gọi `toLocaleString('vi-VN')`, hàm này
+    // không tự làm tròn — phép chia còn phần thập phân bị in thẳng ra thành cụm
+    // 3 chữ số sau dấu phẩy (",967"), nhìn giống một số khác hẳn và bị đọc nhầm
+    // là "lớn hơn tổng chi tiêu". Tiền VNĐ là số nguyên (luật C6: không FLOAT),
+    // nên làm tròn TRƯỚC khi đưa vào `formatPrice`, không sửa ở `formatPrice`
+    // (hàm dùng chung, các nơi gọi khác luôn truyền số nguyên sẵn).
+    const avgSpent = customers.length > 0 ? Math.round(totalRevenue / customers.length) : 0
 
     const bookingCount = (customerId: string) =>
         bookings.filter((b) => b.customerId === customerId).length
+
+    // Phân hạng khách — MỘT hàm duy nhất dùng cả ở cột bảng lẫn header modal
+    // (R12: một khái niệm, một nhà). Ngưỡng đã chốt ở booking-domain §B0: VIP
+    // >= 10tr, Quay lại = đã ở > 1 lần, còn lại là Khách mới. Không đụng.
+    const tierBadge = (c: Customer) => {
+        if (c.totalSpent >= 10000000) {
+            return <DotBadge tone="amber" label={tr(S.customersBadgeVip, locale)} width={108} />
+        }
+        if (c.stayCount > 1) {
+            return <DotBadge tone="emerald" label={tr(S.customersBadgeReturning, locale)} width={108} />
+        }
+        return <DotBadge tone="slate" label={tr(S.customersBadgeNew, locale)} width={108} />
+    }
+
+    // Đơn của đúng khách đang mở modal — LỌC theo `customerId`, không bịa dữ
+    // liệu. Mới nhất lên trước để "lần gần nhất" luôn là phần tử đầu.
+    const historyBookings: Booking[] = useMemo(() => {
+        if (!historyCustomer) return []
+        return bookings
+            .filter((b) => b.customerId === historyCustomer.id)
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    }, [bookings, historyCustomer])
+
+    const historyNights = historyBookings.reduce((sum, b) => sum + b.nights, 0)
+    const lastVisit = historyBookings[0]?.checkIn
 
     const resetFilters = () => {
         setSearch('')
@@ -134,17 +179,7 @@ export default function CustomersPage() {
             key: 'tier',
             header: tr(S.customersColTier, locale),
             width: '130px',
-            cell: (c) => {
-                // Ngưỡng phân hạng đã chốt ở booking-domain §B0: VIP >= 10tr,
-                // Quay lại = đã ở > 1 lần, còn lại là Khách mới. Không đụng.
-                if (c.totalSpent >= 10000000) {
-                    return <DotBadge tone="amber" label={tr(S.customersBadgeVip, locale)} width={108} />
-                }
-                if (c.stayCount > 1) {
-                    return <DotBadge tone="emerald" label={tr(S.customersBadgeReturning, locale)} width={108} />
-                }
-                return <DotBadge tone="slate" label={tr(S.customersBadgeNew, locale)} width={108} />
-            },
+            cell: (c) => tierBadge(c),
         },
         {
             key: 'bookings',
@@ -301,6 +336,8 @@ export default function CustomersPage() {
                         columns={columns}
                         rows={pageRows}
                         rowKey={(c) => c.id}
+                        onRowClick={(c) => setHistoryCustomer(c)}
+                        rowLabel={(c) => `${tr(S.customersRowViewHistoryAria, locale)} ${c.fullName}`}
                         empty={
                             <div className="h-full flex items-center justify-center text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                                 {tr(search ? S.customersEmptySearch : S.customersEmptyAll, locale)}
@@ -345,6 +382,151 @@ export default function CustomersPage() {
                     </div>
                 )}
             </div>
+
+            {/* MODAL LỊCH SỬ KHÁCH — mở khi bấm một dòng trong bảng. `Modal`
+                của `@repo/ui` đã tự lo Esc + click nền + focus trap + trả focus
+                về phần tử đã mở nó (xem `Modal.tsx`); ở đây chỉ đưa nội dung. */}
+            <Modal
+                open={historyCustomer !== null}
+                onClose={() => setHistoryCustomer(null)}
+                title={historyCustomer?.fullName ?? ''}
+                description={
+                    historyCustomer && (
+                        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span>{historyCustomer.phone}</span>
+                            {historyCustomer.email && (
+                                <>
+                                    <span aria-hidden="true">·</span>
+                                    <span>{historyCustomer.email}</span>
+                                </>
+                            )}
+                        </span>
+                    )
+                }
+                width={720}
+            >
+                {historyCustomer && (
+                    <div className="flex flex-col gap-4">
+                        {/* Badge phân hạng — tách khỏi header của Modal vì `title`/
+                            `description` chỉ nhận text/inline, đặt ngay dưới cho rõ. */}
+                        <div>{tierBadge(historyCustomer)}</div>
+
+                        {/* Số liệu tóm tắt — 4 ô, cùng khuôn KpiCard/MetricStrip đã
+                            dùng ở toàn CMS thay vì tự vẽ card mới (P0 — một hệ
+                            thống, không phải mỗi màn một kiểu số liệu). */}
+                        <MetricStrip>
+                            <KpiCard
+                                label={tr(S.customersHistoryBookingsSummary, locale)}
+                                value={`${historyBookings.length}`}
+                                tone="slate"
+                            />
+                            <KpiCard
+                                label={tr(S.customersHistoryNightsSummary, locale)}
+                                value={`${historyNights}`}
+                                tone="slate"
+                            />
+                            <KpiCard
+                                label={tr(S.customersHistorySpentSummary, locale)}
+                                value={formatPrice(historyCustomer.totalSpent, locale)}
+                                tone="slate"
+                            />
+                            <KpiCard
+                                label={tr(S.customersHistoryLastVisit, locale)}
+                                value={lastVisit ?? tr(S.customersHistoryLastVisitNever, locale)}
+                                tone="slate"
+                            />
+                        </MetricStrip>
+
+                        {/* Bảng lịch sử đơn — LỌC theo đúng khách này (`historyBookings`
+                            ở trên), không có dữ liệu bịa. Dùng lại cùng cột
+                            hạng phòng/trạng thái với `/admin/orders` để nhất quán
+                            cách đọc trên toàn CMS (R12). */}
+                        <div>
+                            <h3 className="mb-2 text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)]">
+                                {tr(S.customersHistoryTableTitle, locale)}
+                            </h3>
+                            <div className="border border-[var(--cms-border)]">
+                                <DataGrid<Booking>
+                                    caption={tr(S.customersHistoryTableTitle, locale)}
+                                    rows={historyBookings}
+                                    rowKey={(b) => b.id}
+                                    empty={
+                                        <div className="py-6 text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                                            {tr(S.customersHistoryEmpty, locale)}
+                                        </div>
+                                    }
+                                    columns={[
+                                        {
+                                            key: 'code',
+                                            header: tr(S.customersHistoryColCode, locale),
+                                            cell: (b) => (
+                                                <Link
+                                                    href={`/admin/orders/${b.id}`}
+                                                    aria-label={`${tr(S.customersHistoryViewOrderAria, locale)} ${b.code}`}
+                                                    className="inline-flex items-center gap-1 font-semibold text-[var(--cms-accent)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                                                >
+                                                    <EyeIcon size={14} />
+                                                    {b.code}
+                                                </Link>
+                                            ),
+                                        },
+                                        {
+                                            key: 'room',
+                                            header: tr(S.customersHistoryColRoom, locale),
+                                            cell: (b) => (
+                                                <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text)]">
+                                                    {roomName(b.roomTypeId)}
+                                                </span>
+                                            ),
+                                        },
+                                        {
+                                            key: 'dates',
+                                            header: tr(S.customersHistoryColDates, locale),
+                                            cell: (b) => (
+                                                <span className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] tabular-nums">
+                                                    {b.checkIn} → {b.checkOut}
+                                                </span>
+                                            ),
+                                        },
+                                        {
+                                            key: 'nights',
+                                            header: tr(S.customersHistoryColNights, locale),
+                                            align: 'right',
+                                            width: '70px',
+                                            cell: (b) => (
+                                                <span className="tabular-nums text-[var(--cms-text)]">{b.nights}</span>
+                                            ),
+                                        },
+                                        {
+                                            key: 'total',
+                                            header: tr(S.customersHistoryColTotal, locale),
+                                            align: 'right',
+                                            width: '130px',
+                                            cell: (b) => (
+                                                <span className="font-semibold tabular-nums text-[var(--cms-text)]">
+                                                    {formatPrice(b.totalAmount, locale)}
+                                                </span>
+                                            ),
+                                        },
+                                        {
+                                            key: 'status',
+                                            header: tr(S.customersHistoryColStatus, locale),
+                                            width: '120px',
+                                            cell: (b) => (
+                                                <DotBadge
+                                                    tone={STATUS_CMS_TONE[b.status]}
+                                                    label={tr(STATUS_LABEL[b.status], locale)}
+                                                    width={104}
+                                                />
+                                            ),
+                                        },
+                                    ]}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     )
 }

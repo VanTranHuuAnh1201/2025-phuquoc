@@ -252,6 +252,31 @@ export const S = {
     customersKpiAvgSpent: t('CHI TIÊU TB / KHÁCH', 'AVG SPEND / GUEST'),
     customersEmptySearch: t('Không tìm thấy khách nào.', 'No guests found.'),
     customersEmptyAll: t('Chưa có khách hàng nào.', 'No guests yet.'),
+
+    // ---- Modal lịch sử khách (click một dòng ở bảng CRM) ----
+    customersHistoryTitle: t('Lịch sử khách hàng', 'Guest history'),
+    customersHistoryBookingsSummary: t('Tổng số đơn', 'Total bookings'),
+    customersHistoryNightsSummary: t('Tổng đêm đã ở', 'Total nights stayed'),
+    customersHistorySpentSummary: t('Tổng chi tiêu', 'Total spent'),
+    customersHistoryLastVisit: t('Lần gần nhất', 'Last visit'),
+    customersHistoryLastVisitNever: t('Chưa từng đặt', 'Never booked'),
+    customersHistoryTableTitle: t('Lịch sử đơn', 'Booking history'),
+    customersHistoryColCode: t('MÃ ĐƠN', 'BOOKING CODE'),
+    customersHistoryColRoom: t('HẠNG PHÒNG', 'ROOM TYPE'),
+    customersHistoryColDates: t('NHẬN–TRẢ', 'CHECK-IN–OUT'),
+    customersHistoryColNights: t('SỐ ĐÊM', 'NIGHTS'),
+    customersHistoryColTotal: t('TỔNG TIỀN', 'TOTAL'),
+    customersHistoryColStatus: t('TRẠNG THÁI', 'STATUS'),
+    customersHistoryEmpty: t(
+        'Khách này chưa có đơn nào. Đơn mới sẽ hiện tại đây ngay khi được tạo.',
+        'This guest has no bookings yet. New bookings will appear here as soon as they are created.',
+    ),
+    // Tiền tố cho aria-label động — ghép với tên khách/mã đơn tại nơi gọi,
+    // theo đúng khuôn `${tr(S.viewBookingAria, locale)} ${b.code}` đã dùng ở
+    // `orders/page.tsx`. `S` chỉ chứa `I18nText` tĩnh (khớp `satisfies`), giá
+    // trị động không khai hàm trong `S`.
+    customersRowViewHistoryAria: t('Xem lịch sử của', 'View history for'),
+    customersHistoryViewOrderAria: t('Xem đơn', 'View booking'),
     promotions: t('Khuyến mãi', 'Promotions'),
     housekeeping: t('Buồng phòng', 'Housekeeping'),
     contentMgmt: t('Nội dung', 'Content'),
