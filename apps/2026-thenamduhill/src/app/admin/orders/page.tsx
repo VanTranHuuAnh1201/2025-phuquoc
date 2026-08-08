@@ -194,14 +194,8 @@ export default function AdminOrdersPage() {
 
     const columns: Column<Booking>[] = [
         {
-            key: 'channel',
-            header: pick({ vi: 'KÊNH ĐẶT', en: 'CHANNEL' }, locale),
-            width: '160px',
-            cell: (b) => (
-                <DotBadge tone={CHANNEL_CMS_TONE[b.channel]} label={tr(CHANNEL_LABEL[b.channel], locale)} width={144} />
-            ),
-        },
-        {
+            // Chủ thể lên đầu — lễ tân tìm đơn theo TÊN KHÁCH trước, không phải
+            // theo kênh bán (metadata phân loại, đẩy xuống gần thao tác).
             key: 'code',
             header: pick({ vi: 'KHÁCH HÀNG & MÃ ĐƠN', en: 'GUEST & CODE' }, locale),
             cell: (b) => (
@@ -222,40 +216,33 @@ export default function AdminOrdersPage() {
             ),
         },
         {
+            // Hạng phòng gộp chung với số đêm (nội dung đơn) — bớt một cột
+            // riêng cho "SỐ ĐÊM", đúng tinh thần "chủ thể → nội dung → thời gian".
             key: 'room',
             header: pick({ vi: 'HẠNG PHÒNG', en: 'ROOM TYPE' }, locale),
             cell: (b) => (
-                <span className="truncate text-[length:var(--cms-text-body)] text-[var(--cms-text)]" title={roomName(b.roomTypeId)}>
-                    {roomName(b.roomTypeId)}
-                </span>
-            ),
-        },
-        {
-            key: 'nights',
-            header: pick({ vi: 'SỐ ĐÊM', en: 'NIGHTS' }, locale),
-            width: '90px',
-            align: 'center',
-            cell: (b) => (
-                <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
-                    {b.nights} {tr(S.nights, locale)}
-                </span>
+                <div className="min-w-0">
+                    <div
+                        className="truncate text-[length:var(--cms-text-body)] text-[var(--cms-text)]"
+                        title={roomName(b.roomTypeId)}
+                    >
+                        {roomName(b.roomTypeId)}
+                    </div>
+                    <div className="truncate text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                        {b.nights} {tr(S.nights, locale)}
+                    </div>
+                </div>
             ),
         },
         {
             key: 'dates',
-            header: pick({ vi: 'CHECK-IN / CHECK-OUT', en: 'DATES' }, locale),
+            header: pick({ vi: 'NHẬN – TRẢ', en: 'CHECK-IN / OUT' }, locale),
             width: '160px',
             cell: (b) => (
                 <span className="text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
                     {b.checkIn} → {b.checkOut}
                 </span>
             ),
-        },
-        {
-            key: 'status',
-            header: pick({ vi: 'TRẠNG THÁI', en: 'STATUS' }, locale),
-            width: '130px',
-            cell: (b) => <DotBadge tone={STATUS_CMS_TONE[b.status]} label={tr(STATUS_LABEL[b.status], locale)} width={116} />,
         },
         {
             key: 'total',
@@ -266,6 +253,22 @@ export default function AdminOrdersPage() {
                 <span className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)] tabular-nums">
                     {formatPrice(b.totalAmount, locale)}
                 </span>
+            ),
+        },
+        {
+            key: 'status',
+            header: pick({ vi: 'TRẠNG THÁI', en: 'STATUS' }, locale),
+            width: '130px',
+            cell: (b) => <DotBadge tone={STATUS_CMS_TONE[b.status]} label={tr(STATUS_LABEL[b.status], locale)} width={116} />,
+        },
+        {
+            // Kênh đặt là metadata phân loại — đẩy về gần cuối, ngay trước
+            // thao tác, thay vì đứng đầu bảng như trước.
+            key: 'channel',
+            header: pick({ vi: 'KÊNH', en: 'CHANNEL' }, locale),
+            width: '140px',
+            cell: (b) => (
+                <DotBadge tone={CHANNEL_CMS_TONE[b.channel]} label={tr(CHANNEL_LABEL[b.channel], locale)} width={124} />
             ),
         },
         {
