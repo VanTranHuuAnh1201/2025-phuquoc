@@ -435,7 +435,6 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             min={0}
                             max={8}
                             value={childAges.length}
-                            hint={tr(S.childrenAgeHint, locale)}
                             onChange={(e) => {
                                 const count = Math.max(0, Math.min(8, Number(e.target.value) || 0))
                                 setChildAges((prev) =>
@@ -505,7 +504,6 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            hint={tr(S.optional, locale)}
                         />
                     </div>
 
@@ -515,13 +513,11 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             type="time"
                             value={arrivalTime}
                             onChange={(e) => setArrivalTime(e.target.value)}
-                            hint={tr(S.arrivalHint, locale)}
                         />
                         <SelectField
                             label={tr(S.channel, locale)}
                             value={channel}
                             onChange={(e) => setChannel(e.target.value as Channel)}
-                            hint={tr(S.channelHint, locale)}
                             required
                         >
                             {MANUAL_CHANNELS.map((c) => (
@@ -532,15 +528,16 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                         </SelectField>
                     </div>
 
-                    {/* 130px ≈ 5 dòng: yêu cầu đặc biệt thường là một đoạn kể
-                     * (trăng mật + dị ứng + giờ tàu), 3 dòng mặc định bắt lễ
-                     * tân cuộn trong chính ô nhập khi đang gõ vội. */}
+                    {/* Gợi ý nằm trong PLACEHOLDER, không phải dòng hint riêng:
+                     * nó chỉ cho biết CÁCH viết, mà ô rỗng là lúc duy nhất cần
+                     * biết điều đó — gõ chữ đầu tiên là gợi ý hết việc. Dòng
+                     * hint thì chiếm chỗ vĩnh viễn. */}
                     <TextAreaField
                         label={tr(S.specialRequests, locale)}
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        hint={tr(S.specialRequestsHint, locale)}
-                        style={{ minHeight: 130, height: 130 }}
+                        placeholder={tr(S.specialRequestsHint, locale)}
+                        style={{ minHeight: 96, height: 96 }}
                     />
                 </div>
             </Panel>

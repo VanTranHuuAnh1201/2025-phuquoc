@@ -10,9 +10,21 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
  * hiện bằng CHỮ kèm `role="alert"`, không bao giờ chỉ đổi màu viền.
  */
 
+/**
+ * Chiều cao ô nhập và khoảng cách nhãn↔ô đi qua TOKEN, không phải số cứng.
+ *
+ * Hai bề mặt cần hai mật độ khác nhau và không thể chung một con số:
+ * trang khách dùng bằng NGÓN TAY trên điện thoại (44px là ngưỡng chạm của
+ * WCAG 2.2 §2.5.8, 40px đã là sát), còn CMS dùng bằng CHUỘT trên màn rộng và
+ * cần nhìn được nhiều trường cùng lúc — lễ tân nhập một đơn 12 trường trong
+ * lúc khách chờ máy.
+ *
+ * Mặc định giữ nguyên 40px/8px nên mọi nơi đang dùng không đổi; `[data-cms]`
+ * hạ xuống 32px/4px trong `cms-ui/tokens.css`. Một component, hai mật độ.
+ */
 const INPUT_STYLE: React.CSSProperties = {
     width: '100%',
-    height: 40,
+    height: 'var(--field-height, 40px)',
     padding: '0 var(--space-3)',
     fontSize: 'var(--text-sm)',
     fontFamily: 'var(--font-body)',
@@ -35,7 +47,7 @@ interface FieldShellProps {
 
 function FieldShell({ id, label, hint, error, required, children }: FieldShellProps) {
     return (
-        <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+        <div style={{ display: 'grid', gap: 'var(--field-gap, var(--space-2))' }}>
             <label
                 htmlFor={id}
                 style={{

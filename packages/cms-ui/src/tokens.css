@@ -153,6 +153,21 @@
     --radius: var(--cms-radius);
     --text-xs: var(--cms-text-meta);
     --text-sm: var(--cms-text-body);
+
+    /* --- MẬT ĐỘ FORM: dày hơn hẳn trang khách -------------------------------
+     * `Field` mặc định 40px cao, nhãn cách ô 8px — đúng cho trang khách vì ở
+     * đó người dùng chạm bằng NGÓN TAY trên điện thoại.
+     *
+     * CMS là bề mặt khác: chuột, màn rộng, và lễ tân cần thấy nhiều trường
+     * cùng lúc khi khách đang chờ máy. Đo được ở form tạo đơn: mỗi trường tốn
+     * 13px nhãn + 8px khe + 40px ô = 61px, nên 12 trường đẩy form lên 675px và
+     * phải cuộn ba lần mới tới nút Tạo đơn.
+     *
+     * 32px vẫn TRÊN ngưỡng chạm 24px của WCAG 2.2 §2.5.8 — không đánh đổi khả
+     * năng tiếp cận để lấy mật độ. Tiết kiệm 12px mỗi trường: form 12 trường
+     * ngắn đi ~145px. */
+    --field-height: 32px;
+    --field-gap: 4px;
 }
 
 /* --- ghi đè `DataTable` của `@repo/ui` cho `DataGrid` ----------------
