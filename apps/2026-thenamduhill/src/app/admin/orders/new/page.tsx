@@ -131,6 +131,23 @@ export default function NewBookingPage() {
         setFormError(null)
 
         try {
+            // Gắn đơn vào ĐÚNG hồ sơ khách trước khi gửi đi.
+            //
+            // BUG ĐÃ SỬA: bản cũ không gửi `customerId`, nên mọi đơn nhập từ CMS
+            // có `customerId = undefined`. Màn CRM lọc bằng
+            // `bookings.filter(b => b.customerId === customer.id)` → đơn vừa tạo
+            // không bao giờ hiện trong lịch sử khách, và phân hạng VIP/Quay lại
+            // (đếm theo lịch sử đó) tính sai theo.
+            //
+            // Việc tra/tạo nằm trong `ensureCustomer()` của store, không ở đây:
+            // quy tắc "một SĐT = một khách" là nghiệp vụ dùng chung (R8/C2).
+            const customerId = useBookingStore.getState().ensureCustomer({
+                fullName: fullName.trim(),
+                phone: phone.trim(),
+                email: email.trim(),
+                actor: user ? { id: user.id, name: user.fullName, role: user.role } : undefined,
+            })
+
             const res = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -143,6 +160,7 @@ export default function NewBookingPage() {
                     addons,
                     promoCode,
                     channel,
+                    customerId: customerId || undefined,
                     guest: {
                         fullName: fullName.trim(),
                         phone: phone.trim(),

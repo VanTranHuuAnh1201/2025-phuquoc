@@ -73,6 +73,9 @@ interface BookingState {
     // ---- khách đặt ----
     createBooking: (input: CreateBookingInput) => Booking
 
+    // ---- hồ sơ khách (CRM) ----
+    ensureCustomer: (guest: EnsureCustomerInput) => string
+
     // ---- CMS ----
     changeStatus: (id: string, to: BookingStatus, actor: Actor, note?: string) => WriteError | null
     checkIn: (id: string, record: Omit<CheckInRecord, 'at'>, actor: Actor) => WriteError | null
@@ -111,6 +114,48 @@ export interface CreateBookingInput {
      * tên nhân viên, nếu không thì tranh chấp về sau không truy được ai làm.
      */
     actor?: Actor
+}
+
+/** Thông tin tối thiểu để tra/tạo hồ sơ khách. Đúng phần lễ tân gõ vào form. */
+export interface EnsureCustomerInput {
+    fullName: string
+    phone: string
+    email?: string
+    /** Ai thao tác — để `ActivityLog` ghi đúng người, mặc định là chính khách. */
+    actor?: Actor
+    /** Đơn nào làm phát sinh hồ sơ này. `ActivityLog` bắt buộc có `bookingId`. */
+    bookingId?: string
+}
+
+/**
+ * Chuẩn hoá số điện thoại về DUY NHẤT một dạng `0xxxxxxxxx` trước khi tra khách.
+ *
+ * VÌ SAO PHẢI CÓ: hồ sơ khách gộp theo số điện thoại (`Customer` — luật B0), mà
+ * id khách lại sinh thẳng từ số đó (`cus-<phone>`, xem `demo-generator.ts`). Lễ
+ * tân gõ tay trong lúc nghe điện thoại nên cùng một người ra nhiều cách viết:
+ * `0901234567`, `090 123 4567`, `090.123.4567`, `090-123-4567`, `+84901234567`,
+ * `84901234567`. Nếu ghép id từ chuỗi thô thì mỗi cách viết đẻ ra một khách
+ * mới, lịch sử lưu trú vỡ vụn và phân hạng VIP/Quay lại tính sai — đúng triệu
+ * chứng đang phải sửa.
+ *
+ * `+84` và `84` đứng đầu là MÃ QUỐC GIA của Việt Nam, tương đương số `0` mở đầu
+ * ở dạng nội địa: `+84901234567` và `0901234567` là CÙNG một thuê bao, buộc
+ * phải quy về một mối.
+ */
+export function normalizePhone(raw: string): string {
+    // Bỏ mọi ký tự không phải chữ số, giữ lại dấu `+` mở đầu để nhận ra mã quốc gia.
+    const trimmed = raw.trim()
+    const hasPlus = trimmed.startsWith('+')
+    const digits = trimmed.replace(/\D/g, '')
+    if (!digits) return ''
+
+    // `+84…` hoặc `84…` (đủ dài để không nuốt nhầm số nội địa mở đầu bằng 84) → `0…`
+    if (digits.startsWith('84') && (hasPlus || digits.length >= 11)) {
+        return `0${digits.slice(2)}`
+    }
+    // Số nội địa thiếu số 0 mở đầu (`901234567`) → thêm lại cho khớp `cus-0…`.
+    if (!digits.startsWith('0')) return `0${digits}`
+    return digits
 }
 
 function initialState() {
@@ -276,6 +321,79 @@ export const useBookingStore = create<BookingState>()(
                 })
 
                 return booking
+            },
+
+            // ------------------------------------------------- hồ sơ khách (CRM)
+
+            /**
+             * Tra hồ sơ khách theo SĐT, chưa có thì tạo. Trả về `customerId`.
+             *
+             * ĐẶT Ở STORE, KHÔNG Ở COMPONENT: "một SĐT = một khách" là quy tắc
+             * nghiệp vụ, không phải chi tiết của một màn hình (luật R8/C2). Cả
+             * form tạo đơn CMS lẫn mọi luồng sau này đều phải ra CÙNG một id,
+             * nếu không màn CRM lại lệch lần nữa.
+             *
+             * BUG ĐANG SỬA: form `/admin/orders/new` tạo đơn mà bỏ trống
+             * `customerId`, nên `bookings.filter(b => b.customerId === c.id)` ở
+             * `/admin/customers` không bao giờ khớp — đơn vừa tạo biến mất khỏi
+             * lịch sử khách, kéo theo phân hạng VIP/Quay lại sai.
+             */
+            ensureCustomer: (guest) => {
+                const state = get()
+                const phone = normalizePhone(guest.phone)
+                // Không có SĐT thì không gộp được hồ sơ — đơn ở lại dạng khách
+                // vãng lai thay vì tạo một hồ sơ rác không tra cứu được.
+                if (!phone) return ''
+
+                // Id bám ĐÚNG quy ước của `demo-generator.ts`: `cus-<SĐT đã chuẩn hoá>`.
+                // Nhờ vậy khách quen đã có trong seed được nhận ra ngay, không đẻ hồ sơ trùng.
+                const customerId = `cus-${phone}`
+
+                // So khớp cả trên SĐT đã chuẩn hoá của hồ sơ cũ: dữ liệu seed và
+                // dữ liệu nhập tay có thể khác cách viết nhưng vẫn là một người.
+                const existing = state.customers.find(
+                    (c) => c.id === customerId || normalizePhone(c.phone) === phone,
+                )
+                if (existing) return existing.id
+
+                const now = new Date().toISOString()
+                const customer: Customer = {
+                    id: customerId,
+                    role: 'customer',
+                    fullName: guest.fullName.trim(),
+                    phone,
+                    email: guest.email?.trim() ?? '',
+                    createdAt: now,
+                    active: true,
+                    // Khách mới chưa lưu trú lần nào — hai số này chỉ tăng ở
+                    // `checkOut()`, nơi duy nhất biết tiền đã thu thực tế.
+                    totalSpent: 0,
+                    stayCount: 0,
+                }
+
+                set({
+                    customers: [...state.customers, customer],
+                    // `ActivityLog` luôn treo trên một đơn, nên chỉ ghi khi biết
+                    // đơn nào làm phát sinh hồ sơ (bám cách các action khác dùng `makeLog`).
+                    logs: guest.bookingId
+                        ? [
+                              ...state.logs,
+                              makeLog({
+                                  bookingId: guest.bookingId,
+                                  at: now,
+                                  actor: guest.actor ?? {
+                                      id: customerId,
+                                      name: customer.fullName,
+                                      role: 'customer',
+                                  },
+                                  action: 'note-added',
+                                  note: `Tạo hồ sơ khách mới ${customer.fullName} · ${phone}`,
+                              }),
+                          ]
+                        : state.logs,
+                })
+
+                return customerId
             },
 
             // ------------------------------------------------------------- CMS
@@ -527,12 +645,71 @@ export const useBookingStore = create<BookingState>()(
                 return null
             },
 
+            /**
+             * Đổi trạng thái một phòng vật lý, VÀ đồng bộ tồn kho nếu việc đó
+             * làm phòng ngừng bán được.
+             *
+             * BUG ĐÃ SỬA: bản trước chỉ ghi `roomUnits`. Đưa một phòng vào
+             * `maintenance` ở màn Buồng phòng thì hệ thống VẪN BÁN đủ
+             * `totalUnits` suất của hạng đó — bán xong khách đến thì không có
+             * phòng giao. Hai màn ghi vào hai nơi mà không ai nói với ai.
+             *
+             * VÌ SAO SUY LẠI TỪ SỐ ĐẾM THẬT, KHÔNG CỘNG/TRỪ:
+             * `blockedUnits += 1` khi vào bảo trì và `-= 1` khi ra là cách viết
+             * ngắn hơn, nhưng nó TRÔI. Chỉ cần một lần gọi lặp, một lần thoát
+             * giữa chừng, hay một phòng được đặt bảo trì từ trước khi có đoạn
+             * mã này, con số sẽ lệch vĩnh viễn và không có cách nào phát hiện.
+             * Đếm lại số phòng `maintenance` của hạng rồi GÁN thẳng thì kết quả
+             * chỉ phụ thuộc trạng thái hiện tại — gọi bao nhiêu lần cũng ra một
+             * giá trị.
+             *
+             * CHỈ ÁP CHO NGÀY TỪ HÔM NAY TRỞ ĐI: quá khứ đã xảy ra rồi, sửa tồn
+             * kho ngày cũ là làm sai lệch số liệu đã chốt.
+             */
             setUnitStatus: (unitId, status) =>
-                set((state) => ({
-                    roomUnits: state.roomUnits.map((u) =>
+                set((state) => {
+                    const unit = state.roomUnits.find((u) => u.id === unitId)
+                    if (!unit) return {}
+
+                    const roomUnits = state.roomUnits.map((u) =>
                         u.id === unitId ? { ...u, status } : u,
-                    ),
-                })),
+                    )
+
+                    // Vào hay ra khỏi `maintenance` mới đụng tồn kho. Các
+                    // chuyển đổi dọn dẹp (dirty → cleaning → available) không
+                    // ảnh hưởng khả năng bán: phòng bẩn vẫn bán được cho tối
+                    // nay, tổ buồng dọn kịp trước giờ nhận phòng.
+                    const wasBlocking = unit.status === 'maintenance'
+                    const isBlocking = status === 'maintenance'
+                    if (wasBlocking === isBlocking) return { roomUnits }
+
+                    const blocked = roomUnits.filter(
+                        (u) => u.roomTypeId === unit.roomTypeId && u.status === 'maintenance',
+                    ).length
+
+                    const today = todayKey()
+                    const inventory = { ...state.inventory }
+                    for (const [key, inv] of Object.entries(state.inventory)) {
+                        if (inv.roomTypeId !== unit.roomTypeId) continue
+                        if (inv.date < today) continue
+
+                        // Giữ bất biến `availableUnits >= 0`: phòng đã bán thì
+                        // không khoá thêm được nữa. Khoá quá tay ở đây sẽ đẻ ra
+                        // số âm và mọi phép tính phía sau đi theo.
+                        const next = Math.min(blocked, inv.totalUnits - inv.bookedUnits)
+                        if (next === inv.blockedUnits) continue
+
+                        inventory[key] = {
+                            ...inv,
+                            blockedUnits: next,
+                            // Tăng `version` để lần ghi sau từ thiết bị khác
+                            // phát hiện được xung đột (optimistic locking).
+                            version: inv.version + 1,
+                        }
+                    }
+
+                    return { roomUnits, inventory }
+                }),
 
             resetDemo: () => set(initialState()),
         }),

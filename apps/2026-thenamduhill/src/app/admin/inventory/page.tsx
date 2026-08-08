@@ -10,7 +10,7 @@
  * từ chối chứ không âm thầm đè lên (xem `.claude/rules/booking-domain.md` §B7).
  */
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
     addDays,
     availableUnits,
@@ -22,7 +22,7 @@ import {
     pick,
     seasons,
 } from '@repo/core'
-import type { Inventory } from '@repo/core'
+import type { Booking, BookingStatus, Inventory } from '@repo/core'
 import { Button, CheckField, Field, Modal } from '@repo/ui'
 import { DotBadge, InlineAlert, PageHeaderBar } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
@@ -32,7 +32,20 @@ import { useBookingsData } from '@/hooks/useAdminData'
 import { useRoomTypes } from '@/stores/useCatalog'
 import { todayKey } from '@/stores/demo-data'
 import { AlertTriangleIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from '@/components/icons'
-import { S, tr } from '@/strings'
+import { useOrderDrawer } from '../orders/_shared/OrderDetailPanel'
+import { S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
+
+/**
+ * Các trạng thái ĐANG THỰC SỰ GIỮ PHÒNG trong đêm đó.
+ *
+ * `bookedUnits` của `Inventory` chỉ là một con số — nhìn "đã bán 8" mà không
+ * biết 8 đơn nào. Muốn liệt kê lại đúng con số ấy thì phải lọc đúng nhóm trạng
+ * thái đã cộng vào nó: `cancelled` / `no_show` / `expired` đã nhả phòng ra, còn
+ * `checked_out` là lượt lưu trú đã đóng — cả bốn đều KHÔNG chiếm tồn kho nữa.
+ * Đưa nhầm chúng vào danh sách thì số dòng sẽ nhiều hơn "đã bán", người bán mất
+ * niềm tin vào chính màn hình này.
+ */
+const HOLDING_STATUSES: readonly BookingStatus[] = ['pending_payment', 'confirmed', 'checked_in']
 
 /** Khoảng ngày hiển thị — bộ chọn, KHÔNG hard-code (§6.8 mục 1, AC-13). */
 type RangeLength = 14 | 30
@@ -48,8 +61,9 @@ export default function InventoryPage() {
 
 function InventoryScreen() {
     const { locale } = useLocale()
-    const { inventory } = useBookingsData()
+    const { inventory, bookings } = useBookingsData()
     const updateInventory = useBookingStore((s) => s.updateInventory)
+    const { openOrder } = useOrderDrawer()
 
     const rooms = useRoomTypes()
     const canEditPrice = useCan('price.edit')
@@ -87,6 +101,28 @@ function InventoryScreen() {
                 return { date, free, total }
             }),
         [dates, rooms, inventory],
+    )
+
+    // Liệt kê các đơn ĐANG chiếm một đêm cụ thể của một hạng phòng — thứ mà
+    // `bookedUnits` (một con số trần) không trả lời được: "8 đơn đó là đơn nào?".
+    const bookingsOnNight = useCallback(
+        (roomTypeId: string, date: string): Booking[] =>
+            bookings.filter(
+                (b) =>
+                    b.roomTypeId === roomTypeId &&
+                    // So sánh chuỗi 'YYYY-MM-DD' trực tiếp là ĐÚNG: định dạng này
+                    // sắp xếp theo từ điển trùng khớp thứ tự thời gian, nên không
+                    // cần dựng `Date` (luật C6 — tránh luôn bẫy lệch múi giờ).
+                    //
+                    // `< b.checkOut` chứ KHÔNG phải `<=`: đơn nhận 20/8 trả 22/8
+                    // chiếm hai ĐÊM 20 và 21; đêm 22 phòng đã trống để bán lại.
+                    // Dùng `<=` sẽ đếm dư một đêm cho mọi đơn, khiến danh sách
+                    // đông hơn `bookedUnits` đúng ở ngày trả phòng.
+                    date >= b.checkIn &&
+                    date < b.checkOut &&
+                    HOLDING_STATUSES.includes(b.status),
+            ),
+        [bookings],
     )
 
     return (
@@ -489,6 +525,14 @@ function InventoryScreen() {
                         },
                         locale,
                     )}
+                    nightBookings={bookingsOnNight(editing.roomTypeId, editing.date)}
+                    // Modal sửa ô là `Modal` của @repo/ui (z-index 100) còn drawer
+                    // đơn là z-60 — mở drawer khi modal còn đó thì nó nằm DƯỚI,
+                    // người dùng bấm xong tưởng hỏng. Đóng modal TRƯỚC rồi mới mở.
+                    onOpenBooking={(id) => {
+                        setEditing(null)
+                        openOrder(id)
+                    }}
                     onClose={() => setEditing(null)}
                     onSave={(patch) => {
                         const result = updateInventory(
@@ -510,6 +554,8 @@ function EditCellDialog({
     inv,
     roomName,
     canEditPrice,
+    nightBookings,
+    onOpenBooking,
     onClose,
     onSave,
 }: {
@@ -518,6 +564,9 @@ function EditCellDialog({
     /** Lễ tân chỉ ĐỌC giá (AC-8) — ô giá render thành `<span>`, không phải
      *  `<button disabled>`: target chết vẫn nằm trong luồng Tab (§6.11). */
     canEditPrice: boolean
+    /** Các đơn đang giữ phòng trong đúng đêm này — diễn giải cho `bookedUnits`. */
+    nightBookings: Booking[]
+    onOpenBooking: (bookingId: string) => void
     onClose: () => void
     onSave: (patch: Partial<Omit<Inventory, 'date' | 'roomTypeId' | 'version'>>) => void
 }) {
@@ -580,6 +629,71 @@ function EditCellDialog({
                         label={tr(S.availableUnits, locale)}
                         value={inv.totalUnits - inv.bookedUnits - inv.blockedUnits}
                     />
+                </div>
+
+                {/* Diễn giải con số "đã bán" ở trên: liệt kê ĐÍCH DANH từng đơn
+                    đang giữ phòng đêm này, bấm mã đơn là mở thẳng chi tiết. */}
+                <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>
+                        {tr(S.linkBookingsOnDate, locale)}
+                    </span>
+
+                    {nightBookings.length === 0 ? (
+                        // Rỗng phải nói rõ đang rỗng, không để một khoảng trắng
+                        // câm khiến người xem tưởng màn hình lỗi (FE7).
+                        <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                            {tr(S.linkNoBookingsOnDate, locale)}
+                        </span>
+                    ) : (
+                        <ul
+                            style={{
+                                display: 'grid',
+                                gap: 'var(--space-1)',
+                                listStyle: 'none',
+                                margin: 0,
+                                padding: 0,
+                            }}
+                        >
+                            {nightBookings.map((b) => (
+                                <li
+                                    key={b.id}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 'var(--space-2)',
+                                        flexWrap: 'wrap',
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => onOpenBooking(b.id)}
+                                        aria-label={`${tr(S.inventoryViewBookingAria, locale)} ${b.code}`}
+                                        className="cms-crosslink font-semibold"
+                                    >
+                                        {b.code}
+                                    </button>
+                                    <span
+                                        style={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            fontSize: 'var(--text-sm)',
+                                            color: 'var(--text)',
+                                        }}
+                                    >
+                                        {b.guest.fullName}
+                                    </span>
+                                    <DotBadge
+                                        tone={STATUS_CMS_TONE[b.status]}
+                                        label={tr(STATUS_LABEL[b.status], locale)}
+                                        width={116}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
 
                 {canEditPrice ? (

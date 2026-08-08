@@ -67,3 +67,4 @@ resources/scripts/seed/staff-hashes.json
 e2e-out/
 playwright-report/
 test-results/
+.gstack/

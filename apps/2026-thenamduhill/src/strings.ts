@@ -774,6 +774,7 @@ export const S = {
         'Bấm vào ô để sửa giá, khoá phòng hoặc số đêm tối thiểu',
         'Click a cell to edit price, block rooms, or set minimum nights',
     ),
+    inventoryViewBookingAria: t('Xem đơn', 'View booking'),
 
     // ticket sự cố (100-05)
     ticketsTitle: t('Ticket Sự cố & Bảo trì', 'Incident & Maintenance Tickets'),
