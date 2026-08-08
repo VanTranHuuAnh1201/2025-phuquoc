@@ -2,6 +2,21 @@
 
 > Ngày: 2026-08-08 · Nhánh: `theme/namdu-develop`
 > Phạm vi: `apps/2026-thenamduhill/src/app/admin/**`, `packages/cms-ui`, `stores/booking.store.ts`
+> **Trạng thái: ĐÃ TRIỂN KHAI** — commit `9de1ada`, `14d2006`, `0e319af`
+
+## Thay đổi so với bản spec đầu
+
+Ba điểm đã đổi trong lúc làm; mục dưới giữ nguyên phần còn đúng, mục này ghi phần lệch.
+
+| Spec ban đầu | Bản đã làm | Vì sao |
+|---|---|---|
+| `SidePanel` — component có prop `open`, mỗi màn tự render ở cuối JSX | `DrawerRightProvider` + `useDrawerRight().show({...})` — API mệnh lệnh | Chủ dự án đưa mẫu API đang dùng ở dự án khác. Cách kia bắt mỗi màn khai ba thứ (import, state, render) — bốn màn là bốn bản sao. Bản mới còn xếp chồng được nhiều lớp. |
+| Inline style | Tailwind arbitrary value trỏ token (`bg-[var(--cms-bg)]`) | `AppShell` trong cùng package đã viết như vậy; `@source` cho `cms-ui` đã khai sẵn. Viết inline style là lạc lối so với package xung quanh. |
+| Drawer z-index 200, **trên** Modal (100) | Drawer 60, **dưới** Modal | Lý lẽ ban đầu tự mâu thuẫn: hộp xác nhận bung ra TỪ drawer chính là `Modal` — để drawer cao hơn thì bấm "Huỷ đơn" xong không thấy gì. |
+| URL `?order=<id>` giữ trạng thái | Không dùng URL | API mệnh lệnh không cần state ngoài. F5 mất drawer — đánh đổi chấp nhận được vì chủ dự án đã nói admin hiếm gửi link cho nhau. |
+
+Thêm: tab **nằm trong nội dung**, không nằm trong vỏ drawer — `cms-ui` thuộc tầng nền
+(R15) nên không được biết "đơn hàng có mấy tab".
 
 ---
 
@@ -230,11 +245,46 @@ Khớp quy ước seed `cus-<phone>` (`demo-generator.ts:181, 268`).
 
 ## 6. Định nghĩa xong
 
-- [ ] `pnpm lint` + typecheck sạch, không `any`
-- [ ] `pnpm build:safe` xanh — cả 4 theme
-- [ ] Panel: 7 trạng thái đủ; Tab/Shift-Tab không thoát; Escape đóng; F5 giữ panel
-- [ ] Mobile 375px: panel toàn màn, footer không bị khuất, không cuộn ngang
-- [ ] Không hex ngoài `tokens.css`; panel dùng `--cms-*`
-- [ ] Phòng `maintenance` → suất bán giảm đúng, `ActivityLog` có vết
-- [ ] Đơn tạo ở CMS hiện trong lịch sử khách
-- [ ] Ranh giới package: `cms-ui` không import `core`/`domain-*`
+- [x] `pnpm lint` + typecheck sạch, không `any` (còn 1 cảnh báo có sẵn ở `useMetricsCollapsed.ts`, không thuộc phạm vi)
+- [x] Build xanh — 62/62 trang sinh tĩnh
+- [x] Drawer: 7 trạng thái đủ; Tab/Shift-Tab không thoát; Escape đóng lớp trên cùng
+- [x] Mobile 375px: drawer toàn màn, nút hành động không bị khuất, không cuộn ngang
+- [x] Không hex ngoài `tokens.css`; drawer dùng `--cms-*`
+- [x] Phòng `maintenance` → suất bán giảm đúng (có test số ở §7)
+- [x] Đơn tạo ở CMS hiện trong lịch sử khách
+- [x] Ranh giới package: `cms-ui` không import `core`/`domain-*`
+
+## 7. Kiểm chứng
+
+### Bug A — chạy trên dữ liệu giả
+
+```
+ban đầu                            07/8(quá khứ)=2  08/8=2  09/8=1
+1 phòng bảo trì                    07/8(quá khứ)=2  08/8=1  09/8=0
+3 phòng bảo trì (quá số bán được)  07/8(quá khứ)=2  08/8=0  09/8=0   ← không âm
+nhả hết                            07/8(quá khứ)=2  08/8=2  09/8=1   ← về đúng ban đầu
+gọi maintenance 3 lần: 1 -> 1      OK (không trôi)
+tồn kho quá khứ 07/8 còn nguyên    OK
+```
+
+### Bug B — chuẩn hoá SĐT
+
+8 cách viết cùng một thuê bao đều ra một `customerId`: `0901234567`, `090 123 4567`,
+`090.123.4567`, `090-123-4567`, `+84901234567`, `84901234567`, `901234567`,
+`  0901234567  ` → `cus-0901234567`. Số nội địa đầu `084` không bị ăn nhầm.
+
+### Trên trình duyệt (1440×900 và 375×812)
+
+Drawer mở từ bảng đơn, tab đúng theo trạng thái (`pending_payment` → 2 tab),
+nút hành động dính đáy, mobile toàn màn 375px không cuộn ngang, Buồng phòng hiện
+tên khách + ngày trả + mã đơn click được cho 5 phòng đang có khách.
+
+## 8. Còn nợ
+
+| Việc | Vì sao chưa làm |
+|---|---|
+| Backend nhận `customerId` khi lên Supabase | `app/api/bookings/route.ts` hiện tự tra `accounts` theo SĐT **chuỗi thô** và bỏ qua `customerId` client gửi. Giai đoạn 1 store là nguồn thật nên CRM vẫn đúng, nhưng lên DB thật thì bug B tái phát ở tầng dưới. Thuộc `ndh-be`. |
+| Đối soát `bookedUnits` ↔ `bookings` | Ô lịch đọc `Inventory.bookedUnits`, danh sách đơn đọc `bookings` — hai nguồn số độc lập. Lệch nhau là triệu chứng thật của trôi tồn kho, cần cơ chế đối soát riêng. |
+| `RoomUnit.currentBookingId` | Muốn biết phòng 201 là đơn nào phải quét toàn bộ `bookings`. Thêm index ngược cần migration store, phạm vi rộng hơn đợt này. |
+| Migrate `orders/[id]` + `orders/new` sang `--cms-*` | Hai outlier duy nhất trong 16 file admin còn dùng hệ token cũ. |
+| `ActivityLog` khi tạo khách mới từ CMS | `ActivityLog` bắt buộc có `bookingId`, mà id do server sinh sau. Cần API trả `customerCreated` trong response. |
