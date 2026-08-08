@@ -398,10 +398,12 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
     const formFields = (
         <>
             <Panel title={tr(S.stayDetails, locale)}>
-                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
-                    {/* Ba trường quyết định giá nằm cùng một hàng: đọc ngang một
-                     * lượt là biết kỳ lưu trú, không phải quét zíc-zắc 2 cột. */}
-                    <div className="nb-three-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
+                    {/* BỐN trường của kỳ lưu trú nằm trọn MỘT hàng: nhận · trả ·
+                     * người lớn · trẻ em. Bản trước tách trẻ em ra hàng riêng,
+                     * để lại một hàng gần như trống bên phải và đẩy cả khối cao
+                     * thêm ~90px mà không thêm thông tin nào. */}
+                    <div className="nb-four-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
                         <Field
                             label={tr(S.checkIn, locale)}
                             type="date"
@@ -427,11 +429,26 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             onChange={(e) => setAdults(Math.max(1, Number(e.target.value) || 1))}
                             required
                         />
+                        <Field
+                            label={tr(S.children, locale)}
+                            type="number"
+                            min={0}
+                            max={8}
+                            value={childAges.length}
+                            hint={tr(S.childrenAgeHint, locale)}
+                            onChange={(e) => {
+                                const count = Math.max(0, Math.min(8, Number(e.target.value) || 0))
+                                setChildAges((prev) =>
+                                    Array.from({ length: count }, (_, i) => prev[i] ?? 6),
+                                )
+                            }}
+                        />
                     </div>
 
-                    {/* Hàng trẻ em: ô đếm chỉ chứa 1 chữ số nên ghim 120px, phần
-                     * còn lại của hàng dành cho các ô TUỔI hiện ngay bên cạnh —
-                     * nhập số rồi khai tuổi liền tay, không phải nhảy xuống dưới. */}
+                    {/* Các ô TUỔI chỉ xuất hiện khi đã khai số trẻ — hàng này
+                     * biến mất hẳn khi không có trẻ em, không để lại khoảng
+                     * trống. Ô hẹp 96px vì chỉ chứa một số hai chữ số. */}
+                    {childAges.length > 0 && (
                     <div
                         style={{
                             display: 'flex',
@@ -440,25 +457,6 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             gap: 'var(--space-3)',
                         }}
                     >
-                        <div style={{ width: 120, flexShrink: 0 }}>
-                            <Field
-                                label={tr(S.children, locale)}
-                                type="number"
-                                min={0}
-                                max={8}
-                                value={childAges.length}
-                                onChange={(e) => {
-                                    const count = Math.max(
-                                        0,
-                                        Math.min(8, Number(e.target.value) || 0),
-                                    )
-                                    setChildAges((prev) =>
-                                        Array.from({ length: count }, (_, i) => prev[i] ?? 6),
-                                    )
-                                }}
-                            />
-                        </div>
-
                         {childAges.map((age, index) => (
                             <div key={index} style={{ width: 96, flexShrink: 0 }}>
                                 <Field
@@ -479,20 +477,7 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             </div>
                         ))}
                     </div>
-
-                    {/* Chú thích của CẢ HÀNG trẻ em (ô đếm + các ô tuổi), không
-                     * thuộc riêng ô nào — nên là <p> tự do, không phải prop
-                     * `hint` của một `Field`. */}
-                    <p
-                        style={{
-                            margin: 0,
-                            fontSize: 'var(--text-xs)',
-                            color: 'var(--text-muted)',
-                            lineHeight: 1.5,
-                        }}
-                    >
-                        {tr(S.childrenAgeHint, locale)}
-                    </p>
+                    )}
                 </div>
             </Panel>
 
@@ -750,6 +735,7 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                     @media (min-width: 640px) {
                         .nb-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
                         .nb-three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+                        .nb-four-col { grid-template-columns: repeat(4, minmax(0, 1fr)); }
                     }
                 `}</style>
             </div>
@@ -790,6 +776,7 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                 @media (min-width: 640px) {
                     .nb-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
                     .nb-three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+                        .nb-four-col { grid-template-columns: repeat(4, minmax(0, 1fr)); }
                 }
             `}</style>
         </>
@@ -802,10 +789,11 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
             style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
-                // `--space-4` chứ không `--space-5`: form có 4 khối chồng nhau,
-                // mỗi khối dư 8px trên-dưới là dư gần 70px chiều cao cuộn.
+                // 12px chứ không 16px: bốn khối chồng nhau, mỗi khối dư 4px
+                // trên-dưới là dư 32px chiều cao cuộn mà không thêm thông tin
+                // nào. Viền 1px đã đủ tách khối, không cần khoảng đệm rộng.
                 borderRadius: 'var(--radius-lg)',
-                padding: 'var(--space-4)',
+                padding: 'var(--space-3) var(--space-4)',
             }}
         >
             <h2
@@ -850,7 +838,10 @@ export function useNewBookingDrawer() {
             // hợp lệ chưa và đang gửi hay chưa — state đó nằm trong nội dung,
             // nên nút cũng sống trong nội dung (dính đáy, xem `actionButtons`).
             isFooter: false,
-            contentClassname: 'sm:!max-w-[720px]',
+            // 880px, không 720px: hàng 4 cột của kỳ lưu trú cần ~200px mỗi ô
+            // để ô ngày không bị cắt mất biểu tượng lịch. Vẫn chừa lại đủ bảng
+            // phía sau để đọc — đó là lý do dùng drawer thay vì trang riêng.
+            contentClassname: 'sm:!max-w-[880px]',
             // Nhường quyền chia vùng cho form: nó cần thanh nút nằm NGOÀI vùng
             // cuộn, mà khung thân mặc định của drawer lại bọc trọn `children`.
             bodyClassname: 'min-h-0 flex-1',

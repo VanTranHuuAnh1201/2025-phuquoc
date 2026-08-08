@@ -369,10 +369,12 @@ export const S = {
     roomTypeLabel: t('Hạng phòng', 'Room type'),
     /** Tiêu đề khối gộp hạng phòng + gói giá + dịch vụ thêm + mã khuyến mãi. */
     roomAndExtras: t('Hạng phòng & phụ thu', 'Room & extras'),
-    childrenAgeHint: t(
-        'Nhập tuổi từng trẻ bên cạnh — giá trẻ em tính theo tuổi.',
-        'Enter each child’s age beside — child pricing depends on age.',
-    ),
+    /**
+     * Ngắn để vừa MỘT dòng trong ô thứ tư của hàng 4 cột — vỡ 2 dòng thì ô này
+     * cao hơn ba ô bên cạnh và cả hàng lệch. Vế "nhập tuổi bên cạnh" đã bỏ:
+     * các ô tuổi tự hiện ngay khi khai số trẻ, không cần dặn.
+     */
+    childrenAgeHint: t('Giá tính theo tuổi', 'Priced by age'),
     /** Badge số phòng còn trống trong khối tóm tắt giá. */
     availableUnitsBadge: t('Còn trống', 'Available'),
     selectRoomFirst: t(
