@@ -35,11 +35,17 @@
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
 import { useBookingStore } from '@/stores/booking.store'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
+import { MenuIcon } from '@/components/icons'
 import { S, tr, UNIT_STATUS_CMS_TONE, UNIT_STATUS_LABEL } from '@/strings'
 import type { RoomUnitStatus } from '@repo/core'
 import { getPropertySync, pick } from '@repo/core'
 import { DotBadge, InlineAlert, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
 import { useMemo, useState } from 'react'
+
+/** Khoá `localStorage` riêng cho màn buồng phòng — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-housekeeping-metrics-collapsed'
 
 /** Vòng chuyển tình trạng: bấm một phòng là sang bước tiếp theo. */
 const NEXT_STATUS: Record<RoomUnitStatus, RoomUnitStatus> = {
@@ -93,6 +99,7 @@ export default function HousekeepingPage() {
     // Mặc định nhóm theo TRẠNG THÁI — đúng cách buồng phòng nghĩ về công việc
     // ("còn phòng nào cần dọn"), không phải theo hạng phòng.
     const [groupBy, setGroupBy] = useState<GroupBy>('status')
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
 
     const isFiltered = search !== '' || roomTypeFilter !== 'all' || statusFilter !== 'all'
 
@@ -174,14 +181,27 @@ export default function HousekeepingPage() {
                 title={tr(S.housekeeping, locale)}
                 count={{ value: filteredUnits.length, suffix: tr(S.housekeepingRoomSuffix, locale) }}
                 actions={
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder={tr(S.housekeepingSearchPlaceholder, locale)}
-                        aria-label={tr(S.housekeepingSearchAria, locale)}
-                        className="w-44 sm:w-56 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    />
+                    <>
+                        {/* Nút ẩn/hiện MetricStrip — mặc định HIỆN số liệu. */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="housekeeping-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder={tr(S.housekeepingSearchPlaceholder, locale)}
+                            aria-label={tr(S.housekeepingSearchAria, locale)}
+                            className="w-44 sm:w-56 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        />
+                    </>
                 }
             />
 
@@ -253,8 +273,13 @@ export default function HousekeepingPage() {
             </div>
 
             {/* 5 KPI liền mạch, bấm để lọc. "Cần dọn" đứng gần đầu (ngay sau
-                Tất cả) vì đó là con số lễ tân cần thấy trước tiên. */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                Tất cả) vì đó là con số lễ tân cần thấy trước tiên. Ẩn/hiện
+                được qua nút ở hàng 1, mặc định HIỆN. */}
+            {!metricsCollapsed && (
+            <div
+                id="housekeeping-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard
                         label={tr(S.all, locale)}
@@ -293,6 +318,7 @@ export default function HousekeepingPage() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* Cảnh báo ưu tiên: chỉ hiện khi thật sự có phòng cần dọn và
                 đang KHÔNG lọc riêng nhóm đó — nhắc lễ tân việc phải làm ngay

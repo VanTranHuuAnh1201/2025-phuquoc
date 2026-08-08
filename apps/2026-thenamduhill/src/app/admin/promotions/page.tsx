@@ -49,6 +49,7 @@ import { useLocale } from '@/components/LocaleProvider'
 import { useBookingStore } from '@/stores/booking.store'
 import { usePromotionStore } from '@/stores/promotion.store'
 import { usePromotionsData } from '@/hooks/useAdminData'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { todayKey } from '@/stores/demo-data'
 import { PriceBreakdown } from '@/components/PriceBreakdown'
 import {
@@ -58,7 +59,11 @@ import {
     S,
     tr,
 } from '@/strings'
-import { PencilIcon, SearchIcon, TicketIcon, GridIcon, InfoIcon } from '@/components/icons'
+import { PencilIcon, SearchIcon, TicketIcon, GridIcon, InfoIcon, MenuIcon } from '@/components/icons'
+
+/** Khoá `localStorage` riêng cho màn khuyến mãi — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-promotions-metrics-collapsed'
 
 const TYPES: PromotionType[] = [
     'percent',
@@ -81,6 +86,7 @@ export default function PromotionsPage() {
     const [typeFilter, setTypeFilter] = useState('all')
     const [statusFilter, setStatusFilter] = useState('all')
     const [page, setPage] = useState(1)
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
     const PAGE_SIZE = 10
 
     const conflicts = useMemo(() => findPromotionConflicts(promotions), [promotions])
@@ -338,6 +344,17 @@ export default function PromotionsPage() {
                                 {tr(S.formulasAndCalc, locale)}
                             </button>
                         </div>
+                        {/* Nút ẩn/hiện MetricStrip — mặc định HIỆN số liệu. */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="promotions-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
                         <button
                             type="button"
                             onClick={() => setEditing(blankPromotion())}
@@ -376,8 +393,13 @@ export default function PromotionsPage() {
             </div>
 
             {/* Dải KPI liền mạch — cùng `MetricStrip`/`KpiCard` của dashboard,
-                không còn 5 card rời tự vẽ shadow/viền màu riêng. */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+                không còn 5 card rời tự vẽ shadow/viền màu riêng. Ẩn/hiện
+                được qua nút ở hàng 1, mặc định HIỆN. */}
+            {!metricsCollapsed && (
+            <div
+                id="promotions-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard
                         label={tr(S.kpiTotalPromos, locale)}
@@ -411,6 +433,7 @@ export default function PromotionsPage() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* TAB 1: bảng danh sách — dùng `DataGrid` (bọc `DataTable` cho
                 diện mạo CMS phẳng, không shadow/rounded-lg riêng). */}

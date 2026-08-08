@@ -21,68 +21,19 @@ import type { Column } from '@repo/ui'
 import { getPropertySync, pick, formatPrice } from '@repo/core'
 import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
 
 /** Khoá `localStorage` cho trạng thái ẩn/hiện MetricStrip — riêng với khoá
- *  sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`), vẫn giữ nguyên như
- *  round 4 chốt. */
+ *  sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`) và riêng với khoá
+ *  của các màn CMS khác (mỗi màn nhớ trạng thái của chính nó, xem
+ *  `useMetricsCollapsed`). */
 const METRICS_COLLAPSED_KEY = 'namduhill-cms-dashboard-metrics-collapsed'
-
-/**
- * State ẩn/hiện MetricStrip, đọc/ghi thẳng `localStorage` — KHÔNG dùng
- * `useRailCollapse`.
- *
- * VÌ SAO round 4 SAI KHI DÙNG `useRailCollapse` Ở ĐÂY (bug ngoài 5 round, đã
- * điều tra lại): hook đó gắn kèm một `document.addEventListener('click', ...,
- * true)` để tự thu gọn khi click RA NGOÀI phần tử gắn `railRef`. Round 4
- * không truyền `railRef` vào bất kỳ DOM node nào (không có `<aside>` cho nút
- * này) — `railRef.current` luôn là `null`, nên điều kiện `railRef.current
- * ?.contains(target)` LUÔN sai, nghĩa là MỌI click ở bất kỳ đâu trên trang
- * (kể cả click ngay trên chính nút toggle, vì listener chạy ở capture phase
- * TRƯỚC `onClick` của nút) đều bị hook coi là "click ra ngoài" và ép
- * `collapsed = true` ngay lập tức — nút bấm mở ra rồi tự đóng lại trong cùng
- * một cú click, trông như "không hoạt động". `useRailCollapse` đúng cho
- * sidebar (có `<aside>` thật để `railRef` bám vào) — sai cho một nút toggle
- * không có vùng bao để theo dõi click-outside.
- *
- * Mặc định HIỆN (`false`) khi `localStorage` chưa có gì — đúng yêu cầu round
- * này, cùng hành vi mặc định `useRailCollapse` từng có nên không đổi trải
- * nghiệm người dùng mới.
- */
-function useMetricsCollapsed(): [boolean, () => void] {
-    const [collapsed, setCollapsed] = useState(false)
-
-    // Đọc từ `localStorage` sau khi mount — tránh đọc `window`/`localStorage`
-    // lúc render đầu (SSR không có các API này, và Next 15 hydrate phía
-    // client trước khi effect chạy nên không lệch hydration).
-    useEffect(() => {
-        try {
-            const stored = localStorage.getItem(METRICS_COLLAPSED_KEY)
-            if (stored !== null) setCollapsed(stored === '1')
-        } catch {
-            // localStorage không khả dụng — giữ mặc định HIỆN.
-        }
-    }, [])
-
-    const toggle = () => {
-        setCollapsed((prev) => {
-            const next = !prev
-            try {
-                localStorage.setItem(METRICS_COLLAPSED_KEY, next ? '1' : '0')
-            } catch {
-                // Không lưu được thì vẫn đổi trạng thái trong phiên hiện tại.
-            }
-            return next
-        })
-    }
-
-    return [collapsed, toggle]
-}
 
 /** Badge trạng thái đơn → tone của `@repo/cms-ui` (D4: chấm màu + chữ). */
 const STATUS_TONE_MAP: Record<BookingStatus, CmsTone> = {
@@ -164,10 +115,10 @@ export default function AdminDashboard() {
     const property = getPropertySync()
 
     const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
-    // Sửa lại sau 5 round: `useRailCollapse` (round 4) SAI chỗ này — xem giải
-    // thích đầy đủ tại định nghĩa `useMetricsCollapsed` phía trên. Sidebar ở
+    // Hook dùng chung (`src/hooks/useMetricsCollapsed.ts`) — KHÔNG dùng
+    // `useRailCollapse` (xem giải thích trong file hook đó). Sidebar ở
     // `AppShell` VẪN dùng `useRailCollapse` bình thường, không đổi.
-    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed()
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
     // Bộ lọc phạm vi thời gian (việc ngoài 5 round) — chi phối KPI + bảng.
     // Mặc định 'day' theo đúng yêu cầu.
     const [timeRange, setTimeRange] = useState<'day' | 'week' | 'month' | 'year'>('day')

@@ -22,10 +22,11 @@
  *    diện mạo, không cần viết lại.
  */
 
-import { PlusIcon, TicketIcon, TrashIcon } from '@/components/icons'
+import { MenuIcon, PlusIcon, TicketIcon, TrashIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
 import { useAuthStore } from '@/stores/auth.store'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import {
     nextTicketStatuses,
     useTicketStore,
@@ -34,6 +35,10 @@ import {
     type TicketStatus,
 } from '@/stores/ticket.store'
 import { S, tr } from '@/strings'
+
+/** Khoá `localStorage` riêng cho màn ticket — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-tickets-metrics-collapsed'
 import type { I18nText } from '@repo/core'
 import { formatDate, pick } from '@repo/core'
 import {
@@ -126,6 +131,7 @@ function MaintenanceTicketsScreen() {
     const [titleError, setTitleError] = useState<I18nText | null>(null)
     const [notice, setNotice] = useState<I18nText | null>(null)
     const [saving, setSaving] = useState(false)
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
 
     const isFiltered = search !== '' || priorityFilter !== 'all' || statusFilter !== 'all'
 
@@ -357,18 +363,31 @@ function MaintenanceTicketsScreen() {
                 title={tr(S.ticketsTitle, locale)}
                 count={{ value: stats.total, suffix: tr(S.ticketsCount, locale) }}
                 actions={
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setTitleError(null)
-                            setNotice(null)
-                            setModalOpen(true)
-                        }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        <PlusIcon size={14} />
-                        {tr(S.newTicket, locale)}
-                    </button>
+                    <>
+                        {/* Nút ẩn/hiện MetricStrip — mặc định HIỆN số liệu. */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="tickets-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setTitleError(null)
+                                setNotice(null)
+                                setModalOpen(true)
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <PlusIcon size={14} />
+                            {tr(S.newTicket, locale)}
+                        </button>
+                    </>
                 }
             />
 
@@ -398,8 +417,13 @@ function MaintenanceTicketsScreen() {
                 </div>
             )}
 
-            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời tự vẽ (P11 Calm). */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời tự vẽ (P11 Calm).
+                Ẩn/hiện được qua nút ở hàng 1, mặc định HIỆN. */}
+            {!metricsCollapsed && (
+            <div
+                id="tickets-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard label={tr(S.totalTickets, locale)} value={`${stats.total}`} tone="slate" />
                     <KpiCard
@@ -422,6 +446,7 @@ function MaintenanceTicketsScreen() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều cao
                 là ưu tiên số 1 cho màn lễ tân/kỹ thuật dùng hằng ngày. */}

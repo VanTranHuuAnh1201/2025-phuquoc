@@ -25,7 +25,13 @@ import type { Column } from '@repo/ui'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
 import { useBookingsData } from '@/hooks/useAdminData'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
+import { MenuIcon } from '@/components/icons'
 import { S, tr } from '@/strings'
+
+/** Khoá `localStorage` riêng cho màn khách hàng — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-customers-metrics-collapsed'
 
 export default function CustomersPage() {
     const { locale } = useLocale()
@@ -34,6 +40,7 @@ export default function CustomersPage() {
     const [search, setSearch] = useState('')
     const [tierFilter, setTierFilter] = useState('all')
     const [page, setPage] = useState(1)
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
     const PAGE_SIZE = 10
 
     const rows = useMemo(() => {
@@ -200,13 +207,26 @@ export default function CustomersPage() {
                 title={tr(S.customers, locale)}
                 count={{ value: rows.length, suffix: pick({ vi: 'khách', en: 'guests' }, locale) }}
                 actions={
-                    <button
-                        type="button"
-                        onClick={exportCsv}
-                        className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        {tr(S.exportExcel, locale)}
-                    </button>
+                    <>
+                        {/* Nút ẩn/hiện MetricStrip — mặc định HIỆN số liệu. */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="customers-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={exportCsv}
+                            className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            {tr(S.exportExcel, locale)}
+                        </button>
+                    </>
                 }
             />
 
@@ -233,8 +253,13 @@ export default function CustomersPage() {
                 />
             </div>
 
-            {/* MetricStrip — 5 KPI liền mạch thay 5 card rời (P11 Calm). */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+            {/* MetricStrip — 5 KPI liền mạch thay 5 card rời (P11 Calm). Ẩn/hiện
+                được qua nút ở hàng 1, mặc định HIỆN. */}
+            {!metricsCollapsed && (
+            <div
+                id="customers-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard
                         label={tr(S.customersKpiTotal, locale)}
@@ -265,6 +290,7 @@ export default function CustomersPage() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại — tối ưu chiều
                 cao là ưu tiên số 1 cho màn lễ tân dùng hằng ngày. */}

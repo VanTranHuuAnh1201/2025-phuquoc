@@ -18,13 +18,18 @@
  */
 
 import { useMemo, useState } from 'react'
-import { PlusIcon, SearchIcon, TrashIcon } from '@/components/icons'
+import { MenuIcon, PlusIcon, SearchIcon, TrashIcon } from '@/components/icons'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission } from '@/components/RequirePermission'
 import { useAccountsData } from '@/hooks/useAdminData'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { S, tr } from '@/strings'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
 import { Field, Modal, SelectField, type Column } from '@repo/ui'
+
+/** Khoá `localStorage` riêng cho màn tài khoản — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-accounts-metrics-collapsed'
 
 export interface AccountRowItem {
     id: string
@@ -90,6 +95,7 @@ function AccountsSettingsScreen() {
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [role, setRole] = useState<AccountRowItem['role']>('receptionist')
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
 
     const rows: AccountRowItem[] = accounts
 
@@ -261,14 +267,27 @@ function AccountsSettingsScreen() {
                 title={tr(S.accountsTitle, locale)}
                 count={{ value: stats.total, suffix: tr(S.accountsCount, locale) }}
                 actions={
-                    <button
-                        type="button"
-                        onClick={() => setIsModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                    >
-                        <PlusIcon size={14} />
-                        <span>{tr(S.addAccount, locale)}</span>
-                    </button>
+                    <>
+                        {/* Nút ẩn/hiện MetricStrip — mặc định HIỆN số liệu. */}
+                        <button
+                            type="button"
+                            onClick={toggleMetrics}
+                            aria-expanded={!metricsCollapsed}
+                            aria-controls="accounts-metric-strip"
+                            className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <MenuIcon size={14} />
+                            <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                        >
+                            <PlusIcon size={14} />
+                            <span>{tr(S.addAccount, locale)}</span>
+                        </button>
+                    </>
                 }
             />
 
@@ -297,8 +316,13 @@ function AccountsSettingsScreen() {
                 />
             </div>
 
-            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời (P11 Calm). */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+            {/* MetricStrip — 4 KPI liền mạch thay 4 card rời (P11 Calm). Ẩn/hiện
+                được qua nút ở hàng 1, mặc định HIỆN. */}
+            {!metricsCollapsed && (
+            <div
+                id="accounts-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard label={tr(S.accountsKpiTotal, locale)} value={`${stats.total}`} tone="slate" />
                     <KpiCard
@@ -321,6 +345,7 @@ function AccountsSettingsScreen() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* Vùng nội dung: DataGrid chiếm hết chỗ còn lại. */}
             <div className="flex-1 flex flex-col min-h-0 border-t border-[var(--cms-border)]">

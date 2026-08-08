@@ -30,10 +30,15 @@ import { DataGrid, DotBadge, FilterBar, InlineAlert, KpiCard, MetricStrip } from
 import { useLocale } from '@/components/LocaleProvider'
 import { useAuthStore } from '@/stores/auth.store'
 import { useBookingsData } from '@/hooks/useAdminData'
+import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { CHANNEL_CMS_TONE, CHANNEL_LABEL, S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
-import { DownloadIcon, EyeIcon, PlusIcon } from '@/components/icons'
+import { DownloadIcon, EyeIcon, MenuIcon, PlusIcon } from '@/components/icons'
 
 const PAGE_SIZE = 10
+
+/** Khoá `localStorage` riêng cho màn đơn hàng — mỗi màn CMS nhớ trạng thái
+ *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
+const METRICS_COLLAPSED_KEY = 'namduhill-cms-orders-metrics-collapsed'
 
 const STATUSES: BookingStatus[] = [
     'pending_payment',
@@ -59,6 +64,7 @@ export default function AdminOrdersPage() {
     const [channel, setChannel] = useState('')
     const [page, setPage] = useState(1)
     const [selected, setSelected] = useState<string[]>([])
+    const [metricsCollapsed, toggleMetrics] = useMetricsCollapsed(METRICS_COLLAPSED_KEY)
 
     const isFiltered = Boolean(search || status || roomType || channel)
 
@@ -305,6 +311,8 @@ export default function AdminOrdersPage() {
                 }}
                 onExport={exportCsv}
                 canCreate={canCreate}
+                metricsCollapsed={metricsCollapsed}
+                onToggleMetrics={toggleMetrics}
             />
 
             {/* HÀNG 2 — bộ lọc: pill Kênh đặt + select Trạng thái/Hạng phòng,
@@ -364,8 +372,13 @@ export default function AdminOrdersPage() {
                 )}
             </div>
 
-            {/* MetricStrip — 5 KPI kênh bán, LUÔN hiện (màn phân tích theo kênh). */}
-            <div className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2">
+            {/* MetricStrip — 5 KPI kênh bán. Ẩn/hiện được qua nút ở hàng 1, mặc
+                định HIỆN. `id` khớp `aria-controls` của nút toggle. */}
+            {!metricsCollapsed && (
+            <div
+                id="orders-metric-strip"
+                className="border-t border-[var(--cms-border)] bg-[var(--cms-bg-subtle)] px-[var(--cms-pad)] py-2"
+            >
                 <MetricStrip>
                     <KpiCard
                         label={tr(S.kpiAllChannels, locale)}
@@ -399,6 +412,7 @@ export default function AdminOrdersPage() {
                     />
                 </MetricStrip>
             </div>
+            )}
 
             {/* Banner chọn nhiều — chỉ render khi có dòng được chọn. */}
             {selected.length > 0 && (
@@ -506,6 +520,8 @@ function PageHeaderBarWithSearch({
     onSearchChange,
     onExport,
     canCreate,
+    metricsCollapsed,
+    onToggleMetrics,
 }: {
     locale: 'vi' | 'en'
     count: number
@@ -513,6 +529,8 @@ function PageHeaderBarWithSearch({
     onSearchChange: (v: string) => void
     onExport: () => void
     canCreate: boolean
+    metricsCollapsed: boolean
+    onToggleMetrics: () => void
 }) {
     return (
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[var(--cms-border)] px-[var(--cms-pad)] py-2.5">
@@ -534,6 +552,19 @@ function PageHeaderBarWithSearch({
                     placeholder={tr(S.search, locale)}
                     className="w-44 sm:w-56 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] px-3 py-1.5 text-[length:var(--cms-text-body)] text-[var(--cms-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                 />
+
+                {/* Nút ẩn/hiện MetricStrip — cùng hàng với các nút hành động
+                    khác, mặc định HIỆN số liệu. */}
+                <button
+                    type="button"
+                    onClick={onToggleMetrics}
+                    aria-expanded={!metricsCollapsed}
+                    aria-controls="orders-metric-strip"
+                    className="flex items-center gap-1 px-3 py-1.5 text-[length:var(--cms-text-body)] font-medium bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-[var(--cms-radius)] text-[var(--cms-text)] hover:bg-[var(--cms-bg-subtle)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                >
+                    <MenuIcon size={14} />
+                    <span>{tr(metricsCollapsed ? S.showMetrics : S.hideMetrics, locale)}</span>
+                </button>
 
                 <button
                     type="button"
