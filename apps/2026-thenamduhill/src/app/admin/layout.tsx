@@ -18,7 +18,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { ROLE_LABEL, S, tr } from '@/strings'
 import type { Permission } from '@repo/core'
 import { can, isStaffRole } from '@repo/core'
-import { AppShell, type ShellZone } from '@repo/cms-ui'
+import { AppShell, DrawerRightProvider, type ShellZone } from '@repo/cms-ui'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -85,8 +85,34 @@ const ZONE_ICON: Record<NavSection['prefix'], React.ReactNode> = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
         <LocaleProvider>
-            <AdminShell>{children}</AdminShell>
+            <AdminDrawerHost>
+                <AdminShell>{children}</AdminShell>
+            </AdminDrawerHost>
         </LocaleProvider>
+    )
+}
+
+/**
+ * Đặt `DrawerRightProvider` ở TẦNG LAYOUT, không phải trong từng màn: nhờ vậy
+ * mọi màn CMS chỉ cần gọi `useDrawerRight().show({...})` là mở được bảng trượt,
+ * không phải tự khai state và tự nhớ render component ở cuối JSX.
+ *
+ * Nằm TRONG `LocaleProvider` vì nhãn nút của drawer phải song ngữ (luật C7) —
+ * `cms-ui` thuộc tầng nền, không được biết hệ i18n của app, nên nhận nhãn đã
+ * dịch qua prop.
+ */
+function AdminDrawerHost({ children }: { children: React.ReactNode }) {
+    const { locale } = useLocale()
+    return (
+        <DrawerRightProvider
+            labels={{
+                close: tr(S.close, locale),
+                back: tr(S.back, locale),
+                cancel: tr(S.cancel, locale),
+            }}
+        >
+            {children}
+        </DrawerRightProvider>
     )
 }
 

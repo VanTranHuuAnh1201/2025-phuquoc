@@ -32,3 +32,6 @@ export type { InlineAlertProps } from './InlineAlert'
 
 export { DataGrid } from './DataGrid'
 export type { DataGridProps } from './DataGrid'
+
+export { DrawerRightProvider, useDrawerRight } from './DrawerRight'
+export type { DrawerRightOptions, DrawerRightProviderProps } from './DrawerRight'

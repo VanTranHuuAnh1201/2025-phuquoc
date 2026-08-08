@@ -305,6 +305,22 @@ export const S = {
     doCheckIn: t('Nhận phòng', 'Check in'),
     doCheckOut: t('Trả phòng', 'Check out'),
     doConfirm: t('Xác nhận đơn', 'Confirm booking'),
+
+    // --- bảng trượt chi tiết đơn ---
+    panelOverview: t('Tổng quan', 'Overview'),
+    panelHistory: t('Diễn biến', 'History'),
+    panelFullPage: t('Mở trang đầy đủ', 'Open full page'),
+    panelClosedBooking: t('Đơn đã đóng, không sửa được nữa.', 'This booking is closed.'),
+    panelNotFound: t('Không tìm thấy đơn.', 'Booking not found.'),
+    // Liên kết chéo giữa các màn vận hành
+    linkCustomerProfile: t('Xem hồ sơ khách', 'View customer profile'),
+    linkOccupiedBy: t('Khách đang ở', 'Occupied by'),
+    linkBookingsOnDate: t('Đơn ở đêm này', 'Bookings this night'),
+    linkNoBookingsOnDate: t(
+        'Chưa có đơn nào nhận phòng đêm này.',
+        'No bookings staying this night yet.',
+    ),
+    linkRoomUnit: t('Phòng đã gán', 'Assigned room'),
     markNoShow: t('Đánh dấu vắng mặt', 'Mark as no-show'),
     assignRoom: t('Gán phòng', 'Assign room'),
     earlyCheckIn: t('Nhận phòng sớm', 'Early check-in'),

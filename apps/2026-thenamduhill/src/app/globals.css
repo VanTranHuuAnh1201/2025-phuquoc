@@ -35,6 +35,18 @@
 @source '../../../../packages/ui-layout/src';
 @source '../../../../packages/domain-hotel/src';
 
+/**
+ * `cms-ui/src/DrawerRight/` là bản THAM CHIẾU từ dự án khác, giữ lại để đối
+ * chiếu ý tưởng chứ không biên dịch (xem `cms-ui/tsconfig.json`).
+ *
+ * VÌ SAO PHẢI LOẠI KHỎI QUÉT: Tailwind dò class bằng khớp văn bản thuần — nó
+ * KHÔNG phân biệt code với comment. File đó có một dòng đã comment chứa
+ * `bg-[url(./assets/images/background-drawer.png)]`, Tailwind vẫn sinh ra
+ * class ấy, rồi bundler đi tìm file ảnh không tồn tại và build ĐỔ hẳn với lỗi
+ * "Cannot find module" — một lỗi không nhắc gì tới CSS hay Tailwind, rất khó
+ * lần ra nguồn. Trừ thư mục ra là hết. */
+@source not '../../../../packages/cms-ui/src/DrawerRight';
+
 /* ------------------------------------------------------------------ reset
  *
  * KHÔNG khai lại `box-sizing`, `margin: 0`, `img { height: auto }` ở đây.

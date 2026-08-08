@@ -22,7 +22,6 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { can, formatPrice, getPropertySync, pick } from '@repo/core'
 import type { Booking, BookingStatus, Channel } from '@repo/core'
 import type { Column } from '@repo/ui'
@@ -33,6 +32,7 @@ import { useBookingsData } from '@/hooks/useAdminData'
 import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { CHANNEL_CMS_TONE, CHANNEL_LABEL, S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
 import { DownloadIcon, EyeIcon, MenuIcon, PlusIcon } from '@/components/icons'
+import { useOrderDrawer } from './_shared/OrderDetailPanel'
 
 const PAGE_SIZE = 10
 
@@ -53,7 +53,7 @@ const CHANNELS: Channel[] = ['web', 'phone', 'walk-in', 'ota']
 
 export default function AdminOrdersPage() {
     const { locale } = useLocale()
-    const router = useRouter()
+    const { openOrder } = useOrderDrawer()
     const { bookings } = useBookingsData()
     const user = useAuthStore((s) => s.user)
     const property = getPropertySync()
@@ -441,7 +441,10 @@ export default function AdminOrdersPage() {
                     columns={columns}
                     rows={pageRows}
                     rowKey={(b) => b.id}
-                    onRowClick={(b) => router.push(`/admin/orders/${b.id}`)}
+                    // Click dòng mở BẢNG TRƯỢT, không rời trang: giữ được chỗ
+                    // đang dò trong bảng để mở tiếp đơn kế bên. Icon mắt vẫn là
+                    // link tới trang đầy đủ cho ai cần mở tab mới.
+                    onRowClick={(b) => openOrder(b.id)}
                     selectable
                     selectedKeys={selected}
                     onSelectionChange={setSelected}

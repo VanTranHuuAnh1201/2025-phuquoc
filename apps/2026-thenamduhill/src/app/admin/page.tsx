@@ -28,6 +28,7 @@ import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
+import { useOrderDrawer } from './orders/_shared/OrderDetailPanel'
 
 /** Khoá `localStorage` cho trạng thái ẩn/hiện MetricStrip — riêng với khoá
  *  sidebar (`namduhill-cms-rail-collapsed` ở `AppShell`) và riêng với khoá
@@ -109,6 +110,7 @@ const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager'
 
 export default function AdminDashboard() {
     const { locale } = useLocale()
+    const { openOrder } = useOrderDrawer()
     const { bookings: rawBookings, roomUnits } = useBookingsData()
     const logs = useBookingStore((s) => s.logs)
     const changeStatus = useBookingStore((s) => s.changeStatus)
@@ -583,9 +585,11 @@ export default function AdminDashboard() {
                                 columns={columns}
                                 rows={filteredData}
                                 rowKey={(row) => row.id}
-                                onRowClick={(row) => {
-                                    window.location.href = `/admin/orders/${row.id}`
-                                }}
+                                // Trước đây là `window.location.href` — tải lại
+                                // TOÀN BỘ trang, mất hết bộ lọc ca trực và hạng
+                                // phòng đang đặt. Bảng trượt giữ nguyên màn hình
+                                // nền, đóng lại là quản lý ở đúng chỗ vừa đứng.
+                                onRowClick={(row) => openOrder(row.id)}
                                 empty={
                                     // `h-full flex items-center justify-center` thay vì
                                     // `py-8 text-center`: nội dung rỗng giờ giãn ĐẦY khung
@@ -656,9 +660,24 @@ export default function AdminDashboard() {
                                                     {title ? title[locale] : log.action} — {log.actorName}
                                                 </div>
                                                 <div className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] mt-0.5 leading-relaxed">
-                                                    {booking
-                                                        ? `${booking.code} · ${booking.roomTypeName}`
-                                                        : log.note || log.bookingId}
+                                                    {/* Mã đơn trước đây in ra chữ thường: quản lý
+                                                        thấy "vừa nhận phòng NDH-…" nhưng muốn xem
+                                                        thì phải tự đi tìm lại trong bảng. Giờ bấm
+                                                        thẳng vào là mở đơn đó. */}
+                                                    {booking ? (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="cms-crosslink"
+                                                                onClick={() => openOrder(booking.id)}
+                                                            >
+                                                                {booking.code}
+                                                            </button>
+                                                            {` · ${booking.roomTypeName}`}
+                                                        </>
+                                                    ) : (
+                                                        log.note || log.bookingId
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

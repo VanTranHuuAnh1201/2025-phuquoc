@@ -16,10 +16,13 @@
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",
     "@types/react": "^19",
+    "@types/react-dom": "^19",
     "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "typescript": "^5"
   },
   "peerDependencies": {
-    "react": "^19"
+    "react": "^19",
+    "react-dom": "^19"
   }
 }

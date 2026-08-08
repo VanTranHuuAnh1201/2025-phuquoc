@@ -86,6 +86,42 @@
     /* Shadow chỉ 2 bậc, chỉ cho lớp nổi thật. */
     --cms-shadow-pop: 0 4px 12px rgb(17 24 39 / 0.08);
     --cms-shadow-modal: 0 16px 40px rgb(17 24 39 / 0.16);
+
+    /* --- thang xếp lớp ---------------------------------------------------
+     * Trước khi có khối này, z-index là số ma thuật rải rác khắp repo:
+     * `Modal` 100, tooltip rail `z-50`, dropdown tài khoản `z-50`, phân trang
+     * dính `z-10`, thead dính 2. Không nhìn được thứ tự chồng lớp ở một chỗ,
+     * nên mỗi lần thêm lớp nổi mới lại phải đi dò cả repo.
+     *
+     * ⚠️ DRAWER PHẢI NẰM DƯỚI MODAL, KHÔNG PHẢI TRÊN.
+     * Bản đầu đặt drawer 200 > Modal 100 với lý lẽ "drawer là lớp nền ngữ
+     * cảnh". Lý lẽ đó TỰ MÂU THUẪN: hộp thoại xác nhận bung ra TỪ drawer
+     * (huỷ đơn, ghi chú) chính là `Modal` — đặt drawer cao hơn thì bấm "Huỷ
+     * đơn" xong không thấy gì, vì hộp xác nhận nằm khuất sau drawer vừa mở
+     * ra nó. Thứ tự đúng theo mức độ chặn: nội dung → drawer → hộp xác nhận.
+     *
+     * Drawer bắt đầu ở 60 và mỗi lớp chồng thêm cộng 2 (xem `DrawerRight`),
+     * nên còn chỗ cho ~20 lớp trước khi chạm Modal — nhiều hơn mọi kịch bản
+     * thật. Chừa khoảng trống giữa các bậc để chèn lớp mới sau này. */
+    --cms-z-sticky: 10;
+    --cms-z-dropdown: 50;
+    --cms-z-drawer: 60;
+    --cms-z-modal: 100;
+
+    /* --- lớp phủ & chuyển động -------------------------------------------
+     * `--overlay-scrim` của contract.css là 0.55 — hợp với modal căn giữa vì
+     * nó phải cắt đứt hẳn nền. Panel thì KHÔNG: giữ bảng phía sau còn đọc
+     * được chính là lý do tồn tại của panel, nên scrim nhạt hơn hẳn. */
+    --cms-scrim: rgb(17 24 39 / 0.32);
+    --cms-motion-panel: 240ms;
+    --cms-ease-panel: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Người dùng tắt chuyển động thì panel hiện ngay, không trượt (D4/FE12). */
+@media (prefers-reduced-motion: reduce) {
+    [data-cms] {
+        --cms-motion-panel: 0ms;
+    }
 }
 
 /* --- vách ngăn dọc cho `MetricStrip` --------------------------------
@@ -274,4 +310,120 @@
  * dung và để lại khe hở 1px. `box-shadow` vẽ theo vị trí đã dính. */
 [data-cms] .dt-table thead th {
     box-shadow: inset 0 -1px 0 var(--cms-border);
+}
+
+/* --- liên kết chéo giữa các màn vận hành ---
+ * Trước đây các màn CMS là những ốc đảo: đứng ở Buồng phòng thấy phòng 201
+ * "đang có khách" nhưng không biết khách nào; đứng ở Tồn kho thấy "đã bán 8"
+ * nhưng không biết 8 đơn nào. Nút này là lối đi giữa chúng.
+ *
+ * Trông như link (chữ màu accent) nhưng là `<button>` vì nó mở bảng trượt tại
+ * chỗ chứ không điều hướng — dùng `<a href>` ở đây là nói dối trình đọc màn
+ * hình và cho phép "mở tab mới" vào một thứ không tồn tại như một trang. */
+[data-cms] .cms-crosslink {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    color: var(--cms-accent);
+    font-size: var(--cms-text-body);
+    /* ≥24px chiều cao chạm theo WCAG 2.2 §2.5.8 (D4). */
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+[data-cms] .cms-crosslink:hover {
+    text-decoration: underline;
+}
+[data-cms] .cms-crosslink:focus-visible {
+    outline: 2px solid var(--cms-accent);
+    outline-offset: 2px;
+    border-radius: var(--cms-radius-sm);
+}
+[data-cms] .cms-crosslink[disabled] {
+    color: var(--cms-text-muted);
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+/* --- nút bên trong DrawerRight ---
+ * Ba class này để `DrawerRight.tsx` không phải nhồi 8 dòng class Tailwind lặp
+ * lại cho mỗi nút. Chúng tự khai đủ 7 trạng thái (FE1/D3) — đặc biệt là
+ * `focus-visible`, thứ KHÔNG BAO GIỜ được tắt: lễ tân thao tác bằng bàn phím
+ * khi đang một tay cầm điện thoại. */
+[data-cms] .cms-drawer-iconbtn {
+    display: grid;
+    place-items: center;
+    /* 28px, nhưng vùng chạm nới bằng padding lên ≥24px theo WCAG 2.2 §2.5.8. */
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--cms-text-muted);
+    cursor: pointer;
+    border-radius: var(--cms-radius-sm);
+    font-size: 15px;
+    line-height: 1;
+}
+[data-cms] .cms-drawer-iconbtn:hover {
+    background: var(--cms-bg-subtle);
+    color: var(--cms-text);
+}
+[data-cms] .cms-drawer-iconbtn:active {
+    background: var(--cms-border);
+}
+[data-cms] .cms-drawer-iconbtn:focus-visible {
+    outline: 2px solid var(--cms-accent);
+    outline-offset: -2px;
+}
+
+[data-cms] .cms-btn-primary,
+[data-cms] .cms-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    /* 32px cao — trên ngưỡng chạm 24px, dưới cỡ nút marketing 44px. Đây là
+     * công cụ nội bộ dùng bằng chuột là chính, nhồi nút to làm loãng bảng. */
+    min-height: 32px;
+    padding: 0 14px;
+    border-radius: var(--cms-radius);
+    font-size: var(--cms-text-body);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms;
+}
+[data-cms] .cms-btn-primary {
+    border: 1px solid var(--cms-accent);
+    background: var(--cms-accent);
+    color: #fff;
+}
+[data-cms] .cms-btn-primary:hover:not([disabled]) {
+    filter: brightness(0.94);
+}
+[data-cms] .cms-btn-secondary {
+    border: 1px solid var(--cms-border);
+    background: var(--cms-bg);
+    color: var(--cms-text);
+    font-weight: 500;
+}
+[data-cms] .cms-btn-secondary:hover:not([disabled]) {
+    background: var(--cms-bg-subtle);
+}
+[data-cms] .cms-btn-primary:focus-visible,
+[data-cms] .cms-btn-secondary:focus-visible {
+    outline: 2px solid var(--cms-accent);
+    outline-offset: 2px;
+}
+/* Vẫn ĐỌC ĐƯỢC khi khoá — `opacity: .4` làm chữ tụt dưới ngưỡng tương phản
+ * 4.5:1, mà nhãn nút chính là thông tin cho biết vì sao nó đang bị khoá. */
+[data-cms] .cms-btn-primary[disabled],
+[data-cms] .cms-btn-secondary[disabled] {
+    cursor: not-allowed;
+    border-color: var(--cms-border);
+    background: var(--cms-bg-subtle);
+    color: var(--cms-text-muted);
 }

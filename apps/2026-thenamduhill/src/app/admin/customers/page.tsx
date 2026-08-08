@@ -19,7 +19,6 @@
  */
 
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
 import { formatPrice, getPropertySync, pick } from '@repo/core'
 import type { Booking, Customer } from '@repo/core'
 import type { Column } from '@repo/ui'
@@ -30,6 +29,7 @@ import { useBookingsData } from '@/hooks/useAdminData'
 import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { EyeIcon, MenuIcon } from '@/components/icons'
 import { S, STATUS_CMS_TONE, STATUS_LABEL, tr } from '@/strings'
+import { useOrderDrawer } from '../orders/_shared/OrderDetailPanel'
 
 /** Khoá `localStorage` riêng cho màn khách hàng — mỗi màn CMS nhớ trạng thái
  *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
@@ -39,6 +39,13 @@ export default function CustomersPage() {
     const { locale } = useLocale()
     const { customers, bookings } = useBookingsData()
     const property = getPropertySync()
+    // Bảng trượt chi tiết đơn — mở NGAY TRÊN modal lịch sử thay vì rời trang.
+    // Trước đây mã đơn là `<Link href="/admin/orders/<id>">`: bấm vào là mất
+    // modal đang mở, xem xong phải Back rồi mở lại khách đó từ đầu. Panel có
+    // z-index 200 > modal 100 (xem `tokens.css`) nên nó phủ lên modal, và khi
+    // đóng panel thì modal lịch sử vẫn còn nguyên phía sau — đúng chuỗi thao
+    // tác "xem khách → soi từng đơn → quay lại danh sách đơn của khách đó".
+    const { openOrder } = useOrderDrawer()
 
     const [search, setSearch] = useState('')
     const [tierFilter, setTierFilter] = useState('all')
@@ -460,14 +467,19 @@ export default function CustomersPage() {
                                             key: 'code',
                                             header: tr(S.customersHistoryColCode, locale),
                                             cell: (b) => (
-                                                <Link
-                                                    href={`/admin/orders/${b.id}`}
+                                                // `cms-crosslink` đã khai sẵn ở
+                                                // `@repo/cms-ui/tokens.css` (màu, hover,
+                                                // focus-visible, target ≥24px) — dùng lại,
+                                                // không khai kiểu dáng lần hai (R12/P0).
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openOrder(b.id)}
                                                     aria-label={`${tr(S.customersHistoryViewOrderAria, locale)} ${b.code}`}
-                                                    className="inline-flex items-center gap-1 font-semibold text-[var(--cms-accent)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                                                    className="cms-crosslink gap-1 font-semibold"
                                                 >
                                                     <EyeIcon size={14} />
                                                     {b.code}
-                                                </Link>
+                                                </button>
                                             ),
                                         },
                                         {
@@ -527,6 +539,10 @@ export default function CustomersPage() {
                     </div>
                 )}
             </Modal>
+
+            {/* Panel chi tiết đơn — đặt NGOÀI `Modal` để không bị bỏ khỏi cây
+                khi modal đóng, và để nó nhận z-index riêng (200) đè lên modal
+                (100) thay vì bị kẹt trong lớp phủ của modal. */}
         </div>
     )
 }

@@ -1,4 +1,6 @@
 {
   "extends": "@repo/tsconfig/react.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "//": "src/DrawerRight/ là bản tham chiếu từ dự án khác (dùng shadcn Sheet + alias @/stores/global không tồn tại ở đây). Giữ lại để đối chiếu ý tưởng, nhưng không biên dịch — bản dùng thật là src/DrawerRight.tsx.",
+  "exclude": ["src/DrawerRight/**"]
 }

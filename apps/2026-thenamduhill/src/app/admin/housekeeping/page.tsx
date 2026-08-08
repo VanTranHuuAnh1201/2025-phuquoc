@@ -38,10 +38,11 @@ import { useBookingStore } from '@/stores/booking.store'
 import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { MenuIcon } from '@/components/icons'
 import { S, tr, UNIT_STATUS_CMS_TONE, UNIT_STATUS_LABEL } from '@/strings'
-import type { RoomUnitStatus } from '@repo/core'
+import type { Booking, RoomUnitStatus } from '@repo/core'
 import { getPropertySync, pick } from '@repo/core'
 import { DotBadge, InlineAlert, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
 import { useMemo, useState } from 'react'
+import { useOrderDrawer } from '../orders/_shared/OrderDetailPanel'
 
 /** Khoá `localStorage` riêng cho màn buồng phòng — mỗi màn CMS nhớ trạng thái
  *  ẩn/hiện của chính mình (xem giải thích trong `useMetricsCollapsed`). */
@@ -89,9 +90,10 @@ type GroupBy = 'status' | 'roomType'
 
 export default function HousekeepingPage() {
     const { locale } = useLocale()
-    const { roomUnits } = useBookingsData()
+    const { roomUnits, bookings } = useBookingsData()
     const setUnitStatus = useBookingStore((s) => s.setUnitStatus)
     const property = getPropertySync()
+    const { openOrder } = useOrderDrawer()
 
     const [search, setSearch] = useState('')
     const [roomTypeFilter, setRoomTypeFilter] = useState('all')
@@ -127,6 +129,29 @@ export default function HousekeepingPage() {
     }, [roomUnits])
 
     const needsCleaning = counts.dirty + counts.cleaning
+
+    /**
+     * Nối phòng vật lý → đơn ĐANG chiếm nó.
+     *
+     * VÌ SAO PHẢI LỌC `status === 'checked_in'`: `checkInRecord` KHÔNG bị xoá khi
+     * khách trả phòng, nên một phòng đã dùng cả năm sẽ có hàng chục đơn cùng
+     * `roomUnitId`. Chỉ lọc theo `roomUnitId` là bốc trúng đơn `checked_out` từ
+     * tháng trước và bêu tên nhầm khách cho tổ buồng phòng. Chỉ đơn `checked_in`
+     * mới thật sự đang giữ phòng.
+     *
+     * VÌ SAO KHÔNG CÓ KHOÁ NGƯỢC: `RoomUnit` không mang `currentBookingId`, nên
+     * đây là con đường duy nhất.
+     */
+    const bookingByUnitId = useMemo(() => {
+        const map = new Map<string, Booking>()
+        for (const booking of bookings) {
+            if (booking.status !== 'checked_in') continue
+            const unitId = booking.checkInRecord?.roomUnitId
+            if (!unitId) continue
+            map.set(unitId, booking)
+        }
+        return map
+    }, [bookings])
 
     const roomName = (roomTypeId: string) => {
         const room = property.rooms.find((r) => r.id === roomTypeId)
@@ -382,6 +407,63 @@ export default function HousekeepingPage() {
                                     const tone = UNIT_STATUS_CMS_TONE[unit.status]
                                     const nextStatus = NEXT_STATUS[unit.status]
                                     const actionLabel = NEXT_ACTION_LABEL[unit.status]
+                                    const occupant = locked ? bookingByUnitId.get(unit.id) : undefined
+
+                                    // Thẻ có khách phải dựng bằng `div`, KHÔNG phải
+                                    // `button`: nút "xem đơn" nằm bên trong, mà
+                                    // button lồng button là HTML không hợp lệ —
+                                    // trình duyệt tự gỡ và click rơi sai chỗ.
+                                    // Thẻ này vốn đã `disabled` nên không mất hành
+                                    // vi nào khi bỏ thẻ `button`.
+                                    if (occupant) {
+                                        return (
+                                            <div
+                                                key={unit.id}
+                                                title={tr(S.housekeepingLocked, locale)}
+                                                className="relative flex min-h-[56px] flex-col items-center justify-center gap-1 rounded-[var(--cms-radius)] border border-[var(--cms-border)] bg-[var(--cms-bg)] p-1.5 text-center opacity-90"
+                                            >
+                                                <span className="text-[length:var(--cms-text-body)] font-bold tracking-tight text-[var(--cms-text)]">
+                                                    {unit.code}
+                                                </span>
+
+                                                <DotBadge
+                                                    tone={tone}
+                                                    label={tr(UNIT_STATUS_LABEL[unit.status], locale)}
+                                                />
+
+                                                {/* Tên khách + ngày trả phòng: không có hai
+                                                    dòng này thì ô `occupied` là ô câm — tổ
+                                                    buồng phòng không biết phòng nào sắp
+                                                    trống để xếp lịch dọn. */}
+                                                <span
+                                                    className="w-full truncate text-[length:var(--cms-text-meta)] leading-tight text-[var(--cms-text-muted)]"
+                                                    title={`${tr(S.linkOccupiedBy, locale)}: ${occupant.guest.fullName}`}
+                                                >
+                                                    {occupant.guest.fullName}
+                                                </span>
+                                                <span className="text-[length:var(--cms-text-meta)] leading-tight text-[var(--cms-text-muted)] tabular-nums">
+                                                    {tr(S.checkOut, locale)} {occupant.checkOut.slice(8)}/
+                                                    {occupant.checkOut.slice(5, 7)}
+                                                </span>
+
+                                                <button
+                                                    type="button"
+                                                    // Chặn nổi bọt phòng khi thẻ sau này lại
+                                                    // gắn handler đổi trạng thái — mở đơn và
+                                                    // đổi tình trạng phòng là hai ý định khác
+                                                    // hẳn nhau, không được kích hoạt cùng lúc.
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        openOrder(occupant.id)
+                                                    }}
+                                                    className="cms-crosslink text-[length:var(--cms-text-meta)]"
+                                                    aria-label={`${tr(S.linkRoomUnit, locale)} ${unit.code} — ${occupant.code}`}
+                                                >
+                                                    {occupant.code} →
+                                                </button>
+                                            </div>
+                                        )
+                                    }
 
                                     return (
                                         <button
@@ -440,6 +522,9 @@ export default function HousekeepingPage() {
                     <InlineAlert tone="slate">{tr(S.housekeepingEmpty, locale)}</InlineAlert>
                 )}
             </div>
+
+            {/* Xem đơn ngay tại màn buồng phòng — rời trang là mất chỗ đang dò
+                trong lưới 120 phòng. */}
         </div>
     )
 }
