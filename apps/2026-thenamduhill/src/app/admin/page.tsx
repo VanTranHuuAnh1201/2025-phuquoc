@@ -28,6 +28,7 @@ import { useMetricsCollapsed } from '@/hooks/useMetricsCollapsed'
 import { useBookingStore } from '@/stores/booking.store'
 import { todayKey } from '@/stores/demo-data'
 import { S, STATUS_LABEL, tr } from '@/strings'
+import { useNewBookingDrawer } from './orders/_shared/NewBookingForm'
 import { useOrderDrawer } from './orders/_shared/OrderDetailPanel'
 
 /** Khoá `localStorage` cho trạng thái ẩn/hiện MetricStrip — riêng với khoá
@@ -111,6 +112,7 @@ const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager'
 export default function AdminDashboard() {
     const { locale } = useLocale()
     const { openOrder } = useOrderDrawer()
+    const { openNewBooking } = useNewBookingDrawer()
     const { bookings: rawBookings, roomUnits } = useBookingsData()
     const logs = useBookingStore((s) => s.logs)
     const changeStatus = useBookingStore((s) => s.changeStatus)
@@ -463,12 +465,16 @@ export default function AdminDashboard() {
                         >
                             {viewMode === 'console' ? tr(S.tapeChartView, locale) : tr(S.consoleView, locale)}
                         </button>
-                        <Link
-                            href="/admin/orders/new"
+                        {/* Drawer chứ không `<Link>` sang `/admin/orders/new`:
+                            lễ tân đang dò bảng hôm nay mà rời trang là mất chỗ
+                            đang xem. Route kia vẫn sống cho deep-link. */}
+                        <button
+                            type="button"
+                            onClick={openNewBooking}
                             className="px-3 py-1.5 text-[length:var(--cms-text-body)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
                             {tr(S.newBookingCta, locale)}
-                        </Link>
+                        </button>
                     </>
                 }
             />

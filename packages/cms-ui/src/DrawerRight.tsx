@@ -57,6 +57,20 @@ export interface DrawerRightOptions {
     footer?: ReactNode
     /** Thêm class cho khung nội dung — chỉnh bề rộng: `sm:!max-w-[941px]`. */
     contentClassname?: string
+    /**
+     * THAY THẾ class của vùng thân (mặc định `min-h-0 flex-1 overflow-y-auto
+     * p-[var(--cms-pad)]`).
+     *
+     * Dùng khi nội dung tự quản lý cuộn và padding của nó — ví dụ form dài cần
+     * thanh nút cố định ở đáy: nút phải nằm NGOÀI vùng cuộn, mà vùng cuộn mặc
+     * định ở đây lại bọc trọn `children`. Truyền `'min-h-0 flex-1 flex flex-col'`
+     * để nhường quyền chia vùng cho nội dung.
+     *
+     * Chồng hai lớp `overflow-y-auto` lên nhau sinh ra hai thanh cuộn lồng —
+     * nên khi truyền prop này, nội dung phải tự khai `overflow-y-auto` ở đúng
+     * một chỗ bên trong.
+     */
+    bodyClassname?: string
     /** Gọi khi lớp này đóng, bất kể đóng bằng cách nào. */
     onClose?: () => void
 }
@@ -325,7 +339,12 @@ function DrawerLayerView({
                         </header>
                     )}
 
-                    <div className="min-h-0 flex-1 overflow-y-auto p-[var(--cms-pad)]">
+                    <div
+                        className={
+                            layer.bodyClassname ??
+                            'min-h-0 flex-1 overflow-y-auto p-[var(--cms-pad)]'
+                        }
+                    >
                         {layer.children}
                     </div>
 
