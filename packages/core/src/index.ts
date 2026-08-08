@@ -43,6 +43,10 @@ export * from './assets'
 // dùng `calculatePrice`/`validateBooking`, mọi tính toán đi qua `buildQuote()`.
 export * from './booking-types'
 export * from './permissions'
+
+// Hợp đồng API (ticket `380-01`) — Request/Response/Error của mọi endpoint
+// release v1.0.1 chạm tới. BE sở hữu, FE chỉ đọc. Chỉ có type, không thân hàm.
+export type * from './api-contracts'
 export * from './pricing'
 export * from './promotion'
 export * from './availability'

@@ -42,7 +42,7 @@ async function postRefundHandler(
             })
         }
 
-        const paymentMethod = body?.paymentMethod || 'bank_transfer'
+        const paymentMethod = body?.paymentMethod || 'bank-transfer'
         const reference = body?.reference || `REF-${Date.now()}`
 
         const adminSupabase = createAdminClient()

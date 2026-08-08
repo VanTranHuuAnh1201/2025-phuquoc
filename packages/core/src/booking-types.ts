@@ -451,6 +451,10 @@ export type LogAction =
     | 'room-assigned'
     | 'price-adjusted'
     | 'cancelled'
+    // Hoàn tiền tách riêng khỏi 'payment-recorded': nhật ký phải phân biệt được
+    // chiều tiền vào/ra khi tranh chấp với khách (§B1). Khớp `chk_logs_action`
+    // sau migration 20260103000000 (ticket 900-01).
+    | 'refund-processed'
 
 /**
  * Một dòng nhật ký trên đơn. BẤT BIẾN — không bao giờ sửa hay xoá.
