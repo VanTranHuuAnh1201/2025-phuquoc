@@ -1,4 +1,5 @@
 import { ok, serverError } from '@/lib/auth/errors'
+import { withAuthGuard } from '@/lib/auth/guard'
 import { createAdminClient } from '@/utils/supabase/admin'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +20,20 @@ interface AccountRow {
     created_at?: string | null
 }
 
-export async function GET() {
+/**
+ * Danh sách tài khoản — email, SĐT, vai trò của cả nhân viên lẫn khách.
+ *
+ * `account.manage` chứ KHÔNG phải một quyền đọc chung chung: §B8 chỉ cấp quyền
+ * này cho `owner`. `manager` cố ý KHÔNG có — bản đồ tài khoản quản trị kèm vai
+ * trò là đầu vào trực tiếp cho việc dò mật khẩu, nên nó hẹp hơn quyền vận hành.
+ *
+ * Trước ticket `900-02` route này là `export async function GET()` trần dùng
+ * `createAdminClient()` (service role ⇒ bỏ qua RLS), nên gọi không cookie vẫn
+ * trả đủ 46 tài khoản. Cả ba lớp phòng thủ của `backend.md` đều vắng cùng lúc:
+ * middleware không phủ `/api/**`, không `requirePermission`, RLS bị service role
+ * vô hiệu. `withAuthGuard` là lớp DUY NHẤT còn lại ở đường này — đừng gỡ.
+ */
+export const GET = withAuthGuard(async () => {
     try {
         const adminSupabase = createAdminClient()
         const { data: accounts, error } = await adminSupabase
@@ -50,4 +64,4 @@ export async function GET() {
         console.error('[GET /api/admin/accounts error]', err)
         return serverError()
     }
-}
+}, 'account.manage')
