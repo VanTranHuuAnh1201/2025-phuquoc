@@ -38,7 +38,7 @@ import {
     quoteRefund,
     ratePlans,
 } from '@repo/core'
-import type { BookingStatus } from '@repo/core'
+import type { BookingStatus, I18nText } from '@repo/core'
 import { Badge, Button } from '@repo/ui'
 import { useDrawerRight } from '@repo/cms-ui'
 import { useLocale } from '@/components/LocaleProvider'
@@ -88,9 +88,7 @@ export function OrderDetailView({
     const logs = useBookingStore((s) => s.logs)
     const roomUnits = useBookingStore((s) => s.roomUnits)
 
-    const changeStatus = useBookingStore((s) => s.changeStatus)
-    const doCheckIn = useBookingStore((s) => s.checkIn)
-    const doCheckOut = useBookingStore((s) => s.checkOut)
+    const changeStatusViaApi = useBookingStore((s) => s.changeStatusViaApi)
     const cancelBooking = useBookingStore((s) => s.cancelBooking)
     const addNote = useBookingStore((s) => s.addNote)
     const pushNotification = useNotifyStore((s) => s.push)
@@ -98,6 +96,8 @@ export function OrderDetailView({
     const [tab, setTab] = useState<PanelTabId>('overview')
     const [dialog, setDialog] = useState<'none' | 'cancel' | 'note'>('none')
     const [error, setError] = useState<WriteError | null>(null)
+    /** Lỗi do SERVER trả về — thông điệp tự do, không thuộc union `WriteError`. */
+    const [apiError, setApiError] = useState<I18nText | null>(null)
     const [busy, setBusy] = useState(false)
 
     // Đổi sang đơn khác thì trả tab về đầu — giữ tab "Trả phòng" của đơn trước
@@ -170,11 +170,27 @@ export function OrderDetailView({
     const canCancel = can(user.role, 'booking.cancel')
     const canRefund = can(user.role, 'booking.refund')
 
-    const runStatus = (to: BookingStatus) => {
+    /**
+     * Duyệt cọc / huỷ đơn — QUA SERVER.
+     *
+     * Trước đây gọi `changeStatus()` thuần store: badge đổi ngay nhưng F5 là
+     * quay lại trạng thái cũ, và máy lễ tân khác không thấy gì (đã tái hiện
+     * bằng Playwright). Nay đi qua route nghiệp vụ rồi tải lại từ server.
+     */
+    const runStatus = async (to: BookingStatus) => {
+        if (to !== 'confirmed' && to !== 'cancelled') {
+            // `checked_in`/`checked_out` cần dữ liệu form (phòng vật lý, CCCD,
+            // phát sinh) nên đi qua dialog riêng, không qua nút một chạm.
+            setError('invalid-transition')
+            return
+        }
+
         setBusy(true)
-        const result = changeStatus(booking.id, to, actor)
+        setError(null)
+        setApiError(null)
+        const result = await changeStatusViaApi(booking.id, to)
         setBusy(false)
-        setError(result)
+        setApiError(result)
         if (!result && to === 'confirmed' && booking.customerId) {
             pushNotification({
                 accountId: booking.customerId,
@@ -227,13 +243,19 @@ export function OrderDetailView({
                 })}
             </div>
 
-            {error && (
+            {/* Hai nguồn lỗi, một chỗ hiện:
+                `error` là `WriteError` (union cố định của store, có bảng nhãn),
+                `apiError` là `I18nText` server trả về — server biết những lý do
+                store không biết ("phòng vừa được người khác nhận"), nên không
+                ép được về union. Gộp vào một khối để người dùng chỉ có MỘT chỗ
+                phải nhìn. */}
+            {(error || apiError) && (
                 <div
                     role="alert"
                     aria-live="polite"
                     className="mb-[var(--cms-gap)] rounded-[var(--cms-radius)] bg-[var(--cms-tone-rose-bg)] px-3 py-2.5 text-[length:var(--cms-text-body)] text-[var(--cms-tone-rose)]"
                 >
-                    {tr(WRITE_ERROR_LABEL[error], locale)}
+                    {error ? tr(WRITE_ERROR_LABEL[error], locale) : tr(apiError!, locale)}
                 </div>
             )}
 
@@ -507,9 +529,25 @@ export function OrderDetailView({
                     units={freeUnits.map((u) => ({ id: u.id, code: u.code }))}
                     defaultGuests={booking.guests}
                     onSubmit={(record) => {
-                        const result = doCheckIn(booking.id, record, actor)
-                        setError(result)
-                        if (!result) setTab('overview')
+                        // Gửi lên SERVER, không chỉ ghi store: trạng thái đơn
+                        // là dữ liệu tranh chấp được với khách, F5 mà mất là
+                        // lỗi không thể giải thích với chủ resort.
+                        setError(null)
+                        setApiError(null)
+                        setBusy(true)
+                        void changeStatusViaApi(booking.id, 'checked_in', {
+                            roomUnitId: record.roomUnitId,
+                            idNumber: record.idNumber,
+                            actualGuests: {
+                                adults: record.actualGuests.adults,
+                                children: record.actualGuests.children.length,
+                            },
+                            note: record.note,
+                        }).then((failure) => {
+                            setBusy(false)
+                            setApiError(failure)
+                            if (!failure) setTab('overview')
+                        })
                     }}
                 />
             )}
@@ -521,10 +559,26 @@ export function OrderDetailView({
                     onClose={() => setTab('overview')}
                     booking={booking}
                     onSubmit={(record) => {
-                        const result = doCheckOut(booking.id, record, actor)
-                        setError(result)
-                        if (!result) {
+                        setError(null)
+                        setApiError(null)
+                        setBusy(true)
+                        void changeStatusViaApi(booking.id, 'checked_out', {
+                            incidentals: record.incidentals?.map((i) => ({
+                                label: i.description,
+                                amount: i.amount,
+                            })),
+                            // `comment` là nhận xét kết thúc lượt lưu trú của
+                            // lễ tân (§F5) — đây là chỗ nó vào `ActivityLog`.
+                            note: record.comment,
+                        }).then((failure) => {
+                            setBusy(false)
+                            setApiError(failure)
+                            if (failure) return
+
                             setTab('overview')
+                            // Mời đánh giá CHỈ khi server đã xác nhận trả phòng —
+                            // bắn trước là khách nhận lời mời cho lượt lưu trú
+                            // chưa thật sự kết thúc.
                             if (booking.customerId) {
                                 pushNotification({
                                     accountId: booking.customerId,
@@ -534,7 +588,7 @@ export function OrderDetailView({
                                     payload: { roomTypeName: room?.name, nights: booking.nights },
                                 })
                             }
-                        }
+                        })
                     }}
                 />
             )}

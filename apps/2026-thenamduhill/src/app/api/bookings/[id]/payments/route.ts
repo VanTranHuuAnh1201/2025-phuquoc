@@ -5,14 +5,14 @@ import { createAdminClient } from '@/utils/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
-const PAYMENT_METHODS = ['bank_transfer', 'cash', 'card', 'momo', 'vnpay'] as const
-const PAYMENT_KINDS = ['deposit', 'full', 'surcharge', 'refund'] as const
+const PAYMENT_METHODS = ['bank-transfer', 'card', 'at-property', 'momo'] as const
+const PAYMENT_KINDS = ['deposit', 'balance', 'surcharge', 'refund'] as const
 
 /** Thu hẹp `unknown` từ body về đúng union của `RecordPaymentInput`, giữ mặc định cũ nếu không khớp. */
 function toPaymentMethod(value: unknown): RecordPaymentInput['paymentMethod'] {
     return (PAYMENT_METHODS as readonly unknown[]).includes(value)
         ? (value as RecordPaymentInput['paymentMethod'])
-        : 'bank_transfer'
+        : 'bank-transfer'
 }
 
 function toPaymentKind(value: unknown): RecordPaymentInput['kind'] {
@@ -72,7 +72,23 @@ async function postPaymentHandler(
             })
         }
 
-        if (booking.status !== 'pending_payment' && booking.status !== 'confirmed') {
+        /*
+         * `checked_in` CŨNG phải thu được tiền.
+         *
+         * BUG ĐÃ SỬA: danh sách trước đây chỉ có `pending_payment` và
+         * `confirmed`, nên khách đang lưu trú trả nốt tiền tại quầy bị từ chối
+         * bằng `422`. Điều đó khoá cứng luồng chuẩn của mọi resort Việt: cọc
+         * 30% khi đặt, trả phần còn lại lúc trả phòng (§B1).
+         *
+         * Hệ quả dây chuyền quan sát được: `check_out_booking()` từ chối đóng
+         * đơn khi `total_amount > paid_amount` (`NOT_SETTLED`) — mà đường duy
+         * nhất để thu nốt lại vừa bị chặn. Đơn kẹt ở `checked_in` vĩnh viễn.
+         *
+         * Vẫn CHẶN `checked_out`/`cancelled`/`no_show`: đơn đã đóng thì tiền
+         * vào phải đi qua đường hoàn/điều chỉnh, không phải thanh toán mới.
+         */
+        const PAYABLE_STATUSES = ['pending_payment', 'confirmed', 'checked_in']
+        if (!PAYABLE_STATUSES.includes(booking.status)) {
             return fail(422, 'INVALID_TRANSITION', {
                 vi: `Đơn hàng đang ở trạng thái '${booking.status}', không thể xác nhận thanh toán.`,
                 en: `Booking is currently in '${booking.status}' status and cannot accept payment.`,

@@ -38,27 +38,8 @@ BEGIN
     END IF;
 
     -- Record Payment
-    INSERT INTO public.payments (
-        booking_id,
-        amount,
-        payment_method,
-        reference,
-        kind,
-        actor_id,
-        actor_name,
-        actor_role,
-        raw_payload
-    ) VALUES (
-        p_booking_id,
-        p_amount,
-        p_payment_method,
-        p_reference,
-        p_kind,
-        p_actor_id,
-        p_actor_name,
-        p_actor_role,
-        p_raw_payload
-    );
+    INSERT INTO public.payments (booking_id, amount, method, kind, reference, raw_payload)
+    VALUES (p_booking_id, p_amount, p_payment_method, p_kind, p_reference, p_raw_payload);
 
     -- Update Booking status & paid_amount, clear hold_expires_at
     UPDATE public.bookings
@@ -77,8 +58,8 @@ BEGIN
         actor_role,
         action,
         field,
-        from_value,
-        to_value,
+        "from",
+        "to",
         note
     ) VALUES (
         p_booking_id,
@@ -101,8 +82,8 @@ BEGIN
             actor_role,
             action,
             field,
-            from_value,
-            to_value,
+            "from",
+            "to",
             note
         ) VALUES (
             p_booking_id,
@@ -189,13 +170,13 @@ BEGIN
 
     -- 5. Insert Activity Logs
     INSERT INTO public.activity_logs (
-        booking_id, actor_id, actor_name, actor_role, action, field, from_value, to_value, note
+        booking_id, actor_id, actor_name, actor_role, action, field, "from", "to", note
     ) VALUES (
-        p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'room-assigned', 'assigned_room_unit_id', NULL, p_room_unit_id::text, 'Assigned room unit ' || v_unit.name
+        p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'room-assigned', 'assigned_room_unit_id', NULL, p_room_unit_id::text, 'Assigned room unit ' || v_unit.code
     );
 
     INSERT INTO public.activity_logs (
-        booking_id, actor_id, actor_name, actor_role, action, field, from_value, to_value, note
+        booking_id, actor_id, actor_name, actor_role, action, field, "from", "to", note
     ) VALUES (
         p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'status-changed', 'status', v_old_status, 'checked_in', 'Guest checked in'
     );
@@ -267,7 +248,7 @@ BEGIN
 
     -- Insert Activity Log
     INSERT INTO public.activity_logs (
-        booking_id, actor_id, actor_name, actor_role, action, field, from_value, to_value, note
+        booking_id, actor_id, actor_name, actor_role, action, field, "from", "to", note
     ) VALUES (
         p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'status-changed', 'status', v_old_status, 'checked_out', 'Guest checked out'
     );
@@ -329,7 +310,7 @@ BEGIN
     UPDATE public.bookings
     SET status = 'cancelled',
         cancelled_at = NOW(),
-        cancellation_reason = p_reason,
+        cancellation = jsonb_build_object('reason', p_reason, 'by', p_actor_role, 'at', NOW()),
         hold_expires_at = NULL,
         updated_at = NOW()
     WHERE id = p_booking_id
@@ -337,7 +318,7 @@ BEGIN
 
     -- Insert Activity Log
     INSERT INTO public.activity_logs (
-        booking_id, actor_id, actor_name, actor_role, action, field, from_value, to_value, note
+        booking_id, actor_id, actor_name, actor_role, action, field, "from", "to", note
     ) VALUES (
         p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'status-changed', 'status', v_old_status, 'cancelled', COALESCE(p_reason, 'Booking cancelled')
     );
@@ -373,25 +354,8 @@ BEGIN
     END IF;
 
     -- Record Refund Payment (positive amount, kind='refund')
-    INSERT INTO public.payments (
-        booking_id,
-        amount,
-        payment_method,
-        reference,
-        kind,
-        actor_id,
-        actor_name,
-        actor_role
-    ) VALUES (
-        p_booking_id,
-        p_amount,
-        p_payment_method,
-        p_reference,
-        'refund',
-        p_actor_id,
-        p_actor_name,
-        p_actor_role
-    );
+    INSERT INTO public.payments (booking_id, amount, method, kind, reference)
+    VALUES (p_booking_id, p_amount, p_payment_method, 'refund', p_reference);
 
     -- Update paid_amount
     UPDATE public.bookings
@@ -402,7 +366,7 @@ BEGIN
 
     -- Insert Activity Log
     INSERT INTO public.activity_logs (
-        booking_id, actor_id, actor_name, actor_role, action, field, from_value, to_value, note
+        booking_id, actor_id, actor_name, actor_role, action, field, "from", "to", note
     ) VALUES (
         p_booking_id, p_actor_id, p_actor_name, p_actor_role, 'refund-processed', 'paid_amount', (v_booking.paid_amount + p_amount)::text, v_booking.paid_amount::text, 'Refund processed: ' || p_amount
     );

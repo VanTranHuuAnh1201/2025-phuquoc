@@ -126,7 +126,13 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
         }
         if (!fullName.trim()) return tr(S.errNameRequired, locale)
         if (!/^0\d{8,10}$/.test(phone.trim())) return tr(S.errPhoneRequired, locale)
-        if (email.trim() && !email.includes('@')) return tr(S.errEmailInvalid, locale)
+        // Email BẮT BUỘC — `POST /api/bookings` từ chối đơn thiếu email bằng
+        // `400 INVALID_INPUT`. Trước đây form chỉ kiểm định dạng KHI có nhập và
+        // ô không đánh dấu bắt buộc, nên lễ tân bỏ trống rồi bấm Tạo đơn mới
+        // biết — sai ở chỗ bắt người dùng trả giá cho một luật họ không được
+        // báo trước (luật FE1/C8).
+        if (!email.trim()) return tr(S.errEmailRequired, locale)
+        if (!email.includes('@')) return tr(S.errEmailInvalid, locale)
         if (!quote) return tr(S.selectRoomFirst, locale)
         // AC-16: hết phòng thì chặn hẳn, đọc lý do từ core chứ không tự viết câu.
         if (!availability?.available) {
@@ -504,6 +510,9 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            // Dấu `*` phải có: API bắt buộc trường này, ô không
+                            // đánh dấu là nói dối người dùng.
+                            required
                         />
                     </div>
 

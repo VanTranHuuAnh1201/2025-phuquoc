@@ -15,11 +15,19 @@
  *    `RoomUnit` chỉ được lễ tân gán lúc check-in, không suy ra từ vị trí mảng.
  */
 
-import { EyeIcon, CalendarIcon, MenuIcon } from '@/components/icons'
+import { EyeIcon, MenuIcon } from '@/components/icons'
 import { DataGrid, DotBadge, FilterBar, KpiCard, MetricStrip, PageHeaderBar, type CmsTone } from '@repo/cms-ui'
 import type { Column } from '@repo/ui'
 import { getPropertySync, pick, formatPrice } from '@repo/core'
-import type { ActivityLog, Booking, BookingStatus, LogAction } from '@repo/core'
+import type {
+    ActivityLog,
+    Booking,
+    BookingStatus,
+    I18nText,
+    Locale,
+    LogAction,
+    Room,
+} from '@repo/core'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { useLocale } from '@/components/LocaleProvider'
@@ -63,6 +71,7 @@ interface BookingRow {
     code: string
     guestName: string
     phone: string
+    roomTypeId: string
     roomTypeName: string
     channelLabel: string
     nights: number
@@ -71,6 +80,30 @@ interface BookingRow {
     totalAmount: number
     paidAmount: number
     status: BookingStatus
+    /** Giờ đến dự kiến `HH:mm` — nguồn của bộ lọc ca trực. Rỗng = chưa khai. */
+    arrivalTime: string
+}
+
+/**
+ * Ranh giới ca sáng / ca chiều, tính bằng giờ trong ngày.
+ *
+ * VÌ SAO 14:00: đây là giờ nhận phòng chuẩn của cơ sở — trước mốc này là ca
+ * sáng chuẩn bị phòng, sau mốc này là ca chiều đón khách. Đặt thành hằng số
+ * để đổi giờ nhận phòng chỉ phải sửa một chỗ.
+ */
+const SHIFT_BOUNDARY_HOUR = 14
+
+/**
+ * Đơn này thuộc ca nào, suy từ `estimatedArrivalTime` của khách.
+ *
+ * Trả `null` khi đơn CHƯA khai giờ đến — không đoán bừa vào một ca. Khách gọi
+ * điện đặt phòng rất hay bỏ trống trường này; xếp đại vào ca sáng thì lễ tân
+ * ca chiều mất luôn đơn khỏi danh sách của mình.
+ */
+function shiftOf(arrivalTime: string): 'morning' | 'afternoon' | null {
+    const hour = Number(arrivalTime.slice(0, 2))
+    if (!Number.isFinite(hour)) return null
+    return hour < SHIFT_BOUNDARY_HOUR ? 'morning' : 'afternoon'
 }
 
 type TimeRange = 'day' | 'week' | 'month' | 'year'
@@ -107,7 +140,6 @@ function rangeBounds(range: TimeRange, today: string): { start: string; end: str
     return { start: shiftDate(today, -r), end: shiftDate(today, r) }
 }
 
-const staffActor = { id: 'admin-1', name: 'Lễ tân ca trực', role: 'manager' as const }
 
 export default function AdminDashboard() {
     const { locale } = useLocale()
@@ -115,7 +147,11 @@ export default function AdminDashboard() {
     const { openNewBooking } = useNewBookingDrawer()
     const { bookings: rawBookings, roomUnits } = useBookingsData()
     const logs = useBookingStore((s) => s.logs)
-    const changeStatus = useBookingStore((s) => s.changeStatus)
+    const changeStatusViaApi = useBookingStore((s) => s.changeStatusViaApi)
+    /** Lỗi server khi duyệt cọc ngay trên bảng — hiện bằng chữ (luật FE4). */
+    const [rowError, setRowError] = useState<I18nText | null>(null)
+    /** Id đơn đang chờ server, để khoá đúng nút đó thay vì khoá cả bảng. */
+    const [pendingRow, setPendingRow] = useState<string | null>(null)
     const property = getPropertySync()
 
     const [viewMode, setViewMode] = useState<'console' | 'timeline'>('console')
@@ -142,6 +178,7 @@ export default function AdminDashboard() {
                 code: b.code,
                 guestName: b.guest?.fullName || pick({ vi: 'Khách vãng lai', en: 'Walk-in guest' }, locale),
                 phone: b.guest?.phone || '—',
+                roomTypeId: b.roomTypeId,
                 roomTypeName: roomName(b.roomTypeId),
                 channelLabel: tr(
                     { web: S.channelWeb, phone: S.channelPhone, 'walk-in': S.channelWalkIn, ota: S.channelOta }[
@@ -155,6 +192,7 @@ export default function AdminDashboard() {
                 totalAmount: b.totalAmount || 0,
                 paidAmount: b.paidAmount || 0,
                 status: b.status,
+                arrivalTime: b.guest?.estimatedArrivalTime || '',
             })),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [rawBookings, locale],
@@ -179,6 +217,12 @@ export default function AdminDashboard() {
         if (segment !== 'all') {
             const matchesSegment = item.roomTypeName.toLowerCase().includes(segment)
             if (!matchesSegment) return false
+        }
+        // Ca trực lọc theo GIỜ ĐẾN DỰ KIẾN. Đơn chưa khai giờ (`null`) vẫn hiện
+        // ở mọi ca — giấu nó đi thì không ca nào biết đơn đó tồn tại.
+        if (shift !== 'all') {
+            const itemShift = shiftOf(item.arrivalTime)
+            if (itemShift !== null && itemShift !== shift) return false
         }
         return true
     })
@@ -277,31 +321,45 @@ export default function AdminDashboard() {
             width: '190px',
             cell: (row) => (
                 <div className="flex items-center justify-end gap-1.5">
+                    {/* DUYỆT CỌC — một chạm, gọi thẳng server.
+                        Đây là thao tác KHÔNG cần thêm dữ liệu: route
+                        `payments` tự lấy `depositAmount` của đơn. */}
                     {row.status === 'pending_payment' && (
                         <button
                             type="button"
-                            onClick={() => changeStatus(row.id, 'confirmed', staffActor, tr(S.approveDepositNote, locale))}
-                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                            disabled={pendingRow === row.id}
+                            onClick={async () => {
+                                setRowError(null)
+                                setPendingRow(row.id)
+                                const failure = await changeStatusViaApi(row.id, 'confirmed', {
+                                    note: tr(S.approveDepositNote, locale),
+                                })
+                                setPendingRow(null)
+                                setRowError(failure)
+                            }}
+                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius-sm)] transition-colors disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
                         >
-                            {tr(S.approveDeposit, locale)}
+                            {tr(pendingRow === row.id ? S.saving : S.approveDeposit, locale)}
                         </button>
                     )}
-                    {row.status === 'confirmed' && (
+
+                    {/* NHẬN / TRẢ PHÒNG — MỞ DRAWER, không đổi thẳng.
+                        Bản cũ bấm một cái là `checked_in` ngay, bỏ qua việc gán
+                        phòng vật lý và ghi số CCCD — hai thứ BẮT BUỘC theo §F5
+                        (khai báo lưu trú) và cũng là điều kiện của route
+                        `check-in`. Nút một chạm ở đây chỉ tạo ra đơn thiếu dữ
+                        liệu; mở đúng form là cách duy nhất không nói dối. */}
+                    {(row.status === 'confirmed' || row.status === 'checked_in') && (
                         <button
                             type="button"
-                            onClick={() => changeStatus(row.id, 'checked_in', staffActor, tr(S.checkInNote, locale))}
-                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
+                            onClick={() => openOrder(row.id)}
+                            className={`px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)] ${
+                                row.status === 'confirmed'
+                                    ? 'bg-[var(--cms-accent)] hover:bg-[var(--cms-accent)]/90'
+                                    : 'bg-[var(--cms-text)] hover:opacity-90'
+                            }`}
                         >
-                            {tr(S.checkInCta, locale)}
-                        </button>
-                    )}
-                    {row.status === 'checked_in' && (
-                        <button
-                            type="button"
-                            onClick={() => changeStatus(row.id, 'checked_out', staffActor, tr(S.checkOutNote, locale))}
-                            className="px-2.5 py-1 text-[length:var(--cms-text-meta)] font-semibold bg-[var(--cms-text)] hover:opacity-90 text-white rounded-[var(--cms-radius-sm)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cms-accent)]"
-                        >
-                            {tr(S.checkOutCta, locale)}
+                            {tr(row.status === 'confirmed' ? S.checkInCta : S.checkOutCta, locale)}
                         </button>
                     )}
                     <Link
@@ -351,6 +409,28 @@ export default function AdminDashboard() {
             roomUnits.length > 0 ? Math.round((occupiedToday / roomUnits.length) * 100) : 0
         return { checkInToday: checkInRange, checkOutToday: checkOutRange, pendingDeposit, occupancyRate }
     }, [bookings, roomUnits, rangeStart, rangeEnd, today])
+
+    /**
+     * Số phòng vật lý của mỗi hạng — mẫu số của ô Tape Chart.
+     *
+     * Đếm `RoomUnit` THẬT theo `roomTypeId` (luật B0: hạng phòng và phòng vật
+     * lý là hai thực thể tách bạch). Không dùng `Room.remaining` của seed vì
+     * đó là con số hiển thị "chỉ còn N phòng" phía khách, không phải tổng số
+     * phòng của hạng.
+     */
+    const unitsOf = useMemo(() => {
+        const map = new Map<string, number>()
+        for (const unit of roomUnits) {
+            map.set(unit.roomTypeId, (map.get(unit.roomTypeId) ?? 0) + 1)
+        }
+        return map
+    }, [roomUnits])
+
+    /** 14 ngày kể từ hôm nay — bề ngang Tape Chart đọc được không cuộn ngang. */
+    const tapeDates = useMemo(
+        () => Array.from({ length: 14 }, (_, i) => shiftDate(today, i)),
+        [today],
+    )
 
     // Sự kiện thật trong `ActivityLog`, không phải dữ liệu bịa. Lấy 8 dòng gần
     // nhất trong ngày hôm nay, mới nhất trước.
@@ -493,6 +573,19 @@ export default function AdminDashboard() {
                 (giảm padding dọc khi viewport ngắn). Không dùng biến thể
                 `[@media(max-height:…)]:` của Tailwind vì class đó không được
                 sinh ra — đã kiểm trên CSS phục vụ thật. */}
+            {/* Lỗi khi duyệt cọc ngay trên bảng. Không có khối này thì server
+                từ chối mà lễ tân chỉ thấy badge không đổi — im lặng là kiểu
+                hỏng tệ nhất (luật FE4/C3). */}
+            {rowError && (
+                <div
+                    role="alert"
+                    aria-live="polite"
+                    className="border-t border-[var(--cms-border)] bg-[var(--cms-tone-rose-bg)] px-[var(--cms-pad)] py-2 text-[length:var(--cms-text-body)] text-[var(--cms-tone-rose)]"
+                >
+                    {tr(rowError, locale)}
+                </div>
+            )}
+
             <div className="cms-row-filters border-t border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
                 <FilterBar
                     groups={shiftGroups}
@@ -612,17 +705,15 @@ export default function AdminDashboard() {
                             />
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6 gap-2">
-                            <span className="text-[var(--cms-text-muted)]">
-                                <CalendarIcon size={36} />
-                            </span>
-                            <div className="font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)]">
-                                {tr(S.tapeChartTitle, locale)}
-                            </div>
-                            <p className="text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)] max-w-sm">
-                                {tr(S.tapeChartDesc, locale)}
-                            </p>
-                        </div>
+                        <TapeChart
+                            rooms={property.rooms}
+                            dates={tapeDates}
+                            bookings={bookings}
+                            unitsOf={unitsOf}
+                            locale={locale}
+                            today={today}
+                            onPickBooking={openOrder}
+                        />
                     )}
                 </div>
 
@@ -695,5 +786,184 @@ export default function AdminDashboard() {
                 </div>
             </div>
         </div>
+    )
+}
+
+/* ---------------------------------------------------------------------------
+   TAPE CHART — lưới NGÀY × HẠNG PHÒNG.
+
+   Đây là màn hình lễ tân nhìn cả ngày (`app-flows.md §F5`). Bản trước chỉ là
+   một khối chữ "sắp có" — bấm nút xong ra màn trống, tệ hơn cả không có nút.
+
+   VÌ SAO DỰNG ĐƯỢC NGAY: mọi số đều suy ra từ dữ liệu đã có — `RoomUnit` cho
+   mẫu số, `Booking` cho tử số. Không cần thêm store nào.
+
+   KHÔNG BỊA KHAN HIẾM (luật FE13/P10): ô hiện số phòng trống THẬT tính từ đơn
+   đang giữ chỗ, không phải con số trang trí.
+--------------------------------------------------------------------------- */
+
+interface TapeChartProps {
+    rooms: Room[]
+    dates: string[]
+    bookings: BookingRow[]
+    unitsOf: Map<string, number>
+    locale: Locale
+    today: string
+    onPickBooking: (id: string) => void
+}
+
+/** Trạng thái đơn ĐANG giữ phòng trong kho. Đơn huỷ/hết hạn không chiếm chỗ. */
+const OCCUPYING: BookingStatus[] = ['confirmed', 'checked_in', 'pending_payment']
+
+function TapeChart({ rooms, dates, bookings, unitsOf, locale, today, onPickBooking }: TapeChartProps) {
+    if (rooms.length === 0) {
+        return (
+            <div className="flex-1 flex items-center justify-center p-6 text-center text-[length:var(--cms-text-body)] text-[var(--cms-text-muted)]">
+                {tr(S.tapeChartEmpty, locale)}
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex-1 flex flex-col min-h-0">
+            {/* Chú giải màu — BẮT BUỘC vì ô lưới quá nhỏ để chứa chữ trạng
+                thái. Luật D4 cấm truyền tin CHỈ bằng màu; chữ nằm trong chú
+                giải + `title`/`aria-label` của từng ô, nên người dùng screen
+                reader và người mù màu vẫn đọc được. */}
+            <div className="flex items-center gap-4 border-b border-[var(--cms-border)] px-[var(--cms-pad)] py-2 text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
+                <LegendSwatch tone="free" label={tr(S.tapeChartLegendFree, locale)} />
+                <LegendSwatch tone="tight" label={tr(S.tapeChartLegendTight, locale)} />
+                <LegendSwatch tone="full" label={tr(S.tapeChartLegendFull, locale)} />
+            </div>
+
+            <div className="flex-1 overflow-auto">
+                <table className="w-full border-collapse">
+                    <caption className="sr-only">{tr(S.tapeChartTitle, locale)}</caption>
+                    <thead>
+                        <tr>
+                            {/* `sticky left-0` giữ cột tên hạng phòng luôn thấy
+                                khi cuộn ngang — thiếu nó thì cuộn tới ngày thứ
+                                10 là mất luôn thông tin đang xem hàng nào. */}
+                            <th
+                                scope="col"
+                                className="sticky left-0 top-0 z-20 bg-[var(--cms-bg)] border-b border-r border-[var(--cms-border)] px-3 py-2 text-left text-[length:var(--cms-text-label)] font-semibold uppercase tracking-wide text-[var(--cms-text-muted)]"
+                            >
+                                {tr(S.tapeChartRoomType, locale)}
+                            </th>
+                            {dates.map((date) => (
+                                <th
+                                    key={date}
+                                    scope="col"
+                                    className={`sticky top-0 z-10 bg-[var(--cms-bg)] border-b border-[var(--cms-border)] px-1 py-2 text-center text-[length:var(--cms-text-meta)] font-semibold tabular-nums ${
+                                        date === today
+                                            ? 'text-[var(--cms-accent)]'
+                                            : 'text-[var(--cms-text-muted)]'
+                                    }`}
+                                >
+                                    {date.slice(8, 10)}/{date.slice(5, 7)}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rooms.map((room) => {
+                            const total = unitsOf.get(room.id) ?? 0
+                            return (
+                                <tr key={room.id}>
+                                    <th
+                                        scope="row"
+                                        className="sticky left-0 z-10 bg-[var(--cms-bg)] border-b border-r border-[var(--cms-border)] px-3 py-2 text-left align-middle"
+                                    >
+                                        <div
+                                            className="truncate max-w-[190px] font-semibold text-[length:var(--cms-text-body)] text-[var(--cms-text)]"
+                                            title={pick(room.name, locale)}
+                                        >
+                                            {pick(room.name, locale)}
+                                        </div>
+                                        <div className="text-[length:var(--cms-text-meta)] font-normal text-[var(--cms-text-muted)] tabular-nums">
+                                            {total} {tr(S.unitsSuffix, locale)}
+                                        </div>
+                                    </th>
+
+                                    {dates.map((date) => {
+                                        // Đơn CHIẾM đêm `date` khi khoảng ở của
+                                        // nó bao đêm đó: nhận ≤ date < trả.
+                                        // Dùng `<` ở đầu trả phòng vì đêm cuối
+                                        // khách đã đi, phòng bán lại được.
+                                        const taken = bookings.filter(
+                                            (b) =>
+                                                b.roomTypeId === room.id &&
+                                                OCCUPYING.includes(b.status) &&
+                                                b.checkInDate <= date &&
+                                                date < b.checkOutDate,
+                                        )
+                                        const free = Math.max(0, total - taken.length)
+                                        const tone: CellTone =
+                                            total === 0 || free === 0 ? 'full' : free <= 1 ? 'tight' : 'free'
+                                        const first = taken[0]
+                                        const label = `${pick(room.name, locale)} — ${free}/${total} ${tr(S.tapeChartCellAria, locale)} ${date}`
+
+                                        return (
+                                            <td
+                                                key={date}
+                                                className="border-b border-[var(--cms-border)] p-0.5 text-center"
+                                            >
+                                                {/* Ô có khách → bấm mở đơn đầu
+                                                    tiên. Ô trống render `<div>`
+                                                    chứ không phải nút disabled:
+                                                    nút disabled vẫn nằm trong
+                                                    luồng đọc của screen reader
+                                                    và làm rối điều hướng. */}
+                                                {first ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onPickBooking(first.id)}
+                                                        title={label}
+                                                        aria-label={label}
+                                                        className={`${cellClass(tone)} w-full cursor-pointer hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--cms-accent)]`}
+                                                    >
+                                                        {free}
+                                                    </button>
+                                                ) : (
+                                                    <div title={label} aria-label={label} className={cellClass(tone)}>
+                                                        {free}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        )
+                                    })}
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    )
+}
+
+type CellTone = 'free' | 'tight' | 'full'
+
+/**
+ * Nền ô theo mức còn trống.
+ *
+ * Dùng đúng bộ `--cms-tone-*` mà `DotBadge` đang dùng cho badge trạng thái —
+ * cùng một bảng màu cho cùng một ý nghĩa (hết = rose, sắp hết = amber, còn =
+ * emerald). Không khai token mới và không hex (luật D0/P7).
+ */
+function cellClass(tone: CellTone): string {
+    const base =
+        'block rounded-[var(--cms-radius-sm)] py-1.5 text-[length:var(--cms-text-meta)] font-semibold tabular-nums transition-[filter]'
+    if (tone === 'full') return `${base} bg-[var(--cms-tone-rose-bg)] text-[var(--cms-tone-rose)]`
+    if (tone === 'tight') return `${base} bg-[var(--cms-tone-amber-bg)] text-[var(--cms-tone-amber)]`
+    return `${base} bg-[var(--cms-tone-emerald-bg)] text-[var(--cms-tone-emerald)]`
+}
+
+function LegendSwatch({ tone, label }: { tone: CellTone; label: string }) {
+    return (
+        <span className="inline-flex items-center gap-1.5">
+            <span aria-hidden className={`${cellClass(tone)} h-3 w-6 py-0`} />
+            <span>{label}</span>
+        </span>
     )
 }

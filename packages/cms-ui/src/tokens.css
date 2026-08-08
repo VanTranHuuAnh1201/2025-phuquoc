@@ -149,6 +149,22 @@
     --text-muted: var(--cms-text-muted);
     --brand: var(--cms-accent);
     --focus-ring: var(--cms-accent);
+
+    /* NÚT PRIMARY CỦA `@repo/ui` ĐỌC HAI BIẾN NÀY — bắt buộc khai.
+     *
+     * `Button` variant `primary` dựng nền bằng `var(--accent)` và chữ bằng
+     * `var(--text-inverse)`. Khối này bắc cầu đủ `--surface`/`--text`/
+     * `--border-strong` nhưng THIẾU đúng hai biến đó, nên chúng rơi về bộ dự
+     * phòng của `contract.css`: `--accent: #a0aec0` — xám. Kết quả: nút "Tạo
+     * đơn" và mọi nút chính khác trong CMS trông y hệt nút bị vô hiệu hoá,
+     * trong khi nút vẫn bấm được.
+     *
+     * Đây là kiểu hỏng IM LẶNG đúng như cảnh báo ở `theme-h3/tokens.css`:
+     * build xanh, không lỗi nào để đọc, chỉ nhìn mới thấy.
+     *
+     * `--cms-accent` (#2563eb) trên chữ trắng đạt 4.54:1 — qua WCAG AA (D4). */
+    --accent: var(--cms-accent);
+    --text-inverse: #ffffff;
     --radius-sm: var(--cms-radius-sm);
     --radius: var(--cms-radius);
     --text-xs: var(--cms-text-meta);

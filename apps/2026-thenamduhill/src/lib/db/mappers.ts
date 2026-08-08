@@ -1,6 +1,11 @@
+// Số đêm dùng lại `countNights` của core, không tự tính lại ở đây (C10) —
+// nó đã xử lý đúng chuỗi ngày `YYYY-MM-DD` không kèm giờ (C6).
+import { countNights } from '@repo/core'
 import type {
     Addon,
+    AppliedPromotion,
     BookingGuest,
+    BookingPriceLine,
     BookingStatus,
     Channel,
     ChildPolicy,
@@ -213,18 +218,27 @@ export function mapChildPolicy(settingRow?: DbRow): ChildPolicy {
 }
 
 /**
- * Hình dạng thật của hàng `bookings` sau khi map — KHÔNG hoàn toàn khớp
- * `Booking` của core (thiếu `nights`/`priceLines`/`appliedPromotions`/
- * `propertyId`, có thêm `assignedRoomUnitId`). Khai type riêng thay vì ép về
- * `Booking` để không nói dối phần thiếu; các route dùng field nào thì field
- * đó đã đủ kiểu.
+ * Hình dạng thật của hàng `bookings` sau khi map, có thêm `assignedRoomUnitId`
+ * so với `Booking` của core.
+ *
+ * BUG ĐÃ SỬA — bốn field từng bị bỏ map dù CỘT DB CÓ SẴN DỮ LIỆU:
+ * `nights`, `priceLines`, `appliedPromotions`, `propertyId`. Chúng vốn không
+ * gây lỗi vì `GET /api/bookings` xưa nay trả `[]` (RLS chặn nhân viên, xem
+ * `route.ts`), nên store luôn dùng seed local — nơi các field đó có đủ. Ngay
+ * khi API trả dữ liệu thật, `OrderDetailPanel.tsx:244` gọi
+ * `booking.priceLines.map()` và vỡ cả drawer bằng
+ * `TypeError: Cannot read properties of undefined`.
+ *
+ * Rút ra: hai lỗi che nhau — sửa lỗi RLS mới làm lỗi này lộ ra.
  */
 export interface MappedBookingRow {
     id: string
     code: string
+    propertyId: string
     status: BookingStatus
     checkIn: string
     checkOut: string
+    nights: number
     roomTypeId: string
     ratePlanId?: string
     guests: GuestCount
@@ -237,6 +251,8 @@ export interface MappedBookingRow {
     totalAmount: number
     paidAmount: number
     depositAmount: number
+    priceLines: BookingPriceLine[]
+    appliedPromotions: AppliedPromotion[]
     holdExpiresAt?: string
     assignedRoomUnitId?: string
     customerId?: string
@@ -246,12 +262,20 @@ export interface MappedBookingRow {
  * Maps a row from `bookings` table to the shape các route cần (§MappedBookingRow).
  */
 export function mapBookingRow(row: DbRow): MappedBookingRow {
+    const checkIn = String(row.check_in)
+    const checkOut = String(row.check_out)
+
     return {
         id: String(row.id),
         code: String(row.code),
+        propertyId: String(row.property_id ?? 'nam-du-hill'),
         status: String(row.status) as BookingStatus,
-        checkIn: String(row.check_in),
-        checkOut: String(row.check_out),
+        checkIn,
+        checkOut,
+        // Cột `nights` luôn được `create_booking_atomic` ghi, nhưng tính lại từ
+        // hai đầu ngày làm giá trị dự phòng cho hàng cũ/nhập tay: số đêm sai
+        // là mọi phép nhân tiền trên UI sai theo.
+        nights: Number(row.nights ?? 0) || countNights(checkIn, checkOut),
         roomTypeId: String(row.room_type_id),
         ratePlanId: row.rate_plan_id ? String(row.rate_plan_id) : undefined,
         guests: {
@@ -276,6 +300,13 @@ export function mapBookingRow(row: DbRow): MappedBookingRow {
         totalAmount: Number(row.total_amount ?? 0),
         paidAmount: Number(row.paid_amount ?? 0),
         depositAmount: Number(row.deposit_amount ?? 0),
+        // `?? []` KHÔNG phải phòng thủ thừa: UI gọi thẳng `.map()` lên hai
+        // mảng này (`OrderDetailPanel.tsx`), nên `undefined` làm vỡ cả drawer
+        // thay vì hiện bảng giá rỗng.
+        priceLines: Array.isArray(row.price_lines) ? (row.price_lines as BookingPriceLine[]) : [],
+        appliedPromotions: Array.isArray(row.applied_promotions)
+            ? (row.applied_promotions as AppliedPromotion[])
+            : [],
         holdExpiresAt: row.hold_expires_at ? String(row.hold_expires_at) : undefined,
         assignedRoomUnitId: row.assigned_room_unit_id ? String(row.assigned_room_unit_id) : undefined,
         customerId: row.customer_id ? String(row.customer_id) : undefined,

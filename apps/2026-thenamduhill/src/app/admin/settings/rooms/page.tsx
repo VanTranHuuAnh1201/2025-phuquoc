@@ -22,6 +22,7 @@
 
 import { PencilIcon, PlusIcon, TrashIcon, UsersIcon } from '@/components/icons'
 import { I18nField } from '@/components/I18nField'
+import { ImageUploadField } from '@/components/ImageUploadField'
 import { useLocale } from '@/components/LocaleProvider'
 import { RequirePermission, useCan } from '@/components/RequirePermission'
 import { useAuthStore } from '@/stores/auth.store'
@@ -41,7 +42,7 @@ import {
 } from '@repo/core'
 import type { FieldError, I18nText, Room } from '@repo/core'
 import { DataGrid, DotBadge, FilterBar, InlineAlert, KpiCard, MetricStrip, PageHeaderBar } from '@repo/cms-ui'
-import { Button, Field, Modal } from '@repo/ui'
+import { Button, Field, Modal, TextAreaField } from '@repo/ui'
 import type { Column } from '@repo/ui'
 import { useMemo, useState } from 'react'
 
@@ -73,10 +74,56 @@ export default function RoomSettingsPage() {
 interface RoomDraft {
     id: string
     name: I18nText
+    /** Mô tả ngắn hiện dưới tên phòng. Trước đây form KHÔNG có ô này nên
+     *  `createRoom` phải lấy tạm `desc: draft.name` — mọi phòng mới tạo đều có
+     *  mô tả trùng tên. */
+    desc: I18nText
     price: number
     guests: number
     maxGuests: number
     area: string
+    /** Số phòng vật lý — trước đây fix cứng `remaining: 4` cho MỌI hạng. */
+    remaining: number
+    extraBedFee: number
+    /** Đường dẫn ảnh, ảnh đầu tiên là ảnh bìa. `ImageUploadField` trả thẳng
+     *  mảng — không còn khâu parse chuỗi nhiều dòng như bản nhập tay. */
+    images: string[]
+    /** Mỗi dòng `"vi | en"` — xem `parseTags`. */
+    tagsText: string
+}
+
+/** Chuỗi nhiều dòng → mảng, bỏ dòng trắng và khoảng trắng thừa. */
+function parseLines(text: string): string[] {
+    return text
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+}
+
+/**
+ * `"Hướng biển | Ocean view"` → `{ vi, en }`.
+ *
+ * Dòng thiếu dấu `|` bị trả về trong `invalid` để form báo lỗi bằng CHỮ thay vì
+ * âm thầm lưu một tiện nghi chỉ có tiếng Việt — luật R6 bắt buộc đủ hai ngôn
+ * ngữ ở tầng dữ liệu.
+ */
+function parseTags(text: string): { tags: I18nText[]; invalid: string[] } {
+    const tags: I18nText[] = []
+    const invalid: string[] = []
+    for (const line of parseLines(text)) {
+        const [vi, en] = line.split('|').map((part) => part.trim())
+        if (!vi || !en) {
+            invalid.push(line)
+            continue
+        }
+        tags.push({ vi, en })
+    }
+    return { tags, invalid }
+}
+
+/** Mảng `I18nText` → dạng chữ nhiều dòng để đổ ngược vào ô nhập khi sửa. */
+function tagsToText(tags: I18nText[] | undefined): string {
+    return (tags ?? []).map((tag) => `${tag.vi} | ${tag.en}`).join('\n')
 }
 
 function RoomSettingsScreen() {
@@ -139,20 +186,33 @@ function RoomSettingsScreen() {
             setDraft({
                 id: room.id,
                 name: { ...room.name },
+                desc: { ...room.desc },
                 price: room.price,
                 guests: room.guests,
                 maxGuests: roomExtras[room.id]?.maxGuests ?? room.guests,
                 area: room.area,
+                remaining: room.remaining ?? 0,
+                extraBedFee: room.extraBedFee ?? 0,
+                images: [...(room.images ?? [])],
+                tagsText: tagsToText(room.tags),
             })
         } else {
             setEditing(null)
             setDraft({
                 id: '',
                 name: { vi: '', en: '' },
+                desc: { vi: '', en: '' },
                 price: 1_500_000,
                 guests: 2,
                 maxGuests: 3,
                 area: '35 m²',
+                // Mặc định 1 phòng, KHÔNG phải 4: chị khai một hạng mới thì số
+                // phòng thật là điều chỉ chị biết. Đặt sẵn 4 là mời gọi bấm
+                // Lưu mà không sửa — và bán quá 3 phòng không tồn tại.
+                remaining: 1,
+                extraBedFee: 0,
+                images: [],
+                tagsText: '',
             })
         }
         setModalOpen(true)
@@ -182,6 +242,19 @@ function RoomSettingsScreen() {
             // Chỉ kiểm id khi TẠO MỚI — id của bản ghi seed không sửa được.
             ...(editing ? {} : { id: draft.id, existingIds: rooms.map((r) => r.id) }),
         })
+
+        // Tiện nghi thiếu một ngôn ngữ — `validateRoomType` của `core` không
+        // biết ô này (nó nhận `I18nText[]` đã parse), nên kiểm tại đây.
+        const { invalid } = parseTags(draft.tagsText)
+        if (invalid.length > 0) {
+            found.push({
+                field: 'tags',
+                message: {
+                    vi: `${S.roomTagsFormatError.vi} — "${invalid[0]}"`,
+                    en: `${S.roomTagsFormatError.en} — "${invalid[0]}"`,
+                },
+            })
+        }
 
         const first = found[0]
         if (first) {
@@ -213,17 +286,25 @@ function RoomSettingsScreen() {
         setSaving(true)
         const actor = { id: user.id, name: user.fullName || user.id, role: user.role }
 
+        const { tags } = parseTags(draft.tagsText)
+        const images = draft.images
+
         const result = editing
             ? updateRoom(
                   editing.id,
                   {
                       name: draft.name,
+                      desc: draft.desc,
                       // Ô giá chỉ gửi lên khi vai trò được sửa giá — `editor`
                       // không thấy ô này nên cũng không được ghi đè giá cũ.
-                      ...(canEditPrice ? { price: draft.price } : {}),
+                      // `extraBedFee` cũng là tiền, nên đi cùng điều kiện.
+                      ...(canEditPrice ? { price: draft.price, extraBedFee: draft.extraBedFee } : {}),
                       guests: draft.guests,
                       maxGuests: draft.maxGuests,
                       area: draft.area,
+                      remaining: draft.remaining,
+                      tags,
+                      images,
                   },
                   actor,
               )
@@ -231,12 +312,18 @@ function RoomSettingsScreen() {
                   {
                       id: draft.id,
                       name: draft.name,
-                      desc: draft.name,
+                      // Mô tả THẬT từ ô nhập. Trước đây gán `desc: draft.name`
+                      // vì form chưa có ô mô tả — mọi phòng mới tạo hiện ra
+                      // trang khách với mô tả trùng y tên phòng.
+                      desc: draft.desc,
                       price: canEditPrice ? draft.price : 0,
                       guests: draft.guests,
                       area: draft.area,
-                      tags: [],
-                      remaining: 4,
+                      tags,
+                      images,
+                      extraBedFee: canEditPrice ? draft.extraBedFee : 0,
+                      // Số phòng vật lý do admin khai, không còn cứng 4.
+                      remaining: draft.remaining,
                   },
                   actor,
               )
@@ -288,7 +375,9 @@ function RoomSettingsScreen() {
     }
 
     const cheapest = rooms.length > 0 ? Math.min(...rooms.map((r) => r.price)) : 0
-    const totalUnits = rooms.reduce((sum, r) => sum + (r.remaining ?? 4), 0)
+    // `?? 0` — cùng lý do với cột "Số phòng": KPI "tổng phòng vật lý" mà cộng
+    // thêm 4 cho mỗi hạng chưa khai thì con số này luôn lớn hơn thực tế.
+    const totalUnits = rooms.reduce((sum, r) => sum + (r.remaining ?? 0), 0)
 
     const columns: Column<Room>[] = [
         {
@@ -356,9 +445,18 @@ function RoomSettingsScreen() {
             header: tr(S.colPhysicalUnits, locale),
             align: 'center',
             width: '140px',
-            cell: (room) => (
-                <DotBadge tone="blue" label={`${room.remaining ?? 4} ${tr(S.unitsSuffix, locale)}`} />
-            ),
+            // `?? 0` chứ không `?? 4`: hạng chưa khai số phòng phải hiện 0 và
+            // tô cảnh báo, không phải mượn tạm con số 4 rồi để lễ tân tin là
+            // có 4 phòng bán được (luật FE13 — không bịa số tồn kho).
+            cell: (room) => {
+                const units = room.remaining ?? 0
+                return (
+                    <DotBadge
+                        tone={units === 0 ? 'amber' : 'blue'}
+                        label={`${units} ${tr(S.unitsSuffix, locale)}`}
+                    />
+                )
+            },
         },
         {
             key: 'status',
@@ -503,6 +601,12 @@ function RoomSettingsScreen() {
                     open
                     onClose={() => setModalOpen(false)}
                     title={tr(editing ? S.editRoomType : S.addRoomType, locale)}
+                    // 880px thay cho mặc định 560px. Lưới 4 cột trong 560px thì
+                    // mỗi cột chỉ ~120px — nhãn "Số khách tiêu chuẩn" xuống hai
+                    // dòng và các ô cùng hàng lệch nhau. Đây là chiều rộng đã
+                    // dùng cho drawer tạo đơn (commit ea50fa8), giữ cho hai form
+                    // CMS cùng khổ.
+                    width={880}
                     footer={
                         <>
                             <Button variant="ghost" onClick={() => setModalOpen(false)}>
@@ -514,74 +618,110 @@ function RoomSettingsScreen() {
                         </>
                     }
                 >
-                    <div className="space-y-3 text-[length:var(--cms-text-body)]">
+                    {/*
+                        BỐ CỤC LƯỚI 4 CỘT — form đặc, không phải chuỗi ô xếp dọc.
+
+                        Bản trước xếp mỗi hàng 1–2 ô nên 10 trường thành một cột
+                        dài phải cuộn hai màn hình mới thấy nút Lưu. Ở đây các ô
+                        SỐ ngắn (sức chứa, giá, số phòng) chiếm 1 cột, ô CHỮ dài
+                        (tên, mô tả) trải hết hàng — chiều cao form giảm còn
+                        khoảng một nửa mà không bỏ trường nào.
+
+                        `gap-x-3 gap-y-2.5`: khoảng cách NGANG rộng hơn DỌC. Mắt
+                        đọc form theo cột nên khe dọc hẹp vẫn tách bạch được,
+                        trong khi khe ngang cần rộng hơn để hai ô cạnh nhau
+                        không dính thành một khối. Cả hai đều nằm trên thang 8pt
+                        (12px/10px), không phải số lẻ tuỳ tiện (P5).
+                    */}
+                    <div
+                        // `--field-gap` là hook có sẵn của `FieldShell` trong
+                        // `@repo/ui` (mặc định `--space-2` = 8px). Đặt 4px ở
+                        // ĐÂY thay vì sửa `packages/ui` — nút vặn dành riêng
+                        // cho form đặc của CMS, không ảnh hưởng form phía khách
+                        // của cả 4 theme (luật R3/R5).
+                        style={{ ['--field-gap' as string]: '4px' }}
+                        className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-[length:var(--cms-text-body)] sm:grid-cols-4"
+                    >
                         {!editing && (
-                            <Field
-                                fieldId="room-field-id"
-                                label={tr(S.idFieldLabel, locale)}
-                                hint={tr(S.idFieldHint, locale)}
-                                value={draft.id}
-                                onChange={(e) => setDraft({ ...draft, id: e.target.value })}
-                                placeholder="bungalow-hill"
-                                required
-                                error={maybe(errorOf(errors, 'id'), locale)}
-                            />
+                            <div className="col-span-2">
+                                <Field
+                                    fieldId="room-field-id"
+                                    label={tr(S.idFieldLabel, locale)}
+                                    value={draft.id}
+                                    onChange={(e) => setDraft({ ...draft, id: e.target.value })}
+                                    placeholder="bungalow-hill"
+                                    required
+                                    error={maybe(errorOf(errors, 'id'), locale)}
+                                />
+                            </div>
                         )}
 
-                        <I18nField
-                            fieldId="room-field-name"
-                            label={tr(S.colRoomName, locale)}
-                            value={draft.name}
-                            onChange={(name) => setDraft({ ...draft, name })}
-                            required
-                            placeholderVi="Bungalow Hướng Biển"
-                            placeholderEn="Ocean View Bungalow"
-                            error={maybe(errorOf(errors, 'name'), locale)}
-                        />
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <Field
-                                fieldId="room-field-guests"
-                                label={tr(S.standardGuests, locale)}
-                                type="number"
-                                min={1}
-                                value={draft.guests}
-                                onChange={(e) =>
-                                    setDraft({ ...draft, guests: Number(e.target.value) })
-                                }
+                        {/* Tên trải hết hàng: `I18nField` đã tự chia đôi VI/EN
+                            bên trong, nhét vào nửa hàng là hai ô hẹp bằng 1/4. */}
+                        <div className={editing ? 'col-span-2 sm:col-span-4' : 'col-span-2'}>
+                            <I18nField
+                                fieldId="room-field-name"
+                                label={tr(S.colRoomName, locale)}
+                                value={draft.name}
+                                onChange={(name) => setDraft({ ...draft, name })}
                                 required
-                                error={maybe(errorOf(errors, 'guests'), locale)}
-                            />
-                            <Field
-                                fieldId="room-field-maxGuests"
-                                label={tr(S.maxGuests, locale)}
-                                type="number"
-                                min={1}
-                                value={draft.maxGuests}
-                                onChange={(e) =>
-                                    setDraft({ ...draft, maxGuests: Number(e.target.value) })
-                                }
-                                hint={tr(S.childCapacityHint, locale)}
-                                error={maybe(errorOf(errors, 'maxGuests'), locale)}
+                                placeholderVi="Bungalow Hướng Biển"
+                                placeholderEn="Ocean View Bungalow"
+                                error={maybe(errorOf(errors, 'name'), locale)}
                             />
                         </div>
 
-                        {/* AC-9: `editor` KHÔNG thấy ô giá gốc. Điều kiện render trong
-                            cùng một form, không tách hai component. */}
-                        {canEditPrice && (
-                            <Field
-                                fieldId="room-field-price"
-                                label={tr(S.basePriceLabel, locale)}
-                                type="number"
-                                min={0}
-                                step={50000}
-                                value={draft.price}
-                                onChange={(e) => setDraft({ ...draft, price: Number(e.target.value) })}
-                                required
-                                error={maybe(errorOf(errors, 'price'), locale)}
+                        <div className="col-span-2 sm:col-span-4">
+                            <I18nField
+                                fieldId="room-field-desc"
+                                label={tr(S.roomDescLabel, locale)}
+                                value={draft.desc}
+                                onChange={(desc) => setDraft({ ...draft, desc })}
+                                multiline
+                                rows={2}
+                                placeholderVi="Bungalow gỗ nhìn thẳng ra vịnh, ban công riêng."
+                                placeholderEn="Timber bungalow facing the bay, private balcony."
+                                error={maybe(errorOf(errors, 'desc'), locale)}
                             />
-                        )}
+                        </div>
 
+                        {/* Bốn ô SỐ trên CÙNG MỘT HÀNG — trước đây chiếm 3 hàng.
+                            Hint đã gỡ khỏi ô: nhãn "Số khách tiêu chuẩn" /
+                            "Sức chứa tối đa" tự nói đủ nghĩa, dòng giải thích
+                            dưới mỗi ô làm form cao gấp rưỡi mà không thêm
+                            thông tin. Riêng "Số phòng vật lý" giữ hint vì khai
+                            sai là bán quá số phòng — hậu quả không đoán được từ
+                            tên trường. */}
+                        <Field
+                            fieldId="room-field-guests"
+                            label={tr(S.standardGuests, locale)}
+                            type="number"
+                            min={1}
+                            value={draft.guests}
+                            onChange={(e) => setDraft({ ...draft, guests: Number(e.target.value) })}
+                            required
+                            error={maybe(errorOf(errors, 'guests'), locale)}
+                        />
+                        <Field
+                            fieldId="room-field-maxGuests"
+                            label={tr(S.maxGuests, locale)}
+                            type="number"
+                            min={1}
+                            value={draft.maxGuests}
+                            onChange={(e) => setDraft({ ...draft, maxGuests: Number(e.target.value) })}
+                            error={maybe(errorOf(errors, 'maxGuests'), locale)}
+                        />
+                        <Field
+                            fieldId="room-field-remaining"
+                            label={tr(S.physicalUnitsLabel, locale)}
+                            hint={tr(S.physicalUnitsHint, locale)}
+                            type="number"
+                            min={0}
+                            value={draft.remaining}
+                            onChange={(e) => setDraft({ ...draft, remaining: Number(e.target.value) })}
+                            required
+                            error={maybe(errorOf(errors, 'remaining'), locale)}
+                        />
                         <Field
                             fieldId="room-field-area"
                             label={tr(S.displayArea, locale)}
@@ -589,6 +729,62 @@ function RoomSettingsScreen() {
                             onChange={(e) => setDraft({ ...draft, area: e.target.value })}
                             placeholder="48 m²"
                         />
+
+                        {/* AC-9: `editor` KHÔNG thấy ô giá gốc. Điều kiện render
+                            trong cùng một form, không tách hai component. */}
+                        {canEditPrice && (
+                            <>
+                                <div className="col-span-1 sm:col-span-2">
+                                    <Field
+                                        fieldId="room-field-price"
+                                        label={tr(S.basePriceLabel, locale)}
+                                        type="number"
+                                        min={0}
+                                        step={50000}
+                                        value={draft.price}
+                                        onChange={(e) =>
+                                            setDraft({ ...draft, price: Number(e.target.value) })
+                                        }
+                                        required
+                                        error={maybe(errorOf(errors, 'price'), locale)}
+                                    />
+                                </div>
+                                <div className="col-span-1 sm:col-span-2">
+                                    <Field
+                                        fieldId="room-field-extraBedFee"
+                                        label={tr(S.extraBedFeeLabel, locale)}
+                                        type="number"
+                                        min={0}
+                                        step={50000}
+                                        value={draft.extraBedFee}
+                                        onChange={(e) =>
+                                            setDraft({ ...draft, extraBedFee: Number(e.target.value) })
+                                        }
+                                    />
+                                </div>
+                            </>
+                        )}
+
+                        <div className="col-span-2 sm:col-span-4">
+                            <ImageUploadField
+                                label={tr(S.roomImagesLabel, locale)}
+                                hint={tr(S.roomImagesHint, locale)}
+                                value={draft.images}
+                                onChange={(images) => setDraft({ ...draft, images })}
+                            />
+                        </div>
+
+                        <div className="col-span-2 sm:col-span-4">
+                            <TextAreaField
+                                label={tr(S.roomTagsLabel, locale)}
+                                hint={tr(S.roomTagsHint, locale)}
+                                rows={2}
+                                value={draft.tagsText}
+                                onChange={(e) => setDraft({ ...draft, tagsText: e.target.value })}
+                                placeholder={'Hướng biển | Ocean view\nBan công riêng | Private balcony'}
+                                error={maybe(errorOf(errors, 'tags'), locale)}
+                            />
+                        </div>
                     </div>
                 </Modal>
             )}

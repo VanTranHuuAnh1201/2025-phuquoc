@@ -4,9 +4,20 @@ import type { Actor } from '@/lib/auth/guard'
 export interface RecordPaymentInput {
     bookingId: string
     amount: number
-    paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'momo' | 'vnpay'
+    /**
+     * Phải khớp CHECK constraint `chk_payments_method` của bảng `payments`:
+     * `bank-transfer | card | at-property | momo` — GẠCH NGANG, không gạch dưới.
+     *
+     * BUG ĐÃ SỬA: bản trước khai `bank_transfer | cash | vnpay` (gạch dưới, và
+     * hai giá trị DB không biết). TypeScript không kiểm được ràng buộc nằm
+     * trong Postgres nên build vẫn xanh; lỗi chỉ nổ lúc chạy thật bằng
+     * `23514 violates check constraint` — tức MỌI lần duyệt cọc đều trả 500.
+     * Sửa TS cho bám DB, không nới constraint (luật BE8).
+     */
+    paymentMethod: 'bank-transfer' | 'card' | 'at-property' | 'momo'
     reference?: string
-    kind?: 'deposit' | 'full' | 'surcharge' | 'refund'
+    /** Khớp `chk_payments_kind`: `deposit | balance | refund | surcharge`. */
+    kind?: 'deposit' | 'balance' | 'surcharge' | 'refund'
     /** Payload thô ghi kèm giao dịch (log đối soát) — hình dạng tuỳ cổng, không ép type domain. */
     rawPayload?: Record<string, unknown>
 }

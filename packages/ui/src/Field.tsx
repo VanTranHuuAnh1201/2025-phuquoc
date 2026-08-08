@@ -197,6 +197,16 @@ export interface TextAreaFieldProps
     label: ReactNode
     hint?: ReactNode
     error?: ReactNode
+    /**
+     * `id` cố định thay cho `useId()` tự sinh — cùng hợp đồng với `Field`.
+     *
+     * BẮT BUỘC CÓ, không phải tiện ích: form gọi
+     * `document.getElementById(...)?.focus()` để nhảy vào ô lỗi đầu tiên (luật
+     * FE1 trạng thái `error`). `useId()` sinh chuỗi ngẫu nhiên nên bên ngoài
+     * không trỏ tới được, và ô nhiều dòng lặng lẽ bị bỏ qua khỏi luồng đó —
+     * người dùng thấy báo lỗi nhưng con trỏ không đi tới ô nào.
+     */
+    fieldId?: string
 }
 
 export function TextAreaField({
@@ -204,9 +214,11 @@ export function TextAreaField({
     hint,
     error,
     required,
+    fieldId,
     ...rest
 }: TextAreaFieldProps) {
-    const id = useId()
+    const generated = useId()
+    const id = fieldId ?? generated
     return (
         <FieldShell id={id} label={label} hint={hint} error={error} required={required}>
             <textarea

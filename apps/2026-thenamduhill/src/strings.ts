@@ -161,6 +161,7 @@ export const S = {
         'Phone number is not valid. Example: 0901234567',
     ),
     errEmailInvalid: t('Email không hợp lệ.', 'Email is not valid.'),
+    errEmailRequired: t('Chưa nhập email.', 'Enter an email address.'),
 
     // thanh toán
     paymentMethod: t('Phương thức thanh toán', 'Payment method'),
@@ -602,6 +603,55 @@ export const S = {
     unitsSuffix: t('phòng', 'units'),
     displayArea: t('Diện tích hiển thị', 'Displayed area'),
     basePriceLabel: t('Giá gốc 1 đêm (VNĐ)', 'Base rate per night (VND)'),
+
+    // --- các trường bổ sung của form hạng phòng ---
+    roomDescLabel: t('Mô tả ngắn', 'Short description'),
+    roomDescHint: t(
+        'Hiện dưới tên phòng ở trang danh sách và trang chi tiết. Viết 1–2 câu.',
+        'Shown under the room name on listing and detail pages. Keep it to 1–2 sentences.',
+    ),
+    physicalUnitsLabel: t('Số phòng vật lý', 'Physical units'),
+    physicalUnitsHint: t(
+        'Tổng số phòng thật. Khai sai là bán quá số phòng.',
+        'Total real rooms. A wrong number causes overbooking.',
+    ),
+    extraBedFeeLabel: t('Phụ thu giường phụ (VNĐ)', 'Extra bed fee (VND)'),
+    extraBedFeeHint: t(
+        'Để 0 nếu hạng này không kê được giường phụ.',
+        'Set 0 if this room type cannot take an extra bed.',
+    ),
+    roomImagesLabel: t('Ảnh phòng', 'Room photos'),
+    roomImagesHint: t(
+        'Hệ thống tự nén — không cần chỉnh ảnh trước.',
+        'Images are compressed automatically.',
+    ),
+
+    // --- ô tải ảnh (ImageUploadField) ---
+    chooseImages: t('Chọn ảnh', 'Choose images'),
+    uploading: t('Đang tải lên…', 'Uploading…'),
+    dropImagesHere: t('hoặc kéo thả ảnh vào đây', 'or drop images here'),
+    uploadLimitReached: t('Đã đủ số ảnh tối đa', 'Maximum images reached'),
+    uploadDoneCount: t('ảnh đã tối ưu', 'images optimised'),
+    coverImage: t('Ảnh bìa', 'Cover'),
+    setAsCover: t('Đặt làm ảnh bìa', 'Set as cover'),
+    removeImage: t('Xoá ảnh', 'Remove image'),
+    uploadFailed: t(
+        'Không tải được ảnh. Thử lại hoặc chọn ảnh khác.',
+        'Upload failed. Try again or pick a different image.',
+    ),
+    uploadNetworkError: t(
+        'Mất kết nối khi tải ảnh. Kiểm tra mạng rồi tải lại.',
+        'Connection lost while uploading. Check your network and retry.',
+    ),
+    roomTagsLabel: t('Thẻ tiện nghi', 'Amenity tags'),
+    roomTagsHint: t(
+        'Mỗi dòng một tiện nghi, dạng "Tiếng Việt | English".',
+        'One amenity per line as "Vietnamese | English".',
+    ),
+    roomTagsFormatError: t(
+        'Mỗi dòng phải có đủ hai ngôn ngữ, ngăn cách bằng dấu |',
+        'Each line needs both languages separated by |',
+    ),
     priceHiddenForRole: t(
         'Tài khoản của bạn không có quyền sửa giá. Các ô giá đã được ẩn.',
         'Your account cannot edit prices. Price fields are hidden.',
@@ -923,6 +973,15 @@ export const S = {
     tapeChartDesc: t(
         'Lịch mở/khoá phòng theo từng mốc giờ và ngày. Hỗ trợ kéo thả đổi phòng trực tiếp.',
         'Open/block schedule per room per day. Drag-and-drop room swaps.',
+    ),
+    tapeChartRoomType: t('HẠNG PHÒNG', 'ROOM TYPE'),
+    tapeChartLegendFree: t('Còn phòng', 'Available'),
+    tapeChartLegendTight: t('Sắp hết', 'Low'),
+    tapeChartLegendFull: t('Hết phòng', 'Sold out'),
+    tapeChartCellAria: t('phòng trống ngày', 'available on'),
+    tapeChartEmpty: t(
+        'Chưa khai hạng phòng nào. Vào Cài đặt → Hạng phòng & giá gốc để thêm.',
+        'No room types defined yet. Go to Settings → Room types to add one.',
     ),
     tabAllRooms: t('Toàn bộ đơn', 'All bookings'),
     tabArrivalsToday: t('Check-in hôm nay', 'Arrivals today'),

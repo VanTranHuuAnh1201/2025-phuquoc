@@ -316,15 +316,48 @@ async function getBookingsHandler(request: Request, actor: Actor): Promise<Respo
         const phone = url.searchParams.get('phone')
         const status = url.searchParams.get('status')
 
-        const cookieStore = await cookies()
-        const supabase = createClient(cookieStore)
+        /*
+         * DÙNG ADMIN CLIENT, LỌC QUYỀN Ở NGAY DƯỚI — không phải nới lỏng bảo mật.
+         *
+         * BUG ĐÃ SỬA (tái hiện được, không suy đoán): route này trước đây dùng
+         * `createClient(cookieStore)` — client `anon`, chịu RLS. Bảng `bookings`
+         * có ĐÚNG MỘT policy SELECT: `customer_id = current_account_id()`.
+         *
+         * Nhân viên đăng nhập bằng JWT tự phát hành (`lib/auth/jwt.ts`), KHÔNG
+         * qua Supabase Auth, nên trong phiên Postgres `current_account_id()`
+         * rỗng ⇒ policy không khớp hàng nào ⇒ lễ tân/quản lý nhận về `[]` dù DB
+         * có 44 đơn. HTTP vẫn `200` nên không có lỗi nào để đọc.
+         *
+         * Hậu quả dây chuyền quan sát được: `fetchBookingsFromApi()` thấy mảng
+         * rỗng thì cố ý KHÔNG ghi đè (giữ 30 đơn seed local), nên đơn vừa tạo
+         * qua API không bao giờ vào store — bấm xong hiện "Không tìm thấy đơn."
+         *
+         * `POST` cùng file này đã dùng `createAdminClient()` vì lý do y hệt.
+         * Quyền không bị bỏ qua: `withAuthGuard(..., 'booking.view.own')` đã
+         * chặn ở cửa, và nhánh `customer` bên dưới vẫn ép `customer_id` đúng
+         * bằng chính người gọi — tức khách vẫn chỉ đọc được đơn của mình (BE2).
+         */
+        const supabase = createAdminClient()
 
         let query = supabase.from('bookings').select('*')
 
         // If customer role, only return their bookings unless code+phone lookup
         if (actor.role === 'customer') {
             if (code && phone) {
-                query = query.eq('code', code.trim().toUpperCase()).eq('guest_phone', phone.trim())
+                // Tra cứu bằng mã đơn + SĐT: RÀNG BUỘC THÊM `customer_id`, không
+                // thay thế. Thiếu vế này thì một khách đã đăng nhập đoán được mã
+                // đơn + SĐT của người khác là đọc được đơn của họ — thứ mà RLS
+                // trước đây chặn giúp, nay phải tự làm ở tầng ứng dụng.
+                //
+                // ⚠️ GHI NHẬN, KHÔNG SỬA TRONG PHẠM VI NÀY: trang `/lookup`
+                // (tra cứu KHÔNG cần đăng nhập, `app-flows.md §F4`) gọi thẳng
+                // route này và nhận `401` — `withAuthGuard` chặn ở cửa. Lỗi đó
+                // CÓ TỪ TRƯỚC thay đổi này (đã đo bằng curl không cookie) và
+                // cần một route công khai riêng để sửa cho đúng.
+                query = query
+                    .eq('customer_id', actor.id)
+                    .eq('code', code.trim().toUpperCase())
+                    .eq('guest_phone', phone.trim())
             } else {
                 query = query.eq('customer_id', actor.id)
             }

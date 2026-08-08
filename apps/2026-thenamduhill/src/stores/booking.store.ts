@@ -25,6 +25,7 @@ import type {
     CheckInRecord,
     CheckOutRecord,
     Customer,
+    I18nText,
     Inventory,
     Quote,
     Role,
@@ -70,6 +71,26 @@ interface BookingState {
     // ---- đồng bộ API ----
     fetchBookingsFromApi: () => Promise<void>
 
+    /**
+     * Chuyển trạng thái đơn QUA SERVER rồi tải lại danh sách.
+     *
+     * VÌ SAO PHẢI CÓ, TRONG KHI ĐÃ CÓ `changeStatus`: `changeStatus` chỉ ghi
+     * vào store trong trình duyệt. Lễ tân bấm "Duyệt cọc" thấy badge đổi ngay,
+     * nhưng F5 là quay về `pending_payment` và máy lễ tân khác không thấy gì —
+     * đã tái hiện bằng Playwright, không phải suy đoán.
+     *
+     * Trạng thái đơn là dữ liệu tranh chấp được với khách; nó phải sống ở DB
+     * cùng `ActivityLog`, không phải trong `localStorage` của một máy.
+     *
+     * Trả về `null` khi thành công, hoặc thông điệp lỗi song ngữ để UI hiện
+     * bằng CHỮ (luật FE4).
+     */
+    changeStatusViaApi: (
+        id: string,
+        to: Extract<BookingStatus, 'confirmed' | 'checked_in' | 'checked_out' | 'cancelled'>,
+        options?: ApiStatusOptions,
+    ) => Promise<I18nText | null>
+
     // ---- khách đặt ----
     createBooking: (input: CreateBookingInput) => Booking
 
@@ -114,6 +135,29 @@ export interface CreateBookingInput {
      * tên nhân viên, nếu không thì tranh chấp về sau không truy được ai làm.
      */
     actor?: Actor
+}
+
+/**
+ * Dữ liệu kèm theo mỗi bước chuyển trạng thái qua API.
+ *
+ * Mỗi đích đến dùng một route riêng với yêu cầu riêng, không phải một PATCH
+ * chung: `check-in` bắt buộc gán phòng vật lý và số CCCD (khai báo lưu trú),
+ * `check-out` cần danh sách phát sinh. Gộp thành một endpoint sẽ phải kiểm
+ * điều kiện chéo và mất luôn ý nghĩa nghiệp vụ của từng bước.
+ */
+export interface ApiStatusOptions {
+    /** `check_in`: phòng vật lý lễ tân gán (bắt buộc). */
+    roomUnitId?: string
+    /** `check_in`: CCCD/hộ chiếu (bắt buộc — khai báo lưu trú). */
+    idNumber?: string
+    /** `check_in`: số khách thực tế. */
+    actualGuests?: { adults: number; children: number }
+    /** `check_out`: các khoản phát sinh tại phòng. */
+    incidentals?: { label: string; amount: number }[]
+    /** `cancelled`: lý do huỷ, vào `ActivityLog`. */
+    reason?: string
+    /** Ghi chú lễ tân, vào `ActivityLog`. */
+    note?: string
 }
 
 /** Thông tin tối thiểu để tra/tạo hồ sơ khách. Đúng phần lễ tân gõ vào form. */
@@ -244,6 +288,28 @@ export const useBookingStore = create<BookingState>()(
                         if (json && Array.isArray(json.data) && json.data.length > 0) {
                             set({ bookings: json.data })
                         }
+
+                        /*
+                         * Phòng VẬT LÝ cũng phải lấy từ server.
+                         *
+                         * `buildRoomUnits()` của seed sinh id kiểu
+                         * `phong-gia-dinh-01-01`, còn DB dùng UUID. Dropdown
+                         * chọn phòng lúc nhận phòng đọc danh sách seed đó nên
+                         * gửi lên một id DB không hiểu — mọi lần check-in đổ
+                         * `22P02 invalid input syntax for type uuid`, trả 500.
+                         *
+                         * Cùng nguyên tắc với `bookings`: mảng rỗng nghĩa là
+                         * backend chưa có dữ liệu, GIỮ seed thay vì xoá sạch.
+                         */
+                        const unitRes = await fetch('/api/room-units', {
+                            credentials: 'include',
+                        })
+                        if (unitRes.ok) {
+                            const unitJson = await unitRes.json()
+                            if (Array.isArray(unitJson?.data) && unitJson.data.length > 0) {
+                                set({ roomUnits: unitJson.data })
+                            }
+                        }
                     } catch {
                         // Fallback silently
                     } finally {
@@ -252,6 +318,81 @@ export const useBookingStore = create<BookingState>()(
                 })()
 
                 return bookingsInFlightPromise
+            },
+
+            /**
+             * Gọi đúng route nghiệp vụ của từng bước rồi TẢI LẠI từ server.
+             *
+             * Tải lại thay vì tự sửa store tại chỗ: server còn tính thêm những
+             * thứ client không biết — `paidAmount` sau khi ghi nhận cọc,
+             * `RoomUnit` chuyển sang `occupied`/`dirty`, `ActivityLog` mới.
+             * Đoán lại các giá trị đó ở client là mở đường cho lệch dữ liệu.
+             */
+            changeStatusViaApi: async (id, to, options) => {
+                const ROUTES: Record<typeof to, string> = {
+                    confirmed: 'payments',
+                    checked_in: 'check-in',
+                    checked_out: 'check-out',
+                    cancelled: 'cancel',
+                }
+
+                const payloads: Record<typeof to, Record<string, unknown>> = {
+                    // Duyệt cọc = ghi nhận một lần thu tiền. Không truyền
+                    // `amount` thì route lấy đúng `depositAmount` của đơn.
+                    confirmed: { kind: 'deposit', note: options?.note },
+                    checked_in: {
+                        roomUnitId: options?.roomUnitId,
+                        idNumber: options?.idNumber,
+                        actualGuests: options?.actualGuests,
+                        note: options?.note,
+                    },
+                    checked_out: {
+                        incidentals: options?.incidentals ?? [],
+                        settled: true,
+                        note: options?.note,
+                    },
+                    cancelled: { reason: options?.reason ?? options?.note },
+                }
+
+                try {
+                    const res = await fetch(`/api/bookings/${id}/${ROUTES[to]}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(payloads[to]),
+                    })
+                    const json = await res.json().catch(() => null)
+
+                    if (!res.ok) {
+                        // C3 — không nuốt lỗi: log có ngữ cảnh, trả thông điệp
+                        // song ngữ để UI hiện bằng chữ.
+                        console.error('[changeStatusViaApi] server từ chối', {
+                            bookingId: id,
+                            to,
+                            status: res.status,
+                            error: json?.error,
+                        })
+                        return (
+                            json?.error?.message ?? {
+                                vi: 'Không cập nhật được đơn. Thử lại sau ít phút.',
+                                en: 'Could not update the booking. Try again shortly.',
+                            }
+                        )
+                    }
+
+                    // Ép tải lại: `fetchBookingsFromApi` gộp request đang bay,
+                    // nhưng ở đây request cũ (nếu có) đã chạy TRƯỚC khi đổi
+                    // trạng thái nên kết quả của nó là dữ liệu cũ.
+                    bookingsInFlightPromise = null
+                    await get().fetchBookingsFromApi()
+                    return null
+                } catch (e) {
+                    console.error('[changeStatusViaApi] lỗi mạng', { bookingId: id, to, error: e })
+                    return {
+                        vi: 'Mất kết nối tới máy chủ. Kiểm tra mạng rồi thử lại.',
+                        en: 'Lost connection to the server. Check your network and retry.',
+                    }
+                }
             },
 
             // ------------------------------------------------------- khách đặt
