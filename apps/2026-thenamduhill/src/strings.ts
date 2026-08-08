@@ -44,6 +44,8 @@ export const S = {
     guests: t('khách', 'guests'),
     adults: t('Người lớn', 'Adults'),
     children: t('Trẻ em', 'Children'),
+    /** Nhãn ô nhập tuổi từng trẻ — hẹp nên phải là một từ. */
+    age: t('Tuổi', 'Age'),
     from: t('Từ', 'From'),
     perNight: t('/đêm', '/night'),
     optional: t('Không bắt buộc', 'Optional'),
@@ -365,6 +367,14 @@ export const S = {
     channelWeb: t('Website', 'Website'),
     channelOta: t('Kênh OTA', 'OTA'),
     roomTypeLabel: t('Hạng phòng', 'Room type'),
+    /** Tiêu đề khối gộp hạng phòng + gói giá + dịch vụ thêm + mã khuyến mãi. */
+    roomAndExtras: t('Hạng phòng & phụ thu', 'Room & extras'),
+    childrenAgeHint: t(
+        'Nhập tuổi từng trẻ bên cạnh — giá trẻ em tính theo tuổi.',
+        'Enter each child’s age beside — child pricing depends on age.',
+    ),
+    /** Badge số phòng còn trống trong khối tóm tắt giá. */
+    availableUnitsBadge: t('Còn trống', 'Available'),
     selectRoomFirst: t(
         'Chọn hạng phòng và khoảng ngày để xem giá.',
         'Pick a room type and dates to see the price.',

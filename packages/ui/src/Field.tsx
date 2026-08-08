@@ -52,6 +52,19 @@ function FieldShell({ id, label, hint, error, required, children }: FieldShellPr
                 )}
             </label>
 
+            {children}
+
+            {/* Gợi ý nằm DƯỚI ô nhập, không phải trên.
+             *
+             * Bản trước đặt nó giữa nhãn và ô nhập, khiến mắt phải đọc một câu
+             * giải thích trước khi nhìn thấy thứ nó giải thích — và trên form
+             * nhiều trường thì nhãn của ô này bị đẩy sát gợi ý của ô trước, hai
+             * dòng chữ nhỏ dính nhau, không rõ dòng nào thuộc ô nào.
+             *
+             * Đây là hành vi ở TẦNG NỀN nên đổi một chỗ là 40 điểm dùng `hint`
+             * trong repo đồng bộ theo. `aria-describedby` vẫn trỏ đúng `id` nên
+             * trình đọc màn hình không đổi cách đọc — thứ tự DOM mới còn khớp
+             * với thứ tự đọc hơn bản cũ. */}
             {hint && (
                 <p
                     id={`${id}-hint`}
@@ -65,8 +78,6 @@ function FieldShell({ id, label, hint, error, required, children }: FieldShellPr
                     {hint}
                 </p>
             )}
-
-            {children}
 
             {error && (
                 <p

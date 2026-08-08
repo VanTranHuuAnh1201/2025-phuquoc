@@ -212,10 +212,24 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
         }
     }
 
+    /* Hai nút chia 3fr/7fr: "Tạo đơn" là việc lễ tân làm 99% số lần, "Huỷ" là
+     * lối thoát hiếm khi dùng — bề rộng phải nói ra tỉ lệ đó thay vì chia đôi.
+     * Ở nhánh `page` không có nút Huỷ (đã có breadcrumb quay lại) nên một cột. */
     const actionButtons = (
-        <>
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: inDrawer ? '3fr 7fr' : '1fr',
+                gap: 'var(--space-3)',
+            }}
+        >
             {inDrawer && (
-                <Button variant="ghost" onClick={onCancel} disabled={submitting}>
+                <Button
+                    variant="ghost"
+                    onClick={onCancel}
+                    disabled={submitting}
+                    style={{ minHeight: 44, width: '100%' }}
+                >
                     {tr(S.cancel, locale)}
                 </Button>
             )}
@@ -223,11 +237,11 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                 onClick={submit}
                 disabled={submitting || !availability?.available}
                 aria-busy={submitting}
-                style={inDrawer ? { minHeight: 44 } : { width: '100%', minHeight: 44 }}
+                style={{ minHeight: 44, width: '100%' }}
             >
                 {submitting ? tr(S.creatingBooking, locale) : tr(S.createBookingCta, locale)}
             </Button>
-        </>
+        </div>
     )
 
     /* ---- tóm tắt giá: chỉ đọc, không có ô sửa tổng tiền ---- */
@@ -281,101 +295,174 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                      * và tên addon rồi trả nhãn song ngữ, nên lễ tân không còn
                      * nhìn thấy mã nội bộ kiểu "extra-bed" (luật C7/FE6), và số
                      * hai bên khớp vì dùng chung một nhánh hiển thị (R8/C10).
+                     *
+                     * KHÔNG sửa component này — nó dùng chung với luồng khách,
+                     * đổi ở đây là đổi cả bảng giá khách nhìn thấy. Mọi chỉnh
+                     * trình bày chỉ nằm ở phần BAO QUANH nó.
                      */}
                     <PriceBreakdown quote={quote} locale={locale} showDeposit />
-                    <p
+
+                    {/* Ghi chú + badge tồn kho xếp cùng một hàng đáy: chú thích
+                     * là chữ nhỏ mờ, còn số phòng còn lại là dữ kiện lễ tân phải
+                     * thấy ngay nên đóng khung thành badge thay vì dòng chữ trôi. */}
+                    <div
                         style={{
-                            margin: 0,
-                            fontSize: 'var(--text-xs)',
-                            lineHeight: 1.6,
-                            color: 'var(--text-muted)',
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            gap: 'var(--space-3)',
+                            paddingTop: 'var(--space-2)',
+                            borderTop: '1px solid var(--border)',
                         }}
                     >
-                        {tr(S.priceReadOnlyHint, locale)}
-                    </p>
-                    <p
-                        style={{
-                            margin: 0,
-                            fontSize: 'var(--text-xs)',
-                            color: 'var(--text-muted)',
-                        }}
-                    >
-                        {pick({ vi: 'Còn trống', en: 'Available' }, locale)}:{' '}
-                        <strong style={{ fontVariantNumeric: 'tabular-nums' }}>
-                            {availability.availableUnits}
-                        </strong>
-                    </p>
+                        <p
+                            style={{
+                                flex: '1 1 180px',
+                                margin: 0,
+                                fontSize: 'var(--text-xs)',
+                                lineHeight: 1.6,
+                                color: 'var(--text-muted)',
+                            }}
+                        >
+                            {tr(S.priceReadOnlyHint, locale)}
+                        </p>
+                        <span
+                            style={{
+                                flexShrink: 0,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-2)',
+                                padding: '2px var(--space-3)',
+                                borderRadius: 'var(--radius-sm, 6px)',
+                                background: 'var(--cms-accent-weak)',
+                                color: 'var(--text)',
+                                fontSize: 'var(--text-xs)',
+                                fontWeight: 600,
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {tr(S.availableUnitsBadge, locale)}
+                            <strong style={{ fontVariantNumeric: 'tabular-nums' }}>
+                                {availability.availableUnits}
+                            </strong>
+                        </span>
+                    </div>
                 </div>
             )}
         </>
     )
 
+    /* Dòng "Thành tiền" ghim trên hàng nút của drawer.
+     *
+     * VÌ SAO LẶP LẠI CON SỐ ĐÃ CÓ TRONG BẢNG GIÁ: form cao hơn màn hình, nên
+     * lúc lễ tân cuộn xuống bấm "Tạo đơn" thì bảng giá đã trôi khỏi tầm nhìn.
+     * Đọc lại tổng tiền cho khách nghe máy ngay tại nút bấm là thao tác thật,
+     * không phải trang trí. Số lấy TỪ CÙNG `quote`, không tính lại (R8). */
+    const pinnedTotal = quote && availability?.available && (
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                gap: 'var(--space-4)',
+                paddingBottom: 'var(--space-2)',
+                marginBottom: 'var(--space-2)',
+                borderBottom: '1px solid var(--cms-border)',
+            }}
+        >
+            <span style={{ fontSize: 'var(--text-sm)', color: 'var(--cms-text-muted)' }}>
+                {tr(S.totalAmount, locale)}
+            </span>
+            <strong
+                style={{
+                    fontSize: 'var(--text-lg)',
+                    fontWeight: 700,
+                    color: 'var(--cms-text)',
+                    fontVariantNumeric: 'tabular-nums',
+                    whiteSpace: 'nowrap',
+                }}
+            >
+                {formatPrice(quote.totalAmount, locale)}
+            </strong>
+        </div>
+    )
+
+    /* THỨ TỰ KHỐI: Kỳ lưu trú → Thông tin người đặt → Hạng phòng & phụ thu →
+     * Tóm tắt giá.
+     *
+     * Đây là thứ tự THAO TÁC THẬT của lễ tân đang nghe điện thoại: hỏi ngày đi,
+     * ghi ngay tên và số gọi lại (nếu rớt máy vẫn liên lạc được), rồi mới tra
+     * phòng trống và chốt giá. Xếp hạng phòng lên trước bắt họ giữ tên/SĐT
+     * trong đầu suốt lúc dò bảng phòng — chính là lúc hay ghi nhầm nhất. */
     const formFields = (
         <>
             <Panel title={tr(S.stayDetails, locale)}>
-                <div className="nb-two-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
-                    <Field
-                        label={tr(S.checkIn, locale)}
-                        type="date"
-                        value={checkIn}
-                        min={today}
-                        onChange={(e) => setCheckIn(e.target.value)}
-                        required
-                    />
-                    <Field
-                        label={tr(S.checkOut, locale)}
-                        type="date"
-                        value={checkOut}
-                        min={addDays(checkIn, 1)}
-                        onChange={(e) => setCheckOut(e.target.value)}
-                        required
-                    />
-                    <Field
-                        label={tr(S.adults, locale)}
-                        type="number"
-                        min={1}
-                        max={12}
-                        value={adults}
-                        onChange={(e) => setAdults(Math.max(1, Number(e.target.value) || 1))}
-                        required
-                    />
-                    <Field
-                        label={tr(S.children, locale)}
-                        type="number"
-                        min={0}
-                        max={8}
-                        value={childAges.length}
-                        hint={
-                            pick(
-                                {
-                                    vi: 'Nhập tuổi từng trẻ bên dưới — giá trẻ em tính theo tuổi.',
-                                    en: 'Enter each child’s age below — child pricing depends on age.',
-                                },
-                                locale,
-                            )
-                        }
-                        onChange={(e) => {
-                            const count = Math.max(0, Math.min(8, Number(e.target.value) || 0))
-                            setChildAges((prev) =>
-                                Array.from({ length: count }, (_, i) => prev[i] ?? 6),
-                            )
-                        }}
-                    />
-                </div>
+                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                    {/* Ba trường quyết định giá nằm cùng một hàng: đọc ngang một
+                     * lượt là biết kỳ lưu trú, không phải quét zíc-zắc 2 cột. */}
+                    <div className="nb-three-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                        <Field
+                            label={tr(S.checkIn, locale)}
+                            type="date"
+                            value={checkIn}
+                            min={today}
+                            onChange={(e) => setCheckIn(e.target.value)}
+                            required
+                        />
+                        <Field
+                            label={tr(S.checkOut, locale)}
+                            type="date"
+                            value={checkOut}
+                            min={addDays(checkIn, 1)}
+                            onChange={(e) => setCheckOut(e.target.value)}
+                            required
+                        />
+                        <Field
+                            label={tr(S.adults, locale)}
+                            type="number"
+                            min={1}
+                            max={12}
+                            value={adults}
+                            onChange={(e) => setAdults(Math.max(1, Number(e.target.value) || 1))}
+                            required
+                        />
+                    </div>
 
-                {childAges.length > 0 && (
+                    {/* Hàng trẻ em: ô đếm chỉ chứa 1 chữ số nên ghim 120px, phần
+                     * còn lại của hàng dành cho các ô TUỔI hiện ngay bên cạnh —
+                     * nhập số rồi khai tuổi liền tay, không phải nhảy xuống dưới. */}
                     <div
                         style={{
                             display: 'flex',
                             flexWrap: 'wrap',
+                            alignItems: 'flex-start',
                             gap: 'var(--space-3)',
-                            marginTop: 'var(--space-4)',
                         }}
                     >
+                        <div style={{ width: 120, flexShrink: 0 }}>
+                            <Field
+                                label={tr(S.children, locale)}
+                                type="number"
+                                min={0}
+                                max={8}
+                                value={childAges.length}
+                                onChange={(e) => {
+                                    const count = Math.max(
+                                        0,
+                                        Math.min(8, Number(e.target.value) || 0),
+                                    )
+                                    setChildAges((prev) =>
+                                        Array.from({ length: count }, (_, i) => prev[i] ?? 6),
+                                    )
+                                }}
+                            />
+                        </div>
+
                         {childAges.map((age, index) => (
-                            <div key={index} style={{ width: 110 }}>
+                            <div key={index} style={{ width: 96, flexShrink: 0 }}>
                                 <Field
-                                    label={`${tr(S.children, locale)} ${index + 1}`}
+                                    label={`${tr(S.age, locale)} ${index + 1}`}
                                     type="number"
                                     min={0}
                                     max={17}
@@ -392,103 +479,34 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             </div>
                         ))}
                     </div>
-                )}
-            </Panel>
 
-            <Panel title={tr(S.roomTypeLabel, locale)}>
-                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
-                    <SelectField
-                        label={tr(S.roomTypeLabel, locale)}
-                        value={roomTypeId}
-                        onChange={(e) => setRoomTypeId(e.target.value)}
-                        required
-                    >
-                        <option value="">
-                            {pick({ vi: '— Chọn hạng phòng —', en: '— Select a room type —' }, locale)}
-                        </option>
-                        {property.rooms.map((room) => (
-                            <option key={room.id} value={room.id}>
-                                {pick(room.name, locale)} · {formatPrice(room.price, locale)}
-                                {tr(S.perNight, locale)}
-                            </option>
-                        ))}
-                    </SelectField>
-
-                    <SelectField
-                        label={tr(S.ratePlan, locale)}
-                        value={ratePlanId}
-                        onChange={(e) => setRatePlanId(e.target.value)}
-                        hint={pick(
-                            ratePlans.find((p) => p.id === ratePlanId)?.description ?? {
-                                vi: '',
-                                en: '',
-                            },
-                            locale,
-                        )}
-                    >
-                        {ratePlans
-                            .filter((p) => p.active)
-                            .map((plan) => (
-                                <option key={plan.id} value={plan.id}>
-                                    {pick(plan.name, locale)}
-                                </option>
-                            ))}
-                    </SelectField>
-
-                    <fieldset
+                    {/* Chú thích của CẢ HÀNG trẻ em (ô đếm + các ô tuổi), không
+                     * thuộc riêng ô nào — nên là <p> tự do, không phải prop
+                     * `hint` của một `Field`. */}
+                    <p
                         style={{
-                            border: 0,
                             margin: 0,
-                            padding: 0,
-                            display: 'grid',
-                            gap: 'var(--space-3)',
+                            fontSize: 'var(--text-xs)',
+                            color: 'var(--text-muted)',
+                            lineHeight: 1.5,
                         }}
                     >
-                        <legend
-                            style={{
-                                padding: 0,
-                                fontSize: 'var(--text-sm)',
-                                fontWeight: 600,
-                            }}
-                        >
-                            {tr(S.addons, locale)}
-                        </legend>
-                        {property.addons.map((addon) => (
-                            <CheckField
-                                key={addon.id}
-                                label={`${pick(addon.name, locale)} — ${formatPrice(addon.price, locale)} / ${pick(addon.unit, locale)}`}
-                                checked={Boolean(addons[addon.id])}
-                                onChange={(e) =>
-                                    setAddons((prev) => {
-                                        const next = { ...prev }
-                                        if (e.target.checked) next[addon.id] = 1
-                                        else delete next[addon.id]
-                                        return next
-                                    })
-                                }
-                            />
-                        ))}
-                    </fieldset>
-
-                    <Field
-                        label={tr(S.promoCode, locale)}
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
-                        placeholder={tr(S.promoPlaceholder, locale)}
-                        hint={canEditPrice ? undefined : tr(S.priceEditNoPermission, locale)}
-                    />
+                        {tr(S.childrenAgeHint, locale)}
+                    </p>
                 </div>
             </Panel>
 
             <Panel title={tr(S.guestInfo, locale)}>
                 <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
-                    <Field
-                        label={tr(S.fullName, locale)}
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
-                    />
-                    <div className="nb-two-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                    {/* Ba trường định danh khách đều ngắn → xếp 3 cột, một hàng
+                     * là xong phần "ai đang gọi". */}
+                    <div className="nb-three-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                        <Field
+                            label={tr(S.fullName, locale)}
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            required
+                        />
                         <Field
                             label={tr(S.phone, locale)}
                             type="tel"
@@ -505,32 +523,148 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             hint={tr(S.optional, locale)}
                         />
                     </div>
-                    <Field
-                        label={tr(S.arrivalTime, locale)}
-                        type="time"
-                        value={arrivalTime}
-                        onChange={(e) => setArrivalTime(e.target.value)}
-                        hint={tr(S.arrivalHint, locale)}
-                    />
-                    <SelectField
-                        label={tr(S.channel, locale)}
-                        value={channel}
-                        onChange={(e) => setChannel(e.target.value as Channel)}
-                        hint={tr(S.channelHint, locale)}
-                        required
-                    >
-                        {MANUAL_CHANNELS.map((c) => (
-                            <option key={c} value={c}>
-                                {tr(CHANNEL_LABEL[c], locale)}
-                            </option>
-                        ))}
-                    </SelectField>
+
+                    <div className="nb-two-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                        <Field
+                            label={tr(S.arrivalTime, locale)}
+                            type="time"
+                            value={arrivalTime}
+                            onChange={(e) => setArrivalTime(e.target.value)}
+                            hint={tr(S.arrivalHint, locale)}
+                        />
+                        <SelectField
+                            label={tr(S.channel, locale)}
+                            value={channel}
+                            onChange={(e) => setChannel(e.target.value as Channel)}
+                            hint={tr(S.channelHint, locale)}
+                            required
+                        >
+                            {MANUAL_CHANNELS.map((c) => (
+                                <option key={c} value={c}>
+                                    {tr(CHANNEL_LABEL[c], locale)}
+                                </option>
+                            ))}
+                        </SelectField>
+                    </div>
+
+                    {/* 130px ≈ 5 dòng: yêu cầu đặc biệt thường là một đoạn kể
+                     * (trăng mật + dị ứng + giờ tàu), 3 dòng mặc định bắt lễ
+                     * tân cuộn trong chính ô nhập khi đang gõ vội. */}
                     <TextAreaField
                         label={tr(S.specialRequests, locale)}
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         hint={tr(S.specialRequestsHint, locale)}
-                        rows={3}
+                        style={{ minHeight: 130, height: 130 }}
+                    />
+                </div>
+            </Panel>
+
+            <Panel title={tr(S.roomAndExtras, locale)}>
+                <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                    <div className="nb-two-col" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                        <SelectField
+                            label={tr(S.roomTypeLabel, locale)}
+                            value={roomTypeId}
+                            onChange={(e) => setRoomTypeId(e.target.value)}
+                            required
+                        >
+                            <option value="">
+                                {pick(
+                                    { vi: '— Chọn hạng phòng —', en: '— Select a room type —' },
+                                    locale,
+                                )}
+                            </option>
+                            {property.rooms.map((room) => (
+                                <option key={room.id} value={room.id}>
+                                    {pick(room.name, locale)} · {formatPrice(room.price, locale)}
+                                    {tr(S.perNight, locale)}
+                                </option>
+                            ))}
+                        </SelectField>
+
+                        <SelectField
+                            label={tr(S.ratePlan, locale)}
+                            value={ratePlanId}
+                            onChange={(e) => setRatePlanId(e.target.value)}
+                            hint={pick(
+                                ratePlans.find((p) => p.id === ratePlanId)?.description ?? {
+                                    vi: '',
+                                    en: '',
+                                },
+                                locale,
+                            )}
+                        >
+                            {ratePlans
+                                .filter((p) => p.active)
+                                .map((plan) => (
+                                    <option key={plan.id} value={plan.id}>
+                                        {pick(plan.name, locale)}
+                                    </option>
+                                ))}
+                        </SelectField>
+                    </div>
+
+                    <fieldset
+                        style={{
+                            border: 0,
+                            margin: 0,
+                            padding: 0,
+                            display: 'grid',
+                            gap: 'var(--space-2)',
+                        }}
+                    >
+                        <legend
+                            style={{
+                                padding: 0,
+                                fontSize: 'var(--text-sm)',
+                                fontWeight: 600,
+                            }}
+                        >
+                            {tr(S.addons, locale)}
+                        </legend>
+                        {property.addons.map((addon) => {
+                            const picked = Boolean(addons[addon.id])
+                            return (
+                                <div
+                                    key={addon.id}
+                                    style={{
+                                        // Dịch vụ đã tick tô nền nhạt: danh sách
+                                        // addon dài, chỉ dấu tick 18px thì lúc rà
+                                        // lại đơn phải soi từng dòng.
+                                        background: picked ? 'var(--cms-accent-weak)' : undefined,
+                                        borderRadius: 'var(--radius-sm, 6px)',
+                                        // Padding giữ NGUYÊN ở cả hai trạng thái:
+                                        // đổi padding theo tick sẽ làm cả danh
+                                        // sách nhích lên xuống mỗi lần bấm.
+                                        padding: 'var(--space-1) var(--space-2)',
+                                    }}
+                                >
+                                    <CheckField
+                                        label={`${pick(addon.name, locale)} — ${formatPrice(addon.price, locale)} / ${pick(addon.unit, locale)}`}
+                                        checked={picked}
+                                        onChange={(e) =>
+                                            setAddons((prev) => {
+                                                const next = { ...prev }
+                                                if (e.target.checked) next[addon.id] = 1
+                                                else delete next[addon.id]
+                                                return next
+                                            })
+                                        }
+                                    />
+                                </div>
+                            )
+                        })}
+                    </fieldset>
+
+                    {/* Lễ tân không có `price.edit` thì mã khuyến mãi là đường
+                     * DUY NHẤT để đổi giá — nói thẳng điều đó ngay dưới ô nhập. */}
+                    <Field
+                        label={tr(S.promoCode, locale)}
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        placeholder={tr(S.promoPlaceholder, locale)}
+                        hint={canEditPrice ? undefined : tr(S.priceEditNoPermission, locale)}
                     />
                 </div>
             </Panel>
@@ -571,10 +705,13 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
              * padding + cuộn mặc định của nó) rồi tự chia flex dọc — nội dung
              * `flex-1` tự cuộn, thanh nút `shrink-0` nằm ngoài luồng cuộn nên
              * luôn ở đáy. */
-            <div className="flex h-full min-h-0 flex-col">
+            <div className="nb-drawer flex h-full min-h-0 flex-col">
                 <div
                     className="min-h-0 flex-1 overflow-y-auto p-[var(--cms-pad)]"
-                    style={{ display: 'grid', gap: 'var(--space-5)', alignContent: 'start' }}
+                    /* Gap giữa các Panel về `--space-4`: mỗi Panel đã có viền
+                     * riêng làm ranh giới, khoảng hở lớn chỉ đẩy tổng chiều cao
+                     * form lên và bắt cuộn thêm. */
+                    style={{ display: 'grid', gap: 'var(--space-4)', alignContent: 'start' }}
                 >
                     {errorBox}
                     {formFields}
@@ -584,22 +721,35 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             background: 'var(--surface)',
                             border: '1px solid var(--border)',
                             borderRadius: 'var(--radius-lg)',
-                            padding: 'var(--space-5)',
+                            padding: 'var(--space-4)',
                             display: 'grid',
-                            gap: 'var(--space-4)',
+                            gap: 'var(--space-3)',
                         }}
                     >
                         {priceSummary}
                     </section>
                 </div>
 
-                <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-[var(--cms-border)] bg-[var(--cms-bg)] px-[var(--cms-pad)] py-3">
+                {/* Vùng cố định đáy: dòng tổng tiền ghim NGAY TRÊN hàng nút, cùng
+                 * một khối `shrink-0` để cả hai nằm ngoài luồng cuộn. */}
+                <div className="shrink-0 border-t border-[var(--cms-border)] bg-[var(--cms-bg)] px-[var(--cms-pad)] py-2">
+                    {pinnedTotal}
                     {actionButtons}
                 </div>
 
                 <style>{`
+                    /* Phạm vi [data-cms] trong tokens.css KHÔNG khai --danger và
+                     * --danger-bg, nên dấu * bắt buộc của Field cùng hộp lỗi đang
+                     * thừa hưởng màu từ ngoài phạm vi CMS. Nối chúng vào tông rose
+                     * của CMS ngay tại đây — sửa packages/ui sẽ đổi theo mọi màn
+                     * khác đang dùng chung component đó. */
+                    .nb-drawer {
+                        --danger: var(--cms-tone-rose);
+                        --danger-bg: var(--cms-tone-rose-bg);
+                    }
                     @media (min-width: 640px) {
                         .nb-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                        .nb-three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
                     }
                 `}</style>
             </div>
@@ -611,8 +761,8 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
         <>
             {errorBox}
 
-            <div className="new-booking-grid" style={{ display: 'grid', gap: 'var(--space-5)' }}>
-                <div style={{ display: 'grid', gap: 'var(--space-5)', minWidth: 0 }}>{formFields}</div>
+            <div className="new-booking-grid" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                <div style={{ display: 'grid', gap: 'var(--space-4)', minWidth: 0 }}>{formFields}</div>
 
                 <aside style={{ minWidth: 0 }}>
                     <div
@@ -622,9 +772,9 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                             background: 'var(--surface)',
                             border: '1px solid var(--border)',
                             borderRadius: 'var(--radius-lg)',
-                            padding: 'var(--space-5)',
+                            padding: 'var(--space-4)',
                             display: 'grid',
-                            gap: 'var(--space-4)',
+                            gap: 'var(--space-3)',
                         }}
                     >
                         {priceSummary}
@@ -639,6 +789,7 @@ export function NewBookingForm({ onCreated, onCancel, variant = 'page' }: NewBoo
                 }
                 @media (min-width: 640px) {
                     .nb-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+                    .nb-three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
                 }
             `}</style>
         </>
@@ -651,13 +802,15 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
             style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
+                // `--space-4` chứ không `--space-5`: form có 4 khối chồng nhau,
+                // mỗi khối dư 8px trên-dưới là dư gần 70px chiều cao cuộn.
                 borderRadius: 'var(--radius-lg)',
-                padding: 'var(--space-5)',
+                padding: 'var(--space-4)',
             }}
         >
             <h2
                 style={{
-                    margin: '0 0 var(--space-4)',
+                    margin: '0 0 var(--space-3)',
                     fontSize: 'var(--text-base)',
                     fontFamily: 'var(--font-display)',
                 }}

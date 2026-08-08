@@ -302,7 +302,7 @@ function DrawerLayerView({
                     ].join(' ')}
                 >
                     {showHeader && (
-                        <header className="flex shrink-0 items-start justify-between gap-[var(--cms-gap)] border-b border-[var(--cms-border)] px-[var(--cms-pad)] py-3">
+                        <header className="flex shrink-0 items-start justify-between gap-[var(--cms-gap)] border-b border-[var(--cms-border)] px-[var(--cms-pad)] py-2">
                             <div className="flex min-w-0 items-start gap-2">
                                 {showBack && (
                                     <button
@@ -317,7 +317,11 @@ function DrawerLayerView({
                                 <div className="min-w-0">
                                     <h2
                                         id={titleId}
-                                        className="m-0 text-[length:var(--cms-text-body)] font-semibold text-[var(--cms-text)]"
+                                        // 15px chứ không `--cms-text-body` (13px):
+                                        // tiêu đề drawer là mỏ neo cho biết đang
+                                        // ở lớp nào, bằng cỡ chữ nội dung thì nó
+                                        // chìm vào form ngay bên dưới.
+                                        className="m-0 text-[15px] leading-tight font-semibold text-[var(--cms-text)]"
                                     >
                                         {layer.title}
                                     </h2>
@@ -349,7 +353,7 @@ function DrawerLayerView({
                     </div>
 
                     {hasFooter && (
-                        <footer className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-[var(--cms-border)] bg-[var(--cms-bg)] px-[var(--cms-pad)] py-3">
+                        <footer className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-[var(--cms-border)] bg-[var(--cms-bg)] px-[var(--cms-pad)] py-2">
                             {layer.footer ?? (
                                 <>
                                     <button
