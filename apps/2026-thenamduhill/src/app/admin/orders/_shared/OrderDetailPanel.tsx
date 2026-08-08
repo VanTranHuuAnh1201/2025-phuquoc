@@ -439,7 +439,14 @@ export function OrderDetailView({
                      * Tab nhận/trả phòng KHÔNG có hàng nút này: form của chúng tự
                      * mang nút Lưu. Thêm nút thứ hai là hai lối làm cùng một việc.
                      */}
-                    <div className="flex flex-wrap items-center justify-end gap-2 border-t border-[var(--cms-border)] pt-[var(--cms-gap)]">
+                    {/* DÍNH ĐÁY vùng cuộn (`sticky bottom-0`), không trôi theo
+                        nội dung. Đo thật ở 1440×900: nội dung tab Tổng quan cao
+                        735px trong khung 648px, nên để trần thì "Xác nhận đơn"
+                        nằm ngoài tầm nhìn và lễ tân phải cuộn mới thấy hành
+                        động chính của màn. `-mx`/`px` bù lại padding của khung
+                        cuộn để nền trắng phủ hết bề ngang, không hở mép khi
+                        nội dung trượt qua dưới. */}
+                    <div className="sticky bottom-0 -mx-[var(--cms-pad)] -mb-[var(--cms-pad)] flex flex-wrap items-center justify-end gap-2 border-t border-[var(--cms-border)] bg-[var(--cms-bg)] px-[var(--cms-pad)] py-3">
                         {next.length === 0 && (
                             <span className="mr-auto text-[length:var(--cms-text-meta)] text-[var(--cms-text-muted)]">
                                 {tr(S.panelClosedBooking, locale)}

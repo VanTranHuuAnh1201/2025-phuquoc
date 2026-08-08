@@ -75,15 +75,22 @@ const ALL_STATUSES: RoomUnitStatus[] = [
     'maintenance',
 ]
 
-/** Thứ tự nhóm khi xem theo TRẠNG THÁI — "Cần dọn"/"Đang dọn" đứng đầu vì đó
- *  là việc buồng phòng phải xử lý ngay; "Bảo trì" đứng cuối vì không phải
- *  việc thường nhật. */
+/** Thứ tự nhóm khi xem theo TRẠNG THÁI — xếp theo VIỆC PHẢI LÀM giảm dần.
+ *
+ *  "Cần dọn"/"Đang dọn" đứng đầu: việc buồng phòng phải xử lý ngay.
+ *  "Đang ở" liền sau: có khách trong phòng, có tên và mã đơn để tra.
+ *  "Bảo trì" rồi "Sẵn sàng" xuống cuối.
+ *
+ *  `available` TỪNG đứng trên `occupied`, và nhìn trên màn thật thì đó là lỗi:
+ *  seed có 114 phòng sẵn sàng với 5 phòng đang ở, nên toàn bộ phần có thông tin
+ *  bị đẩy xuống dưới hơn mười hàng thẻ trống. Phòng sẵn sàng không đòi hỏi hành
+ *  động nào — nó là phần tổ buồng LƯỚT QUA, không phải phần họ tìm. */
 const STATUS_GROUP_ORDER: RoomUnitStatus[] = [
     'dirty',
     'cleaning',
-    'available',
     'occupied',
     'maintenance',
+    'available',
 ]
 
 type GroupBy = 'status' | 'roomType'

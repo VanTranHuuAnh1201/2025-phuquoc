@@ -110,9 +110,14 @@
 
     /* --- lớp phủ & chuyển động -------------------------------------------
      * `--overlay-scrim` của contract.css là 0.55 — hợp với modal căn giữa vì
-     * nó phải cắt đứt hẳn nền. Panel thì KHÔNG: giữ bảng phía sau còn đọc
-     * được chính là lý do tồn tại của panel, nên scrim nhạt hơn hẳn. */
-    --cms-scrim: rgb(17 24 39 / 0.32);
+     * nó phải cắt đứt hẳn nền. Drawer thì KHÔNG: giữ bảng phía sau còn đọc
+     * được chính là lý do nó tồn tại.
+     *
+     * 0.42 là kết quả chỉnh sau khi xem ảnh chụp thật ở 1440×900. Bản đầu để
+     * 0.32: bảng phía sau gần như không tối đi, nên mắt không phân được đâu là
+     * lớp đang thao tác — drawer trông như một cột dính vào trang chứ không
+     * phải lớp nổi. 0.42 đủ đẩy nền ra sau mà vẫn đọc được tên khách ở bảng. */
+    --cms-scrim: rgb(17 24 39 / 0.42);
     --cms-motion-panel: 240ms;
     --cms-ease-panel: cubic-bezier(0.32, 0.72, 0, 1);
 }
