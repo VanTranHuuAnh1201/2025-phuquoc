@@ -35,14 +35,10 @@ export const S = {
     view: t('Xem', 'View'),
     delete: t('Xoá', 'Delete'),
     reset: t('Đặt lại', 'Reset'),
-    language: t('Ngôn ngữ', 'Language'),
     paginationPrev: t('Trước', 'Prev'),
     paginationNext: t('Sau', 'Next'),
-    paginationPageSize: t('Dòng/trang:', 'Rows per page:'),
-    paginationSummary: t('Hiển thị', 'Showing'),
     search: t('Tìm kiếm', 'Search'),
     all: t('Tất cả', 'All'),
-    night: t('đêm', 'night'),
     nights: t('đêm', 'nights'),
     guest: t('khách', 'guest'),
     guests: t('khách', 'guests'),
@@ -50,9 +46,7 @@ export const S = {
     children: t('Trẻ em', 'Children'),
     from: t('Từ', 'From'),
     perNight: t('/đêm', '/night'),
-    required: t('Bắt buộc', 'Required'),
     optional: t('Không bắt buộc', 'Optional'),
-    loading: t('Đang tải…', 'Loading…'),
 
     // ------------------------------------------------------- đăng nhập
     login: t('Đăng nhập', 'Sign in'),
@@ -89,14 +83,6 @@ export const S = {
     tabRegister: t('Đăng ký', 'Sign up'),
     noAccountYet: t('Chưa có tài khoản?', "Don't have an account?"),
     hadAccount: t('Đã có tài khoản?', 'Already have an account?'),
-
-    // lỗi đăng nhập
-    errIdentifierInvalid: t(
-        'Số điện thoại hoặc email không hợp lệ.',
-        'Phone number or email is not valid.',
-    ),
-    errOtpWrong: t('Mã xác thực không đúng.', 'Verification code is incorrect.'),
-    errAccountDisabled: t('Tài khoản đã bị khoá.', 'This account is disabled.'),
 
     // --------------------------------------------------- luồng đặt phòng
     bookNow: t('Đặt phòng', 'Book now'),
@@ -145,7 +131,6 @@ export const S = {
     totalAmount: t('Thành tiền', 'Total'),
     deposit: t('Cọc phải trả ngay', 'Deposit due now'),
     balanceDue: t('Còn lại trả tại quầy', 'Balance due at property'),
-    includedFree: t('Miễn phí', 'Free'),
 
     // thông tin khách
     guestInfo: t('Thông tin người đặt', 'Guest details'),
@@ -168,7 +153,7 @@ export const S = {
     companyName: t('Tên công ty', 'Company name'),
 
     // lỗi form
-    errNameRequired: t('Vui lòng nhập họ tên.', 'Please enter your full name.'),
+    errNameRequired: t('Chưa nhập họ tên.', 'Enter your full name.'),
     errPhoneRequired: t(
         'Số điện thoại không hợp lệ. Ví dụ: 0901234567',
         'Phone number is not valid. Example: 0901234567',
@@ -227,12 +212,10 @@ export const S = {
 
     // ---------------------------------------------------------------- CMS
     adminPanel: t('Quản trị', 'Admin'),
-    dashboard: t('Bảng hôm nay', 'Today'),
     orders: t('Đơn hàng', 'Bookings'),
     inventoryCalendar: t('Lịch tồn kho', 'Rates & availability'),
     customers: t('Khách hàng', 'Customers'),
     customersSearchPlaceholder: t('Tìm tên, SĐT, email…', 'Search name, phone, email…'),
-    customersTierAll: t('Tất cả phân hạng', 'All tiers'),
     customersTierVip: t('VIP (>10 triệu)', 'VIP (>10m VND)'),
     customersTierReturning: t('Quay lại (>1 lần)', 'Returning (>1 stay)'),
     customersTierNew: t('Khách mới (1 lần)', 'New guests (1 stay)'),
@@ -254,7 +237,6 @@ export const S = {
     customersEmptyAll: t('Chưa có khách hàng nào.', 'No guests yet.'),
 
     // ---- Modal lịch sử khách (click một dòng ở bảng CRM) ----
-    customersHistoryTitle: t('Lịch sử khách hàng', 'Guest history'),
     customersHistoryBookingsSummary: t('Tổng số đơn', 'Total bookings'),
     customersHistoryNightsSummary: t('Tổng đêm đã ở', 'Total nights stayed'),
     customersHistorySpentSummary: t('Tổng chi tiêu', 'Total spent'),
@@ -279,17 +261,6 @@ export const S = {
     customersHistoryViewOrderAria: t('Xem đơn', 'View booking'),
     promotions: t('Khuyến mãi', 'Promotions'),
     housekeeping: t('Buồng phòng', 'Housekeeping'),
-    contentMgmt: t('Nội dung', 'Content'),
-    accounts: t('Tài khoản', 'Accounts'),
-    activityLog: t('Nhật ký hoạt động', 'Activity log'),
-    viewSite: t('Xem website', 'View site'),
-
-    arrivals: t('Khách đến hôm nay', 'Arrivals today'),
-    departures: t('Khách đi hôm nay', 'Departures today'),
-    inHouse: t('Đang lưu trú', 'In-house'),
-    occupancy: t('Công suất phòng', 'Occupancy'),
-    revenue: t('Doanh thu', 'Revenue'),
-    pendingReview: t('Chờ xác nhận', 'Awaiting confirmation'),
 
     // -------------------------------------------------- hub Setup & Cấu hình
     settingsHubTitle: t('Cài đặt & Cấu hình', 'Setup & Configuration'),
@@ -336,7 +307,6 @@ export const S = {
     doConfirm: t('Xác nhận đơn', 'Confirm booking'),
     markNoShow: t('Đánh dấu vắng mặt', 'Mark as no-show'),
     assignRoom: t('Gán phòng', 'Assign room'),
-    actualGuests: t('Số khách thực tế', 'Actual guests'),
     earlyCheckIn: t('Nhận phòng sớm', 'Early check-in'),
     lateCheckOut: t('Trả phòng muộn', 'Late check-out'),
     vehiclePlate: t('Biển số xe', 'Vehicle plate'),
@@ -433,7 +403,6 @@ export const S = {
         'phòng cần dọn ngay',
         'rooms need cleaning now',
     ),
-    housekeepingNoneNeedCleaning: t('Không có phòng nào cần dọn', 'No rooms need cleaning'),
     housekeepingMarkClean: t('Đánh dấu sạch', 'Mark clean'),
     housekeepingStartCleaning: t('Bắt đầu dọn', 'Start cleaning'),
     housekeepingSendMaintenance: t('Gửi bảo trì', 'Send to maintenance'),
@@ -462,7 +431,6 @@ export const S = {
         'Hết phòng cho ngày đã chọn. Đổi ngày hoặc chọn hạng phòng khác.',
         'Sold out for the selected dates. Change the dates or pick another room type.',
     ),
-    reloadPage: t('Tải lại trang', 'Reload page'),
 
     // tồn kho
     availableUnits: t('Còn trống', 'Available'),
@@ -520,7 +488,6 @@ export const S = {
     perCustomerLimit: t('Mỗi khách tối đa', 'Per-guest limit'),
     conditionsTitle: t('Điều kiện áp dụng', 'Conditions'),
     stayWindow: t('Khoảng ngày ở', 'Stay window'),
-    bookWindow: t('Khoảng ngày đặt', 'Booking window'),
     appliesToRooms: t('Áp cho hạng phòng', 'Applies to room types'),
     appliesToRoomsHint: t(
         'Không chọn gì = áp cho mọi hạng phòng.',
@@ -553,7 +520,6 @@ export const S = {
     clickToDisable: t('Bấm để tắt', 'Click to disable'),
     clickToEnable: t('Bấm để bật', 'Click to enable'),
     activePromoCount: t('đang bật', 'active'),
-    totalPromoCount: t('mã', 'promos'),
     kpiTotalPromos: t('TỔNG CHƯƠNG TRÌNH', 'TOTAL PROMOS'),
     kpiActivePromos: t('ĐANG KÍCH HOẠT', 'ACTIVE'),
     kpiStackablePromos: t('CHO PHÉP CỘNG DỒN', 'STACKABLE'),
@@ -639,7 +605,6 @@ export const S = {
     allRoles: t('Tất cả vai trò', 'All roles'),
     accountActive: t('Hoạt động', 'Active'),
     accountSuspended: t('Tạm khoá', 'Suspended'),
-    accountInvited: t('Đã mời', 'Invited'),
     emptyAccounts: t(
         'Không có tài khoản nào khớp bộ lọc. Bấm "Đặt lại" để xem toàn bộ danh sách.',
         'No accounts match the filters. Click "Reset" to see the full list.',
@@ -751,10 +716,6 @@ export const S = {
 
     // xoá / chặn xoá
     deleteRoomTypeConfirm: t('Xoá hạng phòng này?', 'Delete this room type?'),
-    cannotDeleteInUse: t(
-        'Không xoá được: còn đơn đang dùng mục này.',
-        'Cannot delete: bookings still reference this item.',
-    ),
     duplicateId: t('Mã này đã tồn tại. Chọn mã khác.', 'This ID already exists. Choose another.'),
     saving: t('Đang lưu…', 'Saving…'),
     saveFailed: t(
@@ -862,7 +823,6 @@ export const S = {
     viewCalcFormula: t('Xem công thức & cách tính toán', 'View calculation formula'),
     listView: t('Danh sách mã', 'List View'),
     formulasAndCalc: t('Công thức & Tính toán', 'Formulas & Calc'),
-    totalPromos: t('TẤT CẢ CHƯƠNG TRÌNH', 'TOTAL PROMOS'),
     showing: t('Hiển thị', 'Showing'),
     of: t('trong', 'of'),
     formulaAndCalcDetails: t('Công thức & Chi tiết tính toán', 'Formula & Calculation Details'),
@@ -871,7 +831,6 @@ export const S = {
     active: t('Đang chạy', 'Active'),
     disabled: t('Đã tắt', 'Disabled'),
     exclusive: t('Độc quyền (Không cộng dồn)', 'Exclusive'),
-    ruleValue: t('Giá trị quy tắc', 'Rule value'),
     ruleValuePercentage: t('Nhập số phần trăm, ví dụ 15', 'Enter a percentage, e.g. 15'),
     ruleValueVND: t('Nhập số tiền VNĐ', 'Enter an amount in VND'),
     ruleValueN: t('Nhập N — đêm thứ N được tặng', 'Enter N — the Nth night is free'),
@@ -896,7 +855,6 @@ export const S = {
     //
     // Round 5 mục 3: MẶC ĐỊNH TIẾNG VIỆT giữ nguyên — chỉ sửa lại các chuỗi
     // `en` cho đúng thuật ngữ nghiệp vụ khách sạn (bảng chủ dự án đưa).
-    dashboardKicker: t('VẬN HÀNH — HÔM NAY', 'OPERATIONS — TODAY'),
     dashboardTitle: t('Tổng quan hôm nay', 'Today overview'),
     matchingBookings: t('đơn khớp bộ lọc', 'bookings match the filters'),
     shiftFilterLabel: t('CA TRỰC', 'SHIFT'),
@@ -912,7 +870,6 @@ export const S = {
     kpiCheckOutToday: t('KHÁCH TRẢ PHÒNG', 'DEPARTURES'),
     kpiPendingDeposit: t('CHỜ XÁC NHẬN CỌC', 'AWAITING DEPOSIT'),
     kpiUnitSuffix: t('lượt', 'stays'),
-    kpiOrderSuffix: t('đơn', 'bookings'),
     expectedBeforeNoon: t('trước 12:00', 'before 12:00'),
     checkDepositTransfer: t('cần kiểm tra CK', 'needs review'),
     // Round 3: nút ẩn/hiện MetricStrip — lễ tân trực cả ngày cần BẢNG, không
@@ -942,13 +899,6 @@ export const S = {
     tabArrivalsToday: t('Check-in hôm nay', 'Arrivals today'),
     tabPendingDeposit: t('Chờ cọc', 'Awaiting deposit'),
     newBookingCta: t('+ Đặt phòng mới', '+ New booking'),
-    // Round 5 mục 1: `F6` bắt buộc mọi bộ lọc phải có nút đặt lại — dashboard
-    // trước đó THIẾU nút này. Khoá riêng `clearFilters` (không tái dùng
-    // `S.reset`/`S.resetFilters` sẵn có) vì chủ dự án chốt đúng chữ "Clear"
-    // cho màn này, khác "Reset"/"Reset filters" đang dùng ở các bảng khác —
-    // giữ nguyên các bảng đó, không đổi lây.
-    clearFilters: t('Đặt lại', 'Clear'),
-    colUnitChannel: t('MÃ PHÒNG & KÊNH', 'ROOM & CHANNEL'),
     colGuestPhone: t('KHÁCH HÀNG & SĐT', 'GUEST & PHONE'),
     colRoomTypeNights: t('HẠNG PHÒNG', 'ROOM TYPE'),
     colTotalBalance: t('TỔNG TIỀN / CÒN THIẾU', 'TOTAL / BALANCE DUE'),
